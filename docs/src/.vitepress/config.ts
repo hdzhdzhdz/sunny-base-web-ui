@@ -36,7 +36,8 @@ export default defineConfig({
       {
         text: 'Entry 数据录入',
         items: [
-          { text: 'BatchSelect 批量选择器', link: '/components/entry/batch-select' }
+          { text: 'BatchSelect 批量选择器', link: '/components/entry/batch-select' },
+          { text: 'SearchInputTag 公共查询', link: '/components/entry/search-input-tag' }
         ]
       },
       {
