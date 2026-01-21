@@ -1,0 +1,22 @@
+{
+  "name": "@effects/ui",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "scripts": {
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
+  },
+  "dependencies": {
+    "reka-ui": "catalog:",
+    "vue": "catalog:",
+    "@vueuse/core": "catalog:",
+    "@utils": "workspace:*",
+    "@kunkka/ui": "workspace:*",
+    "@icons": "workspace:*"
+  },
+  "devDependencies": {
+    "@config/tsconfig": "workspace:*",
+    "@config/tailwind-config": "workspace:*",
+    "typescript": "catalog:"
+  }
+}

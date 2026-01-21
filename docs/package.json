@@ -1,0 +1,26 @@
+{
+  "name": "@repo/docs",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev src",
+    "build": "vitepress build src",
+    "preview": "vitepress preview src"
+  },
+  "dependencies": {
+    "vue": "catalog:",
+    "element-plus": "catalog:",
+    "@kunkka/ui": "workspace:*"
+  },
+  "devDependencies": {
+    "vitepress": "catalog:",
+    "tailwindcss": "catalog:",
+    "postcss": "catalog:",
+    "autoprefixer": "catalog:",
+    "@vitepress-demo-preview/component": "^2.3.2",
+    "@vitepress-demo-preview/plugin": "^1.2.3",
+    "@config/tsconfig": "workspace:*",
+    "@config/tailwind-config": "workspace:*"
+  }
+}

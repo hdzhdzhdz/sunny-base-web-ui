@@ -1,0 +1,27 @@
+packages:
+  - "apps/*"
+  - "docs"
+  - "packages/*"
+  - "packages/@config/*"
+  - "packages/@kunkka"
+
+catalog:
+  vue: ^3.5.13
+  reka-ui: ^2.7.0
+  vee-validate: ^4.13.2
+  element-plus: ^2.9.0
+  typescript: ^5.7.2
+  vite: ^6.0.1
+  "@vitejs/plugin-vue": ^5.2.1
+  vue-tsc: ^2.1.10
+  postcss: ^8.4.35
+  tailwindcss: ^3.4.1
+  autoprefixer: ^10.4.17
+  "@types/node": ^20.10.0
+  "@vue/tsconfig": ^0.7.0
+  "@iconify/vue": ^4.1.1
+  "lucide-vue-next": ^0.465.0
+  "@ctrl/tinycolor": ^3.6.1
+  "@vue/shared": ^3.3.4
+  "@vueuse/core": ^10.9.0
+  vitepress: ^1.5.0

@@ -1,0 +1,22 @@
+{
+  "extends": "@config/tsconfig/base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "lib": ["ESNext", "DOM"],
+    "module": "ESNext",
+    "target": "ESNext",
+    "jsx": "preserve",
+    "jsxImportSource": "vue",
+    "paths": {
+      "@kunkka/ui": ["../packages/@kunkka/src/index.ts"],
+      "@utils": ["../packages/@utils/src/index.ts"]
+    }
+  },
+  "include": [
+    "src/**/*.ts", 
+    "src/**/*.d.ts", 
+    "src/**/*.tsx", 
+    "src/**/*.vue", 
+    "src/**/*.md"
+  ]
+}
