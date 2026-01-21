@@ -5,6 +5,8 @@ import { KunkkaScrollbar } from "./basic/scrollbar";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "./data/card";
 import { KunkkaTooltip } from "./feedback/tooltip";
 import { KunkkaUpload } from "./data/upload";
+import { KunkkaBatchSelect } from "./entry/select";
+import { KunkkaSearchInputTag } from "./entry/search-input-tag";
 
 // menu 菜单有bug太复杂
 export * from "./navigation/menu";
@@ -20,5 +22,7 @@ export {
   HoverCardContent,
   HoverCardTrigger,
   KunkkaTooltip,
-  KunkkaUpload
+  KunkkaUpload,
+  KunkkaBatchSelect,
+  KunkkaSearchInputTag
 };

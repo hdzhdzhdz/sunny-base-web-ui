@@ -1,8 +1,18 @@
 <script setup lang="ts">
-import { Button, KunkkaUpload } from "@kunkka/ui";
+import { Button, KunkkaUpload, KunkkaBatchSelect } from "@kunkka/ui";
 import { useKunkkaModal, KunkkaScrollbar } from "@kunkka/ui";
 import { Layout } from "@effects/ui";
 import type { MenuRecordRaw } from "@kunkka/ui";
+import { ref } from 'vue';
+
+const selectValue = ref([]);
+const selectOptions = [
+  { value: '1', label: 'Option 1' },
+  { value: '2', label: 'Option 2' },
+  { value: '3', label: 'Option 3' },
+  { value: '4', label: 'Option 4' },
+  { value: '5', label: 'Option 5' },
+];
 
 const [SlideModal, { open, close }] = useKunkkaModal({
   title: "Kunkka Modal Demo",
@@ -68,7 +78,6 @@ const menus: MenuRecordRaw[] = [
   }
 ];
 
-import { ref } from 'vue';
 const collapsed = ref(false);
 </script>
 
@@ -88,6 +97,24 @@ const collapsed = ref(false);
 
         <div class="space-x-4">
           <Button label="Open Modal" primary @click="handleOpen" />
+        </div>
+
+        <div class="mt-8 text-left">
+          <h2 class="text-xl font-bold mb-4">Select Demo (Excel Copy Paste)</h2>
+          <p class="mb-2 text-sm text-gray-500">
+            1. Try copying a column from Excel or text editor with values like "Option 1", "Option 2" (separated by newlines).
+            <br/>
+            2. Paste into the search input of the select.
+          </p>
+          <KunkkaBatchSelect
+            v-model="selectValue"
+            :options="selectOptions"
+            placeholder="Paste Excel content here..."
+            style="width: 320px"
+          />
+          <div class="mt-2 text-sm">
+            Selected: {{ selectValue }}
+          </div>
         </div>
 
         <div class="mt-8 text-left">

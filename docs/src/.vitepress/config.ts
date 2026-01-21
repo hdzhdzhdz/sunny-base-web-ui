@@ -34,6 +34,12 @@ export default defineConfig({
         ]
       },
       {
+        text: 'Entry 数据录入',
+        items: [
+          { text: 'BatchSelect 批量选择器', link: '/components/entry/batch-select' }
+        ]
+      },
+      {
         text: 'Feedback 反馈组件',
         items: [
           { text: 'Modal 弹窗', link: '/components/feedback/modal' }
