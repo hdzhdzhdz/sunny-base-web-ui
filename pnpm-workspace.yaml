@@ -10,6 +10,7 @@ catalog:
   reka-ui: ^2.7.0
   vee-validate: ^4.13.2
   element-plus: ^2.9.0
+  "@arco-design/web-vue": ^2.56.3
   typescript: ^5.7.2
   vite: ^6.0.1
   "@vitejs/plugin-vue": ^5.2.1

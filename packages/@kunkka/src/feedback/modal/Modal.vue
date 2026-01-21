@@ -1,144 +1,159 @@
 <template>
-  <el-dialog
-    v-bind="$attrs"
-    :model-value="modelValue"
-    :fullscreen="fullscreen"
+  <a-modal
+    v-model:visible="visible"
     :title="title"
     :width="width"
-    :before-close="handleBeforeClose"
-    @close="handleClose"
-    @open="handleOpen"
-    @opened="handleOpened"
-    @closed="handleClosed"
-    @update:modelValue="handleUpdateModelValue"
-    ref="dialogRef"
-    class="kunkka-modal"
+    :top="top"
+    :z-index="zIndex"
+    :mask-closable="closeOnClickModal"
+    :esc-to-close="closeOnEsc"
+    :fullscreen="isMaximized"
+    :closable="false"
+    v-bind="$attrs"
+    class="k-modal-custom"
   >
-    <!-- Pass through all slots -->
-    <template v-for="(_, name) in slots" #[name]="slotData">
-      <slot :name="name" v-bind="slotData" />
-    </template>
+    <slot></slot>
 
-    <!-- Default content slot (if not handled by loop above, but loop covers it if it's in slots) -->
-    <!-- Wait, v-for in slots covers 'default' too? Yes. -->
+    <template #title>
+      <div class="flex items-center justify-between w-full" @dblclick="toggleMaximize">
+        <div class="flex-1 font-semibold text-base text-[var(--color-text-1)] overflow-hidden text-ellipsis whitespace-nowrap">
+          <slot name="title">{{ title }}</slot>
+        </div>
+        <div class="flex items-center gap-3 ml-3">
+          <a-tooltip v-if="helpMessage" :content="helpMessage">
+            <div class="cursor-pointer text-[var(--color-text-2)] flex items-center justify-center transition-colors duration-200 text-base hover:text-[var(--color-text-1)]">
+              <icon-question-circle />
+            </div>
+          </a-tooltip>
 
-    <!-- Footer handling -->
-    <!-- We check if footer slot is provided by parent. If so, the v-for above passed it. -->
-    <!-- But we want to provide a DEFAULT footer if showOkBtn/CancelBtn is true and NO footer slot is provided. -->
+          <div class="cursor-pointer text-[var(--color-text-2)] flex items-center justify-center transition-colors duration-200 text-base hover:text-[var(--color-text-1)]" @click.stop="toggleMaximize">
+            <icon-fullscreen-exit v-if="isMaximized" />
+            <icon-fullscreen v-else />
+          </div>
 
-    <template #footer v-if="!slots.footer && (showOkBtn || showCancelBtn)">
-      <div class="kunkka-modal-footer">
-        <el-button v-if="showCancelBtn" @click="handleCancel">
-          {{ cancelText }}
-        </el-button>
-        <el-button
-          v-if="showOkBtn"
-          type="primary"
-          :loading="confirmLoading"
-          @click="handleOk"
-        >
-          {{ okText }}
-        </el-button>
+          <div class="cursor-pointer text-[var(--color-text-2)] flex items-center justify-center transition-colors duration-200 text-base hover:text-[rgb(var(--red-6))]" @click.stop="handleClose">
+            <icon-close />
+          </div>
+        </div>
       </div>
     </template>
-  </el-dialog>
+
+    <template #footer>
+      <slot name="footer" v-if="$slots.footer"></slot>
+      <div v-else class="flex items-center justify-end gap-2">
+        <slot name="insertFooter"></slot>
+
+        <a-button
+          v-if="!attrs.hideCancel"
+          v-bind="attrs.cancelButtonProps"
+          @click="handleCancel"
+        >
+          {{ attrs.cancelText || "取消" }}
+        </a-button>
+
+        <slot name="centerFooter"></slot>
+
+        <a-button
+          type="primary"
+          :loading="loading || (attrs.okLoading as boolean) || (attrs.confirmLoading as boolean)"
+          v-bind="attrs.okButtonProps"
+          @click="handleOk"
+        >
+          {{ attrs.okText || "确定" }}
+        </a-button>
+
+        <slot name="appendFooter"></slot>
+      </div>
+    </template>
+  </a-modal>
 </template>
 
 <script setup lang="ts">
-import { ref, useSlots, useAttrs } from "vue";
-import { ElDialog, ElButton } from "element-plus";
+import { ref, computed, useAttrs } from "vue";
+import {
+  Modal as AModal,
+  Tooltip as ATooltip,
+  Button as AButton,
+} from "@arco-design/web-vue";
+import {
+  IconClose,
+  IconFullscreen,
+  IconFullscreenExit,
+  IconQuestionCircle,
+} from "@arco-design/web-vue/es/icon";
 import type { ModalProps } from "./types";
-
-defineOptions({
-  inheritAttrs: false,
-});
 
 const props = withDefaults(defineProps<ModalProps>(), {
   modelValue: false,
-  fullscreen: false,
-  canFullscreen: true,
-  canMinimize: true,
-  showCancelBtn: true,
-  cancelText: "取消",
-  showOkBtn: true,
-  okText: "确定",
-  confirmLoading: false,
+  title: "Title",
+  width: "50%",
+  zIndex: 1000,
+  closeOnEsc: true,
+  closeOnClickModal: true,
+  helpMessage: "双击标题栏可最大化/还原，按 ESC 可关闭弹窗",
 });
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: boolean): void;
-  (e: "ok"): void;
-  (e: "cancel"): void;
   (e: "close"): void;
-  (e: "open"): void;
-  (e: "opened"): void;
-  (e: "closed"): void;
+  (e: "ok"): void;
 }>();
 
-const slots = useSlots();
 const attrs = useAttrs();
-const dialogRef = ref<InstanceType<typeof ElDialog>>();
+const loading = ref(false);
 
-// Expose public methods/properties of ElDialog
-defineExpose({
-  dialogRef,
+const visible = computed({
+  get: () => props.modelValue,
+  set: (val) => emit("update:modelValue", val),
 });
 
-const handleUpdateModelValue = (val: boolean) => {
-  emit("update:modelValue", val);
-};
+const isMaximized = ref(false);
 
-const handleCancel = () => {
-  props.onCancel?.();
-  emit("cancel");
-  handleUpdateModelValue(false);
-};
+const toggleMaximize = () => {
+    isMaximized.value = !isMaximized.value;
+  };
 
-const handleOk = () => {
-  props.onOk?.();
-  emit("ok");
-};
+const handleClose = async () => {
+    // 获取 onBeforeCancel 回调
+    const onBeforeCancel = props.onBeforeCancel;
 
-const handleBeforeClose = (done: () => void) => {
-  // Pass through before-close if it was in attrs?
-  // But defineProps didn't take it.
-  // Wait, if user passed :before-close="fn", it is in $attrs.
-  // ElDialog has :before-close prop.
-  // We bound v-bind="$attrs".
-  // BUT we also bound :before-close="handleBeforeClose".
-  // This overrides $attrs.before-close!
-  // So we must call the user's before-close if it exists in attrs.
+    // 如果定义了 onBeforeCancel，则执行它
+    if (typeof onBeforeCancel === "function") {
+      const res = await onBeforeCancel();
+      // 如果返回 false，则阻止关闭
+      if (res === false) return;
+    }
 
-  const userBeforeClose = attrs["before-close"] as
-    | ((done: () => void) => void)
-    | undefined;
-  if (userBeforeClose) {
-    userBeforeClose(done);
-  } else {
-    done();
-  }
-};
+    visible.value = false;
+    emit("close");
+  };
 
-const handleClose = () => {
-  props.onClose?.();
-  emit("close");
-};
+  const handleCancel = handleClose;
 
-const handleOpen = () => {
-  emit("open");
-};
+  const handleOk = async () => {
+    // 获取 onBeforeOk 回调
+    const onBeforeOk = props.onBeforeOk;
 
-const handleOpened = () => {
-  emit("opened");
-};
-
-const handleClosed = () => {
-  emit("closed");
-};
+    // 如果定义了 onBeforeOk，则执行它
+    if (typeof onBeforeOk === "function") {
+      try {
+        loading.value = true;
+        const res = await onBeforeOk();
+        // 如果返回 false，则阻止关闭
+        if (res !== false) {
+          emit("ok");
+          visible.value = false;
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        loading.value = false;
+      }
+    } else {
+      // 默认行为：触发 ok 事件并关闭弹窗
+      emit("ok");
+      visible.value = false;
+    }
+  };
 </script>
 
-<style scoped>
-.kunkka-modal-footer {
-  text-align: right;
-}
-</style>

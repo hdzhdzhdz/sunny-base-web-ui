@@ -6,6 +6,9 @@ settings:
 
 catalogs:
   default:
+    '@arco-design/web-vue':
+      specifier: ^2.56.3
+      version: 2.57.0
     '@ctrl/tinycolor':
       specifier: ^3.6.1
       version: 3.6.1
@@ -132,6 +135,9 @@ importers:
 
   docs:
     dependencies:
+      '@arco-design/web-vue':
+        specifier: 'catalog:'
+        version: 2.57.0(vue@3.5.26(typescript@5.9.3))
       '@kunkka/ui':
         specifier: workspace:*
         version: link:../packages/@kunkka

@@ -18,6 +18,13 @@ export function useKunkkaModal(
           {
             ...api.state,
             ...attrs,
+            "onUpdate:modelValue": (val: boolean) => {
+               api.setState({ modelValue: val });
+               api.state.onVisibleChange?.(val);
+               if (typeof attrs["onUpdate:modelValue"] === "function") {
+                 (attrs["onUpdate:modelValue"] as Function)(val);
+               }
+             },
           },
           slots
         );

@@ -34,6 +34,12 @@ export default defineConfig({
         ]
       },
       {
+        text: 'Feedback 反馈组件',
+        items: [
+          { text: 'Modal 弹窗', link: '/components/feedback/modal' }
+        ]
+      },
+      {
         text: 'Utilities 工具',
         items: [
           {

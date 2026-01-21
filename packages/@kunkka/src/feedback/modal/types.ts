@@ -1,82 +1,46 @@
 export interface ModalProps {
-  /**
-   * 是否显示 Dialog(.sync绑定)
-   * @default false
-   */
+  /** 是否可见 */
   modelValue?: boolean;
-
-  /**
-   * 是否默认全屏(.sync绑定)
-   * @default false
-   */
-  fullscreen?: boolean;
-
-  /**
-   * 是否可以全屏
-   * @default true
-   */
-  canFullscreen?: boolean;
-
-  /**
-   * 是否可以最小化
-   * @default true
-   */
-  canMinimize?: boolean;
-
-  /**
-   * 是否显示取消按钮
-   * @default true
-   */
-  showCancelBtn?: boolean;
-
-  /**
-   * 取消按钮文字
-   * @default '取消'
-   */
-  cancelText?: string;
-
-  /**
-   * 是否显示确定按钮
-   * @default true
-   */
-  showOkBtn?: boolean;
-
-  /**
-   * 确定按钮文字
-   * @default '确定'
-   */
-  okText?: string;
-
-  /**
-   * 确认按钮loading
-   * @default false
-   */
-  confirmLoading?: boolean;
-
-  /**
-   * 弹窗标题
-   */
+  /** 标题 */
   title?: string;
-
-  /**
-   * 宽度
-   */
+  /** 宽度 */
   width?: string | number;
-
-  /**
-   * 确定回调
-   */
-  onOk?: () => void;
-
-  /**
-   * 取消回调
-   */
-  onCancel?: () => void;
-
-  /**
-   * 关闭回调
-   */
+  /** 距离顶部距离 */
+  top?: string | number;
+  /** 层级 */
+  zIndex?: number;
+  /** 帮助信息 */
+  helpMessage?: string;
+  /** 是否支持 ESC 关闭 */
+  closeOnEsc?: boolean;
+  /** 是否支持点击遮罩关闭 */
+  closeOnClickModal?: boolean;
+  /** 确认按钮文字 */
+  okText?: string;
+  /** 取消按钮文字 */
+  cancelText?: string;
+  /** 确认按钮 loading */
+  okLoading?: boolean;
+  /** 确认按钮 loading (兼容) */
+  confirmLoading?: boolean;
+  /** 是否隐藏取消按钮 */
+  hideCancel?: boolean;
+  /** 确认按钮 props */
+  okButtonProps?: any;
+  /** 取消按钮 props */
+  cancelButtonProps?: any;
+  /** 可见性变化回调 */
+  onVisibleChange?: (visible: boolean) => void;
+  /** 确认前回调 */
+  onBeforeOk?: (
+    done?: (closed: boolean) => void
+  ) => void | boolean | Promise<void | boolean>;
+  /** 取消前回调 */
+  onBeforeCancel?: () => boolean | Promise<boolean>;
+  /** 关闭回调 */
   onClose?: () => void;
+  /** 确认回调 */
+  onOk?: () => void;
 }
 
 export interface ModalApiOptions extends Partial<ModalProps> {
@@ -84,15 +48,19 @@ export interface ModalApiOptions extends Partial<ModalProps> {
 }
 
 export interface ModalMethods {
+  /** 设置属性 */
   setProps: (props: Partial<ModalProps>) => void;
+  /** 打开弹窗 */
   open: () => void;
+  /** 关闭弹窗 */
   close: () => void;
+  /** 设置状态 */
   setState: (
     stateOrFn: ((prev: ModalProps) => Partial<ModalProps>) | Partial<ModalProps>
   ) => void;
 }
 
 export type UseModalReturnType = [
-  any, // The component definition
-  ModalMethods, // The methods
+  any, // 组件定义
+  ModalMethods, // 方法
 ];
