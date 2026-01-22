@@ -1,5 +1,10 @@
 import { defineConfig } from 'vitepress'
 import { containerPreview, componentPreview } from '@vitepress-demo-preview/plugin'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -38,6 +43,7 @@ export default defineConfig({
         items: [
           { text: 'Select 选择器', link: '/components/entry/select' },
           { text: 'BatchSelect 批量选择器', link: '/components/entry/batch-select' },
+          { text: 'Input 输入框', link: '/components/entry/input' },
           { text: 'SearchInputTag 公共查询', link: '/components/entry/search-input-tag' }
         ]
       },
@@ -55,6 +61,12 @@ export default defineConfig({
             items: [
               { text: 'useNamespace', link: '/utilities/composables/use-namespace' }
             ]
+          },
+          {
+            text: 'Common 常用',
+            items: [
+              { text: 'Regex 正则表达式', link: '/utilities/regex' }
+            ]
           }
         ]
       }
@@ -71,6 +83,13 @@ export default defineConfig({
     }
   },
   vite: {
+    resolve: {
+      alias: {
+        '@utils': path.resolve(__dirname, '../../../packages/@utils/src'),
+        '@kunkka/ui': path.resolve(__dirname, '../../../packages/@kunkka/src/index.ts'),
+        '@kunkka': path.resolve(__dirname, '../../../packages/@kunkka/src')
+      }
+    },
     ssr: {
       noExternal: ['element-plus', '@kunkka/ui']
     },
