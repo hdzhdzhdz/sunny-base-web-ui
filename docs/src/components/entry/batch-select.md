@@ -23,6 +23,15 @@
 
 <preview path="./demos/select/MatchStrategy.vue" title="匹配策略演示" description="演示不同匹配模式下的粘贴行为" />
 
+## 上下文过滤与批量操作
+
+BatchSelect 继承了 Select 组件的上下文过滤能力。这意味着：
+1. **自动隐藏**：根据 `filterModel` 自动隐藏不符合条件的选项。
+2. **操作一致性**：全选、粘贴等批量操作会自动忽略不可见的选项。
+3. **自动清理**：当上下文变化导致选项不可见时，已选中的值会被自动剔除。
+
+<preview path="./demos/select/BatchContextFilter.vue" title="上下文批量操作" description="演示上下文变化对批量操作（全选/粘贴/自动清理）的影响" />
+
 ## API
 
 ### Props
@@ -32,6 +41,7 @@
 | modelValue | 绑定值 | `(string \| number)[]` | `[]` |
 | options | 选项列表 | `SelectOption[]` | `[]` |
 | matchStrategy | 粘贴匹配策略 | `'label' \| 'value' \| 'both'` | `'both'` |
+| filterModel | 过滤上下文模型 | `Record<string, any>` | - |
 | ... | 继承所有 `a-select` 属性 | - | - |
 
 ### SelectOption Interface

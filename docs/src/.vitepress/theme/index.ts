@@ -4,7 +4,7 @@ import '@vitepress-demo-preview/component/dist/style.css'
 import 'element-plus/dist/index.css'
 import '@arco-design/web-vue/dist/arco.css'
 import ArcoVue from '@arco-design/web-vue'
-import { KunkkaIcon, KunkkaSearchInputTag, KunkkaBatchSelect } from '@kunkka/ui'
+import { KunkkaIcon, KunkkaSearchInputTag, KunkkaBatchSelect, KunkkaSelect } from '@kunkka/ui'
 
 import './style.css'
 
@@ -16,6 +16,7 @@ export default {
     app.component('KunkkaIcon', KunkkaIcon)
     app.component('KunkkaSearchInputTag', KunkkaSearchInputTag)
     app.component('KunkkaBatchSelect', KunkkaBatchSelect)
+    app.component('KunkkaSelect', KunkkaSelect)
     app.use(ArcoVue)
   }
 }

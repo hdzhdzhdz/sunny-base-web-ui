@@ -1,8 +1,9 @@
 <template>
-  <a-select
+  <kunkka-select
     v-bind="$attrs"
     :model-value="modelValue"
     :options="options"
+    :filter-model="filterModel"
     multiple
     allow-search
     @update:modelValue="handleUpdateValue"
@@ -39,19 +40,26 @@
     <template v-for="(_, slot) in $slots" #[slot]="scope">
       <slot :name="slot" v-bind="scope || {}"></slot>
     </template>
-  </a-select>
+  </kunkka-select>
 </template>
 
 <script setup lang="ts">
 import { computed } from "vue";
 import { Message } from "@arco-design/web-vue";
 import { IconDelete, IconQuestionCircle } from "@arco-design/web-vue/es/icon";
+import KunkkaSelect from "./Select";
 import type { BatchSelectProps } from "./types";
+
+defineOptions({
+  name: "KunkkaBatchSelect",
+  inheritAttrs: false,
+});
 
 const props = withDefaults(defineProps<BatchSelectProps>(), {
   modelValue: () => [],
   options: () => [],
   matchStrategy: 'both',
+  filterModel: undefined,
 });
 
 const emit = defineEmits(["update:modelValue", "change"]);
@@ -137,11 +145,38 @@ const handlePaste = (e: ClipboardEvent) => {
   const newSelectedValues: (string | number)[] = [];
   let matchCount = 0;
 
+  // 辅助函数：判断选项是否可见 (Helper: Check if option is visible)
+  const isOptionVisible = (option: any) => {
+    // 1. 获取选项的元数据过滤条件
+    const cMeta = option.cMeta;
+
+    // 2. 如果选项没有定义 cMeta，视为通用选项，始终显示
+    if (!cMeta || Object.keys(cMeta).length === 0) {
+      return true;
+    }
+
+    // 3. 如果选项有 cMeta 限制，但外部没有提供 filterModel 上下文，
+    // 则该选项不满足显示条件
+    if (!props.filterModel || Object.keys(props.filterModel).length === 0) {
+      return false;
+    }
+
+    // 4. 遍历 cMeta 中的所有条件，必须全部在 filterModel 中匹配
+    return Object.entries(cMeta).every(([key, requiredValue]) => {
+      const contextValue = props.filterModel![key];
+      // 使用弱等于比较，兼容 string/number
+      if (contextValue === undefined || contextValue === null) {
+        return false;
+      }
+      return String(contextValue) === String(requiredValue);
+    });
+  };
+
   items.forEach((item: string) => {
     // 策略：匹配值 (Strategy: Match Value)
     if (props.matchStrategy === 'value' || props.matchStrategy === 'both') {
       const valueMatch = props.options.find(opt => String(opt.value) === item);
-      if (valueMatch && !valueMatch.disabled) {
+      if (valueMatch && !valueMatch.disabled && isOptionVisible(valueMatch)) {
         newSelectedValues.push(valueMatch.value);
         matchCount++;
         return;
@@ -151,7 +186,7 @@ const handlePaste = (e: ClipboardEvent) => {
     // 策略：匹配标签 (Strategy: Match Label)
     if (props.matchStrategy === 'label' || props.matchStrategy === 'both') {
       const labelMatch = props.options.find(opt => opt.label === item);
-      if (labelMatch && !labelMatch.disabled) {
+      if (labelMatch && !labelMatch.disabled && isOptionVisible(labelMatch)) {
         newSelectedValues.push(labelMatch.value);
         matchCount++;
       }

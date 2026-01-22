@@ -36,6 +36,7 @@ export default defineConfig({
       {
         text: 'Entry 数据录入',
         items: [
+          { text: 'Select 选择器', link: '/components/entry/select' },
           { text: 'BatchSelect 批量选择器', link: '/components/entry/batch-select' },
           { text: 'SearchInputTag 公共查询', link: '/components/entry/search-input-tag' }
         ]
@@ -72,6 +73,20 @@ export default defineConfig({
   vite: {
     ssr: {
       noExternal: ['element-plus', '@kunkka/ui']
-    }
+    },
+    plugins: [
+      {
+        name: 'vite-plugin-jsx-support',
+        config() {
+          return {
+            esbuild: {
+              jsxFactory: 'h',
+              jsxFragment: 'Fragment',
+              jsxInject: `import { h } from 'vue'`
+            }
+          }
+        }
+      }
+    ]
   }
 })
