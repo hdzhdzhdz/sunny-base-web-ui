@@ -18,7 +18,9 @@
     "axios": "^1.13.2",
     "element-plus": "catalog:",
     "reka-ui": "catalog:",
-    "vue": "catalog:"
+    "vue": "catalog:",
+    "vxe-table": "^4.17.44",
+    "vxe-pc-ui": "^4.8.0"
   },
   "devDependencies": {
     "@config/tailwind-config": "workspace:*",

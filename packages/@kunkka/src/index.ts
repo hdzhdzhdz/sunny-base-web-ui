@@ -9,6 +9,7 @@ import KunkkaSelect from "./entry/select";
 import KunkkaBatchSelect from "./entry/select/BatchSelect.vue";
 import KunkkaSearchInputTag from "./entry/search-input-tag";
 import KunkkaInput from "./entry/input";
+import { useKunkkaEditGrid } from './data/kunkka-edit-grid'
 
 // menu 菜单有bug太复杂
 export * from "./navigation/menu";
@@ -28,7 +29,8 @@ export {
   KunkkaBatchSelect,
   KunkkaSelect,
   KunkkaSearchInputTag,
-  KunkkaInput
+  KunkkaInput,
+  useKunkkaEditGrid
 };
 
 export * from "./entry/select/types";
