@@ -3,4 +3,4 @@ node_modules
 dist
 .turbo
 coverage
-docs/src/.vitepress
+docs/src/.vitepress/cache

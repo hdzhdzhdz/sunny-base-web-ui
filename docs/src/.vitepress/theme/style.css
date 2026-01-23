@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+:root {
+  --background: 0 0% 100%;
+  --scroll-shadow: 0 0% 100%;
+  --border: 214.3 31.8% 91.4%;
+}
