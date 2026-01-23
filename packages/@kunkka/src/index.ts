@@ -10,6 +10,7 @@ import KunkkaBatchSelect from "./entry/select/BatchSelect.vue";
 import KunkkaSearchInputTag from "./entry/search-input-tag";
 import KunkkaInput from "./entry/input";
 import { useKunkkaEditGrid } from './data/kunkka-edit-grid'
+import { useKunkkaQueryGrid } from './data/kunkka-preview-grid'
 
 // menu 菜单有bug太复杂
 export * from "./navigation/menu";
@@ -30,7 +31,8 @@ export {
   KunkkaSelect,
   KunkkaSearchInputTag,
   KunkkaInput,
-  useKunkkaEditGrid
+  useKunkkaEditGrid,
+  useKunkkaQueryGrid
 };
 
 export * from "./entry/select/types";
