@@ -35,7 +35,8 @@ export default defineConfig({
         text: 'Data 数据展示',
         items: [
           { text: 'Hover Card 悬停卡片', link: '/components/data/card' },
-          { text: 'Upload 上传', link: '/components/data/upload' }
+          { text: 'Upload 上传', link: '/components/data/upload' },
+          { text: 'QueryGrid 查询表格', link: '/components/data/query-grid' }
         ]
       },
       {

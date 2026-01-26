@@ -7,15 +7,24 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, useAttrs } from 'vue'
 import { VxeGrid, type VxeGridInstance } from 'vxe-table'
+import { VxeButton, VxePager } from 'vxe-pc-ui'
 import 'vxe-table/lib/style.css'
 import 'vxe-pc-ui/lib/style.css'
 import { useSticky } from './sticky'
 
 const gridRef = ref<VxeGridInstance>()
+const attrs = useAttrs()
 
-useSticky(gridRef)
+useSticky(gridRef, attrs)
+
+defineOptions({
+  components: {
+    VxePager,
+    VxeButton
+  }
+})
 
 defineExpose({
   getGrid: () => gridRef.value
