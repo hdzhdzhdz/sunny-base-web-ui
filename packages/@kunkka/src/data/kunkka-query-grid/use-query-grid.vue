@@ -30,3 +30,10 @@ defineExpose({
   getGrid: () => gridRef.value
 })
 </script>
+
+<style>
+/* fix:全屏时出现两个滚动条 */
+.vxe-grid.is--maximize .vxe-grid--layout-body-content-wrapper {
+  overflow: hidden;
+}
+</style>

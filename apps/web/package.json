@@ -20,6 +20,7 @@
     "@config/tsconfig": "workspace:*",
     "@types/node": "catalog:",
     "@vitejs/plugin-vue": "catalog:",
+    "@vitejs/plugin-vue-jsx": "^5.1.3",
     "@vue/tsconfig": "catalog:",
     "autoprefixer": "catalog:",
     "postcss": "catalog:",
