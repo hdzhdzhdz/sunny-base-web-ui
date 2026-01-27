@@ -42,10 +42,9 @@ export default defineConfig({
       {
         text: 'Entry 数据录入',
         items: [
-          // { text: 'Form 表单', link: '/components/entry/form' },
+          { text: 'Form 表单', link: '/components/entry/form' },
           { text: 'Select 选择器', link: '/components/entry/select' },
           { text: 'BatchSelect 批量选择器', link: '/components/entry/batch-select' },
-          { text: 'Input 输入框', link: '/components/entry/input' },
           { text: 'SearchInputTag 公共查询', link: '/components/entry/search-input-tag' }
         ]
       },

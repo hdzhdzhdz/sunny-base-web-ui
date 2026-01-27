@@ -9,19 +9,20 @@
     "preview": "vitepress preview src"
   },
   "dependencies": {
-    "vue": "catalog:",
-    "element-plus": "catalog:",
     "@arco-design/web-vue": "catalog:",
-    "@kunkka/ui": "workspace:*"
+    "@kunkka/ui": "workspace:*",
+    "@vee-validate/rules": "^4.15.1",
+    "element-plus": "catalog:",
+    "vue": "catalog:"
   },
   "devDependencies": {
-    "vitepress": "catalog:",
-    "tailwindcss": "catalog:",
-    "postcss": "catalog:",
-    "autoprefixer": "catalog:",
+    "@config/tailwind-config": "workspace:*",
+    "@config/tsconfig": "workspace:*",
     "@vitepress-demo-preview/component": "^2.3.2",
     "@vitepress-demo-preview/plugin": "^1.2.3",
-    "@config/tsconfig": "workspace:*",
-    "@config/tailwind-config": "workspace:*"
+    "autoprefixer": "catalog:",
+    "postcss": "catalog:",
+    "tailwindcss": "catalog:",
+    "vitepress": "catalog:"
   }
 }

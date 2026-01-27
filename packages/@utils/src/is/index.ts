@@ -98,65 +98,18 @@ function isMacOs(): boolean {
  * 检查当前运行环境是否为Windows OS。
  *
  * 这个函数通过检查navigator.userAgent字符串来判断当前运行环境。
- * 如果userAgent字符串中包含"windows"或"win32"（不区分大小写），则认为当前环境是Windows OS。
- *
- * @returns {boolean} 如果当前环境是Windows OS，返回true，否则返回false。
  */
 function isWindowsOs(): boolean {
   const windowsRegex = /windows|win32/i;
   return windowsRegex.test(navigator.userAgent);
 }
 
-/**
- * 检查传入的值是否为数字
- * @param value
- */
-function isNumber(value: any): value is number {
-  return typeof value === 'number' && Number.isFinite(value);
-}
-
-/**
- * Returns the first value in the provided list that is neither `null` nor `undefined`.
- *
- * This function iterates over the input values and returns the first one that is
- * not strictly equal to `null` or `undefined`. If all values are either `null` or
- * `undefined`, it returns `undefined`.
- *
- * @template T - The type of the input values.
- * @param {...(T | null | undefined)[]} values - A list of values to evaluate.
- * @returns {T | undefined} - The first value that is not `null` or `undefined`, or `undefined` if none are found.
- *
- * @example
- * // Returns 42 because it is the first non-null, non-undefined value.
- * getFirstNonNullOrUndefined(undefined, null, 42, 'hello'); // 42
- *
- * @example
- * // Returns 'hello' because it is the first non-null, non-undefined value.
- * getFirstNonNullOrUndefined(null, undefined, 'hello', 123); // 'hello'
- *
- * @example
- * // Returns undefined because all values are either null or undefined.
- * getFirstNonNullOrUndefined(undefined, null); // undefined
- */
-function getFirstNonNullOrUndefined<T>(
-  ...values: (null | T | undefined)[]
-): T | undefined {
-  for (const value of values) {
-    if (value !== undefined && value !== null) {
-      return value;
-    }
-  }
-  return undefined;
-}
-
 export {
-  getFirstNonNullOrUndefined,
   isBoolean,
   isEmpty,
   isFunction,
   isHttpUrl,
   isMacOs,
-  isNumber,
   isObject,
   isString,
   isUndefined,

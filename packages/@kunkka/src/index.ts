@@ -8,9 +8,10 @@ import { KunkkaUpload } from "./data/upload";
 import KunkkaSelect from "./entry/select";
 import KunkkaBatchSelect from "./entry/select/BatchSelect.vue";
 import KunkkaSearchInputTag from "./entry/search-input-tag";
-import KunkkaInput from "./entry/input";
+import { useKunkkaForm, FormApi, KunkkaForm, setupKunkkaForm, z } from './entry/form';
 import { useKunkkaEditGrid } from './data/kunkka-edit-grid'
 import { useKunkkaQueryGrid } from './data/kunkka-query-grid'
+import { patterns } from "@utils";
 
 // menu 菜单有bug太复杂
 export * from "./navigation/menu";
@@ -30,11 +31,16 @@ export {
   KunkkaBatchSelect,
   KunkkaSelect,
   KunkkaSearchInputTag,
-  KunkkaInput,
+  useKunkkaForm,
+  FormApi,
+  KunkkaForm,
+  setupKunkkaForm,
   useKunkkaEditGrid,
-  useKunkkaQueryGrid
+  useKunkkaQueryGrid,
+  patterns,
+  z
 };
 
 export * from "./entry/select/types";
 export * from "./entry/search-input-tag/types";
-export * from "./entry/input/types";
+export * from "./entry/form/types";
