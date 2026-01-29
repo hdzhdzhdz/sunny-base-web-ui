@@ -4,11 +4,6 @@ import type { VxeGridProps, VxeGridListeners } from 'vxe-table'
 import { useKunkkaQueryGrid } from "@kunkka/ui";
 import { Modal, Message } from '@arco-design/web-vue';
 
-// 扩展 VxeGridProps
-type ExtendedVxeGridProps<D = any> = VxeGridProps<D> & {
-  // 在这里添加你的自定义属性
-}
-
 interface RowVO {
   id: number
   name: string
@@ -54,14 +49,14 @@ const formatOption = ({ cellValue, column }: any) => {
 
 const queryParams = reactive<Record<string, any>>({})
 
-const gridOptions = reactive<ExtendedVxeGridProps<RowVO>>({
+const gridOptions = reactive<VxeGridProps<RowVO>>({
   id: 'queryList-grid',
   border: true,
   showOverflow: 'title',
   // sticky: true, // 是否开启吸顶
   keepSource: true,
   size: 'mini',
-  // height: 500,
+  height: 500,
   columnConfig: {
     resizable: true
   },
@@ -96,9 +91,12 @@ const gridOptions = reactive<ExtendedVxeGridProps<RowVO>>({
         Message.info('服务端保存')
       }
     },
-    visibleMethod: (params: any) => {
+    visibleMethod: (params: any) => { // 在个性化列弹窗中，不显示 checkbox 和 seq 列
       return !(params.column.type === 'checkbox' || params.column.type === 'seq')
     }
+  },
+  filterConfig: {
+    remote: true // 使用服务端筛选,不对数据进行处理
   },
   proxyConfig: {
     response: {
@@ -108,9 +106,6 @@ const gridOptions = reactive<ExtendedVxeGridProps<RowVO>>({
     ajax: {
       // 接收 Promise
       query: ({ page }: any, customParams: any) => {
-        // 合并分页参数和自定义查询参数
-        // 当通过 gridOptions.proxyConfig?.ajax?.query?.(...) 手动调用时，customParams 会包含传递的额外参数
-        // 当通过表格内部（如翻页）调用时，customParams 可能为空，此时使用 queryParams 状态
         const params = { ...queryParams, ...customParams }
         return fetchApi(page, params)
       }
@@ -183,7 +178,7 @@ const gridEvents: VxeGridListeners = {
   }
 }
 
-const [Grid, gridApi] = useKunkkaQueryGrid({ gridOptions, gridEvents });
+const [Grid, _gridApi] = useKunkkaQueryGrid({ gridOptions, gridEvents });
 
 </script>
 
@@ -194,6 +189,6 @@ const [Grid, gridApi] = useKunkkaQueryGrid({ gridOptions, gridEvents });
     <div class="relative sticky-father">
       <Grid />
     </div>
-    <div class="bg-green-300 h-[1000px]"></div>
+    <div class="bg-green-300 h-[300px]"></div>
   </div>
 </template>
