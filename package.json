@@ -16,9 +16,12 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "turbo": "^2.3.3",
     "prettier": "^3.2.5",
+    "turbo": "^2.3.3",
     "typescript": "^5.2.2"
   },
-  "packageManager": "pnpm@9.15.0"
+  "packageManager": "pnpm@9.15.0",
+  "dependencies": {
+    "lodash-es": "^4.17.23"
+  }
 }

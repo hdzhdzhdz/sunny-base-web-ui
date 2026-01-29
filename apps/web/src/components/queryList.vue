@@ -2,8 +2,7 @@
 import { reactive } from 'vue'
 import type { VxeGridProps, VxeGridListeners } from 'vxe-table'
 import { useKunkkaQueryGrid } from "@kunkka/ui";
-import { Modal, Message, Input } from '@arco-design/web-vue';
-import CustomHeader from './CustomHeader.vue';
+import { Modal, Message } from '@arco-design/web-vue';
 
 // 扩展 VxeGridProps
 type ExtendedVxeGridProps<D = any> = VxeGridProps<D> & {
@@ -20,9 +19,10 @@ interface RowVO {
   address: string
 }
 
-// 模拟后台接口
-const fetchApi = (currentPage: number, pageSize: number, queryParams?: any) => {
+// 模拟查询接口
+const fetchApi = (page: { currentPage: number, pageSize: number }, queryParams?: any) => {
   return new Promise(resolve => {
+    const { currentPage, pageSize } = page
     console.log('fetchApi queryParams:', queryParams)
     setTimeout(() => {
       const list = Array.from({ length: 1000 }, (_, i) => ({
@@ -39,30 +39,6 @@ const fetchApi = (currentPage: number, pageSize: number, queryParams?: any) => {
           total: list.length
         },
         result: list.slice((currentPage - 1) * pageSize, currentPage * pageSize)
-      })
-    }, 100)
-  })
-}
-
-// 模拟后台接口
-const delApi = (removeRecords: RowVO[]) => {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve({
-        result: [],
-        msg: `delete，${removeRecords.length}条`
-      })
-    }, 100)
-  })
-}
-
-// 模拟后台接口
-const saveApi = (insertRecords: RowVO[]) => {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve({
-        result: [],
-        msg: `success, ${insertRecords.length}条`
       })
     }, 100)
   })
@@ -105,8 +81,8 @@ const gridOptions = reactive<ExtendedVxeGridProps<RowVO>>({
     custom: true,
     buttons: [
       { name: '新增', code: 'myAdd', status: 'primary' },
+      { name: '修改', code: 'myEdit', status: 'success' },
       { name: '删除', code: 'myDel', status: 'error' },
-      { name: '保存', code: 'mySave', status: 'success' },
       { name: '详情', code: 'myDetail' }
     ]
   },
@@ -136,84 +112,25 @@ const gridOptions = reactive<ExtendedVxeGridProps<RowVO>>({
         // 当通过 gridOptions.proxyConfig?.ajax?.query?.(...) 手动调用时，customParams 会包含传递的额外参数
         // 当通过表格内部（如翻页）调用时，customParams 可能为空，此时使用 queryParams 状态
         const params = { ...queryParams, ...customParams }
-        return fetchApi(page.currentPage, page.pageSize, params)
-      },
-      // // body 对象： { removeRecords }
-      // delete: ({ body }) => {
-      //   console.log(body)
-      //   return delApi(body.removeRecords)
-      // },
-      // // body 对象： { insertRecords, updateRecords, removeRecords, pendingRecords }
-      // save: ({ body }) => {
-      //   return saveApi(body.insertRecords)
-      // }
+        return fetchApi(page, params)
+      }
     }
   },
   columns: [
     { type: 'checkbox', width: 40, align: 'center', fixed: 'left' },
     { type: 'seq', width: 40, align: 'center', fixed: 'left' },
+    { field: 'name', title: 'Name', width: '25%' },
     {
-      field: 'name', title: 'Name', width: '25%',
-      slots: {
-        header: ({ column }) => {
-          return (
-            <CustomHeader
-              title={column.title}
-              type="input"
-              onSearch={(val: string) => {
-                if (val) {
-                  console.log('Search Name:', val)
-                  Message.success(`查询 Name: ${val}`)
-                  // 更新查询参数状态
-                  queryParams[column.field] = val
-                  // 模拟后端查询逻辑，传递列信息和当前值
-                  gridOptions.proxyConfig?.ajax?.query?.({ 
-                    page: { currentPage: 1, pageSize: 100 },
-                    // 额外传递的信息
-                    columnInfo: column,
-                    currentVal: val
-                  })
-                }
-              }}
-            />
-          )
-        }
-      }
+      field: 'nickname', title: 'Nickname', width: '25%',
+      filters: [{ data: '' }], filterRender: { name: 'MyFilterComplex' } 
     },
-    { field: 'nickname', title: 'Nickname', width: '25%' },
     {
       field: 'role',
       title: 'Role',
       width: '25%',
       formatter: formatOption,
       params: { optionlist: [{ value: '0', label: 'Develop' }, { value: '1', label: 'Admin' }] },
-      // filters: [{ data: '' }],
-      slots: {
-        header: ({ column }) => {
-          return (
-            <CustomHeader
-              title={column.title}
-              type="select"
-              options={column.params.optionlist}
-              onSearch={(val: string) => {
-                if (val) {
-                  console.log('Search Role:', val)
-                  Message.success(`查询 Role: ${val}`)
-                  // 更新查询参数状态
-                  queryParams[column.field] = val
-                  // 模拟后端查询逻辑，传递列信息和当前值
-                  gridOptions.proxyConfig?.ajax?.query?.({ 
-                    page: { currentPage: 1, pageSize: 100 },
-                    // 额外传递的信息
-                    columnInfo: column,
-                    currentVal: val
-                  })
-                }
-              }}
-            />
-          )
-        }
-      }
+      filters: [{ data: '' }], filterRender: { name: 'MyFilterComplex' } 
     },
     { field: 'address', title: 'Address', width: '50%' }
   ]
@@ -222,15 +139,15 @@ const gridOptions = reactive<ExtendedVxeGridProps<RowVO>>({
 const gridEvents: VxeGridListeners = {
   toolbarButtonClick (params: any) {
     console.log(params)
+    const selectRecords = [
+      ...params.$grid.getCheckboxReserveRecords(), // 保留选中的记录
+      ...params.$grid.getCheckboxRecords() // 当前选中的记录
+    ]
     switch (params.button.code) {
       case 'myAdd':
         Message.info(params.button.name)
         break
       case 'myDel': {
-        const selectRecords = [
-          ...params.$grid.getCheckboxReserveRecords(), // 保留选中的记录
-          ...params.$grid.getCheckboxRecords() // 当前选中的记录
-        ]
         if (selectRecords.length === 0) {
           Message.warning('请至少选择一条记录！')
           return
@@ -239,17 +156,28 @@ const gridEvents: VxeGridListeners = {
           title: '提示',
           content: `确定删除选中 ${selectRecords.length} 项吗？`,
           onBeforeOk: async () => {
+            // 调用删除接口
             await new Promise(resolve => setTimeout(resolve, 3000));
+            // 刷新表格数据
+            params.$grid.commitProxy('query', {})
             return true;
           }
         });
         break
       }
-      case 'mySave':
-        Message.info(params.button.name)
+      case 'myEdit':
+        if (selectRecords.length !== 1) {
+          Message.warning('请选择一条记录！')
+          return
+        }
+        Message.info(`${params.button.name}：${JSON.stringify(selectRecords[0])}`)
         break
       case 'myDetail':
-        Message.info(params.button.name)
+        if (selectRecords.length !== 1) {
+          Message.warning('请选择一条记录！')
+          return
+        }
+        Message.info(`${params.button.name}：${JSON.stringify(selectRecords[0])}`)
         break
     }
   }
@@ -264,9 +192,7 @@ const [Grid, gridApi] = useKunkkaQueryGrid({ gridOptions, gridEvents });
     <div class="bg-blue-300 h-[60px] fixed top-0 left-0 right-0"></div>
     <div class="bg-green-300 h-[200px]"></div>
     <div class="relative sticky-father">
-      <Grid>
-        <template #header>123123</template>
-      </Grid>
+      <Grid />
     </div>
     <div class="bg-green-300 h-[1000px]"></div>
   </div>
