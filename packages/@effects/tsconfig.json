@@ -1,5 +1,5 @@
 {
-  "extends": "@config/tsconfig/base.json",
+  "extends": "@sunny-base-web/tsconfig/base.json",
   "compilerOptions": {
     "lib": ["ESNext", "DOM"],
     "module": "ESNext",
@@ -10,8 +10,9 @@
     "baseUrl": ".",
     "paths": {
       "@kunkka/ui": ["../@kunkka/src/index.ts"],
-      "@utils": ["../@utils/src/index.ts"],
-      "@icons": ["../@icons/src/index.ts"]
+      "@sunny-base-web/utils": ["../@utils/src/index.ts"],
+      "@icons": ["../@icons/src/index.ts"],
+      "@sunny-base-web/constants": ["../@config/constants/src/index.ts"]
     }
   },
   "include": [

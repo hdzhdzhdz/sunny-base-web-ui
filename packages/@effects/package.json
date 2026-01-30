@@ -1,5 +1,5 @@
 {
-  "name": "@effects/ui",
+  "name": "@sunny-base-web/effects",
   "version": "0.0.0",
   "private": true,
   "main": "./src/index.ts",
@@ -7,16 +7,25 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@arco-design/web-vue": "^2.57.0",
+    "@icons": "workspace:*",
+    "@kunkka/ui": "workspace:*",
+    "@sunny-base-web/stores": "workspace:*",
+    "@sunny-base-web/utils": "workspace:*",
+    "jsencrypt": "^3.3.2",
+    "@vueuse/core": "catalog:",
+    "axios": "^1.13.2",
+    "qs": "^6.14.1",
     "reka-ui": "catalog:",
     "vue": "catalog:",
-    "@vueuse/core": "catalog:",
-    "@utils": "workspace:*",
-    "@kunkka/ui": "workspace:*",
-    "@icons": "workspace:*"
+    "vue-i18n": "^11.2.8",
+    "vue3-slide-verify": "^1.1.8"
   },
   "devDependencies": {
-    "@config/tsconfig": "workspace:*",
-    "@config/tailwind-config": "workspace:*",
+    "@sunny-base-web/constants": "workspace:*",
+    "@sunny-base-web/tailwind-config": "workspace:*",
+    "@sunny-base-web/tsconfig": "workspace:*",
+    "@types/qs": "^6.14.0",
     "typescript": "catalog:"
   }
 }

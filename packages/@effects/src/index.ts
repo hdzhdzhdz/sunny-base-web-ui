@@ -1,3 +1,6 @@
-export * from './layout/layout.vue';
-import Layout from './layout/layout.vue';
-export { Layout };
+import Login from './login/index.vue'
+
+
+import { createEffects, useEffectsConfig } from './config'
+
+export { Login, createEffects, useEffectsConfig }
