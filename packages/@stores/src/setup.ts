@@ -4,7 +4,7 @@ import type { App } from 'vue';
 
 import { createPinia } from 'pinia';
 import SecureLS from 'secure-ls';
-import { STORE_SECURE_KEY } from '@config/constants';
+import { STORE_SECURE_KEY } from '@sunny-base-web/constants';
 
 let pinia: Pinia;
 

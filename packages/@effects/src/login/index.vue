@@ -141,9 +141,9 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import SlideVerify from 'vue3-slide-verify'
 import 'vue3-slide-verify/dist/style.css'
-import { getEnterStrategy } from '../api/core'
+import { getEnterStrategy, queryByXuhao, getSlideVerificationCode } from '../api/core'
 import axios from 'axios'
-import { SSO_ORIGIN } from '@config/constants'
+import { SSO_ORIGIN } from '@sunny-base-web/constants'
 // Import images
 import bg01Img from './imgs/bg_01.png'
 import bg02Img from './imgs/bg_02.png'
@@ -159,9 +159,6 @@ import slideBg5 from './slideBg/bg5.png'
 import slideBg6 from './slideBg/bg6.png'
 import slideBg7 from './slideBg/bg7.png'
 
-// Mock APIs or imports
-// import { queryByXuhao, getEnterStrategy, getSlideVerificationCode } from '@/api/core'
-// import { getLodop } from '@/utils/LodopFuncs'
 
 // Define props for images to allow generalization
 const props = defineProps({
@@ -206,12 +203,6 @@ const language = ref('zh-CN') // Mock
 
 const hideMac = computed(() => !['slide', 'single'].includes(loginStrategy.value))
 const sliderText = computed(() => `${t('向右滑动')}(${(loginForm as any).cVerificationCode || ''})`)
-
-// Watch
-// const route = useRoute()
-// watch(() => route, (newRoute) => {
-//   redirect.value = newRoute.query?.redirect as string
-// }, { immediate: true })
 
 // Methods
 const handleSetLanguage = (val: any) => {
@@ -303,15 +294,6 @@ const initSlogenAction = () => {
       if (prev) prev.style.transition = '.4s ease-in'
     }, 800)
   }, 8000)
-}
-
-// Mock APIs
-const queryByXuhao = async (params: any) => {
-  return { result: [{ id: 1, cName: '中文', cXuhao: 'zh-CN' }, { id: 2, cName: 'English', cXuhao: 'en-US' }] }
-}
-
-const getSlideVerificationCode = async (params: any) => {
-  return { code: 200, result: { verificationCode: '1234' } }
 }
 
 const initLoginType = () => {

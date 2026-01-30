@@ -22,3 +22,18 @@ export function getEnterStrategy(data?: any) {
 export function refreshTokenApi() {
   return requestClient.post<any>('/refreshToken');
 }
+
+
+/**
+ * 查询数据字典
+ */
+export function queryByXuhao(data: any) {
+  return requestClient.post('/core/authDict/queryByXuhao', data);
+}
+
+/**
+ * 获取滑动验证码
+ */
+export function getSlideVerificationCode(data: any) {
+  return requestClient.post('/getSlideVerificationCode', data);
+}
