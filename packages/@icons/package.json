@@ -15,7 +15,7 @@
     "lucide-vue-next": "catalog:"
   },
   "devDependencies": {
-    "@config/tsconfig": "workspace:*",
+    "@sunny-base-web/tsconfig": "workspace:*",
     "typescript": "catalog:"
   }
 }
