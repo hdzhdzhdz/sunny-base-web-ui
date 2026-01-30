@@ -44,6 +44,8 @@
 - **Composables**: 如 `useNamespace` 等 Vue 组合式函数。
 - **工具函数**: 颜色处理、类名合并 (`cn`)、类型推断等。
 
+这里整理了 `@sunny-base-web/utils/regex` 中内置的所有常用正则表达式，您可以直接在 `KunkkaInput` 组件的 `rule` 属性中使用，或在代码中导入使用。
+
 ### @config
 
 **配置库**

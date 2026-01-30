@@ -120,7 +120,7 @@ schema: [
 
 ### 常用正则规则
 
-`@utils/regex` 提供了丰富的常用正则模式 (如 `phone`, `email`, `idCard` 等)。
+`@sunny-base-web/utils/regex` 提供了丰富的常用正则模式 (如 `phone`, `email`, `idCard` 等)。
 
 你可以通过 `setupKunkkaForm` 将这些模式批量注册为字符串规则，从而在 Schema 中便捷使用。
 

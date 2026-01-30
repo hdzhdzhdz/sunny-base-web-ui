@@ -13,7 +13,7 @@ import RegexDebugger from './RegexDebugger.vue'
 ## 使用方式
 
 ```ts
-import { patterns } from '@utils';
+import { patterns } from '@sunny-base-web/utils';
 
 // 获取正则对象
 const phonePattern = patterns.phone;

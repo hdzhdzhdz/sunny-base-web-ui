@@ -1,10 +1,10 @@
-import { createApp } from "vue";
-import ArcoVue from "@arco-design/web-vue";
-import "element-plus/dist/index.css";
-import "@arco-design/web-vue/dist/arco.css";
-import "./style.css";
-import App from "./App.vue";
 
-const app = createApp(App);
-app.use(ArcoVue);
-app.mount("#app");
+async function initApplication() {
+    // 启动应用并挂载
+    // vue应用主要逻辑及视图
+    const { bootstrap } = await import('./bootstrap');
+    const { preferences } = await import('./preferences');
+    await bootstrap(preferences.app.name);
+}
+
+initApplication();

@@ -51,7 +51,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { patterns } from '@utils';
+import { patterns } from '@sunny-base-web/utils';
 
 const selectedKey = ref<string | undefined>(undefined);
 const testValue = ref('');

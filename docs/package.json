@@ -16,8 +16,8 @@
     "vue": "catalog:"
   },
   "devDependencies": {
-    "@config/tailwind-config": "workspace:*",
-    "@config/tsconfig": "workspace:*",
+    "@sunny-base-web/tailwind-config": "workspace:*",
+    "@sunny-base-web/tsconfig": "workspace:*",
     "@vitepress-demo-preview/component": "^2.3.2",
     "@vitepress-demo-preview/plugin": "^1.2.3",
     "autoprefixer": "catalog:",

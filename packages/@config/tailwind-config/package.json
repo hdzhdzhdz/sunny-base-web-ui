@@ -1,5 +1,5 @@
 {
-  "name": "@config/tailwind-config",
+  "name": "@sunny-base-web/tailwind-config",
   "version": "0.0.0",
   "private": true,
   "exports": {

@@ -5,7 +5,7 @@
 ## 引入
 
 ```ts
-import { useNamespace } from '@utils'
+import { useNamespace } from '@sunny-base-web/utils'
 ```
 
 ## 用法
@@ -59,7 +59,7 @@ ns.is('active', false) // -> ''
 
 ```vue
 <script setup lang="ts">
-import { useNamespace } from '@utils'
+import { useNamespace } from '@sunny-base-web/utils'
 
 const ns = useNamespace('card')
 </script>

@@ -1,5 +1,5 @@
 {
-  "extends": "@config/tsconfig/base.json",
+  "extends": "@sunny-base-web/tsconfig/base.json",
   "compilerOptions": {
     "baseUrl": ".",
     "lib": ["ESNext", "DOM"],
@@ -9,7 +9,7 @@
     "jsxImportSource": "vue",
     "paths": {
       "@kunkka/ui": ["../packages/@kunkka/src/index.ts"],
-      "@utils": ["../packages/@utils/src/index.ts"]
+      "@sunny-base-web/utils": ["../packages/@utils/src/index.ts"]
     }
   },
   "include": [

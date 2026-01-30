@@ -3,7 +3,7 @@ import { useKunkkaForm, patterns, setupKunkkaForm } from '@kunkka/ui';
 import { z } from 'zod';
 import { Message } from '@arco-design/web-vue';
 
-// 个性化注入 @utils/regex 规则 (Personalized Injection)
+// 个性化注入 @sunny-base-web/utils/regex 规则 (Personalized Injection)
 // 方式 2: 使用 setupKunkkaForm 批量注册所有正则规则
 // 将 patterns 对象转换为 vee-validate 可用的规则函数
 const rules = Object.entries(patterns).reduce((acc, [key, config]) => {
