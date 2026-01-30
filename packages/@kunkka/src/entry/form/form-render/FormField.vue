@@ -8,7 +8,7 @@ import { toTypedSchema } from '@vee-validate/zod';
 // 引入 Zod 类型定义
 import type { ZodType } from 'zod';
 // 引入自定义工具函数
-import { isFunction, isString } from '@utils';
+import { isFunction, isString } from '@sunny-base-web/utils';
 // 引入组件映射表
 import { COMPONENT_MAP } from '../config';
 // 引入表单 Schema 类型定义

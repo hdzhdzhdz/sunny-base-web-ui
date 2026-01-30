@@ -6,7 +6,7 @@ import type {
 
 import { computed, ref, watch } from 'vue';
 
-import { isBoolean, isFunction } from '@utils';
+import { isBoolean, isFunction } from '@sunny-base-web/utils';
 
 import { useFormValues } from 'vee-validate';
 

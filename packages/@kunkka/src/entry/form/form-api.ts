@@ -1,6 +1,6 @@
 import { isRef, toRaw, type ComponentPublicInstance } from 'vue';
 import type { FormState, GenericObject, ResetFormOpts, ValidationOptions } from 'vee-validate';
-import { cloneDeep, isFunction, isObject } from '@utils';
+import { cloneDeep, isFunction, isObject } from '@sunny-base-web/utils';
 import { Store } from './store';
 import type { FormActions, FormSchema, KunkkaFormProps } from './types';
 

@@ -9,7 +9,7 @@ import {
   isHttpUrl,
   isObject,
   isString,
-} from '@utils';
+} from '@sunny-base-web/utils';
 
 const props = defineProps<{
   // 没有是否显示默认图标

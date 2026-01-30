@@ -3,7 +3,7 @@ import type { ScrollAreaScrollbarProps } from 'reka-ui';
 
 import { computed } from 'vue';
 
-import { cn } from '@utils';
+import { cn } from '@sunny-base-web/utils';
 
 import { ScrollAreaScrollbar, ScrollAreaThumb } from 'reka-ui';
 

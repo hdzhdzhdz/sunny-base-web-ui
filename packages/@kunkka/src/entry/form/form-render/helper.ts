@@ -7,7 +7,7 @@ import type {
   ZodTypeAny,
 } from 'zod';
 
-import { isObject, isString } from '@utils';
+import { isObject, isString } from '@sunny-base-web/utils';
 
 /**
  * 获取最底层的 Zod 类型

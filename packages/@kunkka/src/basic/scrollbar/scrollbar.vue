@@ -3,7 +3,7 @@ import type { ClassType } from '@kunkka-core/typings';
 
 import { computed, ref } from 'vue';
 
-import { cn } from '@utils';
+import { cn } from '@sunny-base-web/utils';
 
 import { ScrollArea, ScrollBar } from './components';
 

@@ -6,7 +6,7 @@ import {
   TooltipRoot,
   TooltipTrigger,
 } from 'reka-ui';
-import { cn } from '@utils';
+import { cn } from '@sunny-base-web/utils';
 
 interface Props {
   contentClass?: string | string[];

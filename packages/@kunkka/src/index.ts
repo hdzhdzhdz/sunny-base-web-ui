@@ -11,10 +11,10 @@ import KunkkaSearchInputTag from "./entry/search-input-tag";
 import { useKunkkaForm, FormApi, KunkkaForm, setupKunkkaForm, z } from './entry/form';
 import { useKunkkaEditGrid } from './data/kunkka-edit-grid'
 import { useKunkkaQueryGrid } from './data/kunkka-query-grid'
-import { patterns } from "@utils";
+import { patterns } from "@sunny-base-web/utils";
 
-// menu 菜单有bug太复杂
-export * from "./navigation/menu";
+
+export * from "./navigation/nprogress";
 
 export { 
   Button, 

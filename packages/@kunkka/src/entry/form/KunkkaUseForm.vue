@@ -15,7 +15,7 @@ import type { KunkkaFormProps } from './types';
 import { provideComponentRefMap, provideFormProps, useFormInitial } from './use-form-context';
 import FormRender from './form-render/Form.vue';
 import FormActions from './components/form-actions.vue';
-import { cloneDeep, get, isEqual, set } from '@utils';
+import { cloneDeep, get, isEqual, set } from '@sunny-base-web/utils';
 
 const props = withDefaults(defineProps<KunkkaFormProps & { formApi: FormApi }>(), {
   // 必须显式设为 undefined，防止 Vue 将未传递的 Boolean prop 默认转为 false
