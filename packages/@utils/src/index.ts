@@ -4,3 +4,5 @@ export * from "./is";
 export * from "./style";
 export * from "./regex";
 export * from "./object";
+export * from "./route";
+export * from "./tree";

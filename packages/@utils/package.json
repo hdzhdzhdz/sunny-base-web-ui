@@ -1,5 +1,5 @@
 {
-  "name": "@utils",
+  "name": "@sunny-base-web/utils",
   "version": "0.0.0",
   "private": true,
   "main": "./src/index.ts",
@@ -11,14 +11,15 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
-    "@config/constants": "workspace:^",
+    "@sunny-base-web/constants": "workspace:^",
     "@ctrl/tinycolor": "catalog:",
     "@vue/shared": "catalog:",
     "clsx": "^2.1.1",
+    "defu": "^6.1.4",
     "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
-    "@config/tsconfig": "workspace:*",
+    "@sunny-base-web/tsconfig": "workspace:*",
     "typescript": "catalog:"
   }
 }

@@ -1,4 +1,4 @@
-import { DEFAULT_NAMESPACE } from '@config/constants';
+import { DEFAULT_NAMESPACE } from '@sunny-base-web/constants';
 
 /**
  * @see copy https://github.com/element-plus/element-plus/blob/dev/packages/hooks/use-namespace/index.ts
