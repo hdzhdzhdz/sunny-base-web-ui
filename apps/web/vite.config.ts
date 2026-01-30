@@ -8,7 +8,6 @@ export default defineConfig({
   plugins: [vue(), vueJsx()],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
       '#': fileURLToPath(new URL('./src', import.meta.url)),
       '@sunny-base-web/utils': fileURLToPath(new URL('../../packages/@utils/src', import.meta.url)),
       '@sunny-base-web/stores': fileURLToPath(new URL('../../packages/@stores/src', import.meta.url)),

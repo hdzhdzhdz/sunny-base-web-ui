@@ -53,7 +53,6 @@ const gridOptions = reactive<VxeGridProps<RowVO>>({
   id: 'queryList-grid',
   border: true,
   showOverflow: 'title',
-  // sticky: true, // 是否开启吸顶
   keepSource: true,
   size: 'mini',
   height: 500,
@@ -178,17 +177,12 @@ const gridEvents: VxeGridListeners = {
   }
 }
 
-const [Grid, _gridApi] = useKunkkaQueryGrid({ gridOptions, gridEvents });
+const [Grid, gridApi] = useKunkkaQueryGrid({ gridOptions, gridEvents });
 
 </script>
 
 <template>
-  <div class="h-full w-full overflow-hidden">
-    <div class="bg-blue-300 h-[60px] fixed top-0 left-0 right-0"></div>
-    <div class="bg-green-300 h-[200px]"></div>
-    <div class="relative sticky-father">
-      <Grid />
-    </div>
-    <div class="bg-green-300 h-[300px]"></div>
+  <div class="h-full w-full overflow-hidden vp-raw">
+    <Grid />
   </div>
 </template>

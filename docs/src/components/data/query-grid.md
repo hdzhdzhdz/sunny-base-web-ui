@@ -87,3 +87,7 @@ gridApi.deleteSelection();
   </Grid>
 </template>
 ```
+
+## 完整示例
+
+<preview path="./demos/query-grid/WholeUsage.vue" title="完整示例" description="展示完整的代码与预览，包含吸顶、分页、工具栏等完整功能" />

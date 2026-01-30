@@ -13,6 +13,7 @@ import { VxeButton, VxePager } from 'vxe-pc-ui'
 import 'vxe-table/lib/style.css'
 import 'vxe-pc-ui/lib/style.css'
 import { useSticky } from './sticky'
+import './renderer'
 
 const gridRef = ref<VxeGridInstance>()
 const attrs = useAttrs()
@@ -30,3 +31,10 @@ defineExpose({
   getGrid: () => gridRef.value
 })
 </script>
+
+<style>
+/* fix:全屏时出现两个滚动条 */
+.vxe-grid.is--maximize .vxe-grid--layout-body-content-wrapper {
+  overflow: hidden;
+}
+</style>
