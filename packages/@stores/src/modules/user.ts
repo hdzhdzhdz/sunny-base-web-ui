@@ -1,0 +1,54 @@
+import { acceptHMRUpdate, defineStore } from 'pinia';
+
+interface UserState {
+  /**
+   * 姓名
+   */
+  name: string;
+  /**
+   * 工号
+   */
+  code: string;
+  /**
+   * 角色
+   */
+  roles: string[];
+  /**
+   * 是否超级管理员
+   */
+  superAdmin: boolean;
+  /**
+   * 是否为弱密码
+   */
+  bWeakPwd: boolean;
+  /**
+   * 智能体配置信息
+   */
+  agent: Record<string, any>;
+}
+
+/**
+ * @zh_CN 用户信息相关
+ */
+export const useUserStore = defineStore('core-user', {
+  state: (): UserState => ({
+    name: '',
+    code: '',
+    accessToken: '',
+    roles: [],
+    superAdmin: false,
+    bWeakPwd: false,
+    agent: {},
+  }),
+  actions: {
+    setUserInfo(userInfo: Partial<UserState>) {
+      this.$patch(userInfo);
+    },
+  },
+});
+
+// 解决热更新问题
+const hot = import.meta.hot;
+if (hot) {
+  hot.accept(acceptHMRUpdate(useUserStore, hot));
+}

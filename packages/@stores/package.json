@@ -1,0 +1,43 @@
+{
+  "name": "@sunny-base-web/stores",
+  "version": "0.0.1",
+  "private": false,
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
+  },
+  "publishConfig": {
+    "main": "./dist/index.js",
+    "module": "./dist/index.mjs",
+    "types": "./dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.mjs",
+        "require": "./dist/index.js"
+      }
+    },
+    "access": "public",
+    "registry": "https://your-private-registry.com/"
+  },
+  "dependencies": {
+    "pinia": "^2.1.7",
+    "pinia-plugin-persistedstate": "^4.7.1",
+    "secure-ls": "^2.0.0"
+  },
+  "devDependencies": {
+    "@sunny-base-web/constants": "workspace:*",
+    "tsup": "^8.5.1",
+    "vite": "^7.3.1",
+    "vue": "^3.5.27"
+  }
+}
