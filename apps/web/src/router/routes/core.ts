@@ -1,4 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router';
+import BasicLayout from '#/layouts/basic-layout/index.vue';
 
 
 /** 全局404页面 */
@@ -22,13 +23,14 @@ const coreRoutes: RouteRecordRaw[] = [
    * 此路由必须存在，且不应修改
    */
   {
-  
     meta: {
       hideInBreadcrumb: true,
       title: 'Root',
     },
     name: 'Root',
     path: '/',
+    redirect: '/dashboard',
+    component: BasicLayout,
     children: [],
   },
   {

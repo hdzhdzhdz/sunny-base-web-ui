@@ -29,6 +29,32 @@ export interface EffectsConfig {
    * RSA 公钥
    */
   publicKey?: string
+  /**
+   * 头部配置
+   */
+  header?: {
+    height: number
+  }
+  /**
+   * 应用配置
+   */
+  app?: {
+    name: string
+  }
+  /**
+   * Logo 配置
+   */
+  logo?: {
+    enable: boolean
+    fit?: string
+    source: string
+  }
+  /**
+   * 侧边栏配置
+   */
+  sidebar?: {
+    width: number
+  }
 }
 
 /**

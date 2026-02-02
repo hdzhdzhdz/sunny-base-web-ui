@@ -18,10 +18,6 @@ async function bootstrap(namespace: string) {
     // 配置 pinia-tore
     await initStores(app, { namespace });
 
-    // 配置路由及路由守卫
-    app.use(router);
-    app.use(i18n);
-
     // 注册 @effects 业务组件包的全局配置
     // 作用：统一注入 API 前缀和 SSO 地址，使 Login 等组件能自动获取配置，
     // 无需在每个页面单独传递 api-prefix 等属性，实现业务逻辑解耦。
@@ -30,8 +26,18 @@ async function bootstrap(namespace: string) {
         ssoUrl: preferences.app.ssoUrl,
         locale: preferences.app.locale,
         enableRefreshToken: preferences.app.enableRefreshToken,
-        publicKey: preferences.app.publicKey
+        publicKey: preferences.app.publicKey,
+        app: {
+            name: preferences.app.name
+        },
+        header: preferences.header,
+        logo: preferences.logo,
+        sidebar: preferences.sidebar
     }))
+
+    // 配置路由及路由守卫
+    app.use(router);
+    app.use(i18n);
 
 
 

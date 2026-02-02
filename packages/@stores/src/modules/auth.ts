@@ -20,8 +20,13 @@ export const useAuthStore = defineStore('core-auth', {
     },
 
     /**
-     * 登录逻辑通常涉及加密和API调用，由于 @stores 不能反向依赖 @effects (UI层)，
-     * 建议在 Vue 组件或 @effects 的业务逻辑中调用 API，成功后调用 accessStore.setAccessToken(token)
+     * 获取用户信息
      */
+    async fetchUserInfo() {
+      const userStore = useUserStore();
+      const response = await authApi.fetchUserInfo();
+      userStore.setUserInfo(response.data);
+      return response.data;
+    }
   },
 });

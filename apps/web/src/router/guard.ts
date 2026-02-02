@@ -6,8 +6,8 @@ import { useAccessStore, useUserStore, useAuthStore } from '@sunny-base-web/stor
 import { startProgress, stopProgress } from '@kunkka/ui';
 
 import { accessRoutes, coreRouteNames } from './routes';
-
 import { generateAccess } from './access';
+import { fetchUserInfo } from '../api/user';
 
 /**
  * 通用守卫配置
@@ -86,16 +86,28 @@ function setupAccessGuard(router: Router) {
     // 是否已经生成过动态路由
     if (accessStore.isAccessChecked) {
       return true;
-    }
+    } 
 
-    // 生成路由表
-    // 当前登录用户拥有的角色标识列表
-    const userInfo = userStore.userInfo || (await authStore.fetchUserInfo());
+    // 当前工号不存在，说明是刷新进入或者登录之后进入，需要获取用户信息
+    // 否则，直接使用当前用户信息
+    // 注意：这里获取用户信息和菜单，好像必须得耦合在业务代码中，因为store只能在组件中使用，不能在守卫中使用
+    // effect 组件，也进不到路由守卫中
+    let userInfo = userStore.userInfo;
+    if (!userInfo || !userInfo.code) {
+      const res = await fetchUserInfo({ 'types': [0, 1, 4] });
+      const { user, resource } = res.result || {};
+      userInfo = { ...user, resources: resource };
+      userStore.setUserInfo(userInfo);
+    }
+    
+    
     const userRoles = userInfo.roles ?? [];
+    const resources = userInfo.resources || []; 
 
     // 生成菜单和路由
     const { accessibleMenus, accessibleRoutes } = await generateAccess({
       roles: userRoles,
+      resources,
       router,
       // 则会在菜单中显示，但是访问会被重定向到403
       routes: accessRoutes,

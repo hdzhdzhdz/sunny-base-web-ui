@@ -535,10 +535,7 @@ const loginAction = async () => {
     if (res.code === 0 || res.success) {
        const token = res.result?.token || (res.result as any)
        accessStore.setAccessToken(token)
-       Message.success(t('登录成功'))
-       // 可以选择在这里获取用户信息，或者在路由守卫中获取
-       // await userStore.fetchUserInfo()
-      //  router.push('/')
+       emit('login', res.result)
     } else {
        // 错误处理通常由拦截器处理，但如果需要特定处理可以写在这里
     }

@@ -4,16 +4,16 @@
 
 <script setup lang="ts">
 import { Login } from '@sunny-base-web/effects';
-import { Message } from '@arco-design/web-vue';
+import { Notification } from '@arco-design/web-vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-const handleLogin = (formData: any) => {
-  console.log('Login form data received:', formData);
-  // Implement actual login logic here
-  // For now, just simulate success
-  Message.success('登录成功 (Logic from Web App)');
+const handleLogin = (data: any) => {
+  Notification.success({
+    title: '登录成功',
+    content: '欢迎回来',
+  });
   router.push('/');
 };
 </script>
