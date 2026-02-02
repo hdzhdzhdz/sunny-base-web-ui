@@ -1,0 +1,21 @@
+export default {
+  hello: '你好',
+  switchLang: '切换语言',
+  title: 'Vue 3 + Monorepo + Kunkka UI',
+  desc: '本示例展示了使用组合式 API 模式调用 Modal 组件的方法。',
+  openModal: '打开弹窗',
+  selectDemo: '选择器示例 (Excel 复制粘贴)',
+  selectTip1: '1. 尝试从 Excel 或文本编辑器复制一列数据，例如 "Option 1", "Option 2" (换行符分隔)。',
+  selectTip2: '2. 粘贴到选择器的搜索框中。',
+  pastePlaceholder: '在此处粘贴 Excel 内容...',
+  selected: '已选: ',
+  scrollbarDemo: '滚动条示例',
+  contentLine: '内容行',
+  uploadDemo: '上传示例',
+  modalContent1: '这是弹窗的内容。',
+  modalContent2: '它是使用 useKunkkaModal 组合式函数创建的。',
+  modalContent3: '它使用了在组合式选项中定义的默认底部配置。',
+  modalTitle: 'Kunkka Modal 演示',
+  okClicked: '点击了确定！',
+  cancelClicked: '点击了取消！'
+};

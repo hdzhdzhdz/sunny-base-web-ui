@@ -66,6 +66,7 @@ export default defineConfig({
           {
             text: 'Common 常用',
             items: [
+              { text: 'I18n 国际化', link: '/utilities/i18n' },
               { text: 'Regex 正则表达式', link: '/utilities/regex' }
             ]
           }
@@ -92,7 +93,7 @@ export default defineConfig({
       }
     },
     ssr: {
-      noExternal: ['element-plus', '@kunkka/ui']
+      noExternal: ['@kunkka/ui']
     },
     plugins: [
       {

@@ -13,9 +13,8 @@
     "@sunny-base-web/constants": "workspace:^",
     "@sunny-base-web/effects": "workspace:*",
     "@sunny-base-web/stores": "workspace:*",
-    "@kunkka/ui": "workspace:*",
     "@sunny-base-web/utils": "workspace:*",
-    "element-plus": "catalog:",
+    "@kunkka/ui": "workspace:*",
     "vue": "catalog:",
     "vue-i18n": "^11.2.8",
     "vue-router": "^4.6.4"

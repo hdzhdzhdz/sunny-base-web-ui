@@ -12,7 +12,6 @@
     "@arco-design/web-vue": "catalog:",
     "@kunkka/ui": "workspace:*",
     "@vee-validate/rules": "^4.15.1",
-    "element-plus": "catalog:",
     "vue": "catalog:"
   },
   "devDependencies": {
