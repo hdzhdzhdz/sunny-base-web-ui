@@ -30,12 +30,13 @@
     "registry": "https://your-private-registry.com/"
   },
   "dependencies": {
+    "@kunkka/ui": "workspace:*",
+    "@sunny-base-web/constants": "workspace:*",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^4.7.1",
     "secure-ls": "^2.0.0"
   },
   "devDependencies": {
-    "@sunny-base-web/constants": "workspace:*",
     "tsup": "^8.5.1",
     "vite": "^7.3.1",
     "vue": "^3.5.27"

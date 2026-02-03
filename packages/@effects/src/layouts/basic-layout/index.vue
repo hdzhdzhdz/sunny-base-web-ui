@@ -4,9 +4,10 @@
   * 支持响应式折叠、主题切换、全屏等功能
 -->
 <template>
-  <a-layout class="h-screen w-screen">
+  <a-layout class="h-screen w-screen" ref="rootLayoutRef">
     <!-- 侧边栏区域 -->
     <a-layout-sider
+      v-if="!tabbarStore.contentFullScreen"
       breakpoint="xl"
       collapsible
       :trigger="null"
@@ -48,9 +49,10 @@
     </a-layout-sider>
 
     <!-- 右侧主体区域 -->
-    <a-layout>
+    <a-layout ref="innerLayoutRef">
       <!-- 顶部导航栏 -->
       <a-layout-header 
+        v-if="!tabbarStore.contentFullScreen"
         class="h-16 bg-[var(--color-bg-2)] border-b border-[var(--color-border)] flex items-center px-5"
         :style="{ height: (config.header?.height ?? 64) + 'px' }"
       >
@@ -78,19 +80,25 @@
            <!-- 用户操作占位 -->
         </div>
       </a-layout-header>
-      
-      <!-- 内容区域 -->
-      <a-layout-content class="p-6 overflow-auto bg-[var(--color-fill-2)]">
-        <!-- 路由视图渲染 -->
-        <router-view />
-      </a-layout-content>
+
+      <!-- 内容包装器：包含标签栏和内容区域，用于全屏时仅显示此区域 -->
+      <div id="layout-content-wrapper" class="flex flex-col flex-1 overflow-hidden">
+        <!-- 标签栏 -->
+        <Tabbar />
+        
+        <!-- 内容区域 -->
+        <a-layout-content class="flex-1 p-6 overflow-auto bg-[var(--color-fill-2)]">
+          <!-- 路由视图渲染 -->
+          <router-view />
+        </a-layout-content>
+      </div>
     </a-layout>
   </a-layout>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { useAccessStore } from '@sunny-base-web/stores';
+import { useAccessStore, useTabbarStore } from '@sunny-base-web/stores';
 import { useRouter, useRoute } from 'vue-router';
 import { KunkkaIcon, KunkkaScrollbar } from '@kunkka/ui';
 import { useEffectsConfig } from '../../config';
@@ -98,6 +106,7 @@ import MenuItem from './menu-item.vue';
 import HeaderBreadcrumb from './header/breadcrumb.vue';
 import HeaderSearch from './header/search.vue';
 import ThemeToggle from './header/theme-toggle.vue';
+import Tabbar from './tabbar/index.vue';
 
 // 定义组件名称
 defineOptions({ name: 'BasicLayout' });
@@ -107,6 +116,7 @@ const config = useEffectsConfig();
 
 // 初始化 store 和 router
 const accessStore = useAccessStore();
+const tabbarStore = useTabbarStore();
 const router = useRouter();
 const route = useRoute();
 
