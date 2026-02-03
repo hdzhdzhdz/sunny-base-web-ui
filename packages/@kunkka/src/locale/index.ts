@@ -24,7 +24,7 @@ VxeUI.setI18n('en-US', vxeEnUS);
 // Set default
 VxeUI.setLanguage('zh-CN');
 
-// Listen to locale changes from @utils
+// Listen to locale changes from @sunny-base-web/utils
 onLocaleChange((locale) => {
   // Update Arco
   if (arcoLocales[locale]) {

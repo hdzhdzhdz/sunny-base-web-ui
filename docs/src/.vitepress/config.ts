@@ -87,7 +87,7 @@ export default defineConfig({
   vite: {
     resolve: {
       alias: {
-        '@utils': path.resolve(__dirname, '../../../packages/@utils/src'),
+        '@sunny-base-web/utils': path.resolve(__dirname, '../../../packages/@utils/src'),
         '@kunkka/ui': path.resolve(__dirname, '../../../packages/@kunkka/src/index.ts'),
         '@kunkka': path.resolve(__dirname, '../../../packages/@kunkka/src')
       }
