@@ -37,3 +37,10 @@ export function queryByXuhao(data: any) {
 export function getSlideVerificationCode(data: any) {
   return requestClient.post('/getSlideVerificationCode', data);
 }
+
+/**
+ * 查询所有静态前端国际化配置
+ */
+export function findAllStaticFrontI18n(data: any) {
+  return requestClient.post('/core/contact/findAllStaticFrontI18n', data);
+}

@@ -593,7 +593,7 @@ onMounted(() => {
   initSlogenAction()
   initLoginType()
 
-  queryByXuhao({ cXuhao: 'LANG' }).then(res => {
+  queryByXuhao({ cXuhao: 'LANG_V3' }).then(res => {
     langList.value = res.result
   })
 })
