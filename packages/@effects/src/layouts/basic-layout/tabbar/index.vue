@@ -1,57 +1,76 @@
 <!--
   * 标签栏组件
-  * 显示当前打开的页面标签，支持右键菜单和拖拽排序
+  * 显示当前打开的页面标签，支持右键菜单
 -->
 <template>
   <div class="flex items-center w-full h-[38px] bg-[var(--color-bg-2)] border-b border-[var(--color-border)] px-2 gap-2">
     <!-- 标签滚动区域 -->
     <div class="flex-1 overflow-hidden h-full flex items-center">
       <KunkkaScrollbar horizontal class="w-full h-full flex items-center" :style="{ display: 'flex', alignItems: 'center' }">
-        <div class="flex items-center gap-1 h-full px-1">
-          <a-dropdown
+        <div class="flex items-center gap-1 h-full px-1 pb-1">
+          <div
             v-for="tab in tabbarStore.getTabs"
             :key="tab.key"
-            trigger="contextMenu"
-            @select="(val) => handleContextMenuSelect(val, tab)"
+            class="flex items-center"
           >
-            <div
-              class="group relative flex items-center gap-2 px-3 py-1 text-sm rounded-sm cursor-pointer transition-all duration-200 border whitespace-nowrap"
-              :class="[
-                isActive(tab) 
-                  ? 'bg-[rgb(var(--primary-6))] text-white border-[rgb(var(--primary-6))] dark:bg-[var(--color-bg-1)] dark:text-[rgb(var(--primary-6))]' 
-                  : 'bg-[var(--color-bg-1)] text-[var(--color-text-2)] border-[var(--color-border)] hover:text-[var(--color-text-1)] hover:border-[var(--color-border-3)]'
-              ]"
-              @click="handleTabClick(tab)"
+            <a-dropdown
+              trigger="contextMenu"
+              @select="(val) => handleContextMenuSelect(val, tab)"
             >
-              <span>{{ tab.meta?.title || tab.name }}</span>
-              
-              <!-- 关闭按钮 -->
-              <span 
-                v-if="!tab.meta?.affixTab"
-                class="flex items-center justify-center w-4 h-4 rounded-full transition-colors opacity-0 group-hover:opacity-100"
+              <div
+                class="group relative flex items-center gap-2 px-3 py-1 text-sm rounded-sm cursor-pointer transition-all duration-200 border whitespace-nowrap"
                 :class="[
                   isActive(tab) 
-                    ? 'hover:bg-[rgba(255,255,255,0.2)] dark:hover:bg-[var(--color-fill-3)]' 
-                    : 'hover:bg-[var(--color-fill-3)]'
+                    ? 'bg-[rgb(var(--primary-6))] text-white border-[rgb(var(--primary-6))] dark:bg-[var(--color-bg-1)] dark:text-[rgb(var(--primary-6))]' 
+                    : 'bg-[var(--color-bg-1)] text-[var(--color-text-2)] border-[var(--color-border)] hover:text-[var(--color-text-1)] hover:border-[var(--color-border-3)]'
                 ]"
-                @click.stop="handleClose(tab)"
+                @click="handleTabClick(tab)"
               >
-                <KunkkaIcon icon="lucide:x" :size="12" />
-              </span>
-            </div>
-            <template #content>
-              <template v-for="item in getContextMenuItems(tab)" :key="item.key">
-                <a-doption v-if="!item.separator" :value="item.key" :disabled="item.disabled">
-                  <template #icon v-if="item.icon"><KunkkaIcon :icon="item.icon" /></template>
-                  {{ item.text }}
-                </a-doption>
-                <a-doption v-else :value="item.key" :disabled="item.disabled" class="border-t border-[var(--color-border)] mt-1 pt-1">
-                  <template #icon v-if="item.icon"><KunkkaIcon :icon="item.icon" /></template>
-                  {{ item.text }}
-                </a-doption>
+                <span>{{ tab.meta?.title || tab.name }}</span>
+                
+                <!-- 固定图标 -->
+                <span 
+                  v-if="tab.meta?.affixTab"
+                  class="flex items-center justify-center w-4 h-4 rounded-full transition-colors"
+                  :class="[
+                    isActive(tab) 
+                      ? 'hover:bg-[rgba(255,255,255,0.2)] dark:hover:bg-[var(--color-fill-3)]' 
+                      : 'hover:bg-[var(--color-fill-3)]'
+                  ]"
+                  @click.stop="tabbarStore.toggleTabPin(tab)"
+                  title="取消固定"
+                >
+                  <KunkkaIcon icon="lucide:pin" :size="12" />
+                </span>
+
+                <!-- 关闭按钮 -->
+                <span 
+                  v-else
+                  class="flex items-center justify-center w-4 h-4 rounded-full transition-colors opacity-0 group-hover:opacity-100"
+                  :class="[
+                    isActive(tab) 
+                      ? 'hover:bg-[rgba(255,255,255,0.2)] dark:hover:bg-[var(--color-fill-3)]' 
+                      : 'hover:bg-[var(--color-fill-3)]'
+                  ]"
+                  @click.stop="handleClose(tab)"
+                >
+                  <KunkkaIcon icon="lucide:x" :size="12" />
+                </span>
+              </div>
+              <template #content>
+                <template v-for="item in getContextMenuItems(tab)" :key="item.key">
+                  <a-doption v-if="!item.separator" :value="item.key" :disabled="item.disabled">
+                    <template #icon v-if="item.icon"><KunkkaIcon :icon="item.icon" /></template>
+                    {{ item.text }}
+                  </a-doption>
+                  <a-doption v-else :value="item.key" :disabled="item.disabled" class="border-t border-[var(--color-border)] mt-1 pt-1">
+                    <template #icon v-if="item.icon"><KunkkaIcon :icon="item.icon" /></template>
+                    {{ item.text }}
+                  </a-doption>
+                </template>
               </template>
-            </template>
-          </a-dropdown>
+            </a-dropdown>
+          </div>
         </div>
       </KunkkaScrollbar>
     </div>
@@ -95,7 +114,7 @@
 </template>
 
 <script setup lang="ts">
-import { watch, ref, onMounted } from 'vue';
+import { watch } from 'vue';
 import { useTabbarStore, useAccessStore } from '@sunny-base-web/stores';
 import { useRouter, useRoute } from 'vue-router';
 import { KunkkaIcon, KunkkaScrollbar } from '@kunkka/ui';
