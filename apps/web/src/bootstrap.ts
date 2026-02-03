@@ -8,9 +8,7 @@ import ArcoVue from "@arco-design/web-vue";
 import { createEffects } from '@sunny-base-web/effects'
 
 import { router } from './router';
-import { setupI18n, registerMessageLoader, serverDataToClientData, setLocale } from '@sunny-base-web/utils';
-import i18nOptions from './locale';
-import { findAllStaticFrontI18n } from '@sunny-base-web/effects';
+import { setupI18n } from '#/locales';
 
 import { initStores } from '@sunny-base-web/stores';
 import { preferences } from './preferences';
@@ -39,23 +37,9 @@ async function bootstrap(namespace: string) {
 
 	// 配置路由及路由守卫
 	app.use(router);
-	setupI18n(app, i18nOptions);
 
-	// 注册国际化语言包加载器
-	registerMessageLoader(async (locale) => {
-		try {
-			const res = await findAllStaticFrontI18n({ cLang: locale });
-			if (res && res.result) {
-				return serverDataToClientData(res.result);
-			}
-		} catch (error) {
-			console.error('Failed to fetch i18n messages:', error);
-		}
-		return {};
-	});
-
-	// Initialize with current locale
-	await setLocale(i18nOptions.locale as any);
+  // 国际化 i18n 配置
+  await setupI18n(app);
 
 	app.use(ArcoVue);
 	app.mount('#app');

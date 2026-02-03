@@ -2,7 +2,6 @@ export * from "./color";
 export * from "./composables";
 export * from "./is";
 export * from "./style";
-export * from "./i18n";
 export * from "./regex";
 export * from "./object";
 export * from "./route";

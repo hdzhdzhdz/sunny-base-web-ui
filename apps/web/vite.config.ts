@@ -13,6 +13,7 @@ export default defineConfig({
       '@sunny-base-web/stores': fileURLToPath(new URL('../../packages/@stores/src', import.meta.url)),
       '@sunny-base-web/constants': fileURLToPath(new URL('../../packages/@config/constants/src', import.meta.url)),
       '@sunny-base-web/effects': fileURLToPath(new URL('../../packages/@effects/src', import.meta.url)),
+      '@sunny-base-web/locales': fileURLToPath(new URL('../../packages/@locales/src', import.meta.url)),
     }
   },
   server: {
