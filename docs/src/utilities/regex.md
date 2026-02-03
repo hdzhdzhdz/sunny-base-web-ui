@@ -4,7 +4,7 @@ import RegexDebugger from './RegexDebugger.vue'
 
 # Regex 正则表达式
 
-这里整理了 `@utils/regex` 中内置的所有常用正则表达式，您可以直接在 `KunkkaInput` 组件的 `rule` 属性中使用，或在代码中导入使用。
+这里整理了 `@sunny-base-web/utils` 中内置的所有常用正则表达式，您可以直接在 `KunkkaInput` 组件的 `rule` 属性中使用，或在代码中导入使用。
 
 ## 调试预览
 

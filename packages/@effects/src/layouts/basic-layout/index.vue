@@ -75,6 +75,8 @@
         <div class="header-actions flex items-center gap-4">
            <!-- 搜索组件 -->
            <HeaderSearch />
+           <!-- 语言切换组件 -->
+           <LanguageToggle />
            <!-- 主题切换组件 -->
            <ThemeToggle />
            <!-- 用户操作占位 -->
@@ -107,6 +109,7 @@ import HeaderBreadcrumb from './header/breadcrumb.vue';
 import HeaderSearch from './header/search.vue';
 import ThemeToggle from './header/theme-toggle.vue';
 import Tabbar from './tabbar/index.vue';
+import LanguageToggle from './header/language-toggle.vue';
 
 // 定义组件名称
 defineOptions({ name: 'BasicLayout' });

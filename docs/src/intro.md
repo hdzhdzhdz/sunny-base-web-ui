@@ -35,7 +35,7 @@
 - 集成了 `lucide-vue-next`。
 - 提供了统一的图标加载和渲染机制。
 
-### @utils
+### @sunny-base-web/utils
 
 **工具函数库**
 

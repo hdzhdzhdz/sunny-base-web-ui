@@ -79,7 +79,7 @@ Kunkka Form 推荐使用 `rules` 属性进行统一配置，系统会自动根�
 
 ### 内置规则说明
 
-系统内置了多种常用规则，可以直接在 `rules` 中使用。所有 `@utils/regex` 中定义的正则模式都会自动注册为验证规则。
+系统内置了多种常用规则，可以直接在 `rules` 中使用。所有 `@sunny-base-web/utils` 中定义的正则模式都会自动注册为验证规则。
 
 > 💡 **相关文档**：
 > - 更多输入组件的详细用法，请参考 [Input 输入框](/components/entry/input.html)
