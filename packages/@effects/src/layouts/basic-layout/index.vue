@@ -89,7 +89,7 @@
         <Tabbar />
         
         <!-- 内容区域 -->
-        <a-layout-content class="flex-1 p-6 overflow-auto bg-[var(--color-fill-2)]">
+        <a-layout-content class="flex-1 p-2 overflow-auto bg-[var(--color-fill-2)]">
           <!-- 路由视图渲染 -->
           <router-view />
         </a-layout-content>

@@ -179,6 +179,11 @@ export interface KunkkaFormProps {
    */
   layout?: FormLayout;
   /**
+   * 表单尺寸
+   * Form size
+   */
+  size?: 'mini' | 'small' | 'medium' | 'large';
+  /**
    * 表单 Schema 配置
    * Form schema configuration
    */

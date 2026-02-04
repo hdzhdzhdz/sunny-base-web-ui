@@ -49,6 +49,7 @@ const resetButtonOptions = computed(() => {
   return {
     content: '重置',
     show: true,
+    type: 'outline',
     ...unref(rootProps).resetButtonOptions,
   };
 });
@@ -59,7 +60,7 @@ const resetButtonOptions = computed(() => {
  */
 const submitButtonOptions = computed(() => {
   return {
-    content: '提交',
+    content: '查询',
     show: true,
     // 如果有 formApi，使用普通按钮类型，手动触发提交逻辑
     // 否则使用 submit 类型，利用表单的原生提交机制
@@ -186,15 +187,17 @@ defineExpose({
   <div :class="actionWrapperClass">
     <!-- 
       按钮顺序反转逻辑 
+      默认: 提交在前，重置在后
       如果 actionButtonsReverse 为 true，则 重置在前，提交在后
     -->
-    <template v-if="unref(rootProps).actionButtonsReverse">
+    <template v-if="!unref(rootProps).actionButtonsReverse">
       <!-- 提交按钮前插槽 -->
       <slot name="submit-before"></slot>
 
       <Button
         v-if="submitButtonOptions.show"
         type="primary"
+        :size="unref(rootProps).size"
         @click="handleSubmit"
         v-bind="submitButtonOptions"
       >
@@ -207,19 +210,21 @@ defineExpose({
 
     <Button
       v-if="resetButtonOptions.show"
+      :size="unref(rootProps).size"
       @click="handleReset"
       v-bind="resetButtonOptions"
     >
       {{ resetButtonOptions.content }}
     </Button>
 
-    <template v-if="!unref(rootProps).actionButtonsReverse">
+    <template v-if="unref(rootProps).actionButtonsReverse">
       <!-- 提交按钮前插槽 -->
       <slot name="submit-before"></slot>
 
       <Button
         v-if="submitButtonOptions.show"
         type="primary"
+        :size="unref(rootProps).size"
         @click="handleSubmit"
         v-bind="submitButtonOptions"
       >

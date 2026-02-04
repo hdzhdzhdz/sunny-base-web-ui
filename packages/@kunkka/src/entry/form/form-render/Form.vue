@@ -203,6 +203,7 @@ const computedGap = computed(() => {
   <a-form
     :model="{}" 
     :layout="formProps.layout || 'horizontal'"
+    :size="formProps.size"
     class="arco-form"
     @submit="(data: any, ev: any) => onSubmit(ev)"
   >
@@ -216,7 +217,7 @@ const computedGap = computed(() => {
     >
       <template v-for="(item, index) in computedSchema" :key="item.fieldName">
         <a-col
-          v-if="!item.hidden && (!renderPropsState.collapsed || index < (renderPropsState.collapsedRows ?? 1) * 3)"
+          v-if="!item.hidden && (!renderPropsState.collapsed || index < (24 / (spans[item.fieldName] ?? 24)) * (renderPropsState.collapsedRows ?? 1) - 1)"
           :span="spans[item.fieldName] ?? (isInline ? undefined : 24)"
         >
           <FormField :schema="item" />
@@ -229,7 +230,27 @@ const computedGap = computed(() => {
         :span="actionSpan" 
         :style="isInline ? { marginLeft: '16px' } : { flex: 1, textAlign: 'right', marginBottom: computedGap.y + 'px' }"
       >
+        <!-- 
+          Fix: 当 layout 为 vertical 时，按钮组会因为没有 label 而导致位置偏上。
+          解决方案：包裹一个带空 label 的 a-form-item，使其与 input 对齐。
+          使用 span &nbsp; 确保 label 占据实际高度。
+        -->
+        <a-form-item 
+          v-if="(renderPropsState.layout || 'horizontal') === 'vertical'"
+          class="mb-0"
+          :hide-asterisk="true"
+        >
+          <template #label>
+            <span style="display: inline-block; width: 100%;">&nbsp;</span>
+          </template>
+          <FormActions
+            :model-value="renderPropsState.collapsed"
+            @update:model-value="handleCollapsedUpdate"
+            :form-api="props.formApi"
+          />
+        </a-form-item>
         <FormActions
+          v-else
           :model-value="renderPropsState.collapsed"
           @update:model-value="handleCollapsedUpdate"
           :form-api="props.formApi"
