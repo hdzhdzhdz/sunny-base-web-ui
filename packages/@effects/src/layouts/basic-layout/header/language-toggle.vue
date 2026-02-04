@@ -12,7 +12,7 @@
         :value="item.cXuhao"
       >
         <span>{{ item.cName }}</span>
-        <template #suffix v-if="currentLocale === item.cXuhao">
+        <template #suffix v-if="preferences.app.locale === item.cXuhao">
           <KunkkaIcon icon="lucide:check" class="text-[rgb(var(--primary-6))]" />
         </template>
       </a-doption>
@@ -23,8 +23,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { KunkkaIcon } from '@kunkka/ui';
-import { setLocale, currentLocale, type SupportedLocale } from '@sunny-base-web/utils';
 import { queryByXuhao } from '../../../api/core';
+import { loadLocaleMessages } from '@sunny-base-web/locales';
+import { preferences } from '#/preferences';
 
 defineOptions({ name: 'LanguageToggle' });
 
@@ -36,7 +37,10 @@ onMounted(() => {
   });
 });
 
-const handleSelect = (val: string | number | Record<string, any>) => {
-  setLocale(val as SupportedLocale);
+const handleSelect = async (val: string | number | Record<string, any>) => {
+  if (!val) return;
+  const locale = val;
+  preferences.app.locale = locale;
+  await loadLocaleMessages(locale);
 };
 </script>
