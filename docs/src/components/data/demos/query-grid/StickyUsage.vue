@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue';
-import { useKunkkaQueryGrid } from '@kunkka/ui';
+import { useKunkkaQueryGrid } from '@sunny-base-web/ui';
 
 const isSticky = ref(true);
 

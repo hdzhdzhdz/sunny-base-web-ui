@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { HoverCard, HoverCardContent, HoverCardTrigger, Button } from '@kunkka/ui'
+import { HoverCard, HoverCardContent, HoverCardTrigger, Button } from '@sunny-base-web/ui'
 </script>
 
 <template>

@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { useKunkkaModal } from "@kunkka/ui";
+import { useKunkkaModal } from "@sunny-base-web/ui";
 
 const [ConnectedModal, { open }] = useKunkkaModal();
 

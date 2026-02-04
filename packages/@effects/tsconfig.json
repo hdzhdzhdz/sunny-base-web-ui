@@ -9,9 +9,9 @@
     "moduleResolution": "bundler",
     "baseUrl": ".",
     "paths": {
-      "@kunkka/ui": ["../@kunkka/src/index.ts"],
+      "@sunny-base-web/ui": ["../@kunkka/src/index.ts"],
       "@sunny-base-web/utils": ["../@utils/src/index.ts"],
-      "@icons": ["../@icons/src/index.ts"],
+      "@sunny-base-web/icons": ["../@sunny-base-web/icons/src/index.ts"],
       "@sunny-base-web/constants": ["../@config/constants/src/index.ts"]
     }
   },

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useKunkkaForm } from '@kunkka/ui';
+import { useKunkkaForm } from '@sunny-base-web/ui';
 import { Message } from '@arco-design/web-vue';
 
 const schema = [

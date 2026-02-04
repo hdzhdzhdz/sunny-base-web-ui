@@ -8,7 +8,7 @@
     "jsx": "preserve",
     "jsxImportSource": "vue",
     "paths": {
-      "@kunkka/ui": ["../packages/@kunkka/src/index.ts"],
+      "@sunny-base-web/ui": ["../packages/@kunkka/src/index.ts"],
       "@sunny-base-web/utils": ["../packages/@utils/src/index.ts"]
     }
   },

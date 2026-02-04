@@ -6,8 +6,7 @@
     "apps/*",
     "docs",
     "packages/*",
-    "packages/@config/*",
-    "packages/@kunkka"
+    "packages/@config/*"
   ],
   "scripts": {
     "build": "turbo run build",

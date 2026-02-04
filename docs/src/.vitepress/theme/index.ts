@@ -4,7 +4,7 @@ import PreviewWrapper from './PreviewWrapper.vue'
 import '@vitepress-demo-preview/component/dist/style.css'
 import '@arco-design/web-vue/dist/arco.css'
 import ArcoVue from '@arco-design/web-vue'
-import { KunkkaIcon, KunkkaSearchInputTag, KunkkaBatchSelect, KunkkaSelect } from '@kunkka/ui'
+import { KunkkaIcon, KunkkaSearchInputTag, KunkkaBatchSelect, KunkkaSelect } from '@sunny-base-web/ui'
 
 import './style.css'
 

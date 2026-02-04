@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive } from 'vue';
-import { useKunkkaQueryGrid } from '@kunkka/ui';
+import { useKunkkaQueryGrid } from '@sunny-base-web/ui';
 
 const gridOptions = reactive({
   columns: [

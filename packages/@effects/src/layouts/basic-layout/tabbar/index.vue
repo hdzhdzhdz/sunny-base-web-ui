@@ -117,7 +117,7 @@
 import { watch } from 'vue';
 import { useTabbarStore, useAccessStore } from '@sunny-base-web/stores';
 import { useRouter, useRoute } from 'vue-router';
-import { KunkkaIcon, KunkkaScrollbar } from '@kunkka/ui';
+import { KunkkaIcon, KunkkaScrollbar } from '@sunny-base-web/ui';
 import type { TabDefinition } from '@sunny-base-web/stores';
 
 defineOptions({ name: 'Tabbar' });

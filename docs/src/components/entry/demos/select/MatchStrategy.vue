@@ -43,7 +43,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { KunkkaBatchSelect } from '@kunkka/ui';
+import { KunkkaBatchSelect } from '@sunny-base-web/ui';
 
 const value1 = ref([]);
 const value2 = ref([]);

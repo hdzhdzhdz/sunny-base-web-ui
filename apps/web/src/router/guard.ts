@@ -3,7 +3,7 @@ import type { Router } from 'vue-router';
 
 import { preferences } from '../preferences';
 import { useAccessStore, useUserStore, useAuthStore } from '@sunny-base-web/stores';
-import { startProgress, stopProgress } from '@kunkka/ui';
+import { startProgress, stopProgress } from '@sunny-base-web/ui';
 
 import { accessRoutes, coreRouteNames } from './routes';
 import { generateAccess } from './access';

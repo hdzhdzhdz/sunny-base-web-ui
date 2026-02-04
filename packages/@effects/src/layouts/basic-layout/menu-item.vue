@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 import { defineOptions, defineProps } from 'vue';
-import { KunkkaIcon } from '@kunkka/ui';
+import { KunkkaIcon } from '@sunny-base-web/ui';
 
 // 定义组件名称，便于递归调用和调试
 defineOptions({ name: 'MenuItem' });

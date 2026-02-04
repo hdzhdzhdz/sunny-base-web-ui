@@ -163,7 +163,7 @@
 import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAccessStore } from '@sunny-base-web/stores';
-import { KunkkaIcon } from '@kunkka/ui';
+import { KunkkaIcon } from '@sunny-base-web/ui';
 
 defineOptions({ name: 'HeaderSearch' });
 

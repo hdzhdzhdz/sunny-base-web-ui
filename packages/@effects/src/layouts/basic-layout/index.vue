@@ -102,7 +102,7 @@
 import { ref, watch } from 'vue';
 import { useAccessStore, useTabbarStore } from '@sunny-base-web/stores';
 import { useRouter, useRoute } from 'vue-router';
-import { KunkkaIcon, KunkkaScrollbar } from '@kunkka/ui';
+import { KunkkaIcon, KunkkaScrollbar } from '@sunny-base-web/ui';
 import { useEffectsConfig } from '../../config';
 import MenuItem from './menu-item.vue';
 import HeaderBreadcrumb from './header/breadcrumb.vue';

@@ -30,7 +30,7 @@
     "registry": "https://your-private-registry.com/"
   },
   "dependencies": {
-    "@kunkka/ui": "workspace:*",
+    "@sunny-base-web/ui": "workspace:*",
     "@sunny-base-web/constants": "workspace:*",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^4.7.1",

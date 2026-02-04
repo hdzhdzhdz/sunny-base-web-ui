@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { reactive } from 'vue'
-  import { useKunkkaEditGrid } from "@kunkka/ui";
+  import { useKunkkaEditGrid } from "@sunny-base-web/ui";
 
 const gridOptions = reactive({
   border: true,
@@ -37,7 +37,7 @@ const gridEvents = {
   }
 };
 
-const [Grid, gridApi] = useKunkkaEditGrid({ gridOptions, gridEvents });
+const [Grid, gridApi] = useEditGrid({ gridOptions, gridEvents });
 
 const addEvent = async () => {
   console.log(gridApi)

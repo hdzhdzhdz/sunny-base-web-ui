@@ -28,7 +28,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useColorMode } from '@vueuse/core';
-import { KunkkaIcon } from '@kunkka/ui';
+import { KunkkaIcon } from '@sunny-base-web/ui';
 
 defineOptions({ name: 'ThemeToggle' });
 

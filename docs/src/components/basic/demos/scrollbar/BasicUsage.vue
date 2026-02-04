@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { KunkkaScrollbar } from '@kunkka/ui';
+import { KunkkaScrollbar } from '@sunny-base-web/ui';
 </script>
 
 <template>

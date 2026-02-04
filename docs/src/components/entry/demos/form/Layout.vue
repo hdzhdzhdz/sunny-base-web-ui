@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useKunkkaForm } from '@kunkka/ui';
+import { useKunkkaForm } from '@sunny-base-web/ui';
 import { Message, RadioGroup, Radio, Divider } from '@arco-design/web-vue';
 
 const [Form, formApi] = useKunkkaForm({

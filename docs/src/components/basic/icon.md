@@ -4,11 +4,11 @@
 
 ## 基础用法
 
-首先从 `@kunkka/ui` 引入组件。
+首先从 `@sunny-base-web/ui` 引入组件。
 
 ```vue
 <script setup lang="ts">
-import { KunkkaIcon } from "@kunkka/ui";
+import { KunkkaIcon } from "@sunny-base-web/ui";
 </script>
 ```
 

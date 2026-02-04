@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { KunkkaIcon } from '@kunkka/ui';
+import { KunkkaIcon } from '@sunny-base-web/ui';
 import { queryByXuhao } from '../../../api/core';
 import { loadLocaleMessages } from '@sunny-base-web/locales';
 import { preferences } from '#/preferences';

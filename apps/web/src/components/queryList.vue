@@ -1,7 +1,7 @@
 <script lang="tsx" setup>
 import { reactive } from 'vue'
 import type { VxeGridProps, VxeGridListeners } from 'vxe-table'
-import { useKunkkaQueryGrid } from "@kunkka/ui";
+import { useQueryGrid } from "@sunny-base-web/ui";
 import { Modal, Message } from '@arco-design/web-vue';
 
 interface RowVO {

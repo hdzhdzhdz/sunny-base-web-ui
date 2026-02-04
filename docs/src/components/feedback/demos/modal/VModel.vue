@@ -9,7 +9,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { Modal } from "@kunkka/ui";
+import { Modal } from "@sunny-base-web/ui";
 
 const visible = ref(false);
 </script>

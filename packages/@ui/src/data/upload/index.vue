@@ -13,7 +13,7 @@ import {
   Checkbox as ACheckbox, 
   Progress as AProgress 
 } from '@arco-design/web-vue';
-import { Paperclip, CloudUpload, Trash2 } from '@icons';
+import { Paperclip, CloudUpload, Trash2 } from '@sunny-base-web/icons';
 import { KunkkaIcon } from '../../basic/icon';
 import axios from 'axios';
 

@@ -54,8 +54,8 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue';
-// 实际使用时请从 @kunkka/ui 引入
-// import { KunkkaBatchSelect } from '@kunkka/ui';
+// 实际使用时请从 @sunny-base-web/ui 引入
+// import { KunkkaBatchSelect } from '@sunny-base-web/ui';
 
 const value = ref([]);
 

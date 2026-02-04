@@ -3,7 +3,6 @@ packages:
   - "docs"
   - "packages/*"
   - "packages/@config/*"
-  - "packages/@kunkka"
 
 catalog:
   vue: ^3.5.13

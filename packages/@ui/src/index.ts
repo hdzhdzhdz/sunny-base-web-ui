@@ -36,8 +36,8 @@ export {
   FormApi,
   KunkkaForm,
   setupKunkkaForm,
-  useKunkkaEditGrid,
-  useKunkkaQueryGrid,
+  useEditGrid,
+  useQueryGrid,
   patterns,
   z
 };

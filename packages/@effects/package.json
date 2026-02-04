@@ -8,8 +8,8 @@
   },
   "dependencies": {
     "@arco-design/web-vue": "^2.57.0",
-    "@icons": "workspace:*",
-    "@kunkka/ui": "workspace:*",
+    "@sunny-base-web/icons": "workspace:*",
+    "@sunny-base-web/ui": "workspace:*",
     "@sunny-base-web/stores": "workspace:*",
     "@sunny-base-web/utils": "workspace:*",
     "@vueuse/core": "catalog:",

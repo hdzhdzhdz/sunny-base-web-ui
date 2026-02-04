@@ -1,9 +1,9 @@
 import { defineComponent, h, ref } from 'vue';
 
 import { VxeGridApi } from './api';
-import VxeGrid from './use-query-grid.vue';
+import VxeGrid from './use-vxe-grid.vue';
 
-export function useKunkkaQueryGrid(options: any) {
+export function useEditGrid(options: any) {
   const gridRef = ref();
   const api = new VxeGridApi(gridRef, options);
 

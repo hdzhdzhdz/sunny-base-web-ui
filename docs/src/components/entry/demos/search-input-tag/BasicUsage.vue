@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { KunkkaSearchInputTag } from '@kunkka/ui';
+import { KunkkaSearchInputTag } from '@sunny-base-web/ui';
 import { Message } from '@arco-design/web-vue';
 
 // 模拟的数据结构

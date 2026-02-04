@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { KunkkaBatchSelect } from '@kunkka/ui';
+import { KunkkaBatchSelect } from '@sunny-base-web/ui';
 
 const value = ref([]);
 const options = Array.from({ length: 10 }).map((_, index) => ({

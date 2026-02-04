@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { KunkkaUpload } from '@kunkka/ui'
+import { KunkkaUpload } from '@sunny-base-web/ui'
 import { ref } from 'vue'
 
 const fileList = ref('')

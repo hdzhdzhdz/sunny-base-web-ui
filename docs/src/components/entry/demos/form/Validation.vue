@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useKunkkaForm, patterns, setupKunkkaForm } from '@kunkka/ui';
+import { useKunkkaForm, patterns, setupKunkkaForm } from '@sunny-base-web/ui';
 import { z } from 'zod';
 import { Message } from '@arco-design/web-vue';
 
