@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useKunkkaForm } from '@sunny-base-web/ui';
+import { useSunnyForm } from '@sunny-base-web/ui';
 import { Message, RadioGroup, Radio, Divider } from '@arco-design/web-vue';
 
-const [Form, formApi] = useKunkkaForm({
+const [Form, formApi] = useSunnyForm({
   // 全局标签宽度
   labelWidth: 100,
   // 布局

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { KunkkaUpload } from '@sunny-base-web/ui'
+import { SunnyUpload } from '@sunny-base-web/ui'
 import { ref } from 'vue'
 
 const fileList = ref('')
@@ -11,7 +11,7 @@ const handleChange = (val: string) => {
 
 <template>
   <div class="p-4 border rounded-lg">
-    <KunkkaUpload
+    <SunnyUpload
       v-model="fileList"
       :limit="5"
       :max-size="10"

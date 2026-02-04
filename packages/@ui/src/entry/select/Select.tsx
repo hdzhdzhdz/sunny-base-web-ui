@@ -3,7 +3,7 @@ import { Select, Option } from "@arco-design/web-vue";
 import type { SelectOption } from "./types";
 
 export default defineComponent({
-  name: "KunkkaSelect",
+  name: "SunnySelect",
   inheritAttrs: false,
   props: {
     modelValue: {

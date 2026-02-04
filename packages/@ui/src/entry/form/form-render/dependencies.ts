@@ -35,7 +35,7 @@ export default function useDependencies(
   const formApi = formRenderProps.form!;
 
   if (!values) {
-    throw new Error('useDependencies should be used within <KunkkaForm> (VeeValidate Form)');
+    throw new Error('useDependencies should be used within <SunnyForm> (VeeValidate Form)');
   }
 
   // 定义响应式状态

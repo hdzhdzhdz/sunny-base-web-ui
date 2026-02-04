@@ -34,7 +34,7 @@
 
     <!-- 组件展示 -->
     <div class="border p-4 rounded bg-[var(--color-fill-1)]">
-      <kunkka-search-input-tag
+      <sunny-search-input-tag
         v-model="dataList"
         :field-names="fieldConfig"
         placeholder="点击右侧搜索图标添加数据..."
@@ -62,7 +62,7 @@ const fieldConfig = reactive({
 
 // 模拟添加的新项
 const newItem = reactive({
-  label: 'Kunkka',
+  label: 'Sunny',
   value: '1001'
 });
 

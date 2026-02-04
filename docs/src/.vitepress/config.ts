@@ -34,7 +34,6 @@ export default defineConfig({
       {
         text: 'Data 数据展示',
         items: [
-          { text: 'Hover Card 悬停卡片', link: '/components/data/card' },
           { text: 'Upload 上传', link: '/components/data/upload' },
           { text: 'QueryGrid 查询表格', link: '/components/data/query-grid' }
         ]
@@ -88,12 +87,11 @@ export default defineConfig({
     resolve: {
       alias: {
         '@sunny-base-web/utils': path.resolve(__dirname, '../../../packages/@utils/src'),
-        '@kunkka/ui': path.resolve(__dirname, '../../../packages/@kunkka/src/index.ts'),
-        '@kunkka': path.resolve(__dirname, '../../../packages/@kunkka/src')
+        '@sunny-base-web/ui': path.resolve(__dirname, '../../../packages/@ui/src/index.ts')
       }
     },
     ssr: {
-      noExternal: ['@kunkka/ui']
+      noExternal: ['@sunny-base-web/ui']
     },
     plugins: [
       {

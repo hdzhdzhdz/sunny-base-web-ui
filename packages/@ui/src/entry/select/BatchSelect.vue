@@ -1,5 +1,5 @@
 <template>
-  <kunkka-select
+  <sunny-select
     v-bind="$attrs"
     :model-value="modelValue"
     :options="options"
@@ -40,18 +40,18 @@
     <template v-for="(_, slot) in $slots" #[slot]="scope">
       <slot :name="slot" v-bind="scope || {}"></slot>
     </template>
-  </kunkka-select>
+  </sunny-select>
 </template>
 
 <script setup lang="ts">
 import { computed } from "vue";
 import { Message } from "@arco-design/web-vue";
 import { IconDelete, IconQuestionCircle } from "@arco-design/web-vue/es/icon";
-import KunkkaSelect from "./Select";
+import SunnySelect from "./Select";
 import type { BatchSelectProps } from "./types";
 
 defineOptions({
-  name: "KunkkaBatchSelect",
+  name: "SunnyBatchSelect",
   inheritAttrs: false,
 });
 

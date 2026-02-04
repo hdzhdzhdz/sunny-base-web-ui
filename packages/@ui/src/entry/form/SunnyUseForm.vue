@@ -2,7 +2,7 @@
 /**
  * Hook Mode Form (Hook 模式表单)
  *
- * 与 KunkkaForm (组件模式) 的区别:
+ * 与 SunnyForm (组件模式) 的区别:
  * 1. 由 FormApi 驱动 (Driven by FormApi).
  * 2. 需要 `formApi` 属性 (Requires `formApi` prop).
  * 3. 适用于需要动态 Schema 更新和程序化控制的复杂表单 (Suitable for complex forms).
@@ -11,13 +11,13 @@
 import { computed, onBeforeUnmount, onMounted, nextTick, watch, toRaw } from 'vue';
 import { useDebounceFn } from '@vueuse/core';
 import type { FormApi } from './form-api';
-import type { KunkkaFormProps } from './types';
+import type { SunnyFormProps } from './types';
 import { provideComponentRefMap, provideFormProps, useFormInitial } from './use-form-context';
 import FormRender from './form-render/Form.vue';
 import FormActions from './components/form-actions.vue';
 import { cloneDeep, get, isEqual, set } from '@sunny-base-web/utils';
 
-const props = withDefaults(defineProps<KunkkaFormProps & { formApi: FormApi }>(), {
+const props = withDefaults(defineProps<SunnyFormProps & { formApi: FormApi }>(), {
   // 必须显式设为 undefined，防止 Vue 将未传递的 Boolean prop 默认转为 false
   // 从而导致覆盖了 formApi store 中的配置值
   // Must explicitly set to undefined to prevent Vue from defaulting missing boolean props to false,
@@ -31,8 +31,8 @@ const props = withDefaults(defineProps<KunkkaFormProps & { formApi: FormApi }>()
   compact: undefined,
 });
 
-// 同步 Store 状态 (状态由 useKunkkaForm/FormApi 管理)
-// formApi.useStore 由 useKunkkaForm 注入
+// 同步 Store 状态 (状态由 useSunnyForm/FormApi 管理)
+// formApi.useStore 由 useSunnyForm 注入
 const state = props.formApi.useStore?.() || computed(() => ({}));
 
 // 合并属性: Store 状态 + Props
@@ -55,7 +55,7 @@ const componentRefMap = new Map<string, unknown>();
    
 //    - 作用 ：确保表单一开始就有初始值，而不是空的，同时建立起验证机制。
 // 2. 处理插槽转发 (delegatedSlots) ：
-//    它会检查你给 KunkkaUseForm 传了哪些插槽（比如自定义字段组件、自定义按钮等），并把它们的名字收集起来。
+//    它会检查你给 SunnyUseForm 传了哪些插槽（比如自定义字段组件、自定义按钮等），并把它们的名字收集起来。
    
 //    - 作用 ：为了让外面的插槽能穿透到内部的 FormRender 组件里去。如果不做这一步，你在最外层写的插槽可能传不进去，里面就显示不出来。
 // 简单总结 ：它负责把表单的“里子”（数据状态）和“面子”（插槽内容）都准备

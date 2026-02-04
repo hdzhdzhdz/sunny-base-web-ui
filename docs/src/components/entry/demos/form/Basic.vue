@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useKunkkaForm } from '@sunny-base-web/ui';
+import { useSunnyForm } from '@sunny-base-web/ui';
 import { Message } from '@arco-design/web-vue';
 
-const [Form] = useKunkkaForm({
+const [Form] = useSunnyForm({
   layout: 'horizontal',
   compact: false,
   // 基础数据

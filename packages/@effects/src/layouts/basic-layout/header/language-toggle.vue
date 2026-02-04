@@ -3,7 +3,7 @@
     <div
       class="flex items-center justify-center w-9 h-9 rounded-full cursor-pointer transition-all duration-300 hover:bg-[var(--color-fill-3)] text-[var(--color-text-2)] hover:text-[var(--color-text-1)]"
     >
-      <KunkkaIcon icon="lucide:languages" :size="20" />
+      <SunnyIcon icon="lucide:languages" :size="20" />
     </div>
     <template #content>
       <a-doption
@@ -13,7 +13,7 @@
       >
         <span>{{ item.cName }}</span>
         <template #suffix v-if="preferences.app.locale === item.cXuhao">
-          <KunkkaIcon icon="lucide:check" class="text-[rgb(var(--primary-6))]" />
+          <SunnyIcon icon="lucide:check" class="text-[rgb(var(--primary-6))]" />
         </template>
       </a-doption>
     </template>
@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { KunkkaIcon } from '@sunny-base-web/ui';
+import { SunnyIcon } from '@sunny-base-web/ui';
 import { queryByXuhao } from '../../../api/core';
 import { loadLocaleMessages } from '@sunny-base-web/locales';
 import { preferences } from '#/preferences';

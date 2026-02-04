@@ -1,4 +1,4 @@
-export const DEFAULT_NAMESPACE = 'kunkka';
+export const DEFAULT_NAMESPACE = 'sunny-base';
 
 export const STORE_SECURE_KEY = '_secure_key_';
 

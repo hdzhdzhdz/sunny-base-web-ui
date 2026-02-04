@@ -25,8 +25,8 @@
 
     <!-- 组件展示 -->
     <div class="p-4 border rounded">
-      <div class="font-bold mb-3">KunkkaSelect 组件</div>
-      <kunkka-select
+      <div class="font-bold mb-3">SunnySelect 组件</div>
+      <sunny-select
         v-model="value"
         :options="options"
         :filter-model="formModel"

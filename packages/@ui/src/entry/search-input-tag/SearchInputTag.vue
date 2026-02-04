@@ -35,7 +35,7 @@ import { IconSearch } from "@arco-design/web-vue/es/icon";
 import type { SearchInputTagProps } from "./types";
 
 defineOptions({
-  name: "KunkkaSearchInputTag",
+  name: "SunnySearchInputTag",
   inheritAttrs: false,
 });
 

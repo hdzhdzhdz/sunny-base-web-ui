@@ -23,7 +23,7 @@ import type { Component } from 'vue';
 import type {
   BaseFormComponentType,
   FormCommonConfig,
-  KunkkaFormAdapterOptions,
+  SunnyFormAdapterOptions,
 } from './types';
 import { defineRule } from 'vee-validate';
 
@@ -54,14 +54,14 @@ export const COMPONENT_MAP: Record<string, Component> = {
   TreeSelect,
 
   // Mentions,
-  // Alias for Kunkka prefix if needed, or map to same
-  KunkkaSelect: Select,
-  KunkkaCheckbox: Checkbox,
-  KunkkaRadio: Radio,
-  KunkkaSwitch: Switch,
-  KunkkaDatePicker: DatePicker,
-  KunkkaTimePicker: TimePicker,
-  KunkkaUpload: Upload,
+  // Alias for prefix if needed, or map to same
+  SunnySelect: Select,
+  SunnyCheckbox: Checkbox,
+  SunnyRadio: Radio,
+  SunnySwitch: Switch,
+  SunnyDatePicker: DatePicker,
+  SunnyTimePicker: TimePicker,
+  SunnyUpload: Upload,
 };
 
 export const COMPONENT_BIND_EVENT_MAP: Record<string, string> = {
@@ -73,14 +73,14 @@ export const COMPONENT_BIND_EVENT_MAP: Record<string, string> = {
 export const DEFAULT_FORM_COMMON_CONFIG: FormCommonConfig = {};
 
 /**
- * 初始化 Kunkka 表单配置
- * Setup Kunkka form configuration
+ * 初始化 表单配置
+ * Setup form configuration
  *
  * @param options 适配器选项
  */
-export function setupKunkkaForm<
+export function setupSunnyForm<
   T extends BaseFormComponentType = BaseFormComponentType,
->(options: KunkkaFormAdapterOptions<T>) {
+>(options: SunnyFormAdapterOptions<T>) {
   // 解构配置项和自定义验证规则
   // Destructure config and custom validation rules
   const { config, defineRules } = options;

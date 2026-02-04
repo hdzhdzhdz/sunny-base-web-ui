@@ -8,7 +8,7 @@
 
 ```vue
 <script setup lang="ts">
-import { KunkkaIcon } from "@sunny-base-web/ui";
+import { SunnyIcon } from "@sunny-base-web/ui";
 </script>
 ```
 

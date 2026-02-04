@@ -1,6 +1,6 @@
-# Kunkka Query Grid
+# Query Grid
 
-`useKunkkaQueryGrid` 是 `vxe-grid` 的一个强大封装，提供了表头吸顶、简化的常用操作 API（如添加、删除）以及与 Vue 3 的无缝集成。
+`useSunnyQueryGrid` 是 `vxe-grid` 的一个强大封装，提供了表头吸顶、简化的常用操作 API（如添加、删除）以及与 Vue 3 的无缝集成。
 
 ## 特性
 
@@ -17,7 +17,7 @@
 
 ## API
 
-### `useKunkkaQueryGrid(options)`
+### `useSunnyQueryGrid(options)`
 
 #### 参数
 
@@ -76,7 +76,7 @@ gridApi.deleteSelection();
 
 ## Props & Slots
 
-`useKunkkaQueryGrid` 返回的 `Grid` 组件会将所有属性 (`$attrs`) 和插槽 (`$slots`) 透传给底层的 `vxe-grid`。这意味着你可以使用所有标准的 `vxe-table` 功能。
+`useSunnyQueryGrid` 返回的 `Grid` 组件会将所有属性 (`$attrs`) 和插槽 (`$slots`) 透传给底层的 `vxe-grid`。这意味着你可以使用所有标准的 `vxe-table` 功能。
 
 ```vue
 <template>

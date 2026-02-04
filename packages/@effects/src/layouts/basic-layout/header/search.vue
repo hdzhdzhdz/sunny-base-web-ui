@@ -8,7 +8,7 @@
       class="flex items-center gap-2 px-3 py-1.5 bg-[var(--color-fill-2)] hover:bg-[var(--color-fill-3)] rounded-full cursor-pointer transition-all duration-300 border border-transparent hover:border-[var(--color-border)] hover:shadow-sm"
       @click="openSearch"
     >
-      <KunkkaIcon icon="lucide:search" :size="14" class="text-[var(--color-text-3)]" />
+      <SunnyIcon icon="lucide:search" :size="14" class="text-[var(--color-text-3)]" />
       <span class="text-[var(--color-text-3)] text-xs">搜索...</span>
       <!-- 快捷键提示：根据操作系统显示 Cmd+K 或 Ctrl+K -->
       <span class="text-[var(--color-text-4)] text-[10px] bg-[var(--color-fill-1)] px-1.5 py-0.5 rounded-md border border-[var(--color-border)] ml-1 shadow-sm font-medium">
@@ -33,7 +33,7 @@
       <div class="bg-[var(--color-bg-2)] rounded-xl shadow-2xl overflow-hidden border border-[var(--color-border)] flex flex-col max-h-[500px]">
         <!-- 顶部搜索输入框区域 -->
         <div class="relative flex items-center px-3 py-3 border-b border-[var(--color-border)] shrink-0">
-          <KunkkaIcon icon="lucide:search" :size="18" class="text-[var(--color-text-3)] mr-2" />
+          <SunnyIcon icon="lucide:search" :size="18" class="text-[var(--color-text-3)] mr-2" />
           <input
             ref="inputRef"
             v-model="keyword"
@@ -47,7 +47,7 @@
             class="cursor-pointer text-[var(--color-text-4)] hover:text-[var(--color-text-3)] transition-colors p-0.5 rounded hover:bg-[var(--color-fill-3)]"
             @click="keyword = ''"
           >
-            <KunkkaIcon icon="lucide:x" :size="14" />
+            <SunnyIcon icon="lucide:x" :size="14" />
           </div>
           <div v-else class="text-[var(--color-text-4)] text-[10px] bg-[var(--color-fill-2)] px-1.5 py-0.5 rounded border border-[var(--color-border)]">
             ESC
@@ -81,7 +81,7 @@
                   class="flex items-center justify-center w-7 h-7 rounded shrink-0"
                   :class="activeIndex === index ? 'bg-white/20 text-white' : 'bg-[var(--color-fill-3)] text-[var(--color-text-3)] group-hover:bg-[var(--color-fill-4)] group-hover:text-[var(--color-text-2)]'"
                 >
-                  <KunkkaIcon
+                  <SunnyIcon
                     :icon="item.icon || 'lucide:layout-grid'"
                     :size="14"
                   />
@@ -104,7 +104,7 @@
                   >
                     <span v-for="(parent, pIndex) in item.parentNames" :key="pIndex" class="flex items-center">
                       {{ parent }}
-                      <KunkkaIcon icon="lucide:chevron-right" :size="10" class="mx-0.5 opacity-60" />
+                      <SunnyIcon icon="lucide:chevron-right" :size="10" class="mx-0.5 opacity-60" />
                     </span>
                   </div>
                 </div>
@@ -115,7 +115,7 @@
                 class="transition-opacity duration-200"
                 :class="activeIndex === index ? 'opacity-100' : 'opacity-0'"
               >
-                <KunkkaIcon
+                <SunnyIcon
                   icon="lucide:corner-down-left"
                   :size="14"
                   class="text-white"
@@ -127,7 +127,7 @@
           <!-- 搜索无结果状态 -->
           <div v-else-if="keyword" class="py-12 text-center text-[var(--color-text-3)] flex flex-col items-center justify-center">
             <div class="w-12 h-12 bg-[var(--color-fill-2)] rounded-full flex items-center justify-center mb-3">
-               <KunkkaIcon icon="lucide:search-x" :size="24" class="opacity-50" />
+               <SunnyIcon icon="lucide:search-x" :size="24" class="opacity-50" />
             </div>
             <p class="text-sm font-medium mb-0.5">未找到结果</p>
             <p class="text-[10px] opacity-70">尝试搜索其他关键词</p>
@@ -136,7 +136,7 @@
           <!-- 初始空状态 -->
           <div v-else class="py-10 text-center">
             <div class="flex flex-col items-center justify-center opacity-60 hover:opacity-100 transition-opacity">
-               <KunkkaIcon icon="lucide:command" :size="40" class="mb-3 text-[var(--color-text-4)]" />
+               <SunnyIcon icon="lucide:command" :size="40" class="mb-3 text-[var(--color-text-4)]" />
                <p class="text-[var(--color-text-3)] text-xs mb-1 font-medium">
                  输入关键词搜索菜单
                </p>
@@ -163,7 +163,7 @@
 import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAccessStore } from '@sunny-base-web/stores';
-import { KunkkaIcon } from '@sunny-base-web/ui';
+import { SunnyIcon } from '@sunny-base-web/ui';
 
 defineOptions({ name: 'HeaderSearch' });
 

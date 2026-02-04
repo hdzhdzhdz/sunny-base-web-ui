@@ -3,7 +3,7 @@ import { defineComponent, h, ref } from 'vue';
 import { VxeGridApi } from './api';
 import VxeGrid from './use-vxe-grid.vue';
 
-export function useEditGrid(options: any) {
+export function useSunnyEditGrid(options: any) {
   const gridRef = ref();
   const api = new VxeGridApi(gridRef, options);
 

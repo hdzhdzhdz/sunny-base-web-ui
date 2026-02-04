@@ -50,7 +50,7 @@ export interface BatchSelectProps {
   filterModel?: Record<string, any>;
 }
 
-export interface KunkkaSelectProps {
+export interface SunnySelectProps {
   /**
    * 绑定值
    */

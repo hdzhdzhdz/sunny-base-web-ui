@@ -4,7 +4,7 @@ import PreviewWrapper from './PreviewWrapper.vue'
 import '@vitepress-demo-preview/component/dist/style.css'
 import '@arco-design/web-vue/dist/arco.css'
 import ArcoVue from '@arco-design/web-vue'
-import { KunkkaIcon, KunkkaSearchInputTag, KunkkaBatchSelect, KunkkaSelect } from '@sunny-base-web/ui'
+import { SunnyIcon, SunnySearchInputTag, SunnyBatchSelect, SunnySelect } from '@sunny-base-web/ui'
 
 import './style.css'
 
@@ -14,10 +14,10 @@ export default {
     const { app } = ctx;
     app.component('demo-preview', PreviewWrapper)
     app.component('ElementPlus', PreviewWrapper)
-    app.component('KunkkaIcon', KunkkaIcon)
-    app.component('KunkkaSearchInputTag', KunkkaSearchInputTag)
-    app.component('KunkkaBatchSelect', KunkkaBatchSelect)
-    app.component('KunkkaSelect', KunkkaSelect)
+    app.component('SunnyIcon', SunnyIcon)
+    app.component('SunnySearchInputTag', SunnySearchInputTag)
+    app.component('SunnyBatchSelect', SunnyBatchSelect)
+    app.component('SunnySelect', SunnySelect)
     app.use(ArcoVue)
   }
 }

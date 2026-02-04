@@ -7,5 +7,5 @@ const CustomIcon = defineComponent({
 </script>
 
 <template>
-  <KunkkaIcon :icon="CustomIcon" />
+  <SunnyIcon :icon="CustomIcon" />
 </template>

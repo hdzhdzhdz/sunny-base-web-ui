@@ -1,10 +1,10 @@
 import { defineComponent, h, isReactive, watch } from 'vue';
 import { useStore } from '@tanstack/vue-store';
-import type { KunkkaFormProps } from './types';
+import type { SunnyFormProps } from './types';
 import { FormApi } from './form-api';
-import KunkkaUseForm from './KunkkaUseForm.vue';
+import SunnyUseForm from './SunnyUseForm.vue';
 
-export function useKunkkaForm(options: KunkkaFormProps = {}) {
+export function useSunnyForm(options: SunnyFormProps = {}) {
   const api = new FormApi(options);
 
   // 扩展 API：注入 useStore 方法 / Extended API: Inject useStore method
@@ -16,7 +16,7 @@ export function useKunkkaForm(options: KunkkaFormProps = {}) {
   //    The finally returned api object will possess the useStore method
   //
   // 使用场景示例 / Usage Example:
-  // const [Register, api] = useKunkkaForm();
+  // const [Register, api] = useSunnyForm();
   // 
   // 在组件中订阅状态变化 (响应式) / Subscribe to state changes in component (Reactive)
   // const isCollapsed = api.useStore((state) => state.collapsed);
@@ -49,10 +49,10 @@ export function useKunkkaForm(options: KunkkaFormProps = {}) {
   }
 
   // 定义表单组件 / Define Form Component
-  // 这是一个包装组件，用于将 FormApi 与 UI 组件(KunkkaUseForm)连接起来
-  // This is a wrapper component used to connect FormApi with the UI component (KunkkaUseForm)
+  // 这是一个包装组件，用于将 FormApi 与 UI 组件(SunnyUseForm)连接起来
+  // This is a wrapper component used to connect FormApi with the UI component (SunnyUseForm)
   const Form = defineComponent({
-    name: 'UseKunkkaFormWrapper',
+    name: 'useSunnyFormWrapper',
     setup(props, { attrs, slots }) {
       // 将组件的 props 和 attrs 同步到 store 中 / Sync component props and attrs to store
       // 这允许用户在使用 <Form /> 组件时直接传递属性来覆盖配置
@@ -60,7 +60,7 @@ export function useKunkkaForm(options: KunkkaFormProps = {}) {
       api.setState({ ...props, ...attrs });
 
       // 渲染函数 / Render function
-      return () => h(KunkkaUseForm, {
+      return () => h(SunnyUseForm, {
         // 1. ...props & ...attrs: 注入组件接收到的属性
         //    Inject props and attrs received by the component
         ...props,

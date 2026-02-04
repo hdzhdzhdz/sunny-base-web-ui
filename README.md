@@ -61,7 +61,7 @@ pnpm format
 │   │   └── tsconfig        # TypeScript 基础配置
 │   ├── @effects/           # 特效/交互组件
 │   ├── @icons/             # 图标组件库
-│   ├── @kunkka/            # 核心 UI 组件库
+│   ├── @ui/            # 核心 UI 组件库
 │   └── @utils/             # 共享工具函数
 ├── pnpm-workspace.yaml     # pnpm workspace 配置
 ├── turbo.json              # Turbo 任务管道配置

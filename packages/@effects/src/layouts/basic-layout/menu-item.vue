@@ -10,7 +10,7 @@
       <template #title>
         <!-- 菜单图标 -->
         <span class="mr-2 inline-flex items-center" v-if="item.icon">
-          <KunkkaIcon :icon="item.icon" />
+          <SunnyIcon :icon="item.icon" />
         </span>
         <!-- 菜单标题 -->
         {{ item.name }}
@@ -21,7 +21,7 @@
     <!-- 如果没有子菜单，渲染为普通菜单项 -->
     <a-menu-item v-else :key="item.path">
       <template #icon v-if="item.icon">
-        <KunkkaIcon :icon="item.icon" />
+        <SunnyIcon :icon="item.icon" />
       </template>
       {{ item.name }}
     </a-menu-item>
@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 import { defineOptions, defineProps } from 'vue';
-import { KunkkaIcon } from '@sunny-base-web/ui';
+import { SunnyIcon } from '@sunny-base-web/ui';
 
 // 定义组件名称，便于递归调用和调试
 defineOptions({ name: 'MenuItem' });

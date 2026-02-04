@@ -1,6 +1,6 @@
 <template>
   <div class="p-4">
-    <kunkka-batch-select
+    <sunny-batch-select
       v-model="value"
       :options="options"
       placeholder="请选择 (支持全选/粘贴)"
@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { KunkkaBatchSelect } from '@sunny-base-web/ui';
+import { SunnyBatchSelect } from '@sunny-base-web/ui';
 
 const value = ref([]);
 const options = Array.from({ length: 10 }).map((_, index) => ({

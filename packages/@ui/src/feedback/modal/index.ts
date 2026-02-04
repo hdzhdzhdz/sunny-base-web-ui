@@ -1,7 +1,7 @@
 import Modal from './Modal.vue';
-import { useKunkkaModal } from './use-kunkka-modal';
+import { useSunnyModal } from './use-sunny-modal';
 import { ModalApi } from './modal-api';
 import * as ModalTypes from './types';
 
-export { Modal, useKunkkaModal, ModalApi, ModalTypes };
+export { Modal, useSunnyModal, ModalApi, ModalTypes };
 export default Modal;

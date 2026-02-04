@@ -6,7 +6,7 @@
   <div class="flex items-center w-full h-[38px] bg-[var(--color-bg-2)] border-b border-[var(--color-border)] px-2 gap-2">
     <!-- 标签滚动区域 -->
     <div class="flex-1 overflow-hidden h-full flex items-center">
-      <KunkkaScrollbar horizontal class="w-full h-full flex items-center" :style="{ display: 'flex', alignItems: 'center' }">
+      <SunnyScrollbar horizontal class="w-full h-full flex items-center" :style="{ display: 'flex', alignItems: 'center' }">
         <div class="flex items-center gap-1 h-full px-1 pb-1">
           <div
             v-for="tab in tabbarStore.getTabs"
@@ -40,7 +40,7 @@
                   @click.stop="tabbarStore.toggleTabPin(tab)"
                   title="取消固定"
                 >
-                  <KunkkaIcon icon="lucide:pin" :size="12" />
+                  <SunnyIcon icon="lucide:pin" :size="12" />
                 </span>
 
                 <!-- 关闭按钮 -->
@@ -54,17 +54,17 @@
                   ]"
                   @click.stop="handleClose(tab)"
                 >
-                  <KunkkaIcon icon="lucide:x" :size="12" />
+                  <SunnyIcon icon="lucide:x" :size="12" />
                 </span>
               </div>
               <template #content>
                 <template v-for="item in getContextMenuItems(tab)" :key="item.key">
                   <a-doption v-if="!item.separator" :value="item.key" :disabled="item.disabled">
-                    <template #icon v-if="item.icon"><KunkkaIcon :icon="item.icon" /></template>
+                    <template #icon v-if="item.icon"><SunnyIcon :icon="item.icon" /></template>
                     {{ item.text }}
                   </a-doption>
                   <a-doption v-else :value="item.key" :disabled="item.disabled" class="border-t border-[var(--color-border)] mt-1 pt-1">
-                    <template #icon v-if="item.icon"><KunkkaIcon :icon="item.icon" /></template>
+                    <template #icon v-if="item.icon"><SunnyIcon :icon="item.icon" /></template>
                     {{ item.text }}
                   </a-doption>
                 </template>
@@ -72,7 +72,7 @@
             </a-dropdown>
           </div>
         </div>
-      </KunkkaScrollbar>
+      </SunnyScrollbar>
     </div>
 
     <!-- 右侧操作栏 -->
@@ -80,23 +80,23 @@
       <!-- 下拉菜单 -->
       <a-dropdown trigger="click" @select="handleMenuSelect">
         <div class="flex items-center justify-center w-8 h-8 rounded-sm hover:bg-[var(--color-fill-3)] cursor-pointer text-[var(--color-text-2)] hover:text-[var(--color-text-1)] transition-colors">
-          <KunkkaIcon icon="lucide:chevron-down" :size="16" />
+          <SunnyIcon icon="lucide:chevron-down" :size="16" />
         </div>
         <template #content>
           <a-doption value="reload">
-            <template #icon><KunkkaIcon icon="lucide:rotate-cw" /></template>
+            <template #icon><SunnyIcon icon="lucide:rotate-cw" /></template>
             重新加载
           </a-doption>
           <a-doption value="close-current">
-            <template #icon><KunkkaIcon icon="lucide:x" /></template>
+            <template #icon><SunnyIcon icon="lucide:x" /></template>
             关闭当前
           </a-doption>
           <a-doption value="close-other">
-            <template #icon><KunkkaIcon icon="lucide:minus-circle" /></template>
+            <template #icon><SunnyIcon icon="lucide:minus-circle" /></template>
             关闭其他
           </a-doption>
           <a-doption value="close-all">
-            <template #icon><KunkkaIcon icon="lucide:trash-2" /></template>
+            <template #icon><SunnyIcon icon="lucide:trash-2" /></template>
             关闭全部
           </a-doption>
         </template>
@@ -107,7 +107,7 @@
         class="flex items-center justify-center w-8 h-8 rounded-sm hover:bg-[var(--color-fill-3)] cursor-pointer text-[var(--color-text-2)] hover:text-[var(--color-text-1)] transition-colors"
         @click="toggleContentFullScreen"
       >
-        <KunkkaIcon :icon="tabbarStore.contentFullScreen ? 'lucide:minimize' : 'lucide:maximize'" :size="16" />
+        <SunnyIcon :icon="tabbarStore.contentFullScreen ? 'lucide:minimize' : 'lucide:maximize'" :size="16" />
       </div>
     </div>
   </div>
@@ -117,7 +117,7 @@
 import { watch } from 'vue';
 import { useTabbarStore, useAccessStore } from '@sunny-base-web/stores';
 import { useRouter, useRoute } from 'vue-router';
-import { KunkkaIcon, KunkkaScrollbar } from '@sunny-base-web/ui';
+import { SunnyIcon, SunnyScrollbar } from '@sunny-base-web/ui';
 import type { TabDefinition } from '@sunny-base-web/stores';
 
 defineOptions({ name: 'Tabbar' });
@@ -295,11 +295,11 @@ watch(
 
 <style scoped>
 /* 隐藏滚动条样式 */
-:deep(.kunkka-scrollbar__bar) {
+:deep(.sunny-scrollbar__bar) {
   opacity: 0;
   transition: opacity 0.3s;
 }
-:deep(.kunkka-scrollbar:hover .kunkka-scrollbar__bar) {
+:deep(.sunny-scrollbar:hover .sunny-scrollbar__bar) {
   opacity: 1;
 }
 </style>

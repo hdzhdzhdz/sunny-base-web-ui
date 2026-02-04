@@ -4,7 +4,7 @@ import sharedConfig from "@sunny-base-web/tailwind-config";
 const config: Pick<Config, "content" | "presets"> = {
   content: [
     "./src/**/*.{md,vue,js,ts,jsx,tsx}",
-    "../packages/@kunkka/src/**/*.{vue,js,ts,jsx,tsx}"
+    "../packages/@ui/src/**/*.{vue,js,ts,jsx,tsx}"
   ],
   presets: [sharedConfig],
 };

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive } from 'vue';
-import { useKunkkaQueryGrid } from '@sunny-base-web/ui';
+import { useSunnyQueryGrid } from '@sunny-base-web/ui';
 
 const gridOptions = reactive({
   columns: [
@@ -20,7 +20,7 @@ const gridEvents = {
   }
 };
 
-const [Grid, gridApi] = useKunkkaQueryGrid({ gridOptions, gridEvents });
+const [Grid, gridApi] = useSunnyQueryGrid({ gridOptions, gridEvents });
 </script>
 
 <template>

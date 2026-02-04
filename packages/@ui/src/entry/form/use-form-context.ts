@@ -1,6 +1,6 @@
 import { computed, inject, provide, unref, useSlots, type ComputedRef, type InjectionKey } from 'vue';
 import { useForm } from 'vee-validate';
-import type { KunkkaFormProps } from './types';
+import type { SunnyFormProps } from './types';
 export { provideComponentRefMap, injectComponentRefMap } from './form-render/context';
 
 // ==========================================
@@ -11,7 +11,7 @@ export { provideComponentRefMap, injectComponentRefMap } from './form-render/con
  * Form Props 注入键
  * 用于在组件树中传递表单的配置属性 (Schema, Layout 等)
  */
-const FormPropsKey: InjectionKey<ComputedRef<KunkkaFormProps>> = Symbol('FormPropsKey');
+const FormPropsKey: InjectionKey<ComputedRef<SunnyFormProps>> = Symbol('FormPropsKey');
 
 // ==========================================
 // Provider / Injector (提供者/注入者)
@@ -19,22 +19,22 @@ const FormPropsKey: InjectionKey<ComputedRef<KunkkaFormProps>> = Symbol('FormPro
 
 /**
  * 提供表单属性 (Provide Form Props)
- * 在表单根组件 (KunkkaForm / KunkkaUseForm) 中调用，向下层组件提供配置
+ * 在表单根组件 (SunnyForm / SunnyUseForm) 中调用，向下层组件提供配置
  * @param props 表单配置属性的计算属性
  */
-export function provideFormProps(props: ComputedRef<KunkkaFormProps>) {
+export function provideFormProps(props: ComputedRef<SunnyFormProps>) {
   provide(FormPropsKey, props);
 }
 
 /**
  * 注入表单属性 (Inject Form Props)
  * 在子组件 (如 FormRender, FormField) 中调用，获取表单配置
- * @throws Error 如果没有找到 FormPropsKey (说明没有在 KunkkaForm/KunkkaUseForm 内部使用)
+ * @throws Error 如果没有找到 FormPropsKey (说明没有在 SunnyForm/SunnyUseForm 内部使用)
  */
 export function injectFormProps() {
   const props = inject(FormPropsKey);
   if (!props) {
-    throw new Error('Form context not found (表单上下文未找到，请确保在 KunkkaForm 或 KunkkaUseForm 内部使用)');
+    throw new Error('Form context not found (表单上下文未找到，请确保在 SunnyForm 或 SunnyUseForm 内部使用)');
   }
   return props;
 }
@@ -52,7 +52,7 @@ export function injectFormProps() {
  * - form: vee-validate 的表单上下文
  * - delegatedSlots: 需要透传给 FormRender 的插槽名称列表
  */
-export function useFormInitial(props: ComputedRef<KunkkaFormProps> | KunkkaFormProps) {
+export function useFormInitial(props: ComputedRef<SunnyFormProps> | SunnyFormProps) {
   const slots = useSlots();
   
   // 1. 计算初始值 (Calculate initial values from schema)

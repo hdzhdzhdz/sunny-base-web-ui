@@ -2,7 +2,7 @@ import { isRef, toRaw, type ComponentPublicInstance } from 'vue';
 import type { FormState, GenericObject, ResetFormOpts, ValidationOptions } from 'vee-validate';
 import { cloneDeep, isFunction, isObject } from '@sunny-base-web/utils';
 import { Store } from './store';
-import type { FormActions, FormSchema, KunkkaFormProps } from './types';
+import type { FormActions, FormSchema, SunnyFormProps } from './types';
 
 // ==========================================
 // 辅助函数 (Helper Functions)
@@ -123,7 +123,7 @@ function bindMethods(instance: any) {
  * 获取默认状态
  * Get Default State
  */
-function getDefaultState(): KunkkaFormProps {
+function getDefaultState(): SunnyFormProps {
   return {
     actionWrapperClass: '',
     collapsed: false,
@@ -160,13 +160,13 @@ export class FormApi {
   isMounted = false;
 
   // 当前状态 (快捷访问)
-  public state: null | KunkkaFormProps = null;
+  public state: null | SunnyFormProps = null;
   
   // 状态同步处理器
   stateHandler: StateHandler;
 
   // TanStack Store 实例
-  public store: Store<KunkkaFormProps>;
+  public store: Store<SunnyFormProps>;
 
   /**
    * 组件实例映射
@@ -179,14 +179,14 @@ export class FormApi {
   private latestSubmissionValues: null | Record<string, any> = null;
 
   // 上一次的状态 (用于 Diff)
-  private prevState: null | KunkkaFormProps = null;
+  private prevState: null | SunnyFormProps = null;
 
-  constructor(options: KunkkaFormProps = {}) {
+  constructor(options: SunnyFormProps = {}) {
     const { ...storeState } = options;
 
     const defaultState = getDefaultState();
 
-    this.store = new Store<KunkkaFormProps>(
+    this.store = new Store<SunnyFormProps>(
       {
         ...defaultState,
         ...storeState,
@@ -479,8 +479,8 @@ export class FormApi {
    */
   setState(
     stateOrFn:
-      | ((prev: KunkkaFormProps) => Partial<KunkkaFormProps>)
-      | Partial<KunkkaFormProps>,
+      | ((prev: SunnyFormProps) => Partial<SunnyFormProps>)
+      | Partial<SunnyFormProps>,
   ) {
     if (isFunction(stateOrFn)) {
       this.store.setState((prev) => {
@@ -691,7 +691,7 @@ export class FormApi {
       await this.stateHandler.waitForCondition();
     }
     if (!this.form?.meta) {
-      throw new Error('<KunkkaUseForm /> is not mounted');
+      throw new Error('<SunnyUseForm /> is not mounted');
     }
     return this.form;
   }
@@ -843,7 +843,7 @@ export class FormApi {
     }
   }
 
-  // 类型定义占位，实际在 useKunkkaForm 中注入实现
-  // Type definition placeholder, actual implementation injected in useKunkkaForm
-  useStore?: <T = KunkkaFormProps>(selector?: (state: KunkkaFormProps) => T) => any;
+  // 类型定义占位，实际在 useSunnyForm 中注入实现
+  // Type definition placeholder, actual implementation injected in useSunnyForm
+  useStore?: <T = SunnyFormProps>(selector?: (state: SunnyFormProps) => T) => any;
 }

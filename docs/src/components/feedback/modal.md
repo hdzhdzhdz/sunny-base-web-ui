@@ -8,11 +8,11 @@
 
 - **增强标题栏**：支持双击标题栏最大化/还原，右上角集成帮助提示、最大化/还原、关闭按钮。
 - **灵活的底部插槽**：提供 `insertFooter`、`centerFooter`、`appendFooter` 等插槽，方便在默认按钮周围插入自定义内容。
-- **状态管理**：内置 `useKunkkaModal` Hook，通过 API 方式管理弹窗状态，逻辑更聚合。
+- **状态管理**：内置 `useSunnyModal` Hook，通过 API 方式管理弹窗状态，逻辑更聚合。
 
 ## 基础用法
 
-使用 `useKunkkaModal` Hook 可以轻松管理弹窗状态。
+使用 `useSunnyModal` Hook 可以轻松管理弹窗状态。
 
 :::preview
 demo-preview=./demos/modal/Basic.vue
@@ -52,7 +52,7 @@ demo-preview=./demos/modal/VModel.vue
 
 ## Hook Methods
 
-`useKunkkaModal` 返回一个元组 `[ConnectedModal, methods]`，其中 `methods` 包含以下方法：
+`useSunnyModal` 返回一个元组 `[ConnectedModal, methods]`，其中 `methods` 包含以下方法：
 
 | 方法名 | 说明 | 类型 |
 | --- | --- | --- |

@@ -1,7 +1,7 @@
 <script lang="tsx" setup>
 import { reactive } from 'vue'
 import type { VxeGridProps, VxeGridListeners } from 'vxe-table'
-import { useKunkkaQueryGrid, useKunkkaForm } from "@kunkka/ui";
+import { useSunnyQueryGrid, useSunnyForm } from "@sunny-base-web/ui";
 import { Message } from '@arco-design/web-vue';
 import { searchFormSchema, tableColumns } from './config';
 import type { OperationLogVO } from './types';
@@ -62,7 +62,7 @@ const fetchApi = (page: { currentPage: number, pageSize: number }, queryParams?:
 // 2. Query Form Configuration
 // ----------------------------------------------------------------------
 
-const [QueryForm, formApi] = useKunkkaForm({
+const [QueryForm, formApi] = useSunnyForm({
   layout: 'vertical',
   size: 'small',
   gridProps: { 
@@ -124,7 +124,7 @@ const gridEvents: VxeGridListeners = {
   // Add grid events if needed
 }
 
-const [Grid, gridApi] = useKunkkaQueryGrid({ gridOptions, gridEvents });
+const [Grid, gridApi] = useSunnyQueryGrid({ gridOptions, gridEvents });
 
 // ----------------------------------------------------------------------
 // 4. Event Handlers

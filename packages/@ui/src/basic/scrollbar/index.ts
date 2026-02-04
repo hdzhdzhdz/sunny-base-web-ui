@@ -1,1 +1,1 @@
-export { default as KunkkaScrollbar } from './scrollbar.vue';
+export { default as SunnyScrollbar } from './scrollbar.vue';

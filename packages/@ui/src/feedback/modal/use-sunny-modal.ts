@@ -3,13 +3,13 @@ import type { ModalApiOptions, UseModalReturnType } from "./types";
 import { ModalApi } from "./modal-api";
 import Modal from "./Modal.vue";
 
-export function useKunkkaModal(
+export function useSunnyModal(
   options: ModalApiOptions = {}
 ): UseModalReturnType {
   const api = new ModalApi(options);
 
   const ConnectedModal = defineComponent({
-    name: "KunkkaConnectedModal",
+    name: "SunnyConnectedModal",
     inheritAttrs: false,
     setup(_, { attrs, slots }) {
       return () =>

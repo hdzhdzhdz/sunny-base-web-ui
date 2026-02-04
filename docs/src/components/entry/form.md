@@ -8,7 +8,7 @@ Form 组件支持两种使用模式：**Hook 模式** 和 **组件模式**。
 
 ### Hook 模式 (推荐)
 
-使用 `useKunkkaForm` 创建表单。
+使用 `useSunnyForm` 创建表单。
 
 **适用场景：**
 - 需要在外部通过 API (如 `formApi`) 灵活控制表单（提交、重置、设置值、校验等）。
@@ -24,7 +24,7 @@ Form 组件支持两种使用模式：**Hook 模式** 和 **组件模式**。
 
 ## 布局与样式 (Layout & Style)
 
-KunkkaForm 基于 Arco Design 的 24 栅格系统，支持强大的响应式布局能力。
+SunnyForm 基于 Arco Design 的 24 栅格系统，支持强大的响应式布局能力。
 
 ### 演示效果
 
@@ -115,14 +115,14 @@ schema: [
 - **Zod Schema**：使用 `zod` 定义强大的类型校验规则，支持链式调用和自定义消息。
 - **动态规则**：通过 `dependencies.rules` 配置函数，根据表单当前值动态生成校验规则 (常用于密码确认等场景)。
 - **个性化规则注入**：
-  - 为了避免全局污染，推荐使用 `setupKunkkaForm` 在组件级按需注入规则。
+  - 为了避免全局污染，推荐使用 `setupSunnyForm` 在组件级按需注入规则。
   - 支持直接注入 `@sunny-base-web/utils` 中的常用正则模式。
 
 ### 常用正则规则
 
 `@sunny-base-web/utils/regex` 提供了丰富的常用正则模式 (如 `phone`, `email`, `idCard` 等)。
 
-你可以通过 `setupKunkkaForm` 将这些模式批量注册为字符串规则，从而在 Schema 中便捷使用。
+你可以通过 `setupSunnyForm` 将这些模式批量注册为字符串规则，从而在 Schema 中便捷使用。
 
 > 💡 **相关文档**：
 > - 查看完整的内置正则规则列表，请参考 [Regex 正则表达式](/utilities/regex.html)
@@ -135,7 +135,7 @@ schema: [
 
 ## 数据转换 (Data Transformation)
 
-KunkkaForm 提供了内置的数据转换机制，方便在表单值（通常是数组或复杂对象）与后端接口字段（通常是扁平化字段）之间进行自动映射。
+SunnyForm 提供了内置的数据转换机制，方便在表单值（通常是数组或复杂对象）与后端接口字段（通常是扁平化字段）之间进行自动映射。
 
 ### 时间范围映射 (Field Mapping Time)
 
@@ -278,7 +278,7 @@ arrayToStringFields: [
 
 ## FormApi 方法 (FormApi Methods)
 
-通过 `useKunkkaForm` 返回的 `formApi` 对象，您可以对表单进行全方位的控制。
+通过 `useSunnyForm` 返回的 `formApi` 对象，您可以对表单进行全方位的控制。
 
 <preview path="./demos/form/FormApi.vue" />
 
@@ -289,8 +289,8 @@ arrayToStringFields: [
 | `getValues` | `() => Promise<Record<string, any>>` | 获取表单当前值 (已处理日期格式等)。 |
 | `setValues` | `(fields: Record<string, any>, filter?: boolean, validate?: boolean) => Promise<void>` | 批量设置表单值。默认会自动过滤掉 Schema 中不存在的字段。 |
 | `setFieldValue` | `(field: string, value: any, validate?: boolean) => Promise<void>` | 设置单个字段的值。 |
-| `getState` | `() => KunkkaFormProps` | 获取表单当前的完整状态配置。 |
-| `setState` | `(state: Partial<KunkkaFormProps> \| ((prev) => Partial<KunkkaFormProps>)) => void` | 更新表单状态 (如 loading, schema 等)。 |
+| `getState` | `() => SunnyFormProps` | 获取表单当前的完整状态配置。 |
+| `setState` | `(state: Partial<SunnyFormProps> \| ((prev) => Partial<SunnyFormProps>)) => void` | 更新表单状态 (如 loading, schema 等)。 |
 | `getLatestSubmissionValues` | `() => Record<string, any>` | 获取最后一次提交时的表单值。 |
 
 ### 校验与提交

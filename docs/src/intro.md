@@ -13,7 +13,7 @@
 这是一个通用的 Vue 3 UI 组件库，基于 `@arco-design/web-vue` 和 `tailwindcss` 构建。它提供了一系列开箱即用的基础组件和业务组件，旨在提高开发效率并保持 UI 的一致性。
 
 - **基础组件 (Basic)**: 如图标 (`Icon`)、滚动条 (`Scrollbar`) 等。
-- **数据展示 (Data)**: 如上传 (`Upload`)、悬停卡片 (`HoverCard`) 等。
+- **数据展示 (Data)**: 如上传 (`Upload`)、表格 (`Table`) 等。
 - **反馈组件 (Feedback)**: 如模态框 (`Modal`)、文字提示 (`Tooltip`) 等。
 - **导航组件 (Navigation)**: 如菜单 (`Menu`) 等。
 
@@ -44,7 +44,7 @@
 - **Composables**: 如 `useNamespace` 等 Vue 组合式函数。
 - **工具函数**: 颜色处理、类名合并 (`cn`)、类型推断等。
 
-这里整理了 `@sunny-base-web/utils/regex` 中内置的所有常用正则表达式，您可以直接在 `KunkkaInput` 组件的 `rule` 属性中使用，或在代码中导入使用。
+这里整理了 `@sunny-base-web/utils/regex` 中内置的所有常用正则表达式，您可以直接在 `Input` 组件的 `rule` 属性中使用，或在代码中导入使用。
 
 ### @config
 

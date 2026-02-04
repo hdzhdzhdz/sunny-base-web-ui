@@ -1,6 +1,6 @@
 import { h } from 'vue';
 import type { VxeGridProps } from 'vxe-table';
-import type { FormSchema } from '@kunkka/ui';
+import type { FormSchema } from '@sunny-base-web/ui';
 import type { OperationLogVO } from './types';
 
 export const searchFormSchema: FormSchema[] = [

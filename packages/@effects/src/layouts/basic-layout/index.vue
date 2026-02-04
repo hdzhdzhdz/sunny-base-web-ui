@@ -34,7 +34,7 @@
       </div>
       
       <!-- 侧边栏菜单区域 (使用滚动条包裹) -->
-      <KunkkaScrollbar class="flex-1 overflow-hidden">
+      <SunnyScrollbar class="flex-1 overflow-hidden">
         <a-menu
           v-model:selected-keys="selectedKeys"
           v-model:open-keys="openKeys"
@@ -45,7 +45,7 @@
           <!-- 递归渲染菜单项 -->
           <MenuItem :menus="accessStore.accessMenus" />
         </a-menu>
-      </KunkkaScrollbar>
+      </SunnyScrollbar>
     </a-layout-sider>
 
     <!-- 右侧主体区域 -->
@@ -62,7 +62,7 @@
           class="cursor-pointer flex items-center p-1 rounded hover:bg-[var(--color-fill-3)] text-[var(--color-text-2)] hover:text-[var(--color-text-1)] transition-colors" 
           @click="toggleCollapsed"
         >
-          <KunkkaIcon :icon="collapsed ? 'lucide:panel-left-open' : 'lucide:panel-left-close'" :size="24" />
+          <SunnyIcon :icon="collapsed ? 'lucide:panel-left-open' : 'lucide:panel-left-close'" :size="24" />
         </div>
 
         <!-- 面包屑导航 -->
@@ -102,7 +102,7 @@
 import { ref, watch } from 'vue';
 import { useAccessStore, useTabbarStore } from '@sunny-base-web/stores';
 import { useRouter, useRoute } from 'vue-router';
-import { KunkkaIcon, KunkkaScrollbar } from '@sunny-base-web/ui';
+import { SunnyIcon, SunnyScrollbar } from '@sunny-base-web/ui';
 import { useEffectsConfig } from '../../config';
 import MenuItem from './menu-item.vue';
 import HeaderBreadcrumb from './header/breadcrumb.vue';

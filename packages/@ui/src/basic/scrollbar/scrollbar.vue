@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ClassType } from '@kunkka-core/typings';
+type ClassType = string | string[] | Record<string, boolean>;
 
 import { computed, ref } from 'vue';
 
@@ -95,7 +95,7 @@ function handleScroll(event: Event) {
   <ScrollArea
     :class="[cn(props.class), computedShadowClasses]"
     :on-scroll="handleScroll"
-    class="kunkka-scrollbar relative"
+    class="sunny-scrollbar relative"
   >
     <div
       v-if="showShadowTop"
@@ -123,7 +123,7 @@ function handleScroll(event: Event) {
 </template>
 
 <style scoped>
-.kunkka-scrollbar {
+.sunny-scrollbar {
   &:not(.both-shadow).left-shadow {
     mask-image: linear-gradient(90deg, transparent, #000 16px);
   }

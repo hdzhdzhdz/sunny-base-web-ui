@@ -2,7 +2,7 @@
   <div class="regex-debugger p-5 rounded-lg border border-[var(--vp-c-divider)] bg-[var(--vp-c-bg-soft)] my-4">
     <div class="mb-4">
       <h3 class="text-lg font-bold mb-2 !mt-0">正则调试器</h3>
-      <p class="text-sm text-[var(--vp-c-text-2)] mb-0">选择一个预设规则，输入内容测试效果。KunkkaInput 会自动应用过滤规则。</p>
+      <p class="text-sm text-[var(--vp-c-text-2)] mb-0">选择一个预设规则，输入内容测试效果。Input 会自动应用过滤规则。</p>
     </div>
 
     <div class="flex flex-col gap-4">
@@ -17,7 +17,7 @@
 
       <div class="flex items-center gap-4" v-if="selectedKey">
         <label class="w-20 font-medium text-sm">测试输入:</label>
-        <KunkkaInput
+        <Input
           v-model="testValue"
           :rule="selectedKey"
           :placeholder="currentPattern?.placeholder || '尝试输入...'"

@@ -4,7 +4,7 @@
       点击右侧搜索按钮模拟选择数据
     </div>
     
-    <kunkka-search-input-tag
+    <sunny-search-input-tag
       v-model="selectedItems"
       :field-names="{ label: 'name', value: 'id' }"
       placeholder="请点击右侧按钮选择人员"
@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { KunkkaSearchInputTag } from '@sunny-base-web/ui';
+import { SunnySearchInputTag } from '@sunny-base-web/ui';
 import { Message } from '@arco-design/web-vue';
 
 // 模拟的数据结构

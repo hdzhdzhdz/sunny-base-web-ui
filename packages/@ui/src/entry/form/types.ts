@@ -5,14 +5,14 @@ import type { Component, HtmlHTMLAttributes } from 'vue';
 export type FormLayout = 'horizontal' | 'inline' | 'vertical';
 
 export type BaseFormComponentType =
-  | 'KunkkaInput'
-  | 'KunkkaSelect'
-  | 'KunkkaCheckbox'
-  | 'KunkkaRadio'
-  | 'KunkkaSwitch'
-  | 'KunkkaDatePicker'
-  | 'KunkkaTimePicker'
-  | 'KunkkaUpload'
+  | 'SunnyInput'
+  | 'SunnySelect'
+  | 'SunnyCheckbox'
+  | 'SunnyRadio'
+  | 'SunnySwitch'
+  | 'SunnyDatePicker'
+  | 'SunnyTimePicker'
+  | 'SunnyUpload'
   | 'Input'
   | 'Select'
   | 'Checkbox'
@@ -172,7 +172,7 @@ export interface FormSchema {
   formFieldProps?: Record<string, any>;
 }
 
-export interface KunkkaFormProps {
+export interface SunnyFormProps {
   /**
    * 表单布局
    * Form layout
@@ -320,7 +320,7 @@ export interface KunkkaFormProps {
   arrayToStringFields?: ArrayToStringFields;
 }
 
-export interface FormApiOptions extends KunkkaFormProps {
+export interface FormApiOptions extends SunnyFormProps {
   /**
    * 表单实例
    * Form instance
@@ -354,7 +354,7 @@ export interface FormCommonConfig {
  * 表单适配器选项
  * Form adapter options
  */
-export interface KunkkaFormAdapterOptions<
+export interface SunnyFormAdapterOptions<
   T extends BaseFormComponentType = BaseFormComponentType,
 > {
   /**
@@ -373,6 +373,6 @@ export interface KunkkaFormAdapterOptions<
  * 表单渲染属性
  * Form render properties
  */
-export interface FormRenderProps extends KunkkaFormProps {
+export interface FormRenderProps extends SunnyFormProps {
   form?: any;
 }

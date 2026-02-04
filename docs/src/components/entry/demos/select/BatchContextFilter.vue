@@ -19,8 +19,8 @@
 
     <!-- 组件展示 -->
     <div class="p-4 border rounded">
-      <div class="font-bold mb-3">KunkkaBatchSelect 组件</div>
-      <kunkka-batch-select
+      <div class="font-bold mb-3">SunnyBatchSelect 组件</div>
+      <sunny-batch-select
         v-model="value"
         :options="options"
         :filter-model="formModel"
@@ -55,7 +55,7 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue';
 // 实际使用时请从 @sunny-base-web/ui 引入
-// import { KunkkaBatchSelect } from '@sunny-base-web/ui';
+// import { SunnyBatchSelect } from '@sunny-base-web/ui';
 
 const value = ref([]);
 

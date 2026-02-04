@@ -19,13 +19,13 @@ const props = defineProps<{
   formApi?: FormApi;
   /**
    * VeeValidate 表单实例
-   * 如果通过 useKunkkaForm Hook 传入，则使用该实例
+   * 如果通过 useSunnyForm Hook 传入，则使用该实例
    * 否则在组件内部创建新的实例
    */
   form?: any;
 }>();
 
-// 注入上层提供的表单配置 (来自 KunkkaUseForm 或 KunkkaForm)
+// 注入上层提供的表单配置 (来自 SunnyUseForm 或 SunnyForm)
 const formProps = injectFormProps();
 
 /**
@@ -120,7 +120,7 @@ const isInline = computed(() => renderPropsState.layout === 'inline');
  * 初始化 VeeValidate 表单核心
  * 
  * 模式区分：
- * 1. Hook 模式 (强烈推荐): 外部传入 props.form。状态由 useKunkkaForm 管理，跨组件共享更方便。
+ * 1. Hook 模式 (强烈推荐): 外部传入 props.form。状态由 useSunnyForm 管理，跨组件共享更方便。
  * 2. 组件模式: 内部创建 useForm。适用于简单场景。
  */
 const { handleSubmit, resetForm, setValues, values, validate, errors, meta } = props.form || useForm({
@@ -192,7 +192,7 @@ const computedGap = computed(() => {
   const xGap = gridProps?.xGap ?? gridProps?.['x-gap'] ?? defaultGap;
   const yGap = gridProps?.yGap ?? gridProps?.['y-gap'] ?? defaultGap;
   
-  // console.log('[KunkkaForm Debug] computedGap:', { xGap, yGap, gridProps });
+  // console.log('[SunnyForm Debug] computedGap:', { xGap, yGap, gridProps });
   
   return { x: xGap, y: yGap };
 });

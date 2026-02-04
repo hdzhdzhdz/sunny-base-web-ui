@@ -4,7 +4,7 @@ import RegexDebugger from './RegexDebugger.vue'
 
 # Regex 正则表达式
 
-这里整理了 `@sunny-base-web/utils` 中内置的所有常用正则表达式，您可以直接在 `KunkkaInput` 组件的 `rule` 属性中使用，或在代码中导入使用。
+这里整理了 `@sunny-base-web/utils` 中内置的所有常用正则表达式，您可以直接在 `Input` 组件的 `rule` 属性中使用，或在代码中导入使用。
 
 ## 调试预览
 
@@ -18,9 +18,6 @@ import { patterns } from '@sunny-base-web/utils';
 // 获取正则对象
 const phonePattern = patterns.phone;
 // { pattern: /^1[3-9]\d{9}$/, message: '...', ... }
-
-// 在 KunkkaInput 中使用
-// <kunkka-input rule="phone" />
 ```
 
 ## 常用规则分类

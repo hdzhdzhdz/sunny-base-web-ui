@@ -3,7 +3,7 @@ import { defineComponent, h, ref } from 'vue';
 import { VxeGridApi } from './api';
 import VxeGrid from './use-query-grid.vue';
 
-export function useQueryGrid(options: any) {
+export function useSunnyQueryGrid(options: any) {
   const gridRef = ref();
   const api = new VxeGridApi(gridRef, options);
 

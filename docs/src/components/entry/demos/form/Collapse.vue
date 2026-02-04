@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useKunkkaForm } from '@sunny-base-web/ui';
+import { useSunnyForm } from '@sunny-base-web/ui';
 import { Message, Button, Space } from '@arco-design/web-vue';
 
-const [Form, formApi] = useKunkkaForm({
+const [Form, formApi] = useSunnyForm({
   // 1. 开启折叠按钮
   showCollapseButton: true,
   // 2. 默认折叠

@@ -1,7 +1,7 @@
 <script lang="tsx" setup>
 import { reactive } from 'vue'
 import type { VxeGridProps, VxeGridListeners } from 'vxe-table'
-import { useKunkkaQueryGrid } from "@sunny-base-web/ui";
+import { useSunnyQueryGrid } from "@sunny-base-web/ui";
 import { Modal, Message } from '@arco-design/web-vue';
 
 interface RowVO {
@@ -177,7 +177,7 @@ const gridEvents: VxeGridListeners = {
   }
 }
 
-const [Grid, gridApi] = useKunkkaQueryGrid({ gridOptions, gridEvents });
+const [Grid, gridApi] = useSunnyQueryGrid({ gridOptions, gridEvents });
 
 </script>
 

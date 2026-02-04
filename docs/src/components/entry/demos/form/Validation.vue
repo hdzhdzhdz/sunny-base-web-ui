@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useKunkkaForm, patterns, setupKunkkaForm } from '@sunny-base-web/ui';
+import { useSunnyForm, patterns, setupSunnyForm } from '@sunny-base-web/ui';
 import { z } from 'zod';
 import { Message } from '@arco-design/web-vue';
 
 // 个性化注入 @sunny-base-web/utils/regex 规则 (Personalized Injection)
-// 方式 2: 使用 setupKunkkaForm 批量注册所有正则规则
+// 方式 2: 使用 setupSunnyForm 批量注册所有正则规则
 // 将 patterns 对象转换为 vee-validate 可用的规则函数
 const rules = Object.entries(patterns).reduce((acc, [key, config]) => {
   acc[key] = (value: any) => {
@@ -28,11 +28,11 @@ rules.required = (value: any, _params: any, ctx: any) => {
 // 批量注册规则
 console.log('Patterns keys:', Object.keys(patterns));
 console.log('Registering rules:', Object.keys(rules));
-setupKunkkaForm({
+setupSunnyForm({
   defineRules: rules
 });
 
-const [Form] = useKunkkaForm({
+const [Form] = useSunnyForm({
   showDefaultActions: true,
   schema: [
     {

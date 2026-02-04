@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useKunkkaForm } from '@sunny-base-web/ui';
+import { useSunnyForm } from '@sunny-base-web/ui';
 import { Message } from '@arco-design/web-vue';
 
-const [Form] = useKunkkaForm({
+const [Form] = useSunnyForm({
   // 操作按钮位置
   actionPosition: 'right', // 'left' | 'center' | 'right'
   // 操作按钮布局

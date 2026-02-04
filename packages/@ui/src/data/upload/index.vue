@@ -2,7 +2,7 @@
 /**
  * @file 上传组件
  * @description 支持 S3 上传、文件预览和管理的上传组件。
- * @author Kunkka
+ * @author Sunny
  */
 
 import { ref, computed, watch } from 'vue';
@@ -14,7 +14,7 @@ import {
   Progress as AProgress 
 } from '@arco-design/web-vue';
 import { Paperclip, CloudUpload, Trash2 } from '@sunny-base-web/icons';
-import { KunkkaIcon } from '../../basic/icon';
+import { SunnyIcon } from '../../basic/icon';
 import axios from 'axios';
 
 // --- 常量 ---
@@ -360,7 +360,7 @@ const checkDel = () => {
         :class="s3Disabled ? 'text-gray-300 cursor-not-allowed' : 'cursor-pointer text-gray-600 hover:text-gray-800'"
         @click="!s3Disabled && uploadToS3()"
       >
-        <KunkkaIcon :icon="CloudUpload" class="mr-1 w-4 h-4" /> {{ t('上传附件') }}
+        <SunnyIcon :icon="CloudUpload" class="mr-1 w-4 h-4" /> {{ t('上传附件') }}
       </span>
 
       <!-- Batch Actions -->
@@ -401,7 +401,7 @@ const checkDel = () => {
           class="bg-gray-50 hover:bg-gray-100 rounded p-3 relative flex items-center border border-transparent hover:border-gray-200 transition-colors group"
         >
           <!-- Icon -->
-          <KunkkaIcon :icon="renderFileTypeIcon(item)" class="w-10 h-10 mr-3 flex-shrink-0" />
+          <SunnyIcon :icon="renderFileTypeIcon(item)" class="w-10 h-10 mr-3 flex-shrink-0" />
           
           <!-- Info -->
           <div class="flex-1 min-w-0 pr-8">

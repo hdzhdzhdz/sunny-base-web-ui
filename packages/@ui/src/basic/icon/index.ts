@@ -1,2 +1,2 @@
-export { default as KunkkaIcon } from './icon.vue';
+export { default as SunnyIcon } from './icon.vue';
 

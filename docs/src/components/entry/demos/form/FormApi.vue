@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useKunkkaForm, z } from '@sunny-base-web/ui';
+import { useSunnyForm, z } from '@sunny-base-web/ui';
 import { Message, Space, Button, Card } from '@arco-design/web-vue';
 import { ref } from 'vue';
 
-const [Form, formApi] = useKunkkaForm({
+const [Form, formApi] = useSunnyForm({
   fieldMappingTime: [
     ['dateRange', ['startDate', 'endDate'], 'YYYY-MM-DD']
   ],
@@ -17,7 +17,7 @@ const [Form, formApi] = useKunkkaForm({
       label: '姓名', 
       component: 'Input', 
       rules: z.string().min(1, '请输入姓名'),
-      defaultValue: 'Kunkka'
+      defaultValue: 'Sunny'
     },
     { 
       fieldName: 'age', 

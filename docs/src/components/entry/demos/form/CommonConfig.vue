@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useKunkkaForm } from '@sunny-base-web/ui';
+import { useSunnyForm } from '@sunny-base-web/ui';
 import { Message } from '@arco-design/web-vue';
 
 const schema = [
@@ -8,7 +8,7 @@ const schema = [
 ];
 
 // 表单 A: 默认行为
-const [FormA, formApiA] = useKunkkaForm({
+const [FormA, formApiA] = useSunnyForm({
   schema,
   handleValuesChange: (values) => {
     Message.info(`表单 A 触发变更: ${JSON.stringify(values)}`);
@@ -17,7 +17,7 @@ const [FormA, formApiA] = useKunkkaForm({
 });
 
 // 表单 B: 禁用 Change 监听
-const [FormB, formApiB] = useKunkkaForm({
+const [FormB, formApiB] = useSunnyForm({
   schema,
   commonConfig: {
     disabledOnChangeListener: true,

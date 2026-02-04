@@ -8,35 +8,35 @@ Form 组件支持两种使用模式：**Hook 模式** 和 **组件模式**。
 
 ### Hook 模式 (推荐)
 
-使用 `useKunkkaForm` 创建表单。
+使用 `useSunnyForm` 创建表单。
 
 **适用场景：**
 - 需要在外部通过 API (如 `formApi`) 灵活控制表单（提交、重置、设置值、校验等）。
 - 复杂表单，需要处理联动、动态更新 Schema 等逻辑。
 - 习惯 React Hook 风格或希望逻辑与 UI 分离。
 
-<preview path="./demos/form/Basic.vue" title="Hook 模式" description="使用 useKunkkaForm 创建表单，通过 formApi 控制表单行为。" />
+<preview path="./demos/form/Basic.vue" title="Hook 模式" description="使用 useSunnyForm 创建表单，通过 formApi 控制表单行为。" />
 
 ### 组件模式
 
-直接使用 `<KunkkaForm />` 组件。
+直接使用 `<SunnyForm />` 组件。
 
 **适用场景：**
 - 简单的展示型表单。
 - 不需要复杂的外部控制逻辑。
 - 只需要通过 Props 传递配置，利用事件 (`@submit`, `@reset`) 处理结果。
 
-<!-- <preview path="./demos/form/ComponentUsage.vue" title="组件模式" description="直接使用 KunkkaForm 组件，通过 Props 传递配置。" /> -->
+<!-- <preview path="./demos/form/ComponentUsage.vue" title="组件模式" description="直接使用 SunnyForm 组件，通过 Props 传递配置。" /> -->
 
 ## 表单验证
 
-Kunkka Form 提供了统一的验证机制，通过 `rules` 属性同时管理**逻辑校验**、**输入过滤**和**格式提示**。
+Sunny Form 提供了统一的验证机制，通过 `rules` 属性同时管理**逻辑校验**、**输入过滤**和**格式提示**。
 
-<preview path="./demos/form/ValidationRules.vue" title="验证规则示例" description="演示必填、格式校验、自定义校验函数以及组合校验。" />
+<preview path="./demos/form/Validation.vue" title="验证规则示例" description="演示必填、格式校验、自定义校验函数以及组合校验。" />
 
 ### 验证配置方式
 
-Kunkka Form 推荐使用 `rules` 属性进行统一配置，系统会自动根据规则推断输入行为：
+Sunny Form 推荐使用 `rules` 属性进行统一配置，系统会自动根据规则推断输入行为：
 
 #### 1. 统一配置 (`rules`)
 通过 `rules` 属性配置所有校验规则，支持管道符 `|` 分隔或对象格式。
@@ -117,7 +117,7 @@ Kunkka Form 推荐使用 `rules` 属性进行统一配置，系统会自动根�
 - **colSpan**: 字段跨度 (1-24)。在 Schema 中配置，控制单个字段占用的列数。
 
 ```typescript
-const [Form] = useKunkkaForm({
+const [Form] = useSunnyForm({
   layout: 'horizontal',
   // 自定义 Grid 布局：大屏 3 列，中屏 2 列，小屏 1 列
   wrapperClass: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
@@ -163,7 +163,7 @@ const [Form] = useKunkkaForm({
 
 支持通过 `dependencies` 配置项实现字段间的联动逻辑（如控制显隐、禁用、动态属性等）。
 
-<preview path="./demos/form/SchemaDemo.vue" title="Schema 高级特性" description="演示字段联动、动态显隐、动态必填、帮助信息等高级 Schema 配置。" />
+<!-- <preview path="./demos/form/SchemaDemo.vue" title="Schema 高级特性" description="演示字段联动、动态显隐、动态必填、帮助信息等高级 Schema 配置。" /> -->
 
 **配置项 (`dependencies`)**
 
@@ -242,7 +242,7 @@ const [Form] = useKunkkaForm({
 
 ### Form API
 
-通过 `useKunkkaForm` 返回的 `api` 对象，可以对表单进行精细控制。
+通过 `useSunnyForm` 返回的 `api` 对象，可以对表单进行精细控制。
 
 <preview path="./demos/form/ApiDemo.vue" title="API 操作示例" description="演示获取值、设置值、重置、验证以及使用 useStore 订阅状态。" />
 
@@ -259,7 +259,7 @@ const [Form] = useKunkkaForm({
 | `setProps(props)` | 动态更新表单 Props。 |
 
 ```typescript
-const [Register, { submit, reset, setValues, useStore }] = useKunkkaForm();
+const [Register, { submit, reset, setValues, useStore }] = useSunnyForm();
 
 // 订阅状态
 const values = useStore((state) => state.values);
