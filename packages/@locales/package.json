@@ -1,6 +1,6 @@
 {
   "name": "@sunny-base-web/locales",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "license": "MIT",
   "type": "module",
   "sideEffects": [
@@ -9,27 +9,33 @@
   "files": [
     "dist"
   ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts --clean"
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean --shims"
   },
   "publishConfig": {
-    "main": "./dist/index.js",
-    "module": "./dist/index.mjs",
+    "main": "./dist/index.cjs",
+    "module": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "access": "public",
     "registry": "https://registry.npmjs.org/"
-  },
-  "exports": {
-    ".": {
-      "types": "./src/index.ts",
-      "default": "./src/index.ts"
-    }
   },
   "dependencies": {
     "vue": "catalog:",
     "vue-i18n": "catalog:"
   },
   "devDependencies": {
-    "tsup": "^8.5.1"
+    "@sunny-base-web/tsconfig": "workspace:*",
+    "tsup": "^8.5.1",
+    "vite": "^7.3.1"
   }
 }

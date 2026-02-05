@@ -2,10 +2,19 @@
   "name": "@sunny-base-web/effects",
   "version": "0.0.0",
   "private": false,
-  "main": "./src/index.ts",
   "files": [
     "dist"
   ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
   "scripts": {
     "build": "vite build",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
@@ -13,6 +22,7 @@
   "dependencies": {
     "@arco-design/web-vue": "^2.57.0",
     "@sunny-base-web/icons": "workspace:*",
+    "@sunny-base-web/locales": "workspace:^",
     "@sunny-base-web/stores": "workspace:*",
     "@sunny-base-web/ui": "workspace:*",
     "@sunny-base-web/utils": "workspace:*",
@@ -23,6 +33,7 @@
     "reka-ui": "catalog:",
     "vue": "catalog:",
     "vue-i18n": "^11.2.8",
+    "vue-router": "^4.6.4",
     "vue3-slide-verify": "^1.1.8"
   },
   "devDependencies": {

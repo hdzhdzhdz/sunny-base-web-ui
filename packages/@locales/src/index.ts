@@ -6,8 +6,10 @@ import {
   setupI18n,
 } from './i18n';
 
-const $t = i18n.global.t;
-const $te = i18n.global.te;
+import type { Composer } from 'vue-i18n';
+
+const $t: Composer['t'] = i18n.global.t;
+const $te: Composer['te'] = i18n.global.te;
 
 export {
   $t,
