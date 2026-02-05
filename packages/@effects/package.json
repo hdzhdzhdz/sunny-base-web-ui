@@ -1,16 +1,20 @@
 {
   "name": "@sunny-base-web/effects",
   "version": "0.0.0",
-  "private": true,
+  "private": false,
   "main": "./src/index.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
+    "build": "vite build",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
     "@arco-design/web-vue": "^2.57.0",
     "@sunny-base-web/icons": "workspace:*",
-    "@sunny-base-web/ui": "workspace:*",
     "@sunny-base-web/stores": "workspace:*",
+    "@sunny-base-web/ui": "workspace:*",
     "@sunny-base-web/utils": "workspace:*",
     "@vueuse/core": "catalog:",
     "axios": "^1.13.2",
@@ -26,6 +30,23 @@
     "@sunny-base-web/tailwind-config": "workspace:*",
     "@sunny-base-web/tsconfig": "workspace:*",
     "@types/qs": "^6.14.0",
-    "typescript": "catalog:"
+    "@vitejs/plugin-vue": "^6.0.4",
+    "typescript": "catalog:",
+    "vite": "^7.3.1",
+    "vite-plugin-dts": "^4.5.4"
+  },
+  "publishConfig": {
+    "main": "./dist/index.js",
+    "module": "./dist/index.mjs",
+    "types": "./dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.mjs",
+        "require": "./dist/index.js"
+      }
+    },
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

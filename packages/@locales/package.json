@@ -6,6 +6,19 @@
   "sideEffects": [
     "**/*.css"
   ],
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean"
+  },
+  "publishConfig": {
+    "main": "./dist/index.js",
+    "module": "./dist/index.mjs",
+    "types": "./dist/index.d.ts",
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "exports": {
     ".": {
       "types": "./src/index.ts",
@@ -15,5 +28,8 @@
   "dependencies": {
     "vue": "catalog:",
     "vue-i18n": "catalog:"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.1"
   }
 }
