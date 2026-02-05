@@ -1,22 +1,42 @@
 {
   "name": "@sunny-base-web/icons",
   "version": "0.0.0",
-  "private": true,
+  "private": false,
   "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "types": "./src/index.ts",
+  "files": [
+    "dist"
+  ],
   "exports": {
     ".": "./src/index.ts"
   },
+  "publishConfig": {
+    "main": "./dist/index.js",
+    "module": "./dist/index.mjs",
+    "types": "./dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.mjs",
+        "require": "./dist/index.js"
+      }
+    },
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
-    "vue": "catalog:",
     "@iconify/vue": "catalog:",
-    "lucide-vue-next": "catalog:"
+    "lucide-vue-next": "catalog:",
+    "vue": "catalog:"
   },
   "devDependencies": {
     "@sunny-base-web/tsconfig": "workspace:*",
+    "tsup": "^8.5.1",
     "typescript": "catalog:"
   }
 }
-
