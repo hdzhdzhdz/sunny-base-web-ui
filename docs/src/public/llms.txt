@@ -1,0 +1,32 @@
+# My Monorepo Docs
+> Documentation for my Vue 3 Monorepo Components
+
+## Introduction
+- [AI Resources / AI 资源](https://your-docs-site.com/resources/ai)
+
+## Base Library (Arco Design Vue)
+> Our UI library is based on Arco Design Vue.
+- [Arco LLM Index](/arco-llm.txt)
+- [Arco LLM Full Docs](/arco-llms-full.txt)
+
+## Basic Components
+- [Icon](https://your-docs-site.com/components/basic/icon)
+- [Scrollbar](https://your-docs-site.com/components/basic/scrollbar)
+
+## Data Components
+- [Upload](https://your-docs-site.com/components/data/upload)
+- [QueryGrid](https://your-docs-site.com/components/data/query-grid)
+
+## Entry Components
+- [Form](https://your-docs-site.com/components/entry/form)
+- [Select](https://your-docs-site.com/components/entry/select)
+- [BatchSelect](https://your-docs-site.com/components/entry/batch-select)
+- [SearchInputTag](https://your-docs-site.com/components/entry/search-input-tag)
+
+## Feedback Components
+- [Modal](https://your-docs-site.com/components/feedback/modal)
+
+## Utilities
+- [Composables](https://your-docs-site.com/utilities/composables/use-namespace)
+- [I18n](https://your-docs-site.com/utilities/i18n)
+- [Regex](https://your-docs-site.com/utilities/regex)

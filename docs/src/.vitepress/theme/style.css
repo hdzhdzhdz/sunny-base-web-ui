@@ -8,3 +8,11 @@
   --scroll-shadow: 0 0% 100%;
   --border: 214.3 31.8% 91.4%;
 }
+
+.medium-zoom-overlay {
+  z-index: 100 !important;
+}
+
+.medium-zoom-image--opened {
+  z-index: 101 !important;
+}

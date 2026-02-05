@@ -25,6 +25,12 @@ export default defineConfig({
         ]
       },
       {
+        text: 'Resources 资源',
+        items: [
+          { text: 'AI 助手', link: '/resources/ai' }
+        ]
+      },
+      {
         text: 'Basic 基础组件',
         items: [
           { text: 'Icon 图标', link: '/components/basic/icon' },

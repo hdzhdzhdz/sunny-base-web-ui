@@ -12,6 +12,7 @@
     "@arco-design/web-vue": "catalog:",
     "@sunny-base-web/ui": "workspace:*",
     "@vee-validate/rules": "^4.15.1",
+    "medium-zoom": "^1.1.0",
     "vue": "catalog:"
   },
   "devDependencies": {
