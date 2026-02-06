@@ -13,7 +13,8 @@ import {
   Checkbox as ACheckbox, 
   Progress as AProgress 
 } from '@arco-design/web-vue';
-import { Paperclip, CloudUpload, Trash2 } from '@sunny-base-web/icons';
+// import { Paperclip, CloudUpload, Trash2 } from '@sunny-base-web/icons';
+import { IconAttachment, IconUpload, IconDelete } from '@arco-design/web-vue/es/icon';
 import { SunnyIcon } from '../../basic/icon';
 import axios from 'axios';
 
@@ -348,10 +349,9 @@ const checkDel = () => {
       >
         <template #upload-button>
           <span class="cursor-pointer text-blue-600  hover:text-blue-700 flex items-center mr-4 transition-colors">
-            <Paperclip class="mr-1 w-4 h-4" /> {{ t('选择附件') }}
+            <IconAttachment class="mr-1 w-4 h-4" /> {{ t('选择附件') }}
           </span>
         </template>
-        <!-- Paperclip, CloudUpload, Trash2 -->
       </a-upload>
 
       <!-- Upload Trigger -->
@@ -360,7 +360,8 @@ const checkDel = () => {
         :class="s3Disabled ? 'text-gray-300 cursor-not-allowed' : 'cursor-pointer text-gray-600 hover:text-gray-800'"
         @click="!s3Disabled && uploadToS3()"
       >
-        <SunnyIcon :icon="CloudUpload" class="mr-1 w-4 h-4" /> {{ t('上传附件') }}
+        <IconUpload class="mr-1 w-4 h-4" />
+        {{ t('上传附件') }}
       </span>
 
       <!-- Batch Actions -->
@@ -422,7 +423,7 @@ const checkDel = () => {
           <!-- Actions -->
           <a-checkbox v-if="!readonly" v-model="item.checked" class="absolute top-3 right-3" />
           
-          <Trash2 
+          <IconDelete 
             v-if="!readonly"
             class="absolute bottom-3 right-3 w-4 h-4 cursor-pointer text-gray-400 hover:text-red-500 transition-colors" 
             @click="handleRemove(item, index)" 
