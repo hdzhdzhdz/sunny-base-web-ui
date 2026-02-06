@@ -12,7 +12,7 @@
         :value="item.cXuhao"
       >
         <span>{{ item.cName }}</span>
-        <template #suffix v-if="preferences.app.locale === item.cXuhao">
+        <template #suffix v-if="locale === item.cXuhao">
           <SunnyIcon icon="lucide:check" class="text-[rgb(var(--primary-6))]" />
         </template>
       </a-doption>
@@ -24,11 +24,13 @@
 import { ref, onMounted } from 'vue';
 import { SunnyIcon } from '@sunny-base-web/ui';
 import { queryByXuhao } from '../../../api/core';
-import { loadLocaleMessages } from '@sunny-base-web/locales';
-import { preferences } from '#/preferences';
+import { loadLocaleMessages, useI18n } from '@sunny-base-web/locales';
+import { useEffectsConfig } from '../../../config';
 
 defineOptions({ name: 'LanguageToggle' });
 
+const { locale } = useI18n();
+const config = useEffectsConfig();
 const langList = ref<any[]>([]);
 
 onMounted(() => {
@@ -39,8 +41,12 @@ onMounted(() => {
 
 const handleSelect = async (val: string | number | Record<string, any>) => {
   if (!val) return;
-  const locale = val;
-  preferences.app.locale = locale;
-  await loadLocaleMessages(locale);
+  const newLocale = val as string;
+  
+  if (config.onLocaleChange) {
+    await config.onLocaleChange(newLocale);
+  }
+  
+  await loadLocaleMessages(newLocale);
 };
 </script>

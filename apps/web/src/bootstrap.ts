@@ -25,6 +25,9 @@ async function bootstrap(namespace: string) {
 		apiPrefix: preferences.app.apiPrefix,
 		ssoUrl: preferences.app.ssoUrl,
 		locale: preferences.app.locale,
+    onLocaleChange: (locale) => {
+      preferences.app.locale = locale;
+    },
 		enableRefreshToken: preferences.app.enableRefreshToken,
 		publicKey: preferences.app.publicKey,
 		app: {

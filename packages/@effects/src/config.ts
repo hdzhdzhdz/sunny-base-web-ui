@@ -22,6 +22,11 @@ export interface EffectsConfig {
    */
   locale?: string
   /**
+   * 语言切换回调
+   * @param locale 新的语言代码
+   */
+  onLocaleChange?: (locale: string) => void | Promise<void>
+  /**
    * 是否启用 Refresh Token
    */
   enableRefreshToken?: boolean
