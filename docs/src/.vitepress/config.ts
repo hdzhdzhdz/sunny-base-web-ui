@@ -21,7 +21,8 @@ export default defineConfig({
       {
         text: 'Introduction 介绍',
         items: [
-          { text: 'Packages 说明', link: '/intro' }
+          { text: 'Packages 说明', link: '/intro' },
+          { text: 'I18n 国际化', link: '/locales/i18n' },
         ]
       },
       {
@@ -71,7 +72,6 @@ export default defineConfig({
           {
             text: 'Common 常用',
             items: [
-              { text: 'I18n 国际化', link: '/utilities/i18n' },
               { text: 'Regex 正则表达式', link: '/utilities/regex' }
             ]
           }
