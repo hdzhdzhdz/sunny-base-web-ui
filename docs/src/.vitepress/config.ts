@@ -32,7 +32,8 @@ export default defineConfig({
         {
           text: 'Introduction 介绍',
           items: [
-            { text: 'Packages 说明', link: '/intro' }
+            { text: 'Packages 说明', link: '/intro' },
+            { text: 'I18n 国际化', link: '/locales/i18n' },
           ]
         },
         {
