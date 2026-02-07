@@ -24,7 +24,7 @@ export default defineConfig({
           text: 'AI Guide',
           items: [
             { text: 'AI 助手', link: '/ai/ai-assistant' },
-            { text: 'SpecKit Tutorial', link: '/ai/spec-kit-tutorial' }
+            { text: 'SpecKit Tutorial (还在研究中)', link: '/ai/spec-kit-tutorial' }
           ]
         }
       ],

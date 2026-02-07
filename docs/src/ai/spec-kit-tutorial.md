@@ -64,3 +64,8 @@ SpecKit 是本项目采用的一种**规格驱动开发 (Spec-Driven Development
 - **文档先行**：在写代码前，先让 AI 更新或确认 Spec 文档。
 - **显式指令**：告诉 AI "请根据 specification.md 更新代码" 或 "完成功能后请更新 plan.md"。
 - **保持同步**：代码变更后，务必同步回写到文档，防止上下文漂移。
+
+## 参考文章
+
+- [微信公众平台文章1](https://mp.weixin.qq.com/s?__biz=MzkxMTY4NTAyNQ==&mid=2247498905&idx=1&sn=11f105d458ed8012fb03244da9959a3b&scene=21&poc_token=HKiZhmmj4SZ1RMyd74e28BcRsvEamAls1HThTji1)
+- [基于 TRAE + Spec-kit 实现树莓派智能小车控制系统](https://mp.weixin.qq.com/s/qNyd54N_4A1MwKiOTeJrSQ)
