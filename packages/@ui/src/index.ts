@@ -8,6 +8,7 @@ import SunnySearchInputTag from "./entry/search-input-tag";
 import { useSunnyForm, FormApi, SunnyForm, setupSunnyForm, z } from './entry/form';
 import { useSunnyEditGrid } from './data/edit-grid'
 import { useSunnyQueryGrid } from './data/query-grid'
+import { SunnySearchModal } from './feedback/search-modal'
 import { patterns } from "@sunny-base-web/utils";
 
 

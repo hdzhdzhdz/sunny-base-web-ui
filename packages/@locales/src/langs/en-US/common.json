@@ -21,6 +21,8 @@
   "no": "No",
   "showSearchPanel": "Show search panel",
   "hideSearchPanel": "Hide search panel",
+  "selected": "Selected",
+  "clear": "Clear",
   "searchModal": {
     "title": "Data Query",
     "helpTip": "Supports cross-page selection, double-click row to confirm",

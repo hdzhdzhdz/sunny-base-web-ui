@@ -1,17 +1,25 @@
-# Status: SunnySearchModal
+# Status: 001-searchmodal
 
-| Attribute | Value |
-| :--- | :--- |
-| **Status** | `Completed` |
-| **Owner** | AI Assistant / User |
-| **Start Date** | 2026-02-06 |
-| **Target** | `packages/@ui/src/composite/search-modal` |
+**Current Status**: Completed
+**Last Updated**: 2026-02-07
 
 ## Progress
-- [x] **Specification**: Drafted and aligned with user requirements (Config-Driven, Right Sidebar).
-- [x] **Plan**: Defined 5 phases of implementation.
-- [x] **Implementation**: Core logic and UI implemented (Phase 1-3).
-- [x] **Verification**: Manual verification passed (Cross-page selection, Static Config, UI interactions).
+- [x] Specification (Approved)
+- [x] Plan (Approved)
+- [x] Implementation (Completed)
+- [x] Testing (Manual Verified via Demo)
 
-## Context
-User requires a "Common Search Modal" that fetches its own configuration based on a `configId`. Key feature is the "Selected Items" sidebar on the right.
+## Notes
+- Component implementation moved to `packages/@ui/src/feedback/search-modal/`.
+- Docs updated at `docs/src/components/feedback/search-modal.md`.
+- Removed `sqlNum` and `conditions`, switched to `formSchema` and `tableColumns` configuration.
+- Removed unused `token` prop.
+- Implemented `searchApi` callback support.
+- Enabled default form actions (Query/Reset buttons) via `show-default-actions`.
+- Fixed Internationalization (i18n) for "Selected" and "Clear" labels.
+- Added page size selection to pagination (20/50/100/200).
+- Updated default width to `800px` and added customizable `width` prop.
+- Added `contentHeight` prop (default `300`) to control table area height.
+- Implemented full-screen height adaptation: content automatically fills remaining space when maximized.
+- Adjusted default form layout columns (`lg: 8, xl: 8, xxl: 8`).
+- Fixed close button functionality by binding `model-value` and listening to `close` event.

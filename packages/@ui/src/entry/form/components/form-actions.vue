@@ -24,7 +24,7 @@ const props = defineProps<{
 /**
  * 事件定义
  */
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue', 'reset', 'submit']);
 
 // 获取注入的表单全局配置
 // 这里的 rootProps 包含了 layout, schema, showCollapseButton 等所有渲染配置
@@ -124,6 +124,8 @@ async function handleReset(e: Event) {
        veeForm.resetForm();
     }
   }
+  
+  emit('reset');
 }
 
 // 监听折叠状态变化，如果开启了 collapseTriggerResize，则触发布局重算

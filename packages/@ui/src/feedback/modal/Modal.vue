@@ -97,6 +97,7 @@ const emit = defineEmits<{
   (e: "update:modelValue", value: boolean): void;
   (e: "close"): void;
   (e: "ok"): void;
+  (e: "fullscreen-change", value: boolean): void;
 }>();
 
 const attrs = useAttrs();
@@ -111,6 +112,7 @@ const isMaximized = ref(false);
 
 const toggleMaximize = () => {
     isMaximized.value = !isMaximized.value;
+    emit("fullscreen-change", isMaximized.value);
   };
 
 const handleClose = async () => {

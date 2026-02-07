@@ -38,6 +38,9 @@ const onSubmit = (values: any) => {
   props.handleSubmit?.(values);
 };
 
+const onReset = () => {
+  emit('reset', undefined);
+};
 </script>
 
 <template>
@@ -48,6 +51,7 @@ const onSubmit = (values: any) => {
           v-if="props.showDefaultActions"
           :model-value="props.collapsed"
           @update:model-value="handleCollapsedChange"
+          @reset="onReset"
         >
           <template #reset-before>
             <slot name="reset-before"></slot>

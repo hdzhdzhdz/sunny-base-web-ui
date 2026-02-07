@@ -21,6 +21,8 @@
   "no": "否",
   "showSearchPanel": "显示搜索面板",
   "hideSearchPanel": "隐藏搜索面板",
+  "selected": "已选择",
+  "clear": "清空",
   "searchModal": {
     "title": "数据查询",
     "helpTip": "支持跨页多选，双击行快速确认",
