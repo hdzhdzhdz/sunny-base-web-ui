@@ -8,7 +8,6 @@ import SunnySearchInputTag from "./entry/search-input-tag";
 import { useSunnyForm, FormApi, SunnyForm, setupSunnyForm, z } from './entry/form';
 import { useSunnyEditGrid } from './data/edit-grid'
 import { useSunnyQueryGrid } from './data/query-grid'
-import SunnySearchModal from './composite/search-modal';
 import { patterns } from "@sunny-base-web/utils";
 
 
@@ -38,4 +37,3 @@ export {
 export * from "./entry/select/types";
 export * from "./entry/search-input-tag/types";
 export * from "./entry/form/types";
-export * from "./composite/search-modal/types";

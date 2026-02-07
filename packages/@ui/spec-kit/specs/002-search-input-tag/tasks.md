@@ -1,7 +1,3 @@
-# Tasks: SunnySearchInputTag
-
-## Phase 1: Setup
-- [x] T001 Create component directory structure `packages/@ui/src/entry/search-input-tag/`
 - [x] T002 Define `types.ts` interface
 
 ## Phase 2: Core Implementation

@@ -14,7 +14,7 @@
   - `searchParams`: reactive object for form model.
 - [x] **Config Loader**: Implement `fetchConfig(sqlNum)`.
 - [x] **Selection Logic**:
-  - Implement `toggleRow(row)`: add/remove from `selectedRows`.
+  - Pass `cNum` and `token` in the request.
   - **Cross-page**: Enable `checkboxConfig.reserve = true` and ensure `rowKey` is set.
   - **Row Trigger**: Set `checkboxConfig.trigger = 'row'` for click-to-select.
   - **Double Click**: Handle `cell-dblclick` event to trigger `handleOk` (Confirm & Close).

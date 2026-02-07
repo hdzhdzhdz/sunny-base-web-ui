@@ -66,12 +66,6 @@ export default defineConfig({
           ]
         },
         {
-          text: 'Composite 业务组件',
-          items: [
-            { text: 'SearchModal 查询弹窗', link: '/components/composite/search-modal' }
-          ]
-        },
-        {
           text: 'Resources 资源',
           items: [
             { text: 'AI 助手', link: '/ai/ai-assistant' }

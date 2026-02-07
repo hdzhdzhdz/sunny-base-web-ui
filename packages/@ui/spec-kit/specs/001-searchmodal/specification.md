@@ -52,10 +52,13 @@
   - **Right**: **操作按钮**。 "取消" 和 "确认"。
 
 ### 3.3 Data Flow
-1.  **Initialization**: 组件挂载或 `visible` 变为 `true` 时，加载配置。
+1.  **Initialization**: 组件挂载或 `visible` 变为 `true` 时，执行初始化流程。
+    - **Open Init**: 必须首先调用 `/core/assDialog/openInit` 接口。
+      - **Request**: `{ cNum: props.sqlNum, token: props.token }`。
+      - **Response**: 返回包含 `formSchema` (搜索项配置) 和 `tableColumns` (列表配置) 的对象。
 2.  **Configuration Loading**: 
     - **Static Config Priority**: 若存在 `props.staticConfig`，直接使用该配置，无需请求接口。
-    - **Remote Config**: 若无静态配置，则根据 `props.sqlNum` 请求后端获取 `formSchema` (搜索项), `tableColumns` (列定义), `searchApi` (查询接口地址，可选), `commonConfig` (表单通用配置，可选)。
+    - **Remote Config**: 若无静态配置，则使用 `/core/assDialog/openInit` 返回的配置。
 3.  **Search**: 用户在 `SunnyForm` 输入 -> 触发 Search -> 组装请求体 (Payload) -> 调用查询接口 -> 更新 Table 数据。
     - **Payload Structure**:
       ```json
@@ -89,10 +92,15 @@ export interface SunnySearchModalProps {
   visible: boolean;
   /**
    * 配置编号 (核心参数)
-   * 对应后端接口传参中的 sqlNum
+   * 对应后端接口传参中的 cNum / sqlNum
    * e.g., "MACHINE_SBBH"
    */
   sqlNum: string;
+  /**
+   * 权限令牌
+   * 对应后端接口传参中的 token
+   */
+  token?: string;
   /**
    * 额外的查询条件
    * 对应后端接口传参中的 conditions
