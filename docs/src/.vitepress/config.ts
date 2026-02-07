@@ -14,70 +14,88 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Components', link: '/components/basic/icon' }
+      { text: 'Components', link: '/components/basic/icon' },
+      { text: 'AI', link: '/ai/ai-assistant' }
     ],
 
-    sidebar: [
-      {
-        text: 'Introduction 介绍',
-        items: [
-          { text: 'Packages 说明', link: '/intro' }
-        ]
-      },
-      {
-        text: 'Resources 资源',
-        items: [
-          { text: 'AI 助手', link: '/resources/ai' }
-        ]
-      },
-      {
-        text: 'Basic 基础组件',
-        items: [
-          { text: 'Icon 图标', link: '/components/basic/icon' },
-          { text: 'Scrollbar 滚动条', link: '/components/basic/scrollbar' }
-        ]
-      },
-      {
-        text: 'Data 数据展示',
-        items: [
-          { text: 'Upload 上传', link: '/components/data/upload' },
-          { text: 'QueryGrid 查询表格', link: '/components/data/query-grid' }
-        ]
-      },
-      {
-        text: 'Entry 数据录入',
-        items: [
-          { text: 'Form 表单', link: '/components/entry/form' },
-          { text: 'Select 选择器', link: '/components/entry/select' },
-          { text: 'BatchSelect 批量选择器', link: '/components/entry/batch-select' },
-          { text: 'SearchInputTag 公共查询', link: '/components/entry/search-input-tag' }
-        ]
-      },
-      {
-        text: 'Feedback 反馈组件',
-        items: [
-          { text: 'Modal 弹窗', link: '/components/feedback/modal' }
-        ]
-      },
-      {
-        text: 'Utilities 工具',
-        items: [
-          {
-            text: 'Composables 组合式函数',
-            items: [
-              { text: 'useNamespace', link: '/utilities/composables/use-namespace' }
-            ]
-          },
-          {
-            text: 'Common 常用',
-            items: [
-              { text: 'I18n 国际化', link: '/utilities/i18n' },
-              { text: 'Regex 正则表达式', link: '/utilities/regex' }
-            ]
-          }
-        ]
-      }
-    ],
+    sidebar: {
+      '/ai/': [
+        {
+          text: 'AI Guide',
+          items: [
+            { text: 'AI 助手', link: '/ai/ai-assistant' },
+            { text: 'SpecKit Tutorial', link: '/ai/spec-kit-tutorial' }
+          ]
+        }
+      ],
+      '/': [
+        {
+          text: 'Introduction 介绍',
+          items: [
+            { text: 'Packages 说明', link: '/intro' }
+          ]
+        },
+        {
+          text: 'Basic 基础组件',
+          items: [
+            { text: 'Icon 图标', link: '/components/basic/icon' },
+            { text: 'Scrollbar 滚动条', link: '/components/basic/scrollbar' }
+          ]
+        },
+        {
+          text: 'Data 数据展示',
+          items: [
+            { text: 'Upload 上传', link: '/components/data/upload' },
+            { text: 'QueryGrid 查询表格', link: '/components/data/query-grid' }
+          ]
+        },
+        {
+          text: 'Entry 数据录入',
+          items: [
+            { text: 'Form 表单', link: '/components/entry/form' },
+            { text: 'Select 选择器', link: '/components/entry/select' },
+            { text: 'BatchSelect 批量选择器', link: '/components/entry/batch-select' },
+            { text: 'SearchInputTag 公共查询', link: '/components/entry/search-input-tag' }
+          ]
+        },
+        {
+          text: 'Feedback 反馈组件',
+          items: [
+            { text: 'Modal 弹窗', link: '/components/feedback/modal' }
+          ]
+        },
+        {
+          text: 'Composite 业务组件',
+          items: [
+            { text: 'SearchModal 查询弹窗', link: '/components/composite/search-modal' }
+          ]
+        },
+        {
+          text: 'Resources 资源',
+          items: [
+            { text: 'AI 助手', link: '/ai/ai-assistant' }
+          ]
+        },
+        {
+          text: 'Utilities 工具',
+          items: [
+            {
+              text: 'Composables 组合式函数',
+              items: [
+                { text: 'useNamespace', link: '/utilities/composables/use-namespace' }
+              ]
+            },
+            {
+              text: 'Common 常用',
+              items: [
+                { text: 'I18n 国际化', link: '/utilities/i18n' },
+                { text: 'Regex 正则表达式', link: '/utilities/regex' }
+              ]
+            }
+          ]
+        }
+      ]
+    },
 
     socialLinks: [
       { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
@@ -93,7 +111,8 @@ export default defineConfig({
     resolve: {
       alias: {
         '@sunny-base-web/utils': path.resolve(__dirname, '../../../packages/@utils/src'),
-        '@sunny-base-web/ui': path.resolve(__dirname, '../../../packages/@ui/src/index.ts')
+        '@sunny-base-web/ui': path.resolve(__dirname, '../../../packages/@ui/src/index.ts'),
+        '@sunny-base-web/locales': path.resolve(__dirname, '../../../packages/@locales/src/index.ts')
       }
     },
     ssr: {

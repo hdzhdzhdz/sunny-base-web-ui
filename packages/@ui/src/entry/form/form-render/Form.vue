@@ -203,7 +203,7 @@ const computedGap = computed(() => {
   <a-form
     :model="{}" 
     :layout="formProps.layout || 'horizontal'"
-    :size="formProps.size"
+    :size="formProps.size || 'small'"
     class="arco-form"
     @submit="(data: any, ev: any) => onSubmit(ev)"
   >

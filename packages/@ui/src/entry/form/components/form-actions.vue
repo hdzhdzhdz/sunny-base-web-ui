@@ -197,7 +197,7 @@ defineExpose({
       <Button
         v-if="submitButtonOptions.show"
         type="primary"
-        :size="unref(rootProps).size"
+        :size="unref(rootProps).size || 'small'"
         @click="handleSubmit"
         v-bind="submitButtonOptions"
       >
@@ -224,7 +224,7 @@ defineExpose({
       <Button
         v-if="submitButtonOptions.show"
         type="primary"
-        :size="unref(rootProps).size"
+        :size="unref(rootProps).size || 'small'"
         @click="handleSubmit"
         v-bind="submitButtonOptions"
       >

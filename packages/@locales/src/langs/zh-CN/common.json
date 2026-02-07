@@ -20,5 +20,10 @@
   "yes": "是",
   "no": "否",
   "showSearchPanel": "显示搜索面板",
-  "hideSearchPanel": "隐藏搜索面板"
+  "hideSearchPanel": "隐藏搜索面板",
+  "searchModal": {
+    "title": "数据查询",
+    "helpTip": "支持跨页多选，双击行快速确认",
+    "selectedRecords": "已选记录"
+  }
 }

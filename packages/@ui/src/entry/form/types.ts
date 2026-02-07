@@ -181,6 +181,7 @@ export interface SunnyFormProps {
   /**
    * 表单尺寸
    * Form size
+   * @default 'small'
    */
   size?: 'mini' | 'small' | 'medium' | 'large';
   /**

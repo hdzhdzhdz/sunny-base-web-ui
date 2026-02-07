@@ -5,6 +5,7 @@ import '@vitepress-demo-preview/component/dist/style.css'
 import '@arco-design/web-vue/dist/arco.css'
 import ArcoVue from '@arco-design/web-vue'
 import { SunnyIcon, SunnySearchInputTag, SunnyBatchSelect, SunnySelect } from '@sunny-base-web/ui'
+import { setupI18n } from '@sunny-base-web/locales'
 import mediumZoom from 'medium-zoom'
 import { onMounted, watch, nextTick } from 'vue'
 import { useRoute } from 'vitepress'
@@ -36,5 +37,6 @@ export default {
     app.component('SunnyBatchSelect', SunnyBatchSelect)
     app.component('SunnySelect', SunnySelect)
     app.use(ArcoVue)
+    setupI18n(app)
   }
 }

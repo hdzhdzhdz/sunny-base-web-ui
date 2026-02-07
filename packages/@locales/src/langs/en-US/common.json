@@ -20,5 +20,10 @@
   "yes": "Yes",
   "no": "No",
   "showSearchPanel": "Show search panel",
-  "hideSearchPanel": "Hide search panel"
+  "hideSearchPanel": "Hide search panel",
+  "searchModal": {
+    "title": "Data Query",
+    "helpTip": "Supports cross-page selection, double-click row to confirm",
+    "selectedRecords": "Selected Records"
+  }
 }

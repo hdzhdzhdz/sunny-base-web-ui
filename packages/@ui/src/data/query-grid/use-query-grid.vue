@@ -1,5 +1,5 @@
 <template>
-  <vxe-grid ref="gridRef" v-bind="$attrs">
+  <vxe-grid ref="gridRef" v-bind="$attrs" :size="props.size">
     <template v-for="(_, name) in $slots" #[name]="slotData">
       <slot :name="name" v-bind="slotData || {}"></slot>
     </template>
@@ -14,6 +14,12 @@ import 'vxe-table/lib/style.css'
 import 'vxe-pc-ui/lib/style.css'
 import { useSticky } from './sticky'
 import './renderer'
+
+const props = withDefaults(defineProps<{
+  size?: 'medium' | 'small' | 'mini'
+}>(), {
+  size: 'small'
+})
 
 const gridRef = ref<VxeGridInstance>()
 const attrs = useAttrs()
