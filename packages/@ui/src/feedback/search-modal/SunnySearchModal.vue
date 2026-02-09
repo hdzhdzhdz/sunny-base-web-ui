@@ -216,12 +216,12 @@ watch(
                   :key="row[actualRowKey]"
                   class="relative group px-2 py-1 mb-1 bg-white border border-gray-200 rounded hover:shadow-sm transition-all h-[42px] flex flex-col justify-center"
                 >
-                   <Tooltip :content="row[actualFieldNames.label] + (row[actualFieldNames.desc] ? ' (' + row[actualFieldNames.desc] + ')' : '')">
+                   <Tooltip :content="`${row[actualFieldNames.value] || ''} ${row[actualFieldNames.label] || ''}`">
                       <div class="text-xs font-medium text-gray-800 truncate leading-none mb-1">
-                        {{ row[actualFieldNames.label] || '-' }}
+                        {{ row[actualFieldNames.value] || '-' }}
                       </div>
                       <div class="text-[10px] text-gray-500 truncate leading-none">
-                        {{ row[actualFieldNames.desc] || '&nbsp;' }}
+                        {{ row[actualFieldNames.label] || '&nbsp;' }}
                       </div>
                    </Tooltip>
                    
