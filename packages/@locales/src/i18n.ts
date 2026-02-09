@@ -18,7 +18,13 @@ const i18n = createI18n({
   messages: {},
 });
 
-const modules = import.meta.glob('./langs/**/*.json');
+// 使用 import.meta.glob 时，CJS 构建会报错。
+// 这里我们手动定义模块映射，以支持 CJS 和 ESM。
+// 在实际项目中，如果语言文件很多，可能需要构建脚本自动生成这个映射，或者只支持 ESM。
+const modules: Record<string, () => Promise<unknown>> = {
+  './langs/en-US/common.json': () => import('./langs/en-US/common.json'),
+  './langs/zh-CN/common.json': () => import('./langs/zh-CN/common.json'),
+};
 
 const localesMap = loadLocalesMapFromDir(
   /\.\/langs\/([^/]+)\/(.*)\.json$/,
