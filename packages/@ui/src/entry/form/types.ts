@@ -319,6 +319,12 @@ export interface SunnyFormProps {
    * Array to string fields
    */
   arrayToStringFields?: ArrayToStringFields;
+  /**
+   * 对象数组转值字符串配置
+   * Object array to value string fields
+   * 会自动从组件配置的 fieldNames 中读取 value 字段进行提取
+   */
+  objectToValueFields?: string[];
 }
 
 export interface FormApiOptions extends SunnyFormProps {

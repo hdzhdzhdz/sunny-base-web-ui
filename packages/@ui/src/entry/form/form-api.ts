@@ -755,6 +755,69 @@ export class FormApi {
   };
 
   /**
+   * 处理对象数组转值字符串
+   * Handle object array to value string
+   */
+  private handleObjectToValueFields = (originValues: Record<string, any>) => {
+    const objectToValueFields = this.state?.objectToValueFields;
+    if (!objectToValueFields || !Array.isArray(objectToValueFields)) {
+      return;
+    }
+
+    objectToValueFields.forEach((field) => {
+      const value = originValues[field];
+      if (!Array.isArray(value) || value.length === 0) {
+        return;
+      }
+
+      // Find schema item
+      const schemaItem = this.state.schema?.find(
+        (item) => item.fieldName === field,
+      );
+      if (!schemaItem) return;
+
+      // Resolve componentProps
+      let componentProps = schemaItem.componentProps;
+      if (typeof componentProps === 'function') {
+        try {
+          // Attempt to resolve props with current values
+          // Note: This might be partial if called during form init, but sufficient for static configs
+          componentProps = componentProps(originValues, this.form);
+        } catch (e) {
+          console.warn(
+            `[SunnyForm] Failed to resolve componentProps for field ${field}`,
+            e,
+          );
+          return;
+        }
+      }
+
+      // Get value key from fieldNames
+      // Try modalProps.fieldNames (common in search-modal) or fieldNames (common in select/tree)
+      const fieldNames =
+        componentProps?.modalProps?.fieldNames || componentProps?.fieldNames;
+      const valueKey = fieldNames?.value;
+
+      if (!valueKey) {
+        return;
+      }
+
+      // Transform
+      const newValue = value
+        .map((item) => {
+          if (item && typeof item === 'object') {
+            return item[valueKey];
+          }
+          return item;
+        })
+        .filter((v) => v !== undefined && v !== null)
+        .join(',');
+
+      originValues[field] = newValue;
+    });
+  };
+
+  /**
    * 处理时间范围值 (Range Time Value)
    * Handle range time value
    */
@@ -763,6 +826,7 @@ export class FormApi {
     const fieldMappingTime = this.state?.fieldMappingTime;
 
     this.handleMultiFields(values);
+    this.handleObjectToValueFields(values);
     if (!fieldMappingTime || !Array.isArray(fieldMappingTime)) {
       return values;
     }

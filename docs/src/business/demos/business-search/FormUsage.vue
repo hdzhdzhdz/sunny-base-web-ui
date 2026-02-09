@@ -18,6 +18,9 @@ watch(token, (newVal) => {
 
 const [Form, formApi] = useSunnyForm({
   layout: 'horizontal',
+  // 配置对象数组转值字符串的字段 (会读取 fieldNames.value 进行提取)
+  // Configure object array to value string fields (extracts using fieldNames.value)
+  objectToValueFields: ['machineCode'],
   schema: [
     {
       fieldName: 'machineCode',
@@ -29,7 +32,7 @@ const [Form, formApi] = useSunnyForm({
         placeholder: '请选择设备 (动态配置)',
         modalProps: {
           // 在 modalProps 中配置 multiple，优先级最高
-          multiple: false,
+          multiple: true,
           fieldNames: {
             label: 'C_DEVICE_NAME',
             value: 'C_DEVICE_NO'

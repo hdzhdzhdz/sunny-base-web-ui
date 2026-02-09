@@ -20,6 +20,79 @@
 
 <preview path="./demos/business-search/FormUsage.vue" />
 
+### 高级用法指南
+
+在 `SunnyForm` 中使用 `SunnyBusinessSearch` 时，可以利用 Form 的高级特性来处理复杂的数据交互需求。
+
+#### 1. 自动值转换 (`objectToValueFields`)
+
+默认情况下，`SunnyBusinessSearch` 返回的是对象数组（例如 `[{ id: '1', name: 'A' }]`）。但在提交表单给后端时，通常只需要 ID 字符串（例如 `'1,2,3'`）。
+
+`SunnyForm` 提供了 `objectToValueFields` 配置项，可以自动完成这个转换。
+
+```typescript
+const [Form, formApi] = useSunnyForm({
+  // 指定哪些字段需要进行 "对象数组 -> 值字符串" 的转换
+  objectToValueFields: ['machineCode'], 
+  schema: [
+    {
+      fieldName: 'machineCode',
+      component: 'SunnyBusinessSearch',
+      componentProps: {
+        modalProps: {
+          // 必须配置 fieldNames，告诉 Form 哪个字段是 value
+          fieldNames: { value: 'C_DEVICE_NO', label: 'C_DEVICE_NAME' }
+        }
+      }
+    }
+  ]
+});
+```
+
+**工作原理：**
+1. Form 在 `getValues()` 或提交时，检查 `objectToValueFields` 列表。
+2. 找到对应字段的 Schema，获取 `componentProps.modalProps.fieldNames.value`。
+3. 提取数组中每个对象的 `value` 字段，拼接成逗号分隔的字符串。
+
+#### 2. 动态响应式参数
+
+如果组件的参数（如 `cNum`）依赖于页面上的其他变量，可以使用函数形式的 `componentProps`。
+
+```typescript
+const cNum = ref('MACHINE_SBBH');
+
+// ...
+schema: [
+  {
+    fieldName: 'machineCode',
+    component: 'SunnyBusinessSearch',
+    // 使用函数返回 props，当依赖变化时组件会自动更新
+    componentProps: () => ({
+      cNum: cNum.value, // 响应式依赖
+      placeholder: '动态配置...'
+    })
+  }
+]
+```
+
+#### 3. 字段映射 (`fieldNames`)
+
+通过 `modalProps.fieldNames` 自定义数据字段映射，适配不同的后端接口格式。
+
+| 属性 | 说明 | 默认值 |
+| --- | --- | --- |
+| value | 唯一标识字段名 | `value` |
+| label | 显示文本字段名 | `label` |
+
+```typescript
+modalProps: {
+  fieldNames: {
+    value: 'id',       // 选中值的唯一标识
+    label: 'userName'  // 显示在 Tag 中的文本
+  }
+}
+```
+
 ## API
 
 ### Props
