@@ -39,6 +39,10 @@ export interface BusinessSearchConfig {
    * 内容高度
    */
   contentHeight?: string | number;
+  /**
+   * 是否多选
+   */
+  multiple?: boolean;
 }
 
 /**
@@ -69,6 +73,11 @@ export interface SunnyBusinessSearchProps {
    * @default true
    */
   multiple?: boolean;
+  /**
+   * 选择模式 (用于替代 multiple，优先级低于 multiple)
+   * 'single' | 'multiple'
+   */
+  cSelectionMode?: string;
   /**
    * 输入框最大显示标签数
    */
@@ -101,6 +110,11 @@ export interface DynamicConfigResponse {
    * 内容高度
    */
   cHeight: string;
+  /**
+   * 选择模式
+   * 'single' | 'multiple'
+   */
+  cSelectionMode?: string;
   /**
    * 表单查询条件配置
    */

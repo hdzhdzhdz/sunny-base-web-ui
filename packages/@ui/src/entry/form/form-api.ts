@@ -154,7 +154,7 @@ function getDefaultState(): SunnyFormProps {
 
 export class FormApi {
   // vee-validate 表单上下文
-  public form = {} as FormActions;
+  public form: FormActions | undefined;
   
   // 是否已挂载
   isMounted = false;
@@ -367,7 +367,7 @@ export class FormApi {
    */
   mount(formActions: FormActions, componentRefMap?: Map<string, unknown>) {
     if (!this.isMounted) {
-      Object.assign(this.form, formActions);
+      this.form = formActions;
       this.stateHandler.setConditionTrue();
       
       // 记录初始提交值

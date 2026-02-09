@@ -54,6 +54,7 @@ const {
   handlePageSizeChange,
   handleCheckboxChange,
   handleCheckboxAll,
+  handleRadioChange,
   removeRow,
   handleOk,
   handleCancel,
@@ -79,6 +80,11 @@ const gridOptions = computed(() => ({
     trigger: 'row',
     highlight: true,
     reserve: true, // Important for cross-page selection
+  },
+  radioConfig: {
+    trigger: 'row',
+    highlight: true,
+    reserve: true,
   },
 }));
 
@@ -189,6 +195,7 @@ watch(
               class="flex-1"
               @checkbox-change="handleCheckboxChange"
               @checkbox-all="handleCheckboxAll"
+              @radio-change="handleRadioChange"
               @cell-dblclick="handleCellDblClick"
            />
         </div>

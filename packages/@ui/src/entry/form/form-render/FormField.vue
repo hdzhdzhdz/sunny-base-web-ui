@@ -238,7 +238,10 @@ const labelColProps = computed(() => {
         v-bind="{ ...computedProps, ...field }"
         :disabled="shouldDisabled"
         :model-value="field.value"
-        @update:model-value="field.onInput"
+        @update:model-value="(val: any) => {
+          console.log('FormField @update:model-value', schema.fieldName, val);
+          field.onInput(val);
+        }"
       />
     </a-form-item>
   </Field>

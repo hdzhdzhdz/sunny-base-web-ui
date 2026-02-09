@@ -26,6 +26,18 @@ import type {
   SunnyFormAdapterOptions,
 } from './types';
 import { defineRule } from 'vee-validate';
+import SunnyBusinessSearch from '../../composite/business-search/SunnyBusinessSearch.vue';
+
+// 注册基础验证规则
+defineRule('required', (value: any) => {
+  if (value === null || value === undefined || value === '') {
+    return '此项必填';
+  }
+  if (Array.isArray(value) && value.length === 0) {
+    return '此项必填';
+  }
+  return true;
+});
 
 /**
  * 默认模型字段名
@@ -62,6 +74,7 @@ export const COMPONENT_MAP: Record<string, Component> = {
   SunnyDatePicker: DatePicker,
   SunnyTimePicker: TimePicker,
   SunnyUpload: Upload,
+  SunnyBusinessSearch,
 };
 
 export const COMPONENT_BIND_EVENT_MAP: Record<string, string> = {

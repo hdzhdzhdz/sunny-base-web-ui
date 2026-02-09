@@ -179,6 +179,11 @@ export function useSunnySearchModal(
     }
   };
 
+  const handleRadioChange = (params: any) => {
+    const { row } = params;
+    selectedRows.value = [row];
+  };
+
   /**
    * Remove row from Sidebar
    */
@@ -210,10 +215,11 @@ export function useSunnySearchModal(
     handlePageChange,
     handlePageSizeChange,
     handleCheckboxChange,
-    handleCheckboxAll,
-    removeRow,
-    handleOk,
-    handleCancel,
-    toggleRowSelection
-  };
+  handleCheckboxAll,
+  handleRadioChange,
+  removeRow,
+  handleOk,
+  handleCancel,
+  toggleRowSelection
+};
 }

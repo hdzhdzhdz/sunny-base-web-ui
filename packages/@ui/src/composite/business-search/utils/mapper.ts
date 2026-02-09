@@ -59,6 +59,7 @@ export function mapDynamicConfig(res: DynamicConfigResponse): Partial<BusinessSe
     title: res.cTitle,
     width: res.cWidth ? (isNaN(Number(res.cWidth)) ? res.cWidth : `${res.cWidth}px`) : undefined,
     contentHeight: res.cHeight ? (isNaN(Number(res.cHeight)) ? res.cHeight : Number(res.cHeight)) : 300,
+    multiple: res.cSelectionMode === 'single' ? false : true,
     formSchema: mapFormSchema(res.conditions),
     tableColumns: mapTableColumns(res.tableCols),
     // 动态配置模式下，searchApi 在组件内部通过 createSearchProxy 动态生成，此处无需映射

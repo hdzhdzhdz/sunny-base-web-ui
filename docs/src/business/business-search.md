@@ -14,6 +14,12 @@
 
 <preview path="./demos/business-search/DynamicUsage.vue" />
 
+## 在 SunnyForm 中使用
+
+已将组件注册到 `SunnyForm` 的组件映射表中，可直接通过字符串 `SunnyBusinessSearch` 使用。
+
+<preview path="./demos/business-search/FormUsage.vue" />
+
 ## API
 
 ### Props
