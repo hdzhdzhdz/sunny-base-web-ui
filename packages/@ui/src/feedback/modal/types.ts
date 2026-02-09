@@ -13,6 +13,8 @@ export interface ModalProps {
   helpMessage?: string;
   /** 是否支持 ESC 关闭 */
   closeOnEsc?: boolean;
+  /** 是否显示全屏按钮 */
+  fullscreen?: boolean;
   /** 是否支持点击遮罩关闭 */
   closeOnClickModal?: boolean;
   /** 确认按钮文字 */

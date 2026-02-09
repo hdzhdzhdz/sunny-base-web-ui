@@ -26,13 +26,18 @@ const props = withDefaults(defineProps<SunnySearchModalProps>(), {
   helpMessage: '支持跨页多选，翻页保留选中状态；双击表格行可快速确认。',
   fieldNames: () => ({ label: 'label', value: 'value', desc: 'desc' }),
   commonConfig: () => ({
-    colProps: { xs: 24, sm: 12, md: 8, lg: 8, xl: 8, xxl: 8 },
+    colProps: { xs: 24, sm: 12, md: 6, lg: 6, xl: 6, xxl: 6 },
   }),
   width: '800px',
   contentHeight: 300,
 });
 
 const emit = defineEmits<SunnySearchModalEmits>();
+
+const localVisible = computed({
+  get: () => props.visible,
+  set: (val) => emit('update:visible', val),
+});
 
 const gridRef = ref();
 
@@ -55,24 +60,6 @@ const {
   toggleRowSelection
 } = useSunnySearchModal(props, emit);
 
-const isMaximized = ref(false);
-const handleFullscreenChange = (val: boolean) => {
-  isMaximized.value = val;
-};
-
-const modalBodyStyle = computed(() => {
-  if (isMaximized.value) {
-    return {
-      height: '100%',
-      flex: 1,
-      display: 'flex',
-      flexDirection: 'column',
-      overflow: 'hidden'
-    };
-  }
-  return {};
-});
-
 const handleReset = async () => {
   await nextTick();
   handleSearch();
@@ -83,8 +70,9 @@ const gridOptions = computed(() => ({
   border: true,
   stripe: true,
   showOverflow: true,
-  height: 'auto',
+  height: props.contentHeight,
   align: 'center',
+  autoResize: true, // 自动监听父容器变化
   columnConfig: { resizable: true },
   rowConfig: { isCurrent: true, isHover: true, keyField: actualRowKey.value },
   checkboxConfig: {
@@ -159,20 +147,18 @@ watch(
 
 <template>
   <SunnyModal
-    :model-value="props.visible"
+    v-model="localVisible"
     :title="props.title"
     :width="props.width"
-    :top="50"
-    :mask-closable="false"
     unmount-on-close
+    title-align="start"
+    :fullscreen="false"
     :help-message="props.helpMessage"
-    :body-style="modalBodyStyle"
     @cancel="handleCancel"
-    @ok="handleOk"
     @close="handleCancel"
-    @fullscreen-change="handleFullscreenChange"
+    @ok="handleOk"
   >
-    <div class="flex flex-col" :style="{ height: isMaximized ? '100%' : (typeof props.contentHeight === 'number' ? props.contentHeight + 'px' : props.contentHeight) }">
+    <div class="flex flex-col">
       <!-- Search Form -->
       <div class="mb-4 border-b border-gray-100 pb-4">
         <SunnyForm
@@ -183,16 +169,15 @@ watch(
           :reset-button-options="{ show: true }"
           @submit="handleSearch"
           @reset="handleReset"
-          layout="horizontal"
+          layout="vertical"
         >
           <template #submit-before>
             <!-- Add any extra buttons if needed -->
           </template>
         </SunnyForm>
       </div>
-
       <!-- Content Body -->
-      <div class="flex flex-1 overflow-hidden">
+      <div class="flex flex-1 overflow-hidden" :style="{ height: (typeof props.contentHeight === 'number' ? props.contentHeight + 'px' : props.contentHeight) }">
         <!-- Left: Table -->
         <div class="flex-1 h-full overflow-hidden flex flex-col">
            <SunnyQueryGrid

@@ -11,6 +11,7 @@ import { onMounted, watch, nextTick } from 'vue'
 import { useRoute } from 'vitepress'
 
 import './style.css'
+import './acro.css'
 
 export default {
   extends: DefaultTheme,

@@ -15,7 +15,7 @@
     <slot></slot>
 
     <template #title>
-      <div class="flex items-center justify-between w-full" @dblclick="toggleMaximize">
+      <div class="flex items-center justify-between w-full" @dblclick="props.fullscreen && toggleMaximize()">
         <div class="flex-1 font-semibold text-base text-[var(--color-text-1)] overflow-hidden text-ellipsis whitespace-nowrap">
           <slot name="title">{{ title }}</slot>
         </div>
@@ -26,7 +26,7 @@
             </div>
           </a-tooltip>
 
-          <div class="cursor-pointer text-[var(--color-text-2)] flex items-center justify-center transition-colors duration-200 text-base hover:text-[var(--color-text-1)]" @click.stop="toggleMaximize">
+          <div v-if="props.fullscreen" class="cursor-pointer text-[var(--color-text-2)] flex items-center justify-center transition-colors duration-200 text-base hover:text-[var(--color-text-1)]" @click.stop="toggleMaximize">
             <icon-fullscreen-exit v-if="isMaximized" />
             <icon-fullscreen v-else />
           </div>
@@ -89,6 +89,7 @@ const props = withDefaults(defineProps<ModalProps>(), {
   width: "50%",
   zIndex: 1000,
   closeOnEsc: true,
+  fullscreen: true,
   closeOnClickModal: true,
   helpMessage: "双击标题栏可最大化/还原，按 ESC 可关闭弹窗",
 });

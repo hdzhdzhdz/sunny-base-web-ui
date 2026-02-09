@@ -38,3 +38,4 @@ export {
 export * from "./entry/select/types";
 export * from "./entry/search-input-tag/types";
 export * from "./entry/form/types";
+export * from "./composite/business-search";

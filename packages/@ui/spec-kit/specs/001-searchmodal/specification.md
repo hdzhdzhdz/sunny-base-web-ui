@@ -29,13 +29,18 @@
 - **Modal Header**:
   - **Title Area**: 左侧显示标题，支持通过 `helpMessage` 属性显示帮助图标和提示信息。
 - **Header (Search Form)**: `SunnyForm` 渲染的搜索区域。
+  - **Layout**: 采用 **垂直布局 (Vertical)**，即标签 (Label) 位于输入框上方。
   - **Buttons**: 包含“查询”和“重置”按钮。
   - **Responsive Grid**: 必须响应式。
     - 大屏 (>=1200px/xxl): 4列
-    - 中屏 (>=992px/lg): 3列
+    - 中屏 (>=992px/lg): 4列
     - 小屏 (<768px/sm): 1列或2列 (根据字段数自动调整)
 - **Body (Content)**:
-  - **Fixed Height**: 内容区域应有固定高度或最大高度 (建议 `height: 500px`)，超出部分内部滚动。
+  - **Table Height Configuration**:
+    - 支持配置固定高度 (`contentHeight`)，默认值为 `300px`。
+    - 该高度仅应用于**表格内容区域** (包含左侧表格和右侧已选列表)，不影响搜索表单。
+    - 表格组件的高度设置为 `100%`，以填满该固定高度区域并支持内部滚动。
+    - **Note**: 移除了弹窗最大化功能。
   - **Left (Main)**: `SunnyQueryGrid` (或复用 `vxe-grid`) 展示数据列表，支持多选。
     - **Pagination**: 表格内部不显示分页，分页组件移至 Modal Footer。
   - **Right (Sidebar)**: “已选列表”区域。

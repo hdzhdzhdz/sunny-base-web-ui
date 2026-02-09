@@ -15,6 +15,7 @@ export default defineConfig({
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Components', link: '/components/basic/icon' },
+      { text: 'Business', link: '/business/' },
       { text: 'AI', link: '/ai/ai-assistant' }
     ],
 
@@ -25,6 +26,15 @@ export default defineConfig({
           items: [
             { text: 'AI 助手', link: '/ai/ai-assistant' },
             { text: 'SpecKit Tutorial (还在研究中)', link: '/ai/spec-kit-tutorial' }
+          ]
+        }
+      ],
+      '/business/': [
+        {
+          text: 'Business Components',
+          items: [
+            { text: 'Introduction 介绍', link: '/business/' },
+            { text: 'BusinessSearch 业务搜索', link: '/business/business-search' }
           ]
         }
       ],
@@ -127,6 +137,16 @@ export default defineConfig({
           }
         }
       }
-    ]
+    ],
+    server: {
+      proxy: {
+        '/core': {
+          target: 'https://sunnyqms-test.sunnyoptical.cn/base/test',
+          changeOrigin: true,
+          secure: false, // 忽略自签名证书错误（如果是 https）
+          rewrite: (path) => path.replace(/^\/core/, '/core') // 显式保留 /core，虽然默认也是如此
+        }
+      }
+    }
   }
 })
