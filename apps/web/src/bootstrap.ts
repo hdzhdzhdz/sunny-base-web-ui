@@ -27,6 +27,7 @@ async function bootstrap(namespace: string) {
 		locale: preferences.app.locale,
     onLocaleChange: (locale) => {
       preferences.app.locale = locale;
+      localStorage.setItem('app-locale', locale);
     },
 		enableRefreshToken: preferences.app.enableRefreshToken,
 		publicKey: preferences.app.publicKey,

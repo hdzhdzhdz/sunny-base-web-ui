@@ -1,6 +1,6 @@
 {
   "name": "@sunny-base-web/effects",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": false,
   "files": [
     "dist"
@@ -22,7 +22,7 @@
   "dependencies": {
     "@arco-design/web-vue": "^2.57.0",
     "@sunny-base-web/icons": "workspace:*",
-    "@sunny-base-web/locales": "workspace:^",
+    "@sunny-base-web/locales": "workspace:*",
     "@sunny-base-web/stores": "workspace:*",
     "@sunny-base-web/ui": "workspace:*",
     "@sunny-base-web/utils": "workspace:*",
