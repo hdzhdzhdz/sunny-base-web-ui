@@ -21,6 +21,10 @@ export class ModalApi implements ModalMethods {
     this.state.onVisibleChange?.(false);
   };
 
+  setProps = (props: Partial<ModalProps>) => {
+    this.setState(props);
+  };
+
   setState(
     stateOrFn: ((prev: ModalProps) => Partial<ModalProps>) | Partial<ModalProps>
   ) {

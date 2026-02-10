@@ -5,11 +5,11 @@ import { resolve } from 'path'
 
 export default defineConfig({
   plugins: [
-    vue(),
-    dts({
-      tsconfigPath: './tsconfig.json',
-      cleanVueFileName: true,
-    }),
+    vue()
+    // dts({
+    //   tsconfigPath: './tsconfig.json',
+    //   cleanVueFileName: true,
+    // }),
   ],
   build: {
     lib: {

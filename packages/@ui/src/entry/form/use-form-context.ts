@@ -61,10 +61,11 @@ export function useFormInitial(props: ComputedRef<SunnyFormProps> | SunnyFormPro
     const p = unref(props);
     const values: Record<string, any> = {};
     (p.schema || []).forEach(item => {
-      if (item.defaultValue !== undefined) {
+      if (item.fieldName && item.defaultValue !== undefined) {
         values[item.fieldName] = item.defaultValue;
       }
     });
+
     // 合并传入的初始值 (Merge provided initial values)
     if (p.values) {
       Object.assign(values, p.values);

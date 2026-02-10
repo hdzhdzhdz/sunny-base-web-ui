@@ -1,6 +1,6 @@
-import { computed, type ComputedRef } from 'vue';
-import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
-import type { FormSchema, ColProps, FormRenderProps } from '../types';
+import { computed } from 'vue';
+import { useBreakpoints } from '@vueuse/core';
+import type { ColProps, FormRenderProps } from '../types';
 
 /**
  * 响应式 Span 计算 hook

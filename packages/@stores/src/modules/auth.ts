@@ -14,19 +14,9 @@ export const useAuthStore = defineStore('core-auth', {
       // 清除 token
       accessStore.setAccessToken(null);
       // 清除用户信息
-      userStore.setUserInfo(null);
+      userStore.$reset();
       // 清除权限检查状态
       accessStore.setIsAccessChecked(false);
     },
-
-    /**
-     * 获取用户信息
-     */
-    async fetchUserInfo() {
-      const userStore = useUserStore();
-      const response = await authApi.fetchUserInfo();
-      userStore.setUserInfo(response.data);
-      return response.data;
-    }
   },
 });

@@ -9,7 +9,7 @@ export interface SunnySearchModalProps {
   /**
    * 搜索表单配置
    */
-  formSchema: FormSchema[];
+  formSchema?: FormSchema[];
   /**
    * 表格列配置
    */
@@ -19,7 +19,7 @@ export interface SunnySearchModalProps {
    * 如果是 string，则发起 POST 请求
    * 如果是 Function，则直接调用，需返回 Promise
    */
-  searchApi: string | ((params: any) => Promise<any>);
+  searchApi?: string | ((params: any) => Promise<any>);
   /**
    * 默认选中的数据 (回显)
    * 数组中的对象至少包含 rowKey 指定的字段

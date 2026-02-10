@@ -50,12 +50,11 @@ const emit = defineEmits(['update:modelValue', 'change']);
 
 const {
   visible,
-  loading,
   currentConfig,
   selectedValues,
   handleOpen,
   handleConfirm
-} = useSunnyBusinessSearch(props, emit);
+} = useSunnyBusinessSearch(props, emit as any);
 
 // 合并配置
 const mergedModalProps = computed(() => {

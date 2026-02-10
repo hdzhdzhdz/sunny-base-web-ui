@@ -1,7 +1,7 @@
 import JSEncrypt from 'jsencrypt'
 import { globalConfig } from '../config'
 
-export function getRsaData(val) {
+export function getRsaData(val: string): string | false {
   const encryptor = new JSEncrypt()
   const publicKey = globalConfig.publicKey || ''
   encryptor.setPublicKey(publicKey)

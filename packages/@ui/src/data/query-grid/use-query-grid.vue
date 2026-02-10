@@ -1,6 +1,6 @@
 <template>
   <vxe-grid ref="gridRef" v-bind="$attrs" :size="props.size">
-    <template v-for="(_, name) in $slots" #[name]="slotData">
+    <template v-for="name in (Object.keys($slots) as string[])" #[name]="slotData">
       <slot :name="name" v-bind="slotData || {}"></slot>
     </template>
   </vxe-grid>

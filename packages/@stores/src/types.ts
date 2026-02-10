@@ -1,15 +1,14 @@
 import type { RouteLocationNormalized, RouteMeta } from 'vue-router';
-import type { ComputedRef } from 'vue';
 
 export interface TabDefinition extends Partial<RouteLocationNormalized> {
   key?: string;
-  name?: string | symbol | null;
+  name?: string | symbol;
   path: string;
   fullPath?: string;
   meta: RouteMeta & {
     title?: string;
     affixTab?: boolean;
-    newTabTitle?: string | ComputedRef<string>;
+    newTabTitle?: string | any;
     hideInTab?: boolean;
     keepAlive?: boolean;
     maxNumOfOpenTab?: number;

@@ -6,11 +6,11 @@ import { resolve } from 'path'
 export default defineConfig({
   plugins: [
     vue(),
-    dts({
-      tsconfigPath: './tsconfig.json',
-      cleanVueFileName: true,
-      exclude: ['src/test/**', 'src/**/*.spec.ts', 'src/**/*.test.ts'],
-    }),
+    // dts({
+    //   tsconfigPath: './tsconfig.json',
+    //   cleanVueFileName: true,
+    //   exclude: ['src/test/**', 'src/**/*.spec.ts', 'src/**/*.test.ts'],
+    // }),
   ],
   build: {
     lib: {

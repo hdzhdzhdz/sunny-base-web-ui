@@ -130,14 +130,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted, nextTick, watch, onUnmounted } from 'vue'
+import { ref, reactive, computed, onMounted, onUnmounted } from 'vue'
 import { Message } from '@arco-design/web-vue'
 import { IconUser, IconLock, IconLanguage, IconDesktop } from '@arco-design/web-vue/es/icon'
+// @ts-ignore
 import { getLodop } from './utils/LodopFuncs'
 import { getRsaData } from '../utils/encryption'
 import { login } from '../api/user'
-import { useAccessStore, useUserStore } from '@sunny-base-web/stores'
-import { useRouter } from 'vue-router'
+import { useAccessStore } from '@sunny-base-web/stores'
+// import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import SlideVerify from 'vue3-slide-verify'
 import 'vue3-slide-verify/dist/style.css'
@@ -161,7 +162,7 @@ import slideBg7 from './slideBg/bg7.png'
 
 
 // Define props for images to allow generalization
-const props = defineProps({
+const _props = defineProps({
   bg01: { type: String, default: bg01Img },
   bg02: { type: String, default: bg02Img },
   logo: { type: String, default: logoImg },
@@ -178,17 +179,18 @@ const { t, locale } = useI18n()
 // State
 const loginFormRef = ref()
 const pwdInputRef = ref()
-const showPassword = ref(false)
 const loginForm = reactive({
   username: '',
   password: '',
   langList: '',
-  macAddress: ''
+  macAddress: '',
+  cVerificationCode: '',
+  systemSign: ''
 })
+const macTotal = ref(0)
 const macList = ref<string[]>([])
 const langList = ref<any[]>([])
 const loading = ref(false)
-const redirect = ref<string | undefined>(undefined)
 const activeInput = ref(-1)
 const visible = ref(false)
 const verifyPopoverRef = ref()
@@ -199,7 +201,7 @@ const refreshShow = ref(true)
 // Assuming store is available or mocked
 // const store = useStore() 
 // const language = computed(() => store.getters.language)
-const language = ref('zh-CN') // Mock
+const language = ref(locale.value || 'zh-CN')
 
 const hideMac = computed(() => !['slide', 'single'].includes(loginStrategy.value))
 const sliderText = computed(() => `${t('向右滑动')}(${(loginForm as any).cVerificationCode || ''})`)
@@ -375,7 +377,7 @@ const getSystemInfo = (strINFOType: string) => {
   }
   if (LODOP?.CVERSION) {
     // eslint-disable-next-line no-undef
-    ;(window as any).CLODOP.On_Return = function(TaskID: string, Value: string) {
+    ;(window as any).CLODOP.On_Return = function(_TaskID: string, Value: string) {
       x(Value.replace(/-/g, ':'))
     }
     LODOP.GET_SYSTEM_INFO(strINFOType)
@@ -518,7 +520,7 @@ const handleLogin = async () => {
 
 // const router = useRouter()
 const accessStore = useAccessStore()
-const userStore = useUserStore()
+// const userStore = useUserStore()
 
 const loginAction = async () => {
   loading.value = true
@@ -526,10 +528,10 @@ const loginAction = async () => {
     const { username, password, macAddress, cVerificationCode, systemSign } = loginForm
     const res = await login({
       username: username.trim(),
-      password: getRsaData(password),
+      password: getRsaData(password) || '',
       macAddress: macAddress,
       cVerificationCode: cVerificationCode,
-      systemSign: getRsaData(systemSign) ? getRsaData(systemSign) : ''
+      systemSign: (systemSign && getRsaData(systemSign)) || ''
     })
     
     if (res.code === 0 || res.success) {

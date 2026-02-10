@@ -452,7 +452,7 @@ function isTabShown(tab: TabDefinition) {
 /**
  * @zh_CN 获取路由的唯一键
  */
-function getTabKey(tab: RouteLocationNormalized | RouteRecordNormalized) {
+function getTabKey(tab: RouteLocationNormalized | RouteRecordNormalized | TabDefinition) {
   const {
     fullPath,
     path,

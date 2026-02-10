@@ -25,6 +25,14 @@ interface UserState {
    * 智能体配置信息
    */
   agent: Record<string, any>;
+  /**
+   * 资源权限
+   */
+  resources?: any[];
+  /**
+   * 首页路径
+   */
+  homePath?: string;
 }
 
 /**
@@ -34,12 +42,18 @@ export const useUserStore = defineStore('core-user', {
   state: (): UserState => ({
     name: '',
     code: '',
-    accessToken: '',
     roles: [],
     superAdmin: false,
     bWeakPwd: false,
     agent: {},
+    resources: [],
+    homePath: '',
   }),
+  getters: {
+    userInfo(state): UserState {
+      return state;
+    },
+  },
   actions: {
     setUserInfo(userInfo: Partial<UserState>) {
       this.$patch(userInfo);

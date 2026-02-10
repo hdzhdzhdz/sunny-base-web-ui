@@ -1,4 +1,4 @@
-import { onBeforeUnmount, onMounted, type Ref, watch, nextTick } from 'vue';
+import { onBeforeUnmount, onMounted, type Ref, watch } from 'vue';
 import type { VxeGridInstance } from 'vxe-table';
 
 export function useSticky(gridRef: Ref<VxeGridInstance | undefined>, props: Record<string, any>) {
@@ -48,7 +48,7 @@ export function useSticky(gridRef: Ref<VxeGridInstance | undefined>, props: Reco
   }
 
   // 同步滚动位置：表格 -> 滚动条
-  const onTableScroll = (e: Event) => {
+  const onTableScroll = () => {
     if (isScrollingBar) return;
     if (stickyBarElement && bodyWrapperElement) {
       isScrollingTable = true;
@@ -60,7 +60,7 @@ export function useSticky(gridRef: Ref<VxeGridInstance | undefined>, props: Reco
   };
 
   // 同步滚动位置：滚动条 -> 表格
-  const onBarScroll = (e: Event) => {
+  const onBarScroll = () => {
     if (isScrollingTable) return;
     if (stickyBarElement && bodyWrapperElement) {
       isScrollingBar = true;

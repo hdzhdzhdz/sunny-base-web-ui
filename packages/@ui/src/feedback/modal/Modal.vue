@@ -45,7 +45,7 @@
 
         <a-button
           v-if="!attrs.hideCancel"
-          v-bind="attrs.cancelButtonProps"
+          v-bind="(attrs.cancelButtonProps as any)"
           @click="handleCancel"
         >
           {{ attrs.cancelText || "取消" }}
@@ -56,8 +56,9 @@
         <a-button
           type="primary"
           :loading="loading || (attrs.okLoading as boolean) || (attrs.confirmLoading as boolean)"
-          v-bind="attrs.okButtonProps"
+          v-bind="(attrs.okButtonProps as any)"
           @click="handleOk"
+
         >
           {{ attrs.okText || "确定" }}
         </a-button>

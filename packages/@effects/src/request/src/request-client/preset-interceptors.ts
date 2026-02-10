@@ -3,6 +3,7 @@ import type { MakeErrorMessageFn, ResponseInterceptorConfig } from './types';
 
 import { isFunction } from '@sunny-base-web/utils';
 
+import { i18n } from '@sunny-base-web/locales';
 import axios from 'axios';
 
 export const defaultResponseInterceptor = ({
@@ -120,9 +121,9 @@ export const errorMessageResponseInterceptor = (
       const err: string = error?.toString?.() ?? '';
       let errMsg = '';
       if (err?.includes('Network Error')) {
-        errMsg = $t('ui.fallback.http.networkError');
+        errMsg = i18n.global.t('ui.fallback.http.networkError');
       } else if (error?.message?.includes?.('timeout')) {
-        errMsg = $t('ui.fallback.http.requestTimeout');
+        errMsg = i18n.global.t('ui.fallback.http.requestTimeout');
       }
       if (errMsg) {
         makeErrorMessage?.(errMsg, error);

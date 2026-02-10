@@ -23,9 +23,11 @@
         <icon-search class="transition-colors group-hover:text-[var(--color-primary-6)]" />
       </div>
     </template>
-    <template v-for="(_, slot) in $slots" #[slot]="scope">
+    <template v-for="slot in (Object.keys($slots) as string[])" #[slot]="scope">
       <slot :name="slot" v-bind="scope || {}"></slot>
     </template>
+
+
   </a-input-tag>
 </template>
 
@@ -75,7 +77,7 @@ const handleKeyDown = (e: KeyboardEvent) => {
 };
 
 // 处理标签移除
-const handleRemove = (removedTag: any, index: number) => {
+const handleRemove = (_: any, index: number) => {
   const newValue = [...props.modelValue];
   newValue.splice(index, 1);
   emit("update:modelValue", newValue);

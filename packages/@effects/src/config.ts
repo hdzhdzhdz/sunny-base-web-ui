@@ -1,4 +1,4 @@
-import { App, InjectionKey, inject } from 'vue'
+import { inject, type App, type InjectionKey } from 'vue'
 
 /**
  * @effects 包的全局配置接口

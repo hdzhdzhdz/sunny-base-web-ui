@@ -192,7 +192,7 @@ defineExpose({
       默认: 提交在前，重置在后
       如果 actionButtonsReverse 为 true，则 重置在前，提交在后
     -->
-    <template v-if="!unref(rootProps).actionButtonsReverse">
+    <template v-if="!(unref(rootProps) as any).actionButtonsReverse">
       <!-- 提交按钮前插槽 -->
       <slot name="submit-before"></slot>
 
@@ -201,7 +201,7 @@ defineExpose({
         type="primary"
         :size="unref(rootProps).size || 'small'"
         @click="handleSubmit"
-        v-bind="submitButtonOptions"
+        v-bind="(submitButtonOptions as any)"
       >
         {{ submitButtonOptions.content }}
       </Button>
@@ -214,12 +214,12 @@ defineExpose({
       v-if="resetButtonOptions.show"
       :size="unref(rootProps).size"
       @click="handleReset"
-      v-bind="resetButtonOptions"
+      v-bind="(resetButtonOptions as any)"
     >
       {{ resetButtonOptions.content }}
     </Button>
 
-    <template v-if="unref(rootProps).actionButtonsReverse">
+    <template v-if="(unref(rootProps) as any).actionButtonsReverse">
       <!-- 提交按钮前插槽 -->
       <slot name="submit-before"></slot>
 
@@ -228,7 +228,7 @@ defineExpose({
         type="primary"
         :size="unref(rootProps).size || 'small'"
         @click="handleSubmit"
-        v-bind="submitButtonOptions"
+        v-bind="(submitButtonOptions as any)"
       >
         {{ submitButtonOptions.content }}
       </Button>

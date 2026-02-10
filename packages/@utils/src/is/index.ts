@@ -1,6 +1,18 @@
 // eslint-disable-next-line vue/prefer-import-from-vue
 import { isFunction, isObject, isString } from '@vue/shared';
 
+const toString = Object.prototype.toString;
+
+/**
+ * 检查值的类型
+ * @param val 值
+ * @param type 类型
+ * @returns boolean
+ */
+function is(val: unknown, type: string) {
+  return toString.call(val) === `[object ${type}]`;
+}
+
 /**
  * 检查传入的值是否为undefined。
  *
@@ -105,6 +117,7 @@ function isWindowsOs(): boolean {
 }
 
 export {
+  is,
   isBoolean,
   isEmpty,
   isFunction,

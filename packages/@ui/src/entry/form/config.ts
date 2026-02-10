@@ -19,14 +19,14 @@ import {
   TreeSelect,
   // Mentions,
 } from '@arco-design/web-vue';
-import type { Component } from 'vue';
+import { defineAsyncComponent, type Component } from 'vue';
 import type {
-  BaseFormComponentType,
   FormCommonConfig,
   SunnyFormAdapterOptions,
 } from './types';
 import { defineRule } from 'vee-validate';
-import SunnyBusinessSearch from '../../composite/business-search/SunnyBusinessSearch.vue';
+
+const SunnyBusinessSearch = defineAsyncComponent(() => import('../../composite/business-search/SunnyBusinessSearch.vue'));
 
 // 注册基础验证规则
 defineRule('required', (value: any) => {
@@ -43,7 +43,7 @@ defineRule('required', (value: any) => {
  * 默认模型字段名
  * Default model prop name
  */
-const DEFAULT_MODEL_PROP_NAME = 'modelValue';
+// const DEFAULT_MODEL_PROP_NAME = 'modelValue';
 
 export const COMPONENT_MAP: Record<string, Component> = {
   Input,
@@ -91,9 +91,7 @@ export const DEFAULT_FORM_COMMON_CONFIG: FormCommonConfig = {};
  *
  * @param options 适配器选项
  */
-export function setupSunnyForm<
-  T extends BaseFormComponentType = BaseFormComponentType,
->(options: SunnyFormAdapterOptions<T>) {
+export function setupSunnyForm(options: SunnyFormAdapterOptions) {
   // 解构配置项和自定义验证规则
   // Destructure config and custom validation rules
   const { config, defineRules } = options;

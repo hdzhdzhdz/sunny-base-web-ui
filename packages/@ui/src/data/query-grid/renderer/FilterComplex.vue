@@ -2,7 +2,7 @@
   <div class="my-filter-complex">
     <div v-if="currOption" class="my-filter-input">
       <VxeSelect
-        v-if="renderType === 'select'"
+        v-if="renderType === 'select' && column"
         v-model="currOption.data"
         :options="column.params.optionlist"
         clearable
@@ -24,8 +24,10 @@
 </template>
 
 <script lang="ts" setup>
-import { PropType, ref, computed, watch } from 'vue'
-import { VxeTableDefines, VxeGlobalRendererHandles } from 'vxe-table'
+import { ref, computed, watch } from 'vue'
+import type { PropType } from 'vue'
+import { VxeTableDefines } from 'vxe-table'
+import type { VxeGlobalRendererHandles } from 'vxe-table'
 import { VxeButton, VxeInput, VxeSelect } from 'vxe-pc-ui'
 import { hasIn } from 'lodash-es'
 
@@ -56,11 +58,12 @@ watch(currField, () => {
 load()
 
 const column = computed(() => {
-  return props.renderParams.column
+  return props.renderParams?.column
 })
 
 const renderType = computed(() => {
-  return hasIn(column.value.params, 'optionlist') ? 'select' : 'input'
+  const col = column.value
+  return col && hasIn(col.params, 'optionlist') ? 'select' : 'input'
 })
 
 const changeOptionEvent = () => {

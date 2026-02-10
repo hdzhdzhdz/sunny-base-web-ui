@@ -1,8 +1,9 @@
 import { isRef, toRaw, type ComponentPublicInstance } from 'vue';
 import type { FormState, GenericObject, ResetFormOpts, ValidationOptions } from 'vee-validate';
-import { cloneDeep, isFunction, isObject } from '@sunny-base-web/utils';
+import { cloneDeep, isFunction, isObject, is } from '@sunny-base-web/utils';
 import { Store } from './store';
 import type { FormActions, FormSchema, SunnyFormProps } from './types';
+
 
 // ==========================================
 // 辅助函数 (Helper Functions)
@@ -390,7 +391,7 @@ export class FormApi {
     const fieldSet = new Set(fields);
     const schema = this.state?.schema ?? [];
 
-    const filterSchema = schema.filter((item) => !fieldSet.has(item.fieldName));
+    const filterSchema = schema.filter((item) => item.fieldName && !fieldSet.has(item.fieldName));
 
     this.setState({
       schema: filterSchema,
@@ -552,6 +553,13 @@ export class FormApi {
   }
 
   /**
+   * 重置并设置表单值 (Alias for setValues to be compatible with legacy code)
+   */
+  async resetValues(fields: Record<string, any>) {
+    return this.setValues(fields);
+  }
+
+  /**
    * 提交表单
    * Submit form
    */
@@ -612,6 +620,7 @@ export class FormApi {
     });
 
     currentSchema.forEach((schema, index) => {
+      if (!schema.fieldName) return;
       const updatedData = updatedMap[schema.fieldName];
       if (updatedData) {
         // 使用 mergeWithArrayOverride 合并 schema 更新
@@ -771,7 +780,7 @@ export class FormApi {
       }
 
       // Find schema item
-      const schemaItem = this.state.schema?.find(
+      const schemaItem = this.state?.schema?.find(
         (item) => item.fieldName === field,
       );
       if (!schemaItem) return;
@@ -848,8 +857,8 @@ export class FormApi {
           values[startTimeKey] = startTime;
           values[endTimeKey] = endTime;
         } else if (isFunction(format)) {
-          values[startTimeKey] = format(startTime);
-          values[endTimeKey] = format(endTime);
+          values[startTimeKey] = format(startTime, field);
+          values[endTimeKey] = format(endTime, field);
         } else {
           const [startTimeFormat, endTimeFormat] = Array.isArray(format)
             ? format
@@ -902,7 +911,9 @@ export class FormApi {
         (item) => !currentFields.has(item.fieldName),
       );
       for (const schema of deletedSchema) {
-        this.form?.setFieldValue?.(schema.fieldName, undefined);
+        if (schema.fieldName) {
+          this.form?.setFieldValue?.(schema.fieldName, undefined);
+        }
       }
     }
   }

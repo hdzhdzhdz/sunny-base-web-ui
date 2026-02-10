@@ -1,4 +1,4 @@
-import { createDefu, defu } from 'defu';
+import { createDefu } from 'defu';
 
 export { createDefu as createMerge, defu as merge } from 'defu';
 

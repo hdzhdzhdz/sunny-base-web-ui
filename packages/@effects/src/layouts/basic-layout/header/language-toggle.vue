@@ -39,9 +39,11 @@ onMounted(() => {
   });
 });
 
+import type { SupportedLanguagesType } from '@sunny-base-web/locales';
+
 const handleSelect = async (val: string | number | Record<string, any>) => {
   if (!val) return;
-  const newLocale = val as string;
+  const newLocale = val as SupportedLanguagesType;
   
   if (config.onLocaleChange) {
     await config.onLocaleChange(newLocale);

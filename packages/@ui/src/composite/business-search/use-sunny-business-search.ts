@@ -1,14 +1,24 @@
-import { ref, computed, watch, nextTick } from 'vue';
+import { ref, computed, watch, type WritableComputedRef, type Ref } from 'vue';
 import axios from 'axios';
 import type { SetupContext } from 'vue';
 import type { SunnyBusinessSearchProps, BusinessSearchConfig, DynamicConfigResponse } from './types';
 import { mapDynamicConfig, mapSearchRequest } from './utils/mapper';
 import { getBusinessConfig } from './configs';
 
+export interface UseSunnyBusinessSearchReturn {
+  visible: Ref<boolean>;
+  loading: Ref<boolean>;
+  currentConfig: Ref<Partial<BusinessSearchConfig>>;
+  selectedValues: WritableComputedRef<any[]>;
+  handleOpen: () => Promise<void>;
+  handleConfirm: (rows: any[]) => void;
+}
+
 export function useSunnyBusinessSearch(
   props: SunnyBusinessSearchProps,
   emit: SetupContext['emit']
-) {
+): UseSunnyBusinessSearchReturn {
+
   const visible = ref(false);
   const loading = ref(false);
   const currentConfig = ref<Partial<BusinessSearchConfig>>({});

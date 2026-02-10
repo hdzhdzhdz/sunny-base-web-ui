@@ -98,7 +98,9 @@ function loadLocalesMapFromDir(
 function setI18nLanguage(locale: Locale) {
   i18n.global.locale.value = locale;
 
-  document?.querySelector('html')?.setAttribute('lang', locale);
+  if (typeof document !== 'undefined') {
+    document.querySelector('html')?.setAttribute('lang', locale);
+  }
 }
 
 async function setupI18n(app: App, options: LocaleSetupOptions = {}) {

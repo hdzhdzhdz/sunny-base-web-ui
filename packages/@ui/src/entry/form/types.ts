@@ -1,6 +1,6 @@
-import type { FieldOptions, FormContext, GenericObject } from 'vee-validate';
+import type { FormContext, GenericObject } from 'vee-validate';
 import type { ZodTypeAny } from 'zod';
-import type { Component, HtmlHTMLAttributes } from 'vue';
+import type { Component } from 'vue';
 
 export type FormLayout = 'horizontal' | 'inline' | 'vertical';
 
@@ -70,6 +70,22 @@ export interface FormItemDependencies {
    * Trigger fields for dependency updates
    */
   triggerFields?: string[];
+  disabled?: (
+    value: Partial<Record<string, any>>,
+    actions: FormActions,
+  ) => boolean | PromiseLike<boolean>;
+  required?: (
+    value: Partial<Record<string, any>>,
+    actions: FormActions,
+  ) => boolean | PromiseLike<boolean>;
+  rules?: (
+    value: Partial<Record<string, any>>,
+    actions: FormActions,
+  ) => FormSchemaRuleType | PromiseLike<FormSchemaRuleType>;
+  trigger?: (
+    value: Partial<Record<string, any>>,
+    actions: FormActions,
+  ) => void | PromiseLike<void>;
 }
 
 export interface ColProps {
@@ -170,6 +186,14 @@ export interface FormSchema {
    * Form field props
    */
   formFieldProps?: Record<string, any>;
+  /**
+   * 是否禁用
+   */
+  disabled?: boolean;
+  /**
+   * 是否隐藏
+   */
+  hide?: boolean;
 }
 
 export interface SunnyFormProps {
@@ -214,6 +238,11 @@ export interface SunnyFormProps {
    * Common config for form items
    */
   commonConfig?: Record<string, any>;
+  /**
+   * 其他配置
+   * Other configuration
+   */
+  config?: Record<string, any>;
   /**
    * 是否显示默认操作按钮 (提交/重置)
    * Show default actions (submit/reset)
@@ -361,9 +390,7 @@ export interface FormCommonConfig {
  * 表单适配器选项
  * Form adapter options
  */
-export interface SunnyFormAdapterOptions<
-  T extends BaseFormComponentType = BaseFormComponentType,
-> {
+export interface SunnyFormAdapterOptions {
   /**
    * 配置
    * Configuration

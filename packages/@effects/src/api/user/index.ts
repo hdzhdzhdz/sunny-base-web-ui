@@ -16,3 +16,7 @@ export interface LoginResult {
 export function login(data: LoginParams) {
   return requestClient.post<ResponseResult<LoginResult>>('/base-auth/login', {}, { params: data });
 }
+
+export function fetchUserInfo(data?: any) {
+  return requestClient.post<ResponseResult<any>>('/core/contact/getCurrentUserAndResources', data);
+}

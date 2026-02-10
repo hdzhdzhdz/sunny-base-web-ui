@@ -3,11 +3,9 @@ import type { VxeGridInstance } from 'vxe-table';
 
 export class VxeGridApi {
   private gridRef: Ref<any>;
-  private options: any;
 
-  constructor(gridRef: Ref<any>, options: any) {
+  constructor(gridRef: Ref<any>) {
     this.gridRef = gridRef;
-    this.options = options;
   }
 
   private get grid(): VxeGridInstance | undefined {
@@ -46,6 +44,16 @@ export class VxeGridApi {
       if (selectRecords.length > 0) {
         await $grid.remove(selectRecords);
       }
+    }
+  }
+
+  /**
+   * 提交代理
+   */
+  commitProxy(code: string | { code: string; target?: string | undefined; force?: boolean | undefined }, ...args: any[]) {
+    const $grid = this.grid;
+    if ($grid) {
+      return $grid.commitProxy(code, ...args);
     }
   }
 }

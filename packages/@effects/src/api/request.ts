@@ -135,7 +135,7 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
       client,
       doReAuthenticate,
       doRefreshToken,
-      enableRefreshToken: globalConfig.enableRefreshToken, // 是否启用自动刷新 Token
+      enableRefreshToken: globalConfig.enableRefreshToken ?? false, // 是否启用自动刷新 Token
       formatToken,
     }),
   );

@@ -5,7 +5,7 @@ import VxeGrid from './use-query-grid.vue';
 
 export function useSunnyQueryGrid(options: any) {
   const gridRef = ref();
-  const api = new VxeGridApi(gridRef, options);
+  const api = new VxeGridApi(gridRef);
 
   const Grid = defineComponent(
     (props, { attrs, slots }) => {

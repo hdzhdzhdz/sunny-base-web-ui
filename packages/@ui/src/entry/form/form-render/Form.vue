@@ -125,7 +125,12 @@ const isInline = computed(() => renderPropsState.layout === 'inline');
  */
 const { handleSubmit, resetForm, setValues, values, validate, errors, meta } = props.form || useForm({
   // 提取默认值构建初始状态
-  initialValues: computedSchema.value.reduce((acc, item) => ({ ...acc, [item.fieldName]: item.defaultValue }), {}),
+  initialValues: computedSchema.value.reduce((acc, item) => {
+    if (item.fieldName) {
+      acc[item.fieldName] = item.defaultValue;
+    }
+    return acc;
+  }, {} as Record<string, any>),
 });
 
 /**
@@ -151,7 +156,7 @@ onMounted(() => {
 /**
  * 表单提交处理函数
  */
-const onSubmit = handleSubmit((values) => {
+const onSubmit = handleSubmit((values: Record<string, any>) => {
   // 优先执行配置中的 handleSubmit 回调
   if (renderPropsState.handleSubmit) {
     renderPropsState.handleSubmit(values);
@@ -205,7 +210,7 @@ const computedGap = computed(() => {
     :layout="formProps.layout || 'horizontal'"
     :size="formProps.size || 'small'"
     class="arco-form"
-    @submit="(data: any, ev: any) => onSubmit(ev)"
+    @submit="(_data: any, ev: any) => onSubmit(ev)"
   >
     <!-- 
       核心布局容器：使用 a-row 和 a-col 替代 a-grid
@@ -216,9 +221,9 @@ const computedGap = computed(() => {
       :class="renderPropsState.wrapperClass"
       :align="(renderPropsState.layout || 'horizontal') === 'vertical' ? 'stretch' : undefined"
     >
-      <template v-for="(item, index) in computedSchema" :key="item.fieldName">
+      <template v-for="(item, index) in computedSchema" :key="item.fieldName || index">
         <a-col
-          v-if="!item.hidden && (!renderPropsState.collapsed || index < (24 / (spans[item.fieldName] ?? 24)) * (renderPropsState.collapsedRows ?? 1) - 1)"
+          v-if="item.fieldName && !item.hidden && (!renderPropsState.collapsed || index < (24 / (spans[item.fieldName] ?? 24)) * (renderPropsState.collapsedRows ?? 1) - 1)"
           :span="spans[item.fieldName] ?? (isInline ? undefined : 24)"
         >
           <FormField :schema="item" />
@@ -226,6 +231,7 @@ const computedGap = computed(() => {
       </template>
       
       <!-- 操作栏区域 -->
+
       <a-col 
         v-if="renderPropsState.showDefaultActions"
         :span="actionSpan" 

@@ -12,7 +12,7 @@ interface AccessState {
   /**
    * 可访问的菜单列表
    */
-  accessMenus: [];  // MenuRecordRaw 后期再加
+  accessMenus: any[];  // MenuRecordRaw 后期再加
   /**
    * 可访问的路由列表
    */
@@ -33,7 +33,7 @@ export const useAccessStore = defineStore('core-access', {
     setIsAccessChecked(isChecked: boolean) {
       this.isAccessChecked = isChecked;
     },
-    setAccessMenus(menus: MenuRecordRaw[]) {
+    setAccessMenus(menus: any[]) {
       this.accessMenus = menus;
     },
     setAccessRoutes(routes: RouteRecordRaw[]) {

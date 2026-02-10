@@ -15,7 +15,7 @@
           >
             <a-dropdown
               trigger="contextMenu"
-              @select="(val) => handleContextMenuSelect(val, tab)"
+              @select="(val: any) => handleContextMenuSelect(val, tab)"
             >
               <div
                 class="group relative flex items-center gap-2 px-3 py-1 text-sm rounded-sm cursor-pointer transition-all duration-200 border whitespace-nowrap"

@@ -119,10 +119,11 @@ const fieldRules = computed(() => {
   let rules = toRaw(currentRules.value);
   // 如果没有规则，根据是否必填生成默认 required 规则
   if (!rules) {
-    return isRequired.value ? 'required' : null;
+    return isRequired.value ? 'required' : undefined;
   }
 
   // 如果是字符串规则，直接返回
+
   if (isString(rules)) {
     return rules;
   }
@@ -218,12 +219,13 @@ const labelColProps = computed(() => {
 
 <template>
   <Field
-    v-if="visible"
+    v-if="visible && schema.fieldName"
     :name="schema.fieldName"
-    :rules="fieldRules"
+    :rules="(fieldRules as any)"
     :label="schema.label"
     v-slot="{ field, errorMessage }"
   >
+
     <a-form-item
       :label="schema.label"
       :help="errorMessage || schema.help"

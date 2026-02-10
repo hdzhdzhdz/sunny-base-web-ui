@@ -8,13 +8,12 @@
  * 3. 适用于需要动态 Schema 更新和程序化控制的复杂表单 (Suitable for complex forms).
  * 4. 状态由 FormApi 内部的 TanStack Store 管理 (State managed by TanStack Store).
  */
-import { computed, onBeforeUnmount, onMounted, nextTick, watch, toRaw } from 'vue';
+import { computed, onBeforeUnmount, onMounted, nextTick, watch } from 'vue';
 import { useDebounceFn } from '@vueuse/core';
 import type { FormApi } from './form-api';
 import type { SunnyFormProps } from './types';
 import { provideComponentRefMap, provideFormProps, useFormInitial } from './use-form-context';
 import FormRender from './form-render/Form.vue';
-import FormActions from './components/form-actions.vue';
 import { cloneDeep, get, isEqual, set } from '@sunny-base-web/utils';
 
 const props = withDefaults(defineProps<SunnyFormProps & { formApi: FormApi }>(), {
@@ -102,8 +101,9 @@ onMounted(async () => {
       if (!contextProps.value.handleValuesChange) return;
 
       // 3. 获取所有定义的字段名
-      const fields = contextProps.value.schema?.map((item) => item.fieldName) || [];
+      const fields = contextProps.value.schema?.map((item: any) => item.fieldName) || [];
       if (fields.length === 0) return;
+
 
       // 4. 计算变更字段 (Diff)
       const changedFields: string[] = [];
@@ -138,12 +138,6 @@ const handleValuesChangeDebounced = useDebounceFn(async () => {
     await props.formApi.submitForm();
   }
 }, 300);
-
-// 处理折叠状态更新
-const handleUpdateCollapsed = (value: boolean) => {
-  props.formApi.setState({ collapsed: value });
-  contextProps.value.handleCollapsedChange?.(value);
-};
 
 // 处理回车提交
 function handleKeyDownEnter(event: KeyboardEvent) {
