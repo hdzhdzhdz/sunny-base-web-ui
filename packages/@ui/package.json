@@ -42,6 +42,7 @@
     "axios": "^1.13.2",
     "nprogress": "^0.2.0",
     "reka-ui": "catalog:",
+    "lodash-es": "^4.17.23",
     "vee-validate": "^4.15.1",
     "vue": "catalog:",
     "vxe-pc-ui": "^4.8.0",

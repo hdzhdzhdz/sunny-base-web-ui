@@ -29,6 +29,7 @@ export default defineConfig({
         '@vee-validate/zod',
         '@vueuse/core',
         'axios',
+        'lodash-es',
         'nprogress',
         'reka-ui',
         'vee-validate',
