@@ -1,6 +1,6 @@
 {
   "name": "@sunny-base-web/locales",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "license": "MIT",
   "type": "module",
   "sideEffects": [
@@ -23,6 +23,7 @@
     "build": "tsup src/index.ts --format cjs,esm --dts --clean --shims"
   },
   "publishConfig": {
+    "provenance": true,
     "main": "./dist/index.js",
     "module": "./dist/index.js",
     "types": "./dist/index.d.ts",

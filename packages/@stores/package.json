@@ -1,6 +1,6 @@
 {
   "name": "@sunny-base-web/stores",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": false,
   "main": "./src/index.ts",
   "module": "./src/index.ts",
@@ -30,11 +30,12 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@sunny-base-web/ui": "workspace:*",
     "@sunny-base-web/constants": "workspace:*",
+    "@sunny-base-web/ui": "workspace:*",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^4.7.1",
-    "secure-ls": "^2.0.0"
+    "secure-ls": "^2.0.0",
+    "vue-router": "^4.6.4"
   },
   "devDependencies": {
     "tsup": "^8.5.1",
