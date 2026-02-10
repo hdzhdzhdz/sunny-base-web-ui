@@ -28,6 +28,14 @@
 
 在发布前，务必确保 `dist` 目录是最新的。
 
+构建 `packages` 目录下的所有包：
+
+```powershell
+pnpm exec turbo run build --filter="./packages/**"
+```
+
+或者构建单个包：
+
 ```powershell
 # 语法：pnpm --filter <包名> build
 pnpm --filter @sunny-base-web/utils build
@@ -164,5 +172,6 @@ pnpm release
 | :--- | :--- | :--- |
 | **创建变更记录** | `pnpm changeset` | `changeset` |
 | **升级版本号** | `pnpm version-packages` | `changeset version` |
+| **构建所有包** | `pnpm exec turbo run build --filter="./packages/**"` | - |
 | **一键构建并发布** | `pnpm release` | `pnpm build && changeset publish` |
 
