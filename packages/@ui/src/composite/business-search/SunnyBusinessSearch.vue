@@ -11,7 +11,7 @@
       @search="handleOpen"
     >
       <!-- 透传 slot -->
-      <template v-for="(_, slot) in $slots" #[slot]="scope">
+      <template v-for="(_value, slot) of ($slots as Record<string, any>)" #[slot]="scope">
         <slot :name="slot" v-bind="scope || {}"></slot>
       </template>
     </SunnySearchInputTag>

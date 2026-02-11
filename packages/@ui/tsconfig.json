@@ -6,7 +6,8 @@
     "target": "ESNext",
     "jsx": "preserve",
     "jsxImportSource": "vue",
-    "moduleResolution": "Bundler"
+    "moduleResolution": "Bundler",
+    "skipLibCheck": true
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/vite-env.d.ts"]
 }

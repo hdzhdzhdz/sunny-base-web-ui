@@ -1,6 +1,6 @@
 <template>
   <vxe-grid ref="gridRef" v-bind="$attrs">
-    <template v-for="name in (Object.keys($slots) as string[])" #[name]="slotData">
+    <template v-for="(slotData, name) of ($slots as Record<string, any>)" #[name]="slotData">
       <slot :name="name" v-bind="slotData || {}"></slot>
     </template>
   </vxe-grid>

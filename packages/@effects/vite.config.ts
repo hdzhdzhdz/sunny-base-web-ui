@@ -5,11 +5,12 @@ import { resolve } from 'path'
 
 export default defineConfig({
   plugins: [
-    vue()
-    // dts({
-    //   tsconfigPath: './tsconfig.json',
-    //   cleanVueFileName: true,
-    // }),
+    vue(),
+    dts({
+      tsconfigPath: './tsconfig.json',
+      cleanVueFileName: true,
+      rollupTypes: true,
+    }),
   ],
   build: {
     lib: {
@@ -40,6 +41,21 @@ export default defineConfig({
       output: {
         globals: {
           vue: 'Vue',
+          '@sunny-base-web/ui': 'SunnyBaseWebUI',
+          '@sunny-base-web/utils': 'SunnyBaseWebUtils',
+          '@sunny-base-web/stores': 'SunnyBaseWebStores',
+          '@sunny-base-web/icons': 'SunnyBaseWebIcons',
+          '@sunny-base-web/constants': 'SunnyBaseWebConstants',
+          '@sunny-base-web/locales': 'SunnyBaseWebLocales',
+          axios: 'axios',
+          jsencrypt: 'JSEncrypt',
+          qs: 'qs',
+          'vue3-slide-verify': 'SlideVerify',
+          'vue-i18n': 'vueI18n',
+          '@arco-design/web-vue': 'ArcoVue',
+          '@vueuse/core': 'VueUse',
+          'reka-ui': 'RekaUI',
+          'vue-router': 'vueRouter',
         },
       },
     },

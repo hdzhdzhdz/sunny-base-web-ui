@@ -23,7 +23,7 @@
         <icon-search class="transition-colors group-hover:text-[var(--color-primary-6)]" />
       </div>
     </template>
-    <template v-for="slot in (Object.keys($slots) as string[])" #[slot]="scope">
+    <template v-for="(scope, slot) of ($slots as Record<string, any>)" #[slot]="scope">
       <slot :name="slot" v-bind="scope || {}"></slot>
     </template>
 
