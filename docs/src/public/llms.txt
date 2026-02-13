@@ -16,6 +16,7 @@
 ## Data Components
 - [Upload](https://your-docs-site.com/components/data/upload)
 - [QueryGrid](https://your-docs-site.com/components/data/query-grid)
+- [ResourceTree](https://your-docs-site.com/components/data/resource-tree)
 
 ## Entry Components
 - [Form](https://your-docs-site.com/components/entry/form)

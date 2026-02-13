@@ -57,7 +57,8 @@ export default defineConfig({
           text: 'Data 数据展示',
           items: [
             { text: 'Upload 上传', link: '/components/data/upload' },
-            { text: 'QueryGrid 查询表格', link: '/components/data/query-grid' }
+            { text: 'QueryGrid 查询表格', link: '/components/data/query-grid' },
+            { text: 'ResourceTree 资源树', link: '/components/data/resource-tree' }
           ]
         },
         {

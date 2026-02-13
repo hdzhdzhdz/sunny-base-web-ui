@@ -8,6 +8,7 @@ import SunnySearchInputTag from "./entry/search-input-tag";
 import { useSunnyForm, FormApi, SunnyForm, setupSunnyForm, z } from './entry/form';
 import { useSunnyEditGrid } from './data/edit-grid'
 import { useSunnyQueryGrid } from './data/query-grid'
+import { SunnyResourceTree } from './data/resource-tree'
 import { SunnySearchModal } from './feedback/search-modal'
 import { patterns } from "@sunny-base-web/utils";
 
@@ -30,6 +31,7 @@ export {
   setupSunnyForm,
   useSunnyEditGrid,
   useSunnyQueryGrid,
+  SunnyResourceTree,
   SunnySearchModal,
   patterns,
   z
@@ -39,3 +41,5 @@ export * from "./entry/select/types";
 export * from "./entry/search-input-tag/types";
 export * from "./entry/form/types";
 export * from "./composite/business-search";
+export * from './data/resource-tree/types';
+export * from './data/resource-tree/use-sunny-resource-tree';
