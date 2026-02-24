@@ -90,6 +90,94 @@ schema: [
 - **手动控制**：通过 `actionColProps` 属性显式指定操作栏的栅格配置。
 - **位置跟随**：操作栏始终会紧跟在最后一个可见字段之后。
 
+### 按钮显示控制
+
+SunnyForm 支持多层次的按钮显示控制：
+
+#### 1. 隐藏整个操作栏
+
+通过 `showDefaultActions` 控制，默认为 `true`。
+
+```typescript
+const [Form] = useSunnyForm({
+  showDefaultActions: false,  // 隐藏整个操作栏
+  schema: [...]
+});
+```
+
+#### 2. 隐藏单个按钮
+
+通过 `submitButtonOptions.show` 和 `resetButtonOptions.show` 单独控制。
+
+```typescript
+const [Form] = useSunnyForm({
+  submitButtonOptions: {
+    show: false,  // 隐藏提交按钮
+    content: '搜索',
+  },
+  resetButtonOptions: {
+    show: false,  // 隐藏重置按钮
+    content: '清空',
+  },
+  schema: [...]
+});
+```
+
+#### 3. 动态控制
+
+使用 `formApi.setState()` 动态更新配置。
+
+```typescript
+const [Form, formApi] = useSunnyForm({ schema: [...] });
+
+// 动态隐藏提交按钮
+formApi.setState({
+  submitButtonOptions: { show: false }
+});
+
+// 动态显示整个操作栏
+formApi.setState({
+  showDefaultActions: true
+});
+```
+
+### 操作栏插槽
+
+SunnyForm 提供了操作栏区域的自定义插槽，方便在默认按钮前后插入自定义内容，或完全替换操作栏。
+
+<preview path="./demos/form/Slots.vue" title="插槽演示" description="展示如何在操作栏前后添加自定义按钮和内容。" />
+
+#### 按钮前后插槽
+
+| 插槽名 | 说明 |
+| --- | --- |
+| `submit-before` | 提交按钮前的插槽，可用于添加自定义按钮或内容。 |
+| `reset-before` | 重置按钮前的插槽，可用于添加自定义按钮或内容。 |
+| `expand-before` | 展开/收起按钮前的插槽。 |
+| `expand-after` | 展开/收起按钮后的插槽。 |
+
+#### 自定义整个操作栏
+
+使用 `actions` 插槽可以完全替换默认的操作栏，适用于需要完全自定义操作按钮的场景。
+
+```vue
+<template>
+  <Form>
+    <!-- 完全自定义操作栏 -->
+    <template #actions>
+      <div class="flex gap-2">
+        <a-button type="primary" @click="handleCustomSubmit">自定义提交</a-button>
+        <a-button @click="handleCustomReset">自定义重置</a-button>
+      </div>
+    </template>
+  </Form>
+</template>
+```
+
+| 插槽名 | 参数 | 说明 |
+| --- | --- | --- |
+| `actions` | `{ collapsed, formApi }` | 完全替换默认操作栏。`collapsed` 为当前折叠状态，`formApi` 为表单 API 实例。 |
+
 ## 折叠功能 (Collapse)
 
 在处理复杂的查询表单时，我们通常需要折叠非核心查询条件。
@@ -240,12 +328,20 @@ arrayToStringFields: [
 
 | 参数名 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| `showDefaultActions` | `boolean` | `true` | 是否显示默认操作按钮 (提交/重置)。 |
+| `showDefaultActions` | `boolean` | `true` | 是否显示默认操作按钮 (提交/重置)。设为 `false` 可隐藏整个操作栏。 |
 | `actionColProps` | `ColProps` | - | 操作栏的栅格配置。默认继承 `commonConfig.colProps` 或使用响应式默认值。 |
 | `actionLayout` | `'inline' \| 'newLine' \| 'rowEnd'` | `'inline'` | 操作按钮布局模式。 |
 | `actionPosition` | `'left' \| 'right' \| 'center'` | `'right'` | 操作按钮对齐位置。 |
-| `submitButtonOptions` | `ButtonProps` | - | 提交按钮配置 (Arco Button Props)。 |
-| `resetButtonOptions` | `ButtonProps` | - | 重置按钮配置 (Arco Button Props)。 |
+| `submitButtonOptions` | `ActionButtonOptions` | - | 提交按钮配置，支持 Arco Button Props + `show` 属性控制显示。 |
+| `resetButtonOptions` | `ActionButtonOptions` | - | 重置按钮配置，支持 Arco Button Props + `show` 属性控制显示。 |
+
+**ActionButtonOptions 扩展属性：**
+
+| 参数名 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `show` | `boolean` | `true` | 是否显示该按钮。 |
+| `content` | `string` | `'查询'` / `'重置'` | 按钮文本内容。 |
+| `...props` | `ButtonProps` | - | 其他 Arco Button 属性 (如 `type`, `status`, `disabled` 等)。 |
 | `actionWrapperClass` | `string` | - | 操作栏外层容器类名。 |
 
 #### 折叠功能 (Collapse)

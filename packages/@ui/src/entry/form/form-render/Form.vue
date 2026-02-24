@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, watch } from 'vue';
+import { computed, onMounted, reactive, useSlots, watch } from 'vue';
 import { useForm } from 'vee-validate';
 import { injectFormProps } from '../use-form-context';
 import FormField from './FormField.vue';
@@ -24,6 +24,9 @@ const props = defineProps<{
    */
   form?: any;
 }>();
+
+// 获取传入的 slots，用于透传给 FormActions
+const slots = useSlots();
 
 // 注入上层提供的表单配置 (来自 SunnyUseForm 或 SunnyForm)
 const formProps = injectFormProps();
@@ -232,17 +235,35 @@ const computedGap = computed(() => {
       
       <!-- 操作栏区域 -->
 
-      <a-col 
-        v-if="renderPropsState.showDefaultActions"
-        :span="actionSpan" 
+      <a-col
+        v-if="renderPropsState.showDefaultActions || slots['actions']"
+        :span="actionSpan"
         :style="isInline ? { marginLeft: '16px' } : { flex: 1, textAlign: 'right' }"
       >
         <div class="h-full flex flex-col justify-end">
+          <!-- 自定义操作栏插槽：完全替换默认操作栏 -->
+          <slot v-if="slots['actions']" name="actions" :collapsed="renderPropsState.collapsed" :form-api="props.formApi"></slot>
+          <!-- 默认操作栏 -->
           <FormActions
+            v-else
             :model-value="renderPropsState.collapsed"
             @update:model-value="handleCollapsedUpdate"
             :form-api="props.formApi"
-          />
+          >
+            <!-- 透传 slots 给 FormActions -->
+            <template v-if="slots['submit-before']" #submit-before>
+              <slot name="submit-before"></slot>
+            </template>
+            <template v-if="slots['reset-before']" #reset-before>
+              <slot name="reset-before"></slot>
+            </template>
+            <template v-if="slots['expand-before']" #expand-before>
+              <slot name="expand-before"></slot>
+            </template>
+            <template v-if="slots['expand-after']" #expand-after>
+              <slot name="expand-after"></slot>
+            </template>
+          </FormActions>
         </div>
       </a-col>
     </a-row>
