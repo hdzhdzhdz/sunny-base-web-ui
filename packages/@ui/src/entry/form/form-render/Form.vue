@@ -5,7 +5,7 @@ import { injectFormProps } from '../use-form-context';
 import FormField from './FormField.vue';
 import FormActions from '../components/form-actions.vue';
 import type { FormApi } from '../form-api';
-import { provideFormRenderProps } from './context';
+import { provideFormRenderProps, provideFieldSlots } from './context';
 import { useResponsiveState } from './expandable';
 
 /**
@@ -25,7 +25,7 @@ const props = defineProps<{
   form?: any;
 }>();
 
-// 获取传入的 slots，用于透传给 FormActions
+// 获取传入的 slots，用于透传给 FormActions 和 FormField
 const slots = useSlots();
 
 // 注入上层提供的表单配置 (来自 SunnyUseForm 或 SunnyForm)
@@ -33,7 +33,7 @@ const formProps = injectFormProps();
 
 /**
  * 创建响应式的渲染属性状态
- * 
+ *
  * 为什么需要这一步？
  * 1. inject 得到的是一个 Ref，直接透传可能导致引用的响应性丢失或难以追踪。
  * 2. 我们需要一个稳定的 reactive 对象来 provide 给下层组件。
@@ -52,6 +52,9 @@ watch(
 
 // 向下层组件 (如 FormField, dependencies) 提供最新的表单渲染配置
 provideFormRenderProps(renderPropsState as any);
+
+// 向下层组件提供 slots，用于字段级别的自定义渲染
+provideFieldSlots(slots);
 
 // 使用响应式 Hook 计算栅格布局的 span (跨度)
 // 处理响应式布局逻辑，根据屏幕宽度自动计算每个字段占用的列数

@@ -22,6 +22,228 @@ Form 组件支持两种使用模式：**Hook 模式** 和 **组件模式**。
 
 <preview path="./demos/form/Basic.vue" title="基础用法" description="包含文本框、下拉框等基础组件，展示默认布局效果。" />
 
+## 支持的组件 (Components)
+
+SunnyForm 内置了以下表单组件，通过 `component` 属性指定：
+
+### 输入类
+
+| 组件名 | 说明 | 对应 Arco 组件 |
+| --- | --- | --- |
+| `Input` | 文本输入框 | `a-input` |
+| `InputPassword` | 密码输入框 | `a-input-password` |
+| `InputNumber` | 数字输入框 | `a-input-number` |
+| `Textarea` | 多行文本框 | `a-textarea` |
+
+### 选择类
+
+| 组件名 | 说明 | 对应 Arco 组件 |
+| --- | --- | --- |
+| `Select` | 下拉选择框 | `a-select` |
+| `Checkbox` | 复选框 | `a-checkbox` |
+| `CheckboxGroup` | 复选框组 | `a-checkbox-group` |
+| `Radio` | 单选框 | `a-radio` |
+| `RadioGroup` | 单选框组 | `a-radio-group` |
+| `Switch` | 开关 | `a-switch` |
+| `Cascader` | 级联选择 | `a-cascader` |
+| `TreeSelect` | 树选择 | `a-tree-select` |
+
+### 日期时间类
+
+| 组件名 | 说明 | 对应 Arco 组件 |
+| --- | --- | --- |
+| `DatePicker` | 日期选择器 | `a-date-picker` |
+| `RangePicker` | 日期范围选择器 | `a-range-picker` |
+| `TimePicker` | 时间选择器 | `a-time-picker` |
+
+### 其他
+
+| 组件名 | 说明 | 对应 Arco 组件 |
+| --- | --- | --- |
+| `Upload` | 文件上传 | `a-upload` |
+| `Rate` | 评分 | `a-rate` |
+| `Slider` | 滑动条 | `a-slider` |
+| `Slot` | 字段插槽渲染 | - |
+| `SunnyBusinessSearch` | 业务搜索组件 | - |
+
+### 使用示例
+
+```typescript
+const schema = [
+  { fieldName: 'name', label: '名称', component: 'Input' },
+  { fieldName: 'password', label: '密码', component: 'InputPassword' },
+  { fieldName: 'age', label: '年龄', component: 'InputNumber' },
+  { fieldName: 'status', label: '状态', component: 'Select' },
+  { fieldName: 'enabled', label: '启用', component: 'Switch' },
+  { fieldName: 'birthday', label: '生日', component: 'DatePicker' },
+  { fieldName: 'dateRange', label: '日期范围', component: 'RangePicker' },
+  { fieldName: 'avatar', label: '头像', component: 'Upload' },
+];
+```
+
+## 字段插槽 (Field Slots)
+
+SunnyForm 支持字段级别的插槽，允许你完全自定义某个字段的渲染方式，支持双向绑定。
+
+<preview path="./demos/form/Slots.vue" title="字段插槽演示" description="展示字段级别插槽的使用方式。" />
+
+### 使用方式
+
+设置 `component: 'Slot'` 启用字段插槽，插槽名为 `fieldName`。
+
+```vue
+<script setup lang="ts">
+const [Form] = useSunnyForm({
+  schema: [
+    { fieldName: 'tags', label: '标签', component: 'Slot' },
+  ],
+});
+</script>
+
+<template>
+  <Form>
+    <!-- 插槽名 = fieldName -->
+    <template #tags="{ model, value, setValue, disabled }">
+      <a-tag v-for="tag in value" :key="tag" closable>{{ tag }}</a-tag>
+      <a-button @click="setValue([...value, '新标签'])" :disabled="disabled">添加</a-button>
+      <!-- model 可访问整个表单的值 -->
+    </template>
+  </Form>
+</template>
+```
+
+### 字段插槽参数
+
+| 参数名 | 类型 | 说明 |
+| --- | --- | --- |
+| `model` | `Record<string, any>` | 整个表单的值对象，支持跨字段访问 |
+| `value` | `any` | 当前字段值 |
+| `setValue` | `(value: any) => void` | 更新当前字段值的函数（双向绑定） |
+| `disabled` | `boolean` | 是否禁用 |
+| `errorMessage` | `string \| undefined` | 验证错误信息 |
+
+## 字段联动 (Dependencies)
+
+SunnyForm 支持强大的字段联动能力，通过 `dependencies` 配置实现字段间的动态控制，包括显示/隐藏、禁用/启用、必填/非必填、动态属性等。
+
+<preview path="./demos/form/Dependencies.vue" title="字段联动演示" description="展示字段间的动态控制：显示隐藏、必填控制、禁用状态、动态属性。" />
+
+### 使用方式
+
+在 schema 中通过 `dependencies` 配置字段联动：
+
+```typescript
+{
+  fieldName: 'companyName',
+  label: '公司名称',
+  component: 'Input',
+  dependencies: {
+    // 监听的触发字段
+    triggerFields: ['userType'],
+    // 动态显示/隐藏
+    show: (values) => values.userType === 'enterprise',
+    // 动态必填
+    required: (values) => values.userType === 'enterprise',
+    // 动态禁用
+    disabled: (values) => values.needInvoice === false,
+    // 动态组件属性
+    componentProps: (values) => ({
+      placeholder: values.userType === 'enterprise' ? '请输入公司全称' : '',
+    }),
+  },
+}
+```
+
+### dependencies 配置项
+
+| 参数名 | 类型 | 说明 |
+| --- | --- | --- |
+| `triggerFields` | `string[]` | 监听的字段名数组，这些字段变化时会触发联动逻辑 |
+| `if` | `(values, formApi) => boolean` | 是否渲染 DOM (v-if)，返回 false 时字段不渲染 |
+| `show` | `(values, formApi) => boolean` | 是否显示 (v-show)，返回 false 时字段隐藏 |
+| `required` | `(values, formApi) => boolean` | 是否必填，控制表单验证的必填星号和规则 |
+| `disabled` | `(values, formApi) => boolean` | 是否禁用 |
+| `rules` | `(values, formApi) => Rule` | 动态验证规则，可根据其他字段值返回不同的验证规则 |
+| `componentProps` | `(values, formApi) => object` | 动态组件属性，可根据其他字段值动态设置 placeholder、options 等 |
+| `trigger` | `(values, formApi) => void` | 自定义触发器，可执行任意副作用逻辑 |
+
+### 联动执行顺序
+
+联动逻辑按以下顺序执行，一旦某一步返回 false，后续步骤将不再执行：
+
+1. **if** → 如果返回 false，不渲染 DOM，后续跳过
+2. **show** → 如果返回 false，隐藏字段，后续跳过
+3. **componentProps** → 动态计算组件属性
+4. **rules** → 动态计算验证规则
+5. **disabled** → 计算禁用状态
+6. **required** → 计算必填状态
+7. **trigger** → 执行自定义触发器
+
+### 常见场景
+
+#### 1. 条件显示/隐藏
+
+```typescript
+{
+  fieldName: 'invoiceTitle',
+  label: '发票抬头',
+  component: 'Input',
+  dependencies: {
+    triggerFields: ['needInvoice'],
+    show: (values) => values.needInvoice === true,
+  },
+}
+```
+
+#### 2. 条件必填
+
+```typescript
+{
+  fieldName: 'companyName',
+  label: '公司名称',
+  component: 'Input',
+  dependencies: {
+    triggerFields: ['userType'],
+    required: (values) => values.userType === 'enterprise',
+  },
+}
+```
+
+#### 3. 动态验证规则
+
+```typescript
+{
+  fieldName: 'confirmPassword',
+  label: '确认密码',
+  component: 'InputPassword',
+  dependencies: {
+    triggerFields: ['password'],
+    rules: (values) => {
+      return z.string().refine((val) => val === values.password, {
+        message: '两次密码不一致',
+      });
+    },
+  },
+}
+```
+
+#### 4. 动态组件属性
+
+```typescript
+{
+  fieldName: 'city',
+  label: '城市',
+  component: 'Select',
+  dependencies: {
+    triggerFields: ['province'],
+    componentProps: (values) => ({
+      options: getCityOptions(values.province),
+      loading: !values.province,
+    }),
+  },
+}
+```
+
 ## 布局与样式 (Layout & Style)
 
 SunnyForm 基于 Arco Design 的 24 栅格系统，支持强大的响应式布局能力。
@@ -145,30 +367,25 @@ formApi.setState({
 
 SunnyForm 提供了操作栏区域的自定义插槽，方便在默认按钮前后插入自定义内容，或完全替换操作栏。
 
-<preview path="./demos/form/Slots.vue" title="插槽演示" description="展示如何在操作栏前后添加自定义按钮和内容。" />
-
 #### 按钮前后插槽
 
 | 插槽名 | 说明 |
 | --- | --- |
-| `submit-before` | 提交按钮前的插槽，可用于添加自定义按钮或内容。 |
-| `reset-before` | 重置按钮前的插槽，可用于添加自定义按钮或内容。 |
-| `expand-before` | 展开/收起按钮前的插槽。 |
-| `expand-after` | 展开/收起按钮后的插槽。 |
+| `submit-before` | 提交按钮前的插槽，可用于添加自定义按钮或内容 |
+| `reset-before` | 重置按钮前的插槽，可用于添加自定义按钮或内容 |
+| `expand-before` | 展开/收起按钮前的插槽 |
+| `expand-after` | 展开/收起按钮后的插槽 |
 
 #### 自定义整个操作栏
 
-使用 `actions` 插槽可以完全替换默认的操作栏，适用于需要完全自定义操作按钮的场景。
+使用 `actions` 插槽可以完全替换默认的操作栏。
 
 ```vue
 <template>
   <Form>
-    <!-- 完全自定义操作栏 -->
-    <template #actions>
-      <div class="flex gap-2">
-        <a-button type="primary" @click="handleCustomSubmit">自定义提交</a-button>
-        <a-button @click="handleCustomReset">自定义重置</a-button>
-      </div>
+    <template #actions="{ collapsed, formApi }">
+      <a-button type="primary" @click="formApi.submitForm()">自定义提交</a-button>
+      <a-button @click="formApi.resetForm()">自定义重置</a-button>
     </template>
   </Form>
 </template>
@@ -176,7 +393,7 @@ SunnyForm 提供了操作栏区域的自定义插槽，方便在默认按钮前�
 
 | 插槽名 | 参数 | 说明 |
 | --- | --- | --- |
-| `actions` | `{ collapsed, formApi }` | 完全替换默认操作栏。`collapsed` 为当前折叠状态，`formApi` 为表单 API 实例。 |
+| `actions` | `{ collapsed, formApi }` | 完全替换默认操作栏。`collapsed` 为当前折叠状态，`formApi` 为表单 API 实例 |
 
 ## 折叠功能 (Collapse)
 
@@ -286,7 +503,7 @@ arrayToStringFields: [
 | 参数名 | 类型 | 说明 |
 | --- | --- | --- |
 | `fieldName` | `string` | **(必填)** 字段名，对应表单值的 Key。 |
-| `component` | `string \| Component` | **(必填)** 组件类型 (如 `'Input'`, `'Select'`) 或组件对象。 |
+| `component` | `string \| Component` | **(必填)** 组件类型。支持内置组件 (`'Input'`, `'Select'`, `'Slot'` 等) 或自定义组件对象。`'Slot'` 表示使用字段插槽渲染。 |
 | `label` | `string` | 字段标签文本。 |
 | `defaultValue` | `any` | 字段默认值。 |
 | `componentProps` | `Record<string, any> \| Function` | 传递给组件的属性 (支持动态函数)。 |

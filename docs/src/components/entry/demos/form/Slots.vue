@@ -1,106 +1,64 @@
 <script setup lang="ts">
 import { useSunnyForm } from '@sunny-base-web/ui';
 import { Message } from '@arco-design/web-vue';
-import { IconDownload, IconQuestionCircle, IconSearch, IconRefresh } from '@arco-design/web-vue/es/icon';
+import { IconPlus } from '@arco-design/web-vue/es/icon';
 
-const baseSchema = [
-  { fieldName: 'keyword', label: '关键词', component: 'Input' },
-  { fieldName: 'status', label: '状态', component: 'Select' },
-  { fieldName: 'category', label: '分类', component: 'Select' },
-  { fieldName: 'dateRange', label: '日期范围', component: 'RangePicker' },
-];
-
-// 表单1: 使用默认操作栏 + 插槽扩展
-const [Form1] = useSunnyForm({
-  showCollapseButton: true,
-  collapsedRows: 1,
+// 字段级别插槽示例
+const [Form] = useSunnyForm({
   commonConfig: {
     colProps: { span: 24, md: 12, lg: 8 },
   },
-  schema: baseSchema,
+  schema: [
+    { fieldName: 'name', label: '名称', component: 'Input' },
+    // 使用 component: 'Slot' 启用字段插槽，插槽名为 fieldName
+    { fieldName: 'tags', label: '标签', component: 'Slot' },
+    { fieldName: 'description', label: '描述', component: 'Input', componentProps: { placeholder: '请输入描述' } },
+  ],
   handleSubmit: (values) => {
-    Message.success('表单1 提交: ' + JSON.stringify(values));
+    Message.success('表单提交: ' + JSON.stringify(values));
   },
 });
 
-// 表单2: 使用 actions 插槽完全自定义
-const [Form2, formApi2] = useSunnyForm({
-  showDefaultActions: false,
-  commonConfig: {
-    colProps: { span: 24, md: 12, lg: 8 },
-  },
-  schema: baseSchema,
-  handleSubmit: (values) => {
-    Message.success('表单2 提交: ' + JSON.stringify(values));
-  },
-});
-
-function handleExport() {
-  Message.info('导出按钮被点击');
+// 使用 setValue 进行双向绑定
+function addTag(value: string[], setValue: (val: any) => void) {
+  const currentTags = value || [];
+  const newTag = `Tag${currentTags.length + 1}`;
+  setValue([...currentTags, newTag]);
 }
 
-function handleCustomSubmit() {
-  formApi2.submitForm();
-}
-
-function handleCustomReset() {
-  formApi2.resetForm();
-  Message.info('已重置');
+function removeTag(index: number, value: string[], setValue: (val: any) => void) {
+  const newTags = [...(value || [])];
+  newTags.splice(index, 1);
+  setValue(newTags);
 }
 </script>
 
 <template>
-  <div class="space-y-6">
-    <!-- 示例1: 在默认按钮前后添加内容 -->
-    <div>
-      <div class="text-sm font-medium text-gray-700 mb-3">示例1: 使用 submit-before / expand-after 插槽扩展</div>
-      <Form1>
-        <template #submit-before>
-          <a-button type="outline" size="small" @click="handleExport">
+  <div>
+    <Form>
+      <!-- 插槽名 = fieldName，接收 { model, value, setValue } 参数 -->
+      <template #tags="{ model, value, setValue, disabled }">
+        <div class="flex flex-wrap items-center gap-2">
+          <a-tag
+            v-for="(tag, index) in (value || [])"
+            :key="index"
+            closable
+            @close="removeTag(index, value, setValue)"
+          >
+            {{ tag }}
+          </a-tag>
+          <a-button size="small" type="outline" @click="addTag(value, setValue)" :disabled="disabled">
             <template #icon>
-              <IconDownload />
+              <IconPlus />
             </template>
-            导出
+            添加标签
           </a-button>
-        </template>
-
-        <template #expand-after>
-          <a-tooltip content="展开查看更多查询条件">
-            <IconQuestionCircle class="ml-2 text-gray-400 cursor-help" />
-          </a-tooltip>
-        </template>
-      </Form1>
-    </div>
-
-    <a-divider />
-
-    <!-- 示例2: 完全自定义操作栏 -->
-    <div>
-      <div class="text-sm font-medium text-gray-700 mb-3">示例2: 使用 actions 插槽完全自定义操作栏</div>
-      <Form2>
-        <template #actions>
-          <div class="flex items-center gap-2">
-            <a-button type="primary" size="small" @click="handleCustomSubmit">
-              <template #icon>
-                <IconSearch />
-              </template>
-              查询
-            </a-button>
-            <a-button size="small" @click="handleCustomReset">
-              <template #icon>
-                <IconRefresh />
-              </template>
-              重置
-            </a-button>
-            <a-button type="outline" size="small" @click="handleExport">
-              <template #icon>
-                <IconDownload />
-              </template>
-              导出
-            </a-button>
-          </div>
-        </template>
-      </Form2>
-    </div>
+        </div>
+        <!-- model 可以访问整个表单的值 -->
+        <div v-if="model.name" class="mt-2 text-xs text-gray-500">
+          当前表单名称: {{ model.name }}
+        </div>
+      </template>
+    </Form>
   </div>
 </template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // 引入 Vue 的响应式 API 和工具函数
-import { computed, nextTick, watch, toRaw } from 'vue';
+import { computed, nextTick, watch, toRaw, defineComponent, type VNode, type PropType } from 'vue';
 // 引入 VeeValidate 的核心组件和 hook
 import { Field, useFormValues } from 'vee-validate';
 // 引入 Zod 适配器，用于将 Zod Schema 转换为 VeeValidate 规则
@@ -14,7 +14,7 @@ import { COMPONENT_MAP } from '../config';
 // 引入表单 Schema 类型定义
 import type { FormSchema } from '../types';
 // 引入表单上下文注入函数
-import { injectRenderFormProps, useFormContext } from './context';
+import { injectRenderFormProps, useFormContext, injectFieldSlots } from './context';
 // 引入依赖处理 Hook
 import useDependencies from './dependencies';
 
@@ -31,6 +31,8 @@ const formRenderProps = injectRenderFormProps();
 const { isVertical } = useFormContext();
 // 获取 FormApi 实例
 const formApi = formRenderProps.form;
+// 获取字段级别的 slots
+const fieldSlots = injectFieldSlots();
 
 // 处理字段间的依赖关系 (显示/隐藏/禁用/必填等)
 const {
@@ -50,6 +52,66 @@ const component = computed(() => {
     return COMPONENT_MAP[component] || component;
   }
   return component;
+});
+
+/**
+ * 检查是否使用插槽渲染
+ * - component === 'Slot': 使用 fieldName 作为插槽名
+ */
+const isSlotMode = computed(() => {
+  const { component } = props.schema;
+  return component === 'Slot';
+});
+
+// 检查是否有字段级别的 slot
+const hasFieldSlot = computed(() => {
+  if (!isSlotMode.value || !fieldSlots) return false;
+  const slotName = props.schema.fieldName;
+  return slotName ? !!fieldSlots[slotName] : false;
+});
+
+// 渲染 slot 内容的函数
+const renderFieldSlot = (field: any, errorMessage: string | undefined): VNode | VNode[] | null => {
+  const slotName = props.schema.fieldName;
+  if (!slotName || !fieldSlots || !fieldSlots[slotName]) return null;
+
+  const slotFn = fieldSlots[slotName];
+
+  // 提供更新字段值的函数
+  const setValue = (newValue: any) => {
+    field.onInput(newValue);
+  };
+
+  const slotProps = {
+    // 整个表单的值 (支持双向绑定)
+    model: values.value,
+    // 当前字段的值
+    value: field.value,
+    // 更新字段值的函数
+    setValue,
+    // 是否禁用
+    disabled: shouldDisabled.value,
+    // 验证错误信息
+    errorMessage,
+    // 原始 field 对象 (包含 onInput, onChange 等)
+    field,
+    // 组件属性
+    componentProps: computedProps.value,
+  };
+
+  return slotFn(slotProps);
+};
+
+// 字段插槽渲染器组件 - 用于在模板中渲染字段级别的插槽
+const FieldSlotRenderer = defineComponent({
+  name: 'FieldSlotRenderer',
+  props: {
+    field: { type: Object as PropType<any>, required: true },
+    errorMessage: { type: String as PropType<string | undefined>, default: undefined }
+  },
+  setup(props) {
+    return () => renderFieldSlot(props.field, props.errorMessage);
+  }
 });
 
 // 计算字段的可见性
@@ -235,7 +297,17 @@ const labelColProps = computed(() => {
       :wrapper-col-props="wrapperColProps"
       v-bind="schema.formFieldProps"
     >
+      <!-- 使用 slot 渲染字段 -->
       <component
+        v-if="hasFieldSlot"
+        :is="FieldSlotRenderer"
+        :field="field"
+        :error-message="errorMessage"
+      />
+
+      <!-- 默认使用 component 渲染 -->
+      <component
+        v-else
         :is="component"
         v-bind="{ ...computedProps, ...field }"
         :disabled="shouldDisabled"

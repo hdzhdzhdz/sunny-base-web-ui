@@ -1,4 +1,4 @@
-import { computed, inject, provide } from 'vue';
+import { computed, inject, provide, type Slots } from 'vue';
 import type { FormRenderProps } from '../types';
 
 /**
@@ -14,9 +14,15 @@ const FormRenderPropsKey = Symbol('FormRenderProps');
 const ComponentRefMapKey = Symbol('ComponentRefMap');
 
 /**
+ * 字段 Slots 注入 Key
+ * Injection Key for field slots
+ */
+const FieldSlotsKey = Symbol('FieldSlots');
+
+/**
  * 提供表单渲染属性
  * Provide form render properties
- * 
+ *
  * @param props 表单渲染属性
  */
 export const provideFormRenderProps = (props: FormRenderProps) => {
@@ -26,7 +32,7 @@ export const provideFormRenderProps = (props: FormRenderProps) => {
 /**
  * 注入表单渲染属性
  * Inject form render properties
- * 
+ *
  * @returns 表单渲染属性
  */
 export const injectRenderFormProps = () => {
@@ -42,7 +48,7 @@ export const injectRenderFormProps = () => {
 /**
  * 提供组件引用 Map
  * Provide component ref map
- * 
+ *
  * @param map 组件引用 Map
  */
 export const provideComponentRefMap = (map: Map<string, any>) => {
@@ -52,11 +58,31 @@ export const provideComponentRefMap = (map: Map<string, any>) => {
 /**
  * 注入组件引用 Map
  * Inject component ref map
- * 
+ *
  * @returns 组件引用 Map
  */
 export const injectComponentRefMap = () => {
   return inject<Map<string, any>>(ComponentRefMapKey);
+};
+
+/**
+ * 提供字段 Slots
+ * Provide field slots
+ *
+ * @param slots Slots 对象
+ */
+export const provideFieldSlots = (slots: Slots) => {
+  provide(FieldSlotsKey, slots);
+};
+
+/**
+ * 注入字段 Slots
+ * Inject field slots
+ *
+ * @returns Slots 对象
+ */
+export const injectFieldSlots = (): Slots | undefined => {
+  return inject<Slots>(FieldSlotsKey);
 };
 
 /**

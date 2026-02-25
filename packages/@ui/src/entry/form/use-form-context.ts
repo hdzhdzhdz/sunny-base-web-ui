@@ -84,8 +84,11 @@ export function useFormInitial(props: ComputedRef<SunnyFormProps> | SunnyFormPro
   // 这些插槽将被传递给 FormRender，最终传递给具体的 FormField
   const delegatedSlots = computed(() => {
     const resultSlots: string[] = [];
-    for (const key of Object.keys(slots)) {
-      if (key !== 'default') {
+    // 使用 Object.keys 获取所有 slot 名称
+    // Vue 3 的 slots 对象是响应式的，Object.keys 应该能获取到当前的 slot 名称
+    const slotKeys = Object.keys(slots);
+    for (const key of slotKeys) {
+      if (key !== 'default' && typeof slots[key] === 'function') {
         resultSlots.push(key);
       }
     }
