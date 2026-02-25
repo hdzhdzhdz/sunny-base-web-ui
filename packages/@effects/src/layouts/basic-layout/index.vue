@@ -79,7 +79,8 @@
            <LanguageToggle />
            <!-- 主题切换组件 -->
            <ThemeToggle />
-           <!-- 用户操作占位 -->
+           <!-- 用户头像 -->
+           <UserAvatar />
         </div>
       </a-layout-header>
 
@@ -110,6 +111,7 @@ import HeaderSearch from './header/search.vue';
 import ThemeToggle from './header/theme-toggle.vue';
 import Tabbar from './tabbar/index.vue';
 import LanguageToggle from './header/language-toggle.vue';
+import UserAvatar from './header/user-avatar.vue';
 
 // 定义组件名称
 defineOptions({ name: 'BasicLayout' });

@@ -96,7 +96,7 @@ function setupAccessGuard(router: Router) {
     if (!userInfo || !userInfo.code) {
       const res = await fetchUserInfo({ 'types': [0, 1, 4] });
       const { user, resource } = res.result || {};
-      userInfo = { ...user, resources: resource, code: user.cWork };
+      userInfo = { ...user, resources: resource, code: user.cWork, name: user.cUsername };
       userStore.setUserInfo(userInfo);
     }
     const userRoles = userInfo.roles ?? [];
