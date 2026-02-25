@@ -624,6 +624,37 @@ arrayToStringFields: [
 | `setState` | `(state: Partial<SunnyFormProps> \| ((prev) => Partial<SunnyFormProps>)) => void` | 更新表单状态 (如 loading, schema 等)。 |
 | `getLatestSubmissionValues` | `() => Record<string, any>` | 获取最后一次提交时的表单值。 |
 
+#### setValues 参数详解
+
+```typescript
+await formApi.setValues(fields, filter?, validate?)
+```
+
+| 参数 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `fields` | `Record<string, any>` | - | 要设置的值对象 |
+| `filter` | `boolean` | `true` | 是否过滤非 Schema 字段 |
+| `validate` | `boolean` | `false` | 是否触发校验 |
+
+**使用示例：**
+
+```typescript
+// 默认行为：过滤非 Schema 字段（推荐）
+// 后端返回的数据可能包含额外字段，默认会过滤掉
+const backendData = { name: 'John', age: 25, factory: 'ABC' };
+await formApi.setValues(backendData);
+// 结果：只有 schema 中定义的字段会被设置，factory 会被过滤
+
+// 不过滤：保留所有字段（包括非 Schema 字段）
+await formApi.setValues(backendData, false);
+// 结果：name, age, factory 都会被设置
+
+// 单独设置非 Schema 字段
+await formApi.setFieldValue('factory', 'ABC');
+```
+
+> ⚠️ **注意**：如果设置非 Schema 字段后需要获取，`getValues()` 会返回所有字段值（包括非 Schema 字段）。
+
 ### 校验与提交
 
 | 方法名 | 类型 | 说明 |

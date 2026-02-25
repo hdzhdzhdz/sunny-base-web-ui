@@ -53,8 +53,8 @@ function setupAccessGuard(router: Router) {
       if (to.path === preferences.app.loginPath && accessStore.accessToken) {
         return decodeURIComponent(
           (to.query?.redirect as string) ||
-            userStore.userInfo?.homePath ||
-            preferences.app.defaultHomePath,
+          userStore.userInfo?.homePath ||
+          preferences.app.defaultHomePath,
         );
       }
       return true;
@@ -86,7 +86,7 @@ function setupAccessGuard(router: Router) {
     // 是否已经生成过动态路由
     if (accessStore.isAccessChecked) {
       return true;
-    } 
+    }
 
     // 当前工号不存在，说明是刷新进入或者登录之后进入，需要获取用户信息
     // 否则，直接使用当前用户信息
@@ -96,13 +96,11 @@ function setupAccessGuard(router: Router) {
     if (!userInfo || !userInfo.code) {
       const res = await fetchUserInfo({ 'types': [0, 1, 4] });
       const { user, resource } = res.result || {};
-      userInfo = { ...user, resources: resource };
+      userInfo = { ...user, resources: resource, code: user.cWork };
       userStore.setUserInfo(userInfo);
     }
-    
-    
     const userRoles = userInfo.roles ?? [];
-    const resources = userInfo.resources || []; 
+    const resources = userInfo.resources || [];
 
     // 生成菜单和路由
     const { accessibleMenus, accessibleRoutes } = await generateAccess({

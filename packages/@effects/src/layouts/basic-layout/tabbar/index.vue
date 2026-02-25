@@ -3,11 +3,67 @@
   * 显示当前打开的页面标签，支持右键菜单
 -->
 <template>
-  <div class="flex items-center w-full h-[38px] bg-[var(--color-bg-2)] border-b border-[var(--color-border)] px-2 gap-2">
+  <div class="flex items-center w-full h-[30px] bg-[var(--color-bg-2)] border-b border-[var(--color-border)] px-2 gap-2">
+    <!-- 收藏菜单 -->
+    <a-dropdown trigger="click" position="bl" @popup-visible-change="handleFavoriteDropdownChange">
+      <div
+        class="flex items-center justify-center w-7 h-7 rounded-sm hover:bg-[var(--color-fill-2)] cursor-pointer text-[var(--color-text-3)] hover:text-[rgb(var(--primary-6))] transition-colors shrink-0"
+        title="我的收藏"
+      >
+        <SunnyIcon icon="lucide:star" :size="15" />
+      </div>
+      <template #content>
+        <div class="w-[280px] max-h-[260px] overflow-hidden flex flex-col">
+          <!-- 标题栏 -->
+          <div class="flex items-center justify-between px-3 py-2 border-b border-[var(--color-border-2)] shrink-0">
+            <span class="text-xs font-medium text-[var(--color-text-1)]">我的收藏</span>
+            <div
+              class="flex items-center justify-center w-5 h-5 rounded cursor-pointer text-[var(--color-text-4)] hover:text-[rgb(var(--primary-6))] hover:bg-[var(--color-fill-2)] transition-colors"
+              :class="{ 'opacity-50 pointer-events-none': addingFavorite }"
+              title="收藏当前页面"
+              @click.stop="handleAddFavorite"
+            >
+              <SunnyIcon :icon="addingFavorite ? 'lucide:loader-2' : 'lucide:plus'" :size="14" :class="{ 'animate-spin': addingFavorite }" />
+            </div>
+          </div>
+          <!-- 加载状态 -->
+          <div v-if="favoritesLoading" class="flex items-center justify-center py-6">
+            <SunnyIcon icon="lucide:loader-2" :size="20" class="animate-spin text-[var(--color-text-3)]" />
+          </div>
+          <!-- 空状态 -->
+          <div v-else-if="!hasFavorites" class="flex flex-col items-center justify-center py-6 text-[var(--color-text-4)]">
+            <SunnyIcon icon="lucide:star-off" :size="24" class="mb-2 text-[var(--color-text-3)]" />
+            <div class="text-xs">暂无收藏</div>
+          </div>
+          <!-- 收藏菜单列表（两列卡片布局） -->
+          <div v-else class="flex-1 overflow-y-auto p-2">
+            <div class="grid grid-cols-2 gap-1.5">
+              <div
+                v-for="item in favorites"
+                :key="item.nResourceid"
+                class="flex items-center gap-1.5 px-2 py-1.5 rounded border border-[var(--color-border-2)] bg-[var(--color-bg-1)] hover:bg-[var(--color-fill-2)] hover:border-[rgb(var(--primary-6))] cursor-pointer transition-all group"
+                @click="handleFavoriteClick(item)"
+              >
+                <SunnyIcon :icon="item.cIcon || 'lucide:file-text'" :size="12" class="text-[var(--color-text-3)] shrink-0" />
+                <span class="text-xs text-[var(--color-text-1)] truncate flex-1">{{ item.cModname }}</span>
+                <SunnyIcon
+                  icon="lucide:x"
+                  :size="10"
+                  class="text-[var(--color-text-4)] opacity-0 group-hover:opacity-100 hover:text-[rgb(var(--danger-6))] transition-all shrink-0"
+                  title="移除收藏"
+                  @click.stop="handleRemoveFavorite(item.nResourceid)"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+    </a-dropdown>
+
     <!-- 标签滚动区域 -->
     <div class="flex-1 overflow-hidden h-full flex items-center">
       <SunnyScrollbar horizontal class="w-full h-full flex items-center" :style="{ display: 'flex', alignItems: 'center' }">
-        <div class="flex items-center gap-1 h-full px-1 pb-1">
+        <div class="flex items-center gap-1 h-full">
           <div
             v-for="tab in tabbarStore.getTabs"
             :key="tab.key"
@@ -18,7 +74,7 @@
               @select="(val: any) => handleContextMenuSelect(val, tab)"
             >
               <div
-                class="group relative flex items-center gap-2 px-3 py-1 text-sm rounded-sm cursor-pointer transition-all duration-200 border whitespace-nowrap"
+                class="group relative flex items-center gap-2 px-3 py-1 text-xs rounded-sm cursor-pointer transition-all duration-200 border whitespace-nowrap"
                 :class="[
                   isActive(tab) 
                     ? 'bg-[rgb(var(--primary-6))] text-white border-[rgb(var(--primary-6))] dark:bg-[var(--color-bg-1)] dark:text-[rgb(var(--primary-6))]' 
@@ -114,18 +170,71 @@
 </template>
 
 <script setup lang="ts">
-import { watch } from 'vue';
-import { useTabbarStore, useAccessStore } from '@sunny-base-web/stores';
+import { watch, ref } from 'vue';
+import { useTabbarStore, useAccessStore, useFavoriteStore } from '@sunny-base-web/stores';
 import { useRouter, useRoute } from 'vue-router';
 import { SunnyIcon, SunnyScrollbar } from '@sunny-base-web/ui';
 import type { TabDefinition } from '@sunny-base-web/stores';
+import { storeToRefs } from 'pinia';
+import { Message } from '@arco-design/web-vue';
 
 defineOptions({ name: 'Tabbar' });
 
 const tabbarStore = useTabbarStore();
 const accessStore = useAccessStore();
+const favoriteStore = useFavoriteStore();
 const router = useRouter();
 const route = useRoute();
+
+// 收藏菜单状态
+const { favorites, loading: favoritesLoading, hasFavorites, adding: addingFavorite } = storeToRefs(favoriteStore);
+
+// 收藏下拉框可见状态
+const favoriteDropdownVisible = ref(false);
+
+/**
+ * 收藏下拉框显示状态变化
+ */
+const handleFavoriteDropdownChange = (visible: boolean) => {
+  favoriteDropdownVisible.value = visible;
+  // 展开时加载收藏列表
+  if (visible && !hasFavorites.value) {
+    favoriteStore.fetchFavorites();
+  }
+};
+
+/**
+ * 点击收藏项跳转
+ */
+const handleFavoriteClick = (item: { cPath?: string }) => {
+  if (item.cPath) {
+    router.push(item.cPath);
+  }
+};
+
+/**
+ * 添加当前页面到收藏
+ */
+const handleAddFavorite = async () => {
+  const result = await favoriteStore.addCurrentPage(route.path);
+  if (result.success) {
+    Message.success(result.message);
+  } else {
+    Message.warning(result.message);
+  }
+};
+
+/**
+ * 移除收藏
+ */
+const handleRemoveFavorite = async (nResourceid: number) => {
+  const result = await favoriteStore.removeFavorite(nResourceid);
+  if (result.success) {
+    Message.success(result.message);
+  } else {
+    Message.warning(result.message);
+  }
+};
 
 /**
  * 切换内容区域全屏
