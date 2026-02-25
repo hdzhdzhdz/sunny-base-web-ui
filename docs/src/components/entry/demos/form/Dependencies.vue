@@ -25,13 +25,9 @@ const [Form] = useSunnyForm({
       label: '公司名称',
       component: 'Input',
       dependencies: {
-        // 监听 userType 字段变化
-        triggerFields: ['userType'],
-        // 企业用户时显示，个人用户时隐藏
+        // 无需指定 triggerFields，Vue 自动追踪 values.userType 的依赖
         show: (values) => values.userType === 'enterprise',
-        // 企业用户时必填
         required: (values) => values.userType === 'enterprise',
-        // 动态 placeholder
         componentProps: (values) => ({
           placeholder: values.userType === 'enterprise' ? '请输入公司全称' : '无需填写',
         }),
@@ -42,7 +38,6 @@ const [Form] = useSunnyForm({
       label: '统一社会信用代码',
       component: 'Input',
       dependencies: {
-        triggerFields: ['userType'],
         // 企业用户时才渲染 DOM
         if: (values) => values.userType === 'enterprise',
       },
@@ -58,12 +53,9 @@ const [Form] = useSunnyForm({
       label: '发票抬头',
       component: 'Input',
       dependencies: {
-        triggerFields: ['needInvoice', 'userType'],
-        // 需要发票时显示
+        // 访问了 needInvoice 和 userType，任一变化都会重新计算
         show: (values) => values.needInvoice === true,
-        // 需要发票时必填
         required: (values) => values.needInvoice === true,
-        // 禁用状态：企业用户自动填充公司名
         disabled: (values) => values.userType === 'enterprise',
       },
       componentProps: {
@@ -78,7 +70,6 @@ const [Form] = useSunnyForm({
         defaultChecked: false,
       },
       dependencies: {
-        triggerFields: ['userType'],
         // 动态验证规则
         rules: (values) => {
           if (values.userType === 'enterprise') {

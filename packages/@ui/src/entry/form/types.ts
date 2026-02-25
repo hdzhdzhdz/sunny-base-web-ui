@@ -68,6 +68,8 @@ export interface FormItemDependencies {
   /**
    * 触发依赖更新的字段
    * Trigger fields for dependency updates
+   * @deprecated 已废弃，Vue 会自动追踪依赖，无需手动指定
+   * @deprecated Deprecated, Vue automatically tracks dependencies, no need to specify manually
    */
   triggerFields?: string[];
   disabled?: (

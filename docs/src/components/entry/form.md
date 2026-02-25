@@ -130,53 +130,38 @@ SunnyForm 支持强大的字段联动能力，通过 `dependencies` 配置实现
 
 ### 使用方式
 
-在 schema 中通过 `dependencies` 配置字段联动：
+在 schema 中通过 `dependencies` 配置字段联动。Vue 会自动追踪依赖，无需手动指定监听字段：
 
 ```typescript
-// 方式1：指定 triggerFields（推荐，性能更好）
 {
   fieldName: 'companyName',
   label: '公司名称',
   component: 'Input',
   dependencies: {
-    // 指定监听的触发字段，只有这些字段变化时才会触发联动
-    triggerFields: ['userType'],
-    // 动态显示/隐藏
+    // Vue 会自动检测 show 函数中访问了 values.userType
+    // 当 userType 变化时，自动重新计算
     show: (values) => values.userType === 'enterprise',
-    // 动态必填
     required: (values) => values.userType === 'enterprise',
-  },
-}
-
-// 方式2：不指定 triggerFields（默认监听整个表单）
-{
-  fieldName: 'invoiceTitle',
-  label: '发票抬头',
-  component: 'Input',
-  dependencies: {
-    // 不指定 triggerFields，默认监听整个表单值的变化
-    // 适用于需要根据多个字段做复杂判断的场景
-    show: (values) => values.needInvoice === true,
-    disabled: (values) => values.userType === 'enterprise',
     componentProps: (values) => ({
-      placeholder: values.needInvoice ? '请输入发票抬头' : '',
+      placeholder: values.userType === 'enterprise' ? '请输入公司全称' : '',
     }),
   },
 }
 ```
 
+> 💡 **自动依赖追踪**：无需指定 `triggerFields`，Vue 的响应式系统会自动检测函数中访问了哪些字段，只有这些字段变化时才会重新计算。
+
 ### dependencies 配置项
 
 | 参数名 | 类型 | 说明 |
 | --- | --- | --- |
-| `triggerFields` | `string[]` | **(可选)** 监听的字段名数组。如果指定，只在这些字段变化时触发联动逻辑（性能更好）；如果不指定，默认监听整个表单值的变化 |
+| `triggerFields` | `string[]` | **(已废弃)** 监听的字段名数组。现在不再需要，Vue 会自动追踪依赖 |
 | `if` | `(values, formApi) => boolean` | 是否渲染 DOM (v-if)，返回 false 时字段不渲染 |
 | `show` | `(values, formApi) => boolean` | 是否显示 (v-show)，返回 false 时字段隐藏 |
 | `required` | `(values, formApi) => boolean` | 是否必填，控制表单验证的必填星号和规则 |
 | `disabled` | `(values, formApi) => boolean` | 是否禁用 |
 | `rules` | `(values, formApi) => Rule` | 动态验证规则，可根据其他字段值返回不同的验证规则 |
 | `componentProps` | `(values, formApi) => object` | 动态组件属性，可根据其他字段值动态设置 placeholder、options 等 |
-| `trigger` | `(values, formApi) => void` | 自定义触发器，可执行任意副作用逻辑 |
 
 ### 联动执行顺序
 
@@ -192,8 +177,6 @@ SunnyForm 支持强大的字段联动能力，通过 `dependencies` 配置实现
 
 ### 常见场景
 
-> 💡 **性能提示**：如果只需要监听特定字段，建议指定 `triggerFields`，这样可以减少不必要的计算。如果依赖逻辑比较复杂或涉及多个字段，可以省略 `triggerFields`，让系统自动监听整个表单。
-
 #### 1. 条件显示/隐藏
 
 ```typescript
@@ -202,7 +185,6 @@ SunnyForm 支持强大的字段联动能力，通过 `dependencies` 配置实现
   label: '发票抬头',
   component: 'Input',
   dependencies: {
-    triggerFields: ['needInvoice'],
     show: (values) => values.needInvoice === true,
   },
 }
@@ -216,7 +198,6 @@ SunnyForm 支持强大的字段联动能力，通过 `dependencies` 配置实现
   label: '公司名称',
   component: 'Input',
   dependencies: {
-    triggerFields: ['userType'],
     required: (values) => values.userType === 'enterprise',
   },
 }
@@ -230,7 +211,6 @@ SunnyForm 支持强大的字段联动能力，通过 `dependencies` 配置实现
   label: '确认密码',
   component: 'InputPassword',
   dependencies: {
-    triggerFields: ['password'],
     rules: (values) => {
       return z.string().refine((val) => val === values.password, {
         message: '两次密码不一致',
@@ -248,7 +228,6 @@ SunnyForm 支持强大的字段联动能力，通过 `dependencies` 配置实现
   label: '城市',
   component: 'Select',
   dependencies: {
-    triggerFields: ['province'],
     componentProps: (values) => ({
       options: getCityOptions(values.province),
       loading: !values.province,
@@ -257,9 +236,9 @@ SunnyForm 支持强大的字段联动能力，通过 `dependencies` 配置实现
 }
 ```
 
-#### 5. 复杂联动（不指定 triggerFields）
+#### 5. 多字段联动
 
-当联动逻辑依赖多个字段且难以明确指定时，可以省略 `triggerFields`，系统会自动监听整个表单：
+当联动逻辑依赖多个字段时，Vue 会自动追踪所有访问的字段：
 
 ```typescript
 {
@@ -267,14 +246,15 @@ SunnyForm 支持强大的字段联动能力，通过 `dependencies` 配置实现
   label: '运费',
   component: 'InputNumber',
   dependencies: {
-    // 不指定 triggerFields，任何字段变化都会重新计算
+    // 访问了 express, weight, vipUser 三个字段
+    // 任何一个变化都会触发重新计算
     componentProps: (values) => {
       const baseFee = values.express ? 10 : 5;
       const weightFee = (values.weight || 0) * 2;
       const discount = values.vipUser ? 0.8 : 1;
       return {
         modelValue: Math.round(baseFee + weightFee) * discount,
-        disabled: true, // 自动计算，不允许手动输入
+        disabled: true,
       };
     },
   },
