@@ -133,22 +133,33 @@ SunnyForm 支持强大的字段联动能力，通过 `dependencies` 配置实现
 在 schema 中通过 `dependencies` 配置字段联动：
 
 ```typescript
+// 方式1：指定 triggerFields（推荐，性能更好）
 {
   fieldName: 'companyName',
   label: '公司名称',
   component: 'Input',
   dependencies: {
-    // 监听的触发字段
+    // 指定监听的触发字段，只有这些字段变化时才会触发联动
     triggerFields: ['userType'],
     // 动态显示/隐藏
     show: (values) => values.userType === 'enterprise',
     // 动态必填
     required: (values) => values.userType === 'enterprise',
-    // 动态禁用
-    disabled: (values) => values.needInvoice === false,
-    // 动态组件属性
+  },
+}
+
+// 方式2：不指定 triggerFields（默认监听整个表单）
+{
+  fieldName: 'invoiceTitle',
+  label: '发票抬头',
+  component: 'Input',
+  dependencies: {
+    // 不指定 triggerFields，默认监听整个表单值的变化
+    // 适用于需要根据多个字段做复杂判断的场景
+    show: (values) => values.needInvoice === true,
+    disabled: (values) => values.userType === 'enterprise',
     componentProps: (values) => ({
-      placeholder: values.userType === 'enterprise' ? '请输入公司全称' : '',
+      placeholder: values.needInvoice ? '请输入发票抬头' : '',
     }),
   },
 }
@@ -158,7 +169,7 @@ SunnyForm 支持强大的字段联动能力，通过 `dependencies` 配置实现
 
 | 参数名 | 类型 | 说明 |
 | --- | --- | --- |
-| `triggerFields` | `string[]` | 监听的字段名数组，这些字段变化时会触发联动逻辑 |
+| `triggerFields` | `string[]` | **(可选)** 监听的字段名数组。如果指定，只在这些字段变化时触发联动逻辑（性能更好）；如果不指定，默认监听整个表单值的变化 |
 | `if` | `(values, formApi) => boolean` | 是否渲染 DOM (v-if)，返回 false 时字段不渲染 |
 | `show` | `(values, formApi) => boolean` | 是否显示 (v-show)，返回 false 时字段隐藏 |
 | `required` | `(values, formApi) => boolean` | 是否必填，控制表单验证的必填星号和规则 |
@@ -180,6 +191,8 @@ SunnyForm 支持强大的字段联动能力，通过 `dependencies` 配置实现
 7. **trigger** → 执行自定义触发器
 
 ### 常见场景
+
+> 💡 **性能提示**：如果只需要监听特定字段，建议指定 `triggerFields`，这样可以减少不必要的计算。如果依赖逻辑比较复杂或涉及多个字段，可以省略 `triggerFields`，让系统自动监听整个表单。
 
 #### 1. 条件显示/隐藏
 
@@ -240,6 +253,30 @@ SunnyForm 支持强大的字段联动能力，通过 `dependencies` 配置实现
       options: getCityOptions(values.province),
       loading: !values.province,
     }),
+  },
+}
+```
+
+#### 5. 复杂联动（不指定 triggerFields）
+
+当联动逻辑依赖多个字段且难以明确指定时，可以省略 `triggerFields`，系统会自动监听整个表单：
+
+```typescript
+{
+  fieldName: 'shippingFee',
+  label: '运费',
+  component: 'InputNumber',
+  dependencies: {
+    // 不指定 triggerFields，任何字段变化都会重新计算
+    componentProps: (values) => {
+      const baseFee = values.express ? 10 : 5;
+      const weightFee = (values.weight || 0) * 2;
+      const discount = values.vipUser ? 0.8 : 1;
+      return {
+        modelValue: Math.round(baseFee + weightFee) * discount,
+        disabled: true, // 自动计算，不允许手动输入
+      };
+    },
   },
 }
 ```
@@ -506,6 +543,7 @@ arrayToStringFields: [
 | `component` | `string \| Component` | **(必填)** 组件类型。支持内置组件 (`'Input'`, `'Select'`, `'Slot'` 等) 或自定义组件对象。`'Slot'` 表示使用字段插槽渲染。 |
 | `label` | `string` | 字段标签文本。 |
 | `defaultValue` | `any` | 字段默认值。 |
+| `hidden` | `boolean` | 是否隐藏字段（静态隐藏，不参与联动逻辑）。 |
 | `componentProps` | `Record<string, any> \| Function` | 传递给组件的属性 (支持动态函数)。 |
 | `rules` | `string \| ZodType` | 验证规则 (如 `'required'` 或 Zod Schema)。 |
 | `help` | `string` | 帮助提示信息 (显示在输入框下方)。 |

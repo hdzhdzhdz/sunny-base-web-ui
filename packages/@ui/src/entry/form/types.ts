@@ -191,9 +191,10 @@ export interface FormSchema {
    */
   disabled?: boolean;
   /**
-   * 是否隐藏
+   * 是否隐藏字段（静态隐藏，不参与联动）
+   * Whether to hide the field (static hiding, not involved in dependencies)
    */
-  hide?: boolean;
+  hidden?: boolean;
 }
 
 export interface SunnyFormProps {

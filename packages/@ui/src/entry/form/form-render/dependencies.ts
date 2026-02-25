@@ -46,15 +46,34 @@ export default function useDependencies(
   const dynamicComponentProps = ref<MaybeComponentProps>({}); // 动态组件属性
   const dynamicRules = ref<FormSchemaRuleType>(); // 动态验证规则
 
-  // 计算触发字段的值
-  // Compute the values of trigger fields
-  const triggerFieldValues = computed(() => {
-    // 该字段可能会被多个字段触发
-    // This field may be triggered by multiple fields
-    const triggerFields = getDependencies()?.triggerFields ?? [];
-    return triggerFields.map((dep) => {
-      return values.value[dep];
-    });
+  // 计算监听源
+  // Compute the watch source
+  // 监听策略：
+  // 1. 如果声明了 triggerFields，只监听指定的字段（性能更好）
+  // 2. 如果未声明 triggerFields，监听整个表单值（默认行为）
+  // Watch strategy:
+  // 1. If triggerFields is declared, only watch specified fields (better performance)
+  // 2. If triggerFields is not declared, watch entire form values (default behavior)
+  const watchSource = computed(() => {
+    const triggerFields = getDependencies()?.triggerFields;
+
+    // 【原代码 / Original code】
+    // 只监听 triggerFields 指定的字段，如果未指定则返回空数组
+    // Only watch fields specified by triggerFields, return empty array if not specified
+    // const triggerFields = getDependencies()?.triggerFields ?? [];
+    // return triggerFields.map((dep) => {
+    //   return values.value[dep];
+    // });
+
+    // 【新逻辑 / New logic】
+    // 如果指定了 triggerFields，只监听这些字段；否则监听整个表单
+    // If triggerFields is specified, only watch those fields; otherwise watch entire form
+    if (triggerFields && triggerFields.length > 0) {
+      return triggerFields.map((dep) => values.value[dep]);
+    }
+    // 未指定 triggerFields 时，返回整个表单值对象
+    // When triggerFields is not specified, return the entire form values object
+    return values.value;
   });
 
   // 重置条件状态
@@ -68,13 +87,21 @@ export default function useDependencies(
     dynamicComponentProps.value = {};
   };
 
-  // 监听触发字段值和依赖配置的变化
-  // Watch for changes in trigger field values and dependency configuration
+  // 监听表单值变化和依赖配置的变化
+  // Watch for changes in form values and dependency configuration
   watch(
-    [triggerFieldValues, getDependencies],
+    [watchSource, getDependencies],
     async ([_values, dependencies]) => {
+      // 【原代码 / Original code】
       // 如果没有依赖配置或触发字段，直接返回
-      if (!dependencies || !dependencies?.triggerFields?.length) {
+      // if (!dependencies || !dependencies?.triggerFields?.length) {
+      //   return;
+      // }
+
+      // 【新逻辑 / New logic】
+      // 只检查是否有依赖配置，triggerFields 不再是必须的
+      // Only check if dependencies config exists, triggerFields is no longer required
+      if (!dependencies) {
         return;
       }
       
