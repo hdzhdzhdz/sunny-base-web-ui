@@ -206,9 +206,9 @@ const handleFavoriteDropdownChange = (visible: boolean) => {
 /**
  * 点击收藏项跳转
  */
-const handleFavoriteClick = (item: { cPath?: string }) => {
-  if (item.cPath) {
-    router.push(item.cPath);
+const handleFavoriteClick = (item: { cUrl?: string }) => {
+  if (item.cUrl) {
+    router.push(item.cUrl);
   }
 };
 

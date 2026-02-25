@@ -20,7 +20,7 @@ export interface FavoriteItem {
   /**
    * 路由路径
    */
-  cPath?: string;
+  cUrl?: string;
   /**
    * 创建人（工号）
    */
