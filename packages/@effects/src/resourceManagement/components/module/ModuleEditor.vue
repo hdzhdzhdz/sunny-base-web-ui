@@ -22,12 +22,21 @@
         cIcon
       </template>
       <template #cMeta="{ model, field }">
+        <TabMetaEditor
+          v-if="model.cTemplatetype == '1'"
+          ref="tabMetaEditor"
+          v-model="model[field.name]"
+        />
+        <FormTabsMetaEditor
+          v-else-if="model.cTemplatetype == '4'"
+          ref="formTabsMetaEditor"
+          v-model="model[field.name]"
+        />
         <a-textarea
+          v-else
           v-model="model[field.name]"
           allow-clear
         />
-        <!-- <TabMetaEditor v-if="model.cTemplatetype == '1'" ref="tabMetaEditor" v-model="model[item.prop]" />
-        <FormTabsMetaEditor v-else-if="model.cTemplatetype == '4'" ref="formTabsMetaEditor" v-model="model[item.prop]" /> -->
       </template>
     </Form>
     <!-- <NodeFile ref="nodefile" @handleOk="handleNodefileOk" /> -->

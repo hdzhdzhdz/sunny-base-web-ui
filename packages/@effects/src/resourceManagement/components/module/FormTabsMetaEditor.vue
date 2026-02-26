@@ -2,7 +2,7 @@
   <div class="w-full my-mini-table">
     <a-table :data="tableData" :bordered="true" :pagination="false" size="small">
       <template #columns>
-        <a-table-column :width="500" align="center">
+        <a-table-column :width="30" align="center">
           <template #title>
             <icon-plus-circle
               :style="{ fontSize: '16px', cursor: 'pointer' }"
