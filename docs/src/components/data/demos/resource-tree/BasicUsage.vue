@@ -52,6 +52,27 @@ const fetchChildren = async (parentKey: string) => {
   return children;
 };
 
+const isRootNode = (node: DemoNode) => !String(node.key).includes('-');
+
+const getNextChildIndex = (parentKey: string, children: DemoNode[]) => {
+  let maxIndex = 0;
+  const prefix = `${parentKey}-`;
+
+  for (const child of children) {
+    const childKey = String(child.key);
+    if (!childKey.startsWith(prefix)) {
+      continue;
+    }
+
+    const maybeIndex = Number(childKey.slice(prefix.length).split('-')[0]);
+    if (Number.isFinite(maybeIndex)) {
+      maxIndex = Math.max(maxIndex, maybeIndex);
+    }
+  }
+
+  return maxIndex + 1;
+};
+
 const replaceNodeChildren = (
   nodes: DemoNode[],
   targetKey: string,
@@ -67,6 +88,28 @@ const replaceNodeChildren = (
     if (node.children?.length) {
       const replaced = replaceNodeChildren(node.children, targetKey, children);
       if (replaced) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+};
+
+const appendChildToNode = (
+  nodes: DemoNode[],
+  targetKey: string,
+  child: DemoNode
+): boolean => {
+  for (const node of nodes) {
+    if (node.key === targetKey) {
+      node.children = [...(node.children ?? []), child];
+      return true;
+    }
+
+    if (node.children?.length) {
+      const appended = appendChildToNode(node.children, targetKey, child);
+      if (appended) {
         return true;
       }
     }
@@ -116,6 +159,33 @@ const loadMore = async (node: Record<string, any>) => {
   treeData.value = [...treeData.value];
 };
 
+const createNodeChild = (node: DemoNode) => {
+  const parentKey = String(node.key);
+  const nextIndex = getNextChildIndex(parentKey, node.children ?? []);
+  const childKey = `${parentKey}-${nextIndex}`;
+  const child: DemoNode = {
+    key: childKey,
+    title: childKey,
+    isLeaf: false,
+    status: randomStatus(),
+    updatedAt: Date.now(),
+  };
+
+  const appended = appendChildToNode(treeData.value, parentKey, child);
+  if (!appended) {
+    Message.error('新增失败，未找到目标节点');
+    return;
+  }
+
+  treeData.value = [...treeData.value];
+
+  if (!expandedKeys.value.includes(parentKey)) {
+    expandedKeys.value = [...expandedKeys.value, parentKey];
+  }
+
+  Message.success(`已在节点 ${node.title} 下新增子节点 ${child.title}`);
+};
+
 const deleteNodeWithConfirm = (node: DemoNode) => {
   const targetKey = String(node.key);
 
@@ -163,11 +233,12 @@ const contextMenuActions = [
   {
     key: 'create',
     label: '新增',
-    handler: (node: DemoNode) => Message.info(`新增子节点：${node.title}`),
+    handler: (node: DemoNode) => createNodeChild(node),
   },
   {
     key: 'edit',
     label: '修改',
+    visible: (node: DemoNode) => !isRootNode(node),
     disabled: (node: DemoNode) => Boolean(node.locked),
     handler: (node: DemoNode) => Message.success(`修改节点：${node.title}`),
   },
@@ -175,6 +246,7 @@ const contextMenuActions = [
     key: 'delete',
     label: '删除',
     danger: true,
+    visible: (node: DemoNode) => !isRootNode(node),
     disabled: (node: DemoNode) => Boolean(node.locked),
     handler: (node: DemoNode) => deleteNodeWithConfirm(node),
   },
@@ -193,6 +265,10 @@ const contextMenuActions = [
     </div>
 
     <div class="text-xs text-gray-500">
+      根节点右键支持：新增、刷新。
+    </div>
+
+    <div class="text-xs text-gray-500">
       已选节点：{{ selectedKeys }}
     </div>
 
@@ -203,6 +279,7 @@ const contextMenuActions = [
         :data="treeData"
         :load-more="loadMore"
         :context-menu-actions="contextMenuActions"
+        :enable-root-context-menu="true"
       />
     </div>
   </div>

@@ -5,6 +5,7 @@
         <Dropdown
           v-if="canShowContextMenu(nodeData)"
           trigger="contextMenu"
+          :popup-max-height="false"
           @select="handleDropdownSelect($event, nodeData)"
         >
           <span class="sunny-resource-tree__title">

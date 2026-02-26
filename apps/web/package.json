@@ -18,7 +18,10 @@
     "@sunny-base-web/ui": "workspace:*",
     "vue": "catalog:",
     "vue-i18n": "catalog:",
-    "vue-router": "^4.6.4"
+    "vue-router": "^4.6.4",
+    "vxe-pc-ui": "4.12.36",
+    "vxe-table": "4.17.48",
+    "xe-utils": "3.9.1"
   },
   "devDependencies": {
     "@sunny-base-web/tailwind-config": "workspace:*",
