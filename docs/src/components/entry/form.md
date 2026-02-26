@@ -463,6 +463,8 @@ SunnyForm 提供了操作栏区域的自定义插槽，方便在默认按钮前�
 
 SunnyForm 提供了多种方式监听表单值的变化：
 
+<preview path="./demos/form/Change.vue" title="事件监听演示" description="操作表单查看全局监听和字段级别监听的事件触发。" />
+
 #### 方式1：全局监听（推荐）
 
 使用 `handleValuesChange` 监听整个表单的值变化，任意字段变化都会触发：

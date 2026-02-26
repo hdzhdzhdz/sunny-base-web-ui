@@ -220,6 +220,48 @@ const computedProps = computed(() => {
   };
 });
 
+/**
+ * 合并用户事件处理器和 vee-validate 的 field 事件
+ * 确保两者都能被触发
+ */
+const createMergedFieldProps = (field: any) => {
+  const userProps = computedProps.value;
+
+  // 合并事件处理器
+  const mergeEvent = (userHandler: Function | undefined, fieldHandler: Function) => {
+    return (...args: any[]) => {
+      // 先触发用户的处理器
+      if (isFunction(userHandler)) {
+        userHandler(...args);
+      }
+      // 再触发 vee-validate 的处理器（更新表单值）
+      fieldHandler(...args);
+    };
+  };
+
+  // 创建更新值的函数，同时触发用户事件
+  const handleUpdateModelValue = (val: any) => {
+    // 触发用户的 onInput
+    if (isFunction(userProps?.onInput)) {
+      userProps.onInput(val);
+    }
+    // 触发 vee-validate 更新
+    field.onInput(val);
+  };
+
+  return {
+    ...userProps,
+    // 合并 onInput 事件
+    onInput: mergeEvent(userProps?.onInput as Function, field.onInput),
+    // 合并 onChange 事件
+    onChange: mergeEvent(userProps?.onChange as Function, field.onChange),
+    // model-value 绑定
+    modelValue: field.value,
+    // update:modelValue 事件
+    'onUpdate:modelValue': handleUpdateModelValue,
+  };
+};
+
 // 监听自动聚焦属性
 watch(
   () => computedProps.value?.autofocus,
@@ -309,13 +351,8 @@ const labelColProps = computed(() => {
       <component
         v-else
         :is="component"
-        v-bind="{ ...computedProps, ...field }"
+        v-bind="createMergedFieldProps(field)"
         :disabled="shouldDisabled"
-        :model-value="field.value"
-        @update:model-value="(val: any) => {
-          console.log('FormField @update:model-value', schema.fieldName, val);
-          field.onInput(val);
-        }"
       />
     </a-form-item>
   </Field>
