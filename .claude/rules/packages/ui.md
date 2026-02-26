@@ -129,6 +129,28 @@ export interface SunnyButtonProps {
   - **Color Variables**: 严禁硬编码颜色值 (Hex/RGB)。必须使用 Arco Design 提供的 CSS 变量 (e.g., `var(--color-primary-6)`, `var(--color-text-1)`, `var(--color-bg-2)`) 以确保主题一致性及暗黑模式支持。
   - **Tailwind Config**: 在 `tailwind.config.js` 中引用 Arco 变量，例如 `text-color-text-1` 应映射到 `var(--color-text-1)`。
   - **Custom Tokens**: 组件库自定义的样式变量，需在@ui/src/styles/tokens.css中统一定义，命名为--ui-[name]-[value]（e.g., --ui-search-modal-form-margin），基于 Arco Token 扩展。
+- **Primary Color Usage (主题色使用)**: 项目支持动态主题色切换，所有需要跟随主题色变化的交互效果必须使用以下方式：
+  - **Hover 效果**: 使用 `rgb(var(--primary-6))` 或 `rgba(var(--primary-6), opacity)` 格式
+    ```html
+    <!-- ✅ 推荐：hover 效果使用主题色 -->
+    <div class="hover:bg-[rgba(var(--primary-6),0.1)] hover:text-[rgb(var(--primary-6))]">
+    <!-- ❌ 避免：硬编码颜色 -->
+    <div class="hover:bg-blue-100 hover:text-blue-600">
+    ```
+  - **CSS 变量列表**:
+    - `--primary-1` ~ `--primary-5`: 浅色系（背景色）
+    - `--primary-6`: 主题色（主要用于 hover、active 状态）
+    - `--primary-7` ~ `--primary-10`: 深色系（按下态）
+  - **Tailwind 中使用**: 在 class 中直接使用 CSS 变量
+    ```html
+    <!-- 背景色 10% 透明度 -->
+    class="hover:bg-[rgba(var(--primary-6),0.1)]"
+    <!-- 文字色 -->
+    class="text-[rgb(var(--primary-6))]"
+    <!-- 边框色 -->
+    class="border-[rgb(var(--primary-6))]"
+    ```
+  - **适用场景**: 图标按钮 hover、链接 hover、标签 hover、菜单项选中态等所有需要跟随主题色变化的交互效果
 - **Responsive Design**: 所有组件需支持基础的响应式适配（如桌面端/平板端/移动端）；优先使用 Tailwind 的响应式类（如`md:w-80`），复合组件需做布局自适应（如 Form 表单列数随宽度变化）。
 - **Style Inheritance**: 二次封装 Arco 组件时，不覆盖 Arco 的原生样式，仅通过 Tailwind/自定义类做样式扩展；复合组件的子组件样式可通过 Props 控制（如formCompact、tableSmall），复用 Arco 的尺寸类（如`size-small`）。 
 ## 9. Internationalization (国际化)

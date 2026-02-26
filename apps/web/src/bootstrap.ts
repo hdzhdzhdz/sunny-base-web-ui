@@ -10,7 +10,7 @@ import { createEffects } from '@sunny-base-web/effects'
 import { router } from './router';
 import { setupI18n } from '#/locales';
 
-import { initStores } from '@sunny-base-web/stores';
+import { initStores, useSettingsStore } from '@sunny-base-web/stores';
 import { preferences } from './preferences';
 
 import VxeUITable from 'vxe-table'
@@ -20,6 +20,10 @@ async function bootstrap(namespace: string) {
 	const app = createApp(App);
 	// 配置 pinia-tore
 	await initStores(app as any, { namespace });
+
+	// 初始化设置（恢复保存的主题色等）
+	const settingsStore = useSettingsStore();
+	settingsStore.initSettings();
 
 	// 注册 @effects 业务组件包的全局配置
 	// 作用：统一注入 API 前缀和 SSO 地址，使 Login 等组件能自动获取配置，

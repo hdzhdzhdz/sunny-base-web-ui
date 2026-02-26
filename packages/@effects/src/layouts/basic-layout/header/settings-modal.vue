@@ -13,14 +13,61 @@
     @cancel="handleCancel"
   >
     <div class="space-y-6">
-      <!-- 字体大小设置 -->
+      <!-- 主题色设置 -->
+      <div class="space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-medium text-[var(--color-text-1)]">主题色</span>
+        </div>
+
+        <!-- 颜色选择器 -->
+        <div class="flex items-center gap-4">
+          <a-color-picker
+            v-model="tempPrimaryColor"
+            format="hex"
+            showText
+            showPreset
+            :historyColors="historyColors"
+            @popup-visible-change="handleColorPopupChange"
+          />
+        </div>
+      </div>
+
+      <!-- 分割线 -->
+      <a-divider class="!my-4" />
+
+      <!-- 预览效果 -->
+      <div class="space-y-2">
+        <span class="text-sm font-medium text-[var(--color-text-1)]">预览效果</span>
+        <div
+          class="p-4 rounded-lg border border-[var(--color-border-2)] bg-[var(--color-fill-1)]"
+        >
+          <div class="flex items-center gap-4">
+            <a-button
+              type="primary"
+              size="small"
+              :style="{ backgroundColor: tempPrimaryColor, borderColor: tempPrimaryColor }"
+            >
+              主要按钮
+            </a-button>
+            <a-button
+              type="outline"
+              size="small"
+              :style="{ color: tempPrimaryColor, borderColor: tempPrimaryColor }"
+            >
+              次要按钮
+            </a-button>
+            <a-link :style="{ color: tempPrimaryColor }">链接文字</a-link>
+          </div>
+        </div>
+      </div>
+
+      <!-- TODO: 字体大小设置 (暂时注释)
       <div class="space-y-3">
         <div class="flex items-center justify-between">
           <span class="text-sm font-medium text-[var(--color-text-1)]">字体大小</span>
           <span class="text-xs text-[var(--color-text-3)]">{{ currentLabel }} ({{ currentSize }}px)</span>
         </div>
 
-        <!-- 滑块 -->
         <div class="flex items-center gap-4">
           <span class="text-xs text-[var(--color-text-4)] w-6">Aa</span>
           <a-slider
@@ -35,7 +82,6 @@
           <span class="text-lg text-[var(--color-text-4)] w-8">Aa</span>
         </div>
 
-        <!-- 快捷选项 -->
         <div class="flex justify-center gap-2">
           <a-button
             v-for="opt in FONT_SIZE_OPTIONS"
@@ -49,10 +95,8 @@
         </div>
       </div>
 
-      <!-- 分割线 -->
       <a-divider class="!my-4" />
 
-      <!-- 预览效果 -->
       <div class="space-y-2">
         <span class="text-sm font-medium text-[var(--color-text-1)]">预览效果</span>
         <div
@@ -67,14 +111,15 @@
           </div>
         </div>
       </div>
+      -->
     </div>
   </Modal>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref } from 'vue';
 import { Modal } from '@sunny-base-web/ui';
-import { useSettingsStore, FONT_SIZE_OPTIONS } from '@sunny-base-web/stores';
+import { useSettingsStore } from '@sunny-base-web/stores';
 
 defineOptions({ name: 'SettingsModal' });
 
@@ -82,49 +127,35 @@ const settingsStore = useSettingsStore();
 const visible = ref(false);
 const loading = ref(false);
 
-// 临时字体大小（用于预览）
-const tempFontSize = ref(settingsStore.fontSize);
+// 临时主题色（用于预览）
+const tempPrimaryColor = ref(settingsStore.primaryColor);
 
-// 当前字体大小索引
-const fontSizeIndex = ref(settingsStore.fontSizeIndex);
+// 历史颜色（用于颜色选择器的 historyColors）
+const historyColors = ref<string[]>([]);
 
-// 滑块标记 - Arco Design 格式为对象 { [position]: label }
-const sliderMarks = computed<Record<number, string>>(() => {
-  const marks: Record<number, string> = {};
-  FONT_SIZE_OPTIONS.forEach((opt, index) => {
-    marks[index] = opt.label;
-  });
-  return marks;
-});
-
-// 计算当前选项
-const currentLabel = computed(() => {
-  const option = FONT_SIZE_OPTIONS.find((opt) => opt.value === tempFontSize.value);
-  return option?.label || '中';
-});
-
-const currentSize = computed(() => tempFontSize.value);
-
-// 监听滑块变化
-const handleSliderChange = (value: number | number[]) => {
-  const index = Array.isArray(value) ? value[0] : value;
-  tempFontSize.value = FONT_SIZE_OPTIONS[index].value;
-};
-
-// 监听临时字体大小变化，更新滑块索引
-watch(tempFontSize, (val) => {
-  const index = FONT_SIZE_OPTIONS.findIndex((opt) => opt.value === val);
-  if (index >= 0) {
-    fontSizeIndex.value = index;
+/**
+ * 颜色选择器弹出状态变化
+ */
+const handleColorPopupChange = (visible: boolean) => {
+  // 关闭时添加到历史颜色
+  if (!visible && tempPrimaryColor.value) {
+    const index = historyColors.value.indexOf(tempPrimaryColor.value);
+    if (index !== -1) {
+      historyColors.value.splice(index, 1);
+    }
+    historyColors.value.unshift(tempPrimaryColor.value);
+    // 最多保留 8 个历史颜色
+    if (historyColors.value.length > 8) {
+      historyColors.value.pop();
+    }
   }
-});
+};
 
 /**
  * 打开弹窗
  */
 const open = () => {
-  tempFontSize.value = settingsStore.fontSize;
-  fontSizeIndex.value = settingsStore.fontSizeIndex;
+  tempPrimaryColor.value = settingsStore.primaryColor;
   visible.value = true;
 };
 
@@ -141,8 +172,8 @@ const close = () => {
 const handleOk = async () => {
   loading.value = true;
   try {
-    // 保存设置
-    settingsStore.setFontSize(tempFontSize.value);
+    // 保存主题色设置
+    settingsStore.setPrimaryColor(tempPrimaryColor.value);
     visible.value = false;
   } finally {
     loading.value = false;
@@ -162,9 +193,3 @@ defineExpose({
   close,
 });
 </script>
-
-<style scoped>
-:deep(.arco-slider-mark) {
-  font-size: 12px;
-}
-</style>

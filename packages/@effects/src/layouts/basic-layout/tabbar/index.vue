@@ -135,7 +135,7 @@
     <div class="flex items-center gap-1 shrink-0 h-full border-l border-[var(--color-border)] pl-2 bg-[var(--color-bg-2)]">
       <!-- 下拉菜单 -->
       <a-dropdown trigger="click" @select="handleMenuSelect">
-        <div class="flex items-center justify-center w-8 h-8 rounded-sm hover:bg-[var(--color-fill-3)] cursor-pointer text-[var(--color-text-2)] hover:text-[var(--color-text-1)] transition-colors">
+        <div class="flex items-center justify-center w-8 h-8 rounded-sm cursor-pointer transition-colors text-[var(--color-text-2)] hover:bg-[rgba(var(--primary-6),0.1)] hover:text-[rgb(var(--primary-6))]">
           <SunnyIcon icon="lucide:chevron-down" :size="16" />
         </div>
         <template #content>
@@ -159,8 +159,8 @@
       </a-dropdown>
 
       <!-- 全屏按钮 -->
-      <div 
-        class="flex items-center justify-center w-8 h-8 rounded-sm hover:bg-[var(--color-fill-3)] cursor-pointer text-[var(--color-text-2)] hover:text-[var(--color-text-1)] transition-colors"
+      <div
+        class="flex items-center justify-center w-8 h-8 rounded-sm cursor-pointer transition-colors text-[var(--color-text-2)] hover:bg-[rgba(var(--primary-6),0.1)] hover:text-[rgb(var(--primary-6))]"
         @click="toggleContentFullScreen"
       >
         <SunnyIcon :icon="tabbarStore.contentFullScreen ? 'lucide:minimize' : 'lucide:maximize'" :size="16" />

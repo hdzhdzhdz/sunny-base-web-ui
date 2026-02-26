@@ -57,9 +57,8 @@
         :style="{ height: (config.header?.height ?? 64) + 'px' }"
       >
         <!-- 侧边栏折叠/展开按钮 -->
-        <!-- Added text colors for better theme adaptation -->
-        <div 
-          class="cursor-pointer flex items-center p-1 rounded hover:bg-[var(--color-fill-3)] text-[var(--color-text-2)] hover:text-[var(--color-text-1)] transition-colors" 
+        <div
+          class="cursor-pointer flex items-center p-1 rounded transition-colors text-[var(--color-text-2)] hover:bg-[rgba(var(--primary-6),0.1)] hover:text-[rgb(var(--primary-6))]"
           @click="toggleCollapsed"
         >
           <SunnyIcon :icon="collapsed ? 'lucide:panel-left-open' : 'lucide:panel-left-close'" :size="24" />

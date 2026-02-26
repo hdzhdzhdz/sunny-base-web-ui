@@ -8,3 +8,4 @@ export * from './api/core';
 export * from './api/user';
 export * from './api/request';
 export * from './layouts';
+export * from './views/setting/operationLog';
