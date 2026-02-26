@@ -1,3 +1,7 @@
+---
+outline: [2, 3]
+---
+
 # Form 表单
 
 基于 Arco Design 的 Form 组件封装，提供了 schema 驱动的表单生成能力，简化了复杂表单的开发。
@@ -454,6 +458,85 @@ SunnyForm 提供了操作栏区域的自定义插槽，方便在默认按钮前�
 支持回车提交、值变更监听等丰富的交互能力。
 
 <preview path="./demos/form/Interaction.vue" title="交互演示" description="尝试在输入框回车，或改变下拉框的值，观察自动提交和事件回调。" />
+
+### 监听表单变化
+
+SunnyForm 提供了多种方式监听表单值的变化：
+
+#### 方式1：全局监听（推荐）
+
+使用 `handleValuesChange` 监听整个表单的值变化，任意字段变化都会触发：
+
+```typescript
+const [Form] = useSunnyForm({
+  schema: [
+    { fieldName: 'name', label: '名称', component: 'Input' },
+    { fieldName: 'type', label: '类型', component: 'Select' },
+  ],
+  handleValuesChange: (values, changedFields) => {
+    console.log('当前表单值:', values);
+    console.log('变化的字段:', changedFields);
+  },
+});
+```
+
+#### 方式2：字段级别监听
+
+在 `componentProps` 中配置 Arco 组件原生的事件，只监听特定字段：
+
+```typescript
+const [Form] = useSunnyForm({
+  schema: [
+    {
+      fieldName: 'type',
+      label: '类型',
+      component: 'Select',
+      componentProps: {
+        options: [...],
+        // Select 组件的 change 事件
+        onChange: (value) => {
+          console.log('type 变化了:', value);
+        },
+      },
+    },
+    {
+      fieldName: 'name',
+      label: '名称',
+      component: 'Input',
+      componentProps: {
+        // Input 组件的 input 事件
+        onInput: (value) => {
+          console.log('name 输入:', value);
+        },
+      },
+    },
+  ],
+});
+```
+
+#### 方式3：值变化自动提交
+
+使用 `submitOnChange` 在任意字段变化时自动触发表单提交：
+
+```typescript
+const [Form] = useSunnyForm({
+  submitOnChange: true,  // 开启自动提交
+  schema: [...],
+  handleSubmit: (values) => {
+    console.log('自动提交:', values);
+  },
+});
+```
+
+### 常用事件对比
+
+| 方式 | 适用场景 | 触发时机 |
+| --- | --- | --- |
+| `handleValuesChange` | 监听整个表单变化、联动逻辑 | 任意字段值变化 |
+| `componentProps.onChange` | 监听单个字段、执行特定逻辑 | 特定字段变化 |
+| `submitOnChange` | 搜索表单、自动刷新场景 | 任意字段变化后自动提交 |
+
+> 💡 **提示**：对于 Arco 组件，`Input` 使用 `onInput`，`Select`、`Switch`、`Checkbox` 等使用 `onChange`。具体事件请参考 [Arco Design 文档](/arco-llm.txt)。
 
 ## 数据转换 (Data Transformation)
 
