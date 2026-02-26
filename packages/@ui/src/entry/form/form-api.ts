@@ -1,6 +1,7 @@
 import { isRef, toRaw, type ComponentPublicInstance } from 'vue';
 import type { FormState, GenericObject, ResetFormOpts, ValidationOptions } from 'vee-validate';
 import { cloneDeep, isFunction, isObject, is } from '@sunny-base-web/utils';
+import { set as lodashSet } from 'lodash-es';
 import { Store } from './store';
 import type { FormActions, FormSchema, SunnyFormProps } from './types';
 
@@ -460,10 +461,24 @@ export class FormApi {
   /**
    * 设置单个字段值
    * Set field value
+   *
+   * @param field 字段名，支持嵌套路径 (如 'user.name', 'items[0].id')
+   * @param value 字段值
+   * @param shouldValidate 是否触发验证
    */
   async setFieldValue(field: string, value: any, shouldValidate?: boolean) {
     const form = await this.getForm();
-    form.setFieldValue(field, value, shouldValidate);
+
+    // 检查是否为嵌套路径 (包含 . 或 [)
+    if (field.includes('.') || field.includes('[')) {
+      // 使用 lodash 的 set 处理嵌套路径
+      const currentValues = { ...form.values };
+      const newValues = lodashSet(currentValues, field, value);
+      form.setValues(newValues, shouldValidate);
+    } else {
+      // 简单路径直接设置
+      form.setValues({ [field]: value }, shouldValidate);
+    }
   }
 
   /**
@@ -495,8 +510,8 @@ export class FormApi {
   /**
    * 设置表单值
    * Set form values
-   * 
-   * @param fields 值对象
+   *
+   * @param fields 值对象，支持嵌套路径 (如 { 'user.name': 'John', 'items[0].id': 1 })
    * @param filterFields 是否过滤不在 schema 中的字段 (默认 true)
    * @param shouldValidate 是否触发验证 (默认 false)
    */
@@ -506,50 +521,114 @@ export class FormApi {
     shouldValidate: boolean = false,
   ) {
     const form = await this.getForm();
+    const currentValues = form.values || {};
+
+    // 检查是否有嵌套路径的 key
+    const hasNestedPath = Object.keys(fields).some(
+      key => key.includes('.') || key.includes('[')
+    );
+
+    if (hasNestedPath) {
+      // 处理嵌套路径
+      let newValues = { ...currentValues };
+      for (const [key, value] of Object.entries(fields)) {
+        newValues = lodashSet(newValues, key, value);
+      }
+
+      if (filterFields) {
+        // 过滤：只保留当前 form.values 中存在的字段
+        newValues = this.filterNestedValues(newValues, currentValues);
+      }
+
+      form.setValues(newValues, shouldValidate);
+      return;
+    }
+
+    // 简单路径处理
     if (!filterFields) {
       form.setValues(fields, shouldValidate);
       return;
     }
 
     // 智能合并与过滤 (Smart merge and filter)
-    // 1. 过滤不在 form.values 中的字段 (Filter fields not in form.values)
-    // 2. 深度合并对象，但排除 Dayjs/Date 对象 (Deep merge objects, but exclude Dayjs/Date)
-    const currentValues = form.values || {};
-    
-    const filterAndMerge = (source: any, target: any) => {
-      const result: Record<string, any> = {};
-      
-      for (const key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          // 只有 target (form.values) 中存在的 key 才会被保留
-          if (key in target) {
-            const sourceVal = source[key];
-            const targetVal = target[key];
-            
-            if (
-                isObject(sourceVal) && 
-                !Array.isArray(sourceVal) &&
-                !isDate(sourceVal) &&
-                !isDayjsObject(sourceVal) &&
-                isObject(targetVal) &&
-                !Array.isArray(targetVal) &&
-                !isDate(targetVal) &&
-                !isDayjsObject(targetVal)
-            ) {
-               // 递归合并
-               result[key] = filterAndMerge(sourceVal, targetVal);
-            } else {
-               // 直接覆盖
-               result[key] = sourceVal;
-            }
+    const filteredFields = this.filterAndMergeValues(fields, currentValues);
+    form.setValues(filteredFields, shouldValidate);
+  }
+
+  /**
+   * 过滤嵌套路径的值
+   * Filter nested path values
+   * 只保留目标对象中存在的路径
+   */
+  private filterNestedValues(source: any, target: any): any {
+    if (!isObject(source) || !isObject(target)) return source;
+    if (Array.isArray(source)) return source;
+
+    const result: Record<string, any> = {};
+
+    for (const key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        // 只有 target 中存在的 key 才会被保留
+        if (key in target) {
+          const sourceVal = source[key];
+          const targetVal = target[key];
+
+          if (
+            isObject(sourceVal) &&
+            !Array.isArray(sourceVal) &&
+            !isDate(sourceVal) &&
+            !isDayjsObject(sourceVal) &&
+            isObject(targetVal) &&
+            !Array.isArray(targetVal) &&
+            !isDate(targetVal) &&
+            !isDayjsObject(targetVal)
+          ) {
+            // 递归过滤
+            result[key] = this.filterNestedValues(sourceVal, targetVal);
+          } else {
+            // 直接覆盖
+            result[key] = sourceVal;
           }
         }
       }
-      return result;
-    };
-    
-    const filteredFields = filterAndMerge(fields, currentValues);
-    form.setValues(filteredFields, shouldValidate);
+    }
+    return result;
+  }
+
+  /**
+   * 过滤并合并值
+   * Filter and merge values
+   */
+  private filterAndMergeValues(source: any, target: any): any {
+    if (!isObject(source) || !isObject(target)) return source;
+    if (Array.isArray(source)) return source;
+
+    const result: Record<string, any> = {};
+
+    for (const key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        if (key in target) {
+          const sourceVal = source[key];
+          const targetVal = target[key];
+
+          if (
+            isObject(sourceVal) &&
+            !Array.isArray(sourceVal) &&
+            !isDate(sourceVal) &&
+            !isDayjsObject(sourceVal) &&
+            isObject(targetVal) &&
+            !Array.isArray(targetVal) &&
+            !isDate(targetVal) &&
+            !isDayjsObject(targetVal)
+          ) {
+            result[key] = this.filterAndMergeValues(sourceVal, targetVal);
+          } else {
+            result[key] = sourceVal;
+          }
+        }
+      }
+    }
+    return result;
   }
 
   /**

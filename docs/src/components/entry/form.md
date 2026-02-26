@@ -703,8 +703,8 @@ arrayToStringFields: [
 | 方法名 | 类型 | 说明 |
 | --- | --- | --- |
 | `getValues` | `() => Promise<Record<string, any>>` | 获取表单当前值 (已处理日期格式等)。 |
-| `setValues` | `(fields: Record<string, any>, filter?: boolean, validate?: boolean) => Promise<void>` | 批量设置表单值。默认会自动过滤掉 Schema 中不存在的字段。 |
-| `setFieldValue` | `(field: string, value: any, validate?: boolean) => Promise<void>` | 设置单个字段的值。 |
+| `setValues` | `(fields: Record<string, any>, filter?: boolean, validate?: boolean) => Promise<void>` | 批量设置表单值。默认会自动过滤掉 Schema 中不存在的字段。支持嵌套路径 (如 `{ 'user.name': 'John' }`)。 |
+| `setFieldValue` | `(field: string, value: any, validate?: boolean) => Promise<void>` | 设置单个字段的值。支持嵌套路径 (如 `'user.profile.name'`, `'items[0].id'`)。 |
 | `getState` | `() => SunnyFormProps` | 获取表单当前的完整状态配置。 |
 | `setState` | `(state: Partial<SunnyFormProps> \| ((prev) => Partial<SunnyFormProps>)) => void` | 更新表单状态 (如 loading, schema 等)。 |
 | `getLatestSubmissionValues` | `() => Record<string, any>` | 获取最后一次提交时的表单值。 |
@@ -739,6 +739,34 @@ await formApi.setFieldValue('factory', 'ABC');
 ```
 
 > ⚠️ **注意**：如果设置非 Schema 字段后需要获取，`getValues()` 会返回所有字段值（包括非 Schema 字段）。
+
+#### 嵌套路径支持
+
+`setValues` 和 `setFieldValue` 支持嵌套路径语法，可以方便地设置深层对象的值：
+
+```typescript
+// 对象嵌套路径 (使用点号 .)
+await formApi.setFieldValue('user.profile.name', 'John');
+// 结果: { user: { profile: { name: 'John' } } }
+
+// 数组索引路径 (使用方括号 [])
+await formApi.setFieldValue('items[0].id', 1);
+await formApi.setFieldValue('items[0].name', 'Item 1');
+// 结果: { items: [{ id: 1, name: 'Item 1' }] }
+
+// setValues 批量设置嵌套路径
+await formApi.setValues({
+  'user.name': 'John',
+  'user.email': 'john@example.com',
+  'items[0].id': 1,
+});
+```
+
+**支持的路径格式：**
+- `'a.b.c'` - 对象嵌套
+- `'a[0]'` - 数组索引
+- `'a[0].b.c'` - 混合嵌套
+- `'a.b[0].c'` - 混合嵌套
 
 ### 校验与提交
 
