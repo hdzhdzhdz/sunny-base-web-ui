@@ -13,6 +13,9 @@ import { setupI18n } from '#/locales';
 import { initStores } from '@sunny-base-web/stores';
 import { preferences } from './preferences';
 
+import VxeUITable from 'vxe-table'
+import 'vxe-table/es/style.css'
+
 async function bootstrap(namespace: string) {
 	const app = createApp(App);
 	// 配置 pinia-tore
@@ -46,6 +49,7 @@ async function bootstrap(namespace: string) {
   await setupI18n(app);
 
 	app.use(ArcoVue);
+	app.use(VxeUITable)
 	app.mount('#app');
 }
 

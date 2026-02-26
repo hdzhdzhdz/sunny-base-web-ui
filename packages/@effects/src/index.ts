@@ -1,6 +1,7 @@
 import Login from './login/index.vue';
+import ResourceManagement from './resourceManagement/index.vue'
 
-export { Login };
+export { Login, ResourceManagement };
 export * from './config';
 export * from './request/src';
 export * from './api/core';
