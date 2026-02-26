@@ -15,3 +15,4 @@
 ## 组件列表
 
 - [BusinessSearch 业务搜索](./business-search)
+- [SearchPlan 查询方案](./search-plan)

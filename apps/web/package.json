@@ -21,7 +21,8 @@
     "vue-router": "^4.6.4",
     "vxe-pc-ui": "4.12.36",
     "vxe-table": "4.17.48",
-    "xe-utils": "3.9.1"
+    "xe-utils": "3.9.1",
+    "lucide-vue-next": "^0.575.0"
   },
   "devDependencies": {
     "@sunny-base-web/tailwind-config": "workspace:*",
