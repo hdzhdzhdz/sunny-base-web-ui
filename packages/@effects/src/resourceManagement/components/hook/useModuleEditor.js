@@ -63,8 +63,8 @@ export const useModuleEditor = (emits) => {
         componentProps: {
           allowClear: true,
           options: [
-            { cKeyname: `Layout`, cKeynumb: `Layout` },
-            { cKeyname: `Second`, cKeynumb: `Second` }
+            { label: `Layout`, value: `Layout` },
+            { label: `Second`, value: `Second` }
           ]
         },
         dependencies: {
@@ -77,7 +77,14 @@ export const useModuleEditor = (emits) => {
         fieldName: 'cTemplatetype',
         componentProps: {
           allowClear: true,
-          options: selectOption.templateList
+          options: selectOption.templateList,
+          onChange: async (val) => {
+            const formModel = await formApi.getValues()
+            if ((val === '1' || val === '4') && !formModel.cMeta) {
+              const meta = find(selectOption.templateList, ['value', val])?.defaultMeta
+              formApi.setValues({ 'cMeta': meta }, false)
+            }
+          },
         }
       },
       {
@@ -154,7 +161,7 @@ export const useModuleEditor = (emits) => {
       },
       {
         component: 'Switch',
-        label: '角色菜单权限',
+        label: '角色权限',
         fieldName: 'cAuth',
         componentProps: {
           uncheckedValue: '0',
@@ -208,31 +215,15 @@ export const useModuleEditor = (emits) => {
         }
       ]
     },
-    events: {
-      'cTemplatetype': {
-        'change': (val) => {
-          if ((val === '1' || val === '4') && !dialogData.data.cMeta) {
-            dialogData.data.cMeta = find(selectOption.templateList, ['cKeynumb', val])?.defaultMeta
-          }
-        }
-      },
-      // Name首字母大写
-      'cViewname': {
-        'change': (val) => {
-          console.log(val)
-          dialogData.data.cViewname = _.upperFirst(val)
-        }
-      }
-    }
   })
 
   const [Form, formApi] = useSunnyForm({
     layout: 'horizontal',
     showDefaultActions: false,
-    labelWidth: 120,
+    labelWidth: 90,
     // 栅格容器配置 (a-grid props)
     gridProps: {
-      xGap: 12,
+      xGap: 0,
       yGap: 0,
     },
     // 表单项通用配置
@@ -248,9 +239,9 @@ export const useModuleEditor = (emits) => {
     // 基础数据
     values: {},
     schema: dialogData.formFields,
-    handleSubmit: (values) => {
-      Message.success('提交: ' + JSON.stringify(values));
-    },
+    // handleSubmit: (values) => {
+    //   Message.success('提交: ' + JSON.stringify(values));
+    // },
   });
 
   // 打开编辑器

@@ -58,8 +58,8 @@ catalogs:
       specifier: ^3.5.13
       version: 3.5.27
     vue-i18n:
-      specifier: ^9.10.1
-      version: 9.14.5
+      specifier: ^11.2.8
+      version: 11.2.8
     vue-tsc:
       specifier: ^2.1.10
       version: 2.2.12
@@ -108,15 +108,27 @@ importers:
       '@sunny-base-web/utils':
         specifier: workspace:*
         version: link:../../packages/@utils
+      lucide-vue-next:
+        specifier: ^0.575.0
+        version: 0.575.0(vue@3.5.27(typescript@5.9.3))
       vue:
         specifier: 'catalog:'
         version: 3.5.27(typescript@5.9.3)
       vue-i18n:
-        specifier: ^11.2.8
+        specifier: 'catalog:'
         version: 11.2.8(vue@3.5.27(typescript@5.9.3))
       vue-router:
         specifier: ^4.6.4
         version: 4.6.4(vue@3.5.27(typescript@5.9.3))
+      vxe-pc-ui:
+        specifier: 4.12.36
+        version: 4.12.36(vue@3.5.27(typescript@5.9.3))
+      vxe-table:
+        specifier: 4.17.48
+        version: 4.17.48(vue@3.5.27(typescript@5.9.3))
+      xe-utils:
+        specifier: 3.9.1
+        version: 3.9.1
     devDependencies:
       '@sunny-base-web/tailwind-config':
         specifier: workspace:*
@@ -259,7 +271,7 @@ importers:
         specifier: 'catalog:'
         version: 3.5.27(typescript@5.9.3)
       vue-i18n:
-        specifier: ^11.2.8
+        specifier: 'catalog:'
         version: 11.2.8(vue@3.5.27(typescript@5.9.3))
       vue-router:
         specifier: ^4.6.4
@@ -267,6 +279,15 @@ importers:
       vue3-slide-verify:
         specifier: ^1.1.8
         version: 1.1.8(typescript@5.9.3)
+      vxe-pc-ui:
+        specifier: 4.12.36
+        version: 4.12.36(vue@3.5.27(typescript@5.9.3))
+      vxe-table:
+        specifier: 4.17.48
+        version: 4.17.48(vue@3.5.27(typescript@5.9.3))
+      xe-utils:
+        specifier: 3.9.1
+        version: 3.9.1
     devDependencies:
       '@sunny-base-web/constants':
         specifier: workspace:*
@@ -322,7 +343,7 @@ importers:
         version: 3.5.27(typescript@5.9.3)
       vue-i18n:
         specifier: 'catalog:'
-        version: 9.14.5(vue@3.5.27(typescript@5.9.3))
+        version: 11.2.8(vue@3.5.27(typescript@5.9.3))
     devDependencies:
       '@sunny-base-web/tsconfig':
         specifier: workspace:*
@@ -469,7 +490,7 @@ importers:
         version: 3.4.0
       vue-i18n:
         specifier: 'catalog:'
-        version: 9.14.5(vue@3.5.27(typescript@5.9.3))
+        version: 11.2.8(vue@3.5.27(typescript@5.9.3))
     devDependencies:
       '@sunny-base-web/tsconfig':
         specifier: workspace:*
@@ -1278,24 +1299,12 @@ packages:
     resolution: {integrity: sha512-nBq6Y1tVkjIUsLsdOjDSJj4AsjvD0UG3zsg9Fyc+OivwlA/oMHSKooUy9tpKj0HqZ+NWFifweHavdljlBLTwdA==}
     engines: {node: '>= 16'}
 
-  '@intlify/core-base@9.14.5':
-    resolution: {integrity: sha512-5ah5FqZG4pOoHjkvs8mjtv+gPKYU0zCISaYNjBNNqYiaITxW8ZtVih3GS/oTOqN8d9/mDLyrjD46GBApNxmlsA==}
-    engines: {node: '>= 16'}
-
   '@intlify/message-compiler@11.2.8':
     resolution: {integrity: sha512-A5n33doOjmHsBtCN421386cG1tWp5rpOjOYPNsnpjIJbQ4POF0QY2ezhZR9kr0boKwaHjbOifvyQvHj2UTrDFQ==}
     engines: {node: '>= 16'}
 
-  '@intlify/message-compiler@9.14.5':
-    resolution: {integrity: sha512-IHzgEu61/YIpQV5Pc3aRWScDcnFKWvQA9kigcINcCBXN8mbW+vk9SK+lDxA6STzKQsVJxUPg9ACC52pKKo3SVQ==}
-    engines: {node: '>= 16'}
-
   '@intlify/shared@11.2.8':
     resolution: {integrity: sha512-l6e4NZyUgv8VyXXH4DbuucFOBmxLF56C/mqh2tvApbzl2Hrhi1aTDcuv5TKdxzfHYmpO3UB0Cz04fgDT9vszfw==}
-    engines: {node: '>= 16'}
-
-  '@intlify/shared@9.14.5':
-    resolution: {integrity: sha512-9gB+E53BYuAEMhbCAxVgG38EZrk59sxBtv3jSizNL2hEWlgjBjAw1AwpLHtNaeda12pe6W20OGEa0TwuMSRbyQ==}
     engines: {node: '>= 16'}
 
   '@isaacs/balanced-match@4.0.1':
@@ -2572,6 +2581,11 @@ packages:
     peerDependencies:
       vue: '>=3.0.1'
 
+  lucide-vue-next@0.575.0:
+    resolution: {integrity: sha512-UHzA3cYMCgBLyGay5R9IQaidwV0NLocx7cIBnFt8vJ9Xhl6IM/oKD0fUhoCUuouFta15SX1rLXVoko9s3TzWMA==}
+    peerDependencies:
+      vue: '>=3.0.1'
+
   lz-string@1.5.0:
     resolution: {integrity: sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ==}
     hasBin: true
@@ -3517,13 +3531,6 @@ packages:
     peerDependencies:
       vue: ^3.0.0
 
-  vue-i18n@9.14.5:
-    resolution: {integrity: sha512-0jQ9Em3ymWngyiIkj0+c/k7WgaPO+TNzjKSNq9BvBQaKJECqn9cd9fL4tkDhB5G1QBskGl9YxxbDAhgbFtpe2g==}
-    engines: {node: '>= 16'}
-    deprecated: v9 and v10 no longer supported. please migrate to v11. about maintenance status, see https://vue-i18n.intlify.dev/guide/maintenance.html
-    peerDependencies:
-      vue: ^3.0.0
-
   vue-resize@2.0.0-alpha.1:
     resolution: {integrity: sha512-7+iqOueLU7uc9NrMfrzbG8hwMqchfVfSzpVlCMeJQe4pyibqyoifDNbKTZvwxZKDvGkB+PdFeKvnGZMoEb8esg==}
     peerDependencies:
@@ -3567,6 +3574,9 @@ packages:
 
   vxe-pc-ui@4.12.31:
     resolution: {integrity: sha512-Hf2FdGdYWcOZWh5wGhj67yeo+JQCRHtwv6FIadrzZAlnpU6u+CAKhZ6RMODdm7ghM5zhQKE49pYQncEON8/tYQ==}
+
+  vxe-pc-ui@4.12.36:
+    resolution: {integrity: sha512-XYTC8aQ26gXY8OZOaiB3zPCf4R29zqUqhMu8Ah7YtjPLrJSE+U5gel07vnNt7UQ78o13QBCehaf2TVlbH3cAPg==}
 
   vxe-table@4.17.48:
     resolution: {integrity: sha512-hd2j3FMA5vu3Qc3wyCavwMdsaT5uEq1GCux3eV5VKPkd/MoSdh9DIyMzmqDKh/0QnpVPsoQuIZPJi/govnw2Iw==}
@@ -4350,24 +4360,12 @@ snapshots:
       '@intlify/message-compiler': 11.2.8
       '@intlify/shared': 11.2.8
 
-  '@intlify/core-base@9.14.5':
-    dependencies:
-      '@intlify/message-compiler': 9.14.5
-      '@intlify/shared': 9.14.5
-
   '@intlify/message-compiler@11.2.8':
     dependencies:
       '@intlify/shared': 11.2.8
       source-map-js: 1.2.1
 
-  '@intlify/message-compiler@9.14.5':
-    dependencies:
-      '@intlify/shared': 9.14.5
-      source-map-js: 1.2.1
-
   '@intlify/shared@11.2.8': {}
-
-  '@intlify/shared@9.14.5': {}
 
   '@isaacs/balanced-match@4.0.1': {}
 
@@ -5692,6 +5690,10 @@ snapshots:
     dependencies:
       vue: 3.5.27(typescript@5.9.3)
 
+  lucide-vue-next@0.575.0(vue@3.5.27(typescript@5.9.3)):
+    dependencies:
+      vue: 3.5.27(typescript@5.9.3)
+
   lz-string@1.5.0: {}
 
   magic-string@0.30.21:
@@ -6584,13 +6586,6 @@ snapshots:
       '@vue/devtools-api': 6.6.4
       vue: 3.5.27(typescript@5.9.3)
 
-  vue-i18n@9.14.5(vue@3.5.27(typescript@5.9.3)):
-    dependencies:
-      '@intlify/core-base': 9.14.5
-      '@intlify/shared': 9.14.5
-      '@vue/devtools-api': 6.6.4
-      vue: 3.5.27(typescript@5.9.3)
-
   vue-resize@2.0.0-alpha.1(vue@3.5.27(typescript@5.9.3)):
     dependencies:
       vue: 3.5.27(typescript@5.9.3)
@@ -6630,9 +6625,15 @@ snapshots:
     transitivePeerDependencies:
       - vue
 
+  vxe-pc-ui@4.12.36(vue@3.5.27(typescript@5.9.3)):
+    dependencies:
+      '@vxe-ui/core': 4.3.1(vue@3.5.27(typescript@5.9.3))
+    transitivePeerDependencies:
+      - vue
+
   vxe-table@4.17.48(vue@3.5.27(typescript@5.9.3)):
     dependencies:
-      vxe-pc-ui: 4.12.31(vue@3.5.27(typescript@5.9.3))
+      vxe-pc-ui: 4.12.36(vue@3.5.27(typescript@5.9.3))
     transitivePeerDependencies:
       - vue
 

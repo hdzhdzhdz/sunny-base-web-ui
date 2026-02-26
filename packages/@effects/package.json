@@ -34,7 +34,10 @@
     "vue": "catalog:",
     "vue-i18n": "catalog:",
     "vue-router": "^4.6.4",
-    "vue3-slide-verify": "^1.1.8"
+    "vue3-slide-verify": "^1.1.8",
+    "vxe-pc-ui": "4.12.36",
+    "vxe-table": "4.17.48",
+    "xe-utils": "3.9.1"
   },
   "devDependencies": {
     "@sunny-base-web/constants": "workspace:*",

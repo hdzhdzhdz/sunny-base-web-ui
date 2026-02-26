@@ -34,7 +34,8 @@ export default defineConfig({
           text: 'Business Components',
           items: [
             { text: 'Introduction 介绍', link: '/business/' },
-            { text: 'BusinessSearch 业务搜索', link: '/business/business-search' }
+            { text: 'BusinessSearch 业务搜索', link: '/business/business-search' },
+            { text: 'SearchPlan 查询方案', link: '/business/search-plan' }
           ]
         }
       ],

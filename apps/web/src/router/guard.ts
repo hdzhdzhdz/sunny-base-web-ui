@@ -94,10 +94,23 @@ function setupAccessGuard(router: Router) {
     // effect 组件，也进不到路由守卫中
     let userInfo = userStore.userInfo;
     if (!userInfo || !userInfo.code) {
-      const res = await fetchUserInfo({ 'types': [0, 1, 4] });
-      const { user, resource } = res.result || {};
-      userInfo = { ...user, resources: resource, code: user.cWork, name: user.cUsername };
-      userStore.setUserInfo(userInfo);
+      try {
+        const res = await fetchUserInfo({ 'types': [0, 1, 4] });
+        const { user, resource } = res.result || {};
+        userInfo = { ...user, resources: resource, code: user.cWork, name: user.cUsername };
+        userStore.setUserInfo(userInfo);
+      } catch (error) {
+        // 如果获取用户信息失败（比如登录过期），跳转到登录页面
+        accessStore.setAccessToken(null);
+        authStore.$reset();
+        return {
+          path: preferences.app.loginPath,
+          query: to.fullPath === preferences.app.defaultHomePath
+            ? {}
+            : { redirect: encodeURIComponent(to.fullPath) },
+          replace: true,
+        };
+      }
     }
     const userRoles = userInfo.roles ?? [];
     const resources = userInfo.resources || [];

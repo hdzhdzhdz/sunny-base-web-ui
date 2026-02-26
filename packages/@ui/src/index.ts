@@ -41,5 +41,6 @@ export * from "./entry/select/types";
 export * from "./entry/search-input-tag/types";
 export * from "./entry/form/types";
 export * from "./composite/business-search";
+export * from "./composite/search-plan";
 export * from './data/resource-tree/types';
 export * from './data/resource-tree/use-sunny-resource-tree';

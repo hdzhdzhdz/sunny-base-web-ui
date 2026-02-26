@@ -1,0 +1,38 @@
+{
+  "formConfig": [
+    {
+      "fieldName": "name",
+      "label": "姓名",
+      "component": "Input",
+      "componentProps": {
+        "placeholder": "请输入姓名"
+      }
+    },
+    {
+      "fieldName": "age",
+      "label": "年龄",
+      "component": "InputNumber",
+      "componentProps": {
+        "min": 0,
+        "max": 100
+      }
+    },
+    {
+      "fieldName": "gender",
+      "label": "性别",
+      "component": "Select",
+      "componentProps": {
+        "options": [
+          {
+            "label": "男",
+            "value": "male"
+          },
+          {
+            "label": "女",
+            "value": "female"
+          }
+        ]
+      }
+    }
+  ]
+}
