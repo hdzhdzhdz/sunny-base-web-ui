@@ -14,13 +14,14 @@ import type { RequestClientOptions } from '../request/src';
 
 import {
   authenticateResponseInterceptor, // 认证相关的响应拦截器（处理 401 等）
+  businessCodeResponseInterceptor, // 业务码响应拦截器（处理 530 等）
   defaultResponseInterceptor,      // 默认响应拦截器（解包数据）
   errorMessageResponseInterceptor, // 错误消息响应拦截器（全局提示）
   RequestClient,                   // 核心请求类
 } from '../request/src';
 
 // 引入 Store 用于获取和设置 Token，以及执行登出操作
-import { useAccessStore, useAuthStore } from '@sunny-base-web/stores';
+import { useAccessStore, useAuthStore, useTabbarStore } from '@sunny-base-web/stores';
 
 // 引入全局配置，用于获取 API 前缀、语言设置等
 import { globalConfig } from '../config';
@@ -48,7 +49,7 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   /**
    * 重新认证逻辑
    * 当 Token 失效且无法刷新（或刷新失败）时触发
-   * 
+   *
    * 行为：
    * 1. 打印警告
    * 2. 清空 Access Token
@@ -60,6 +61,42 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
     const authStore = useAuthStore();
     accessStore.setAccessToken(null);
     await authStore.logout();
+  }
+
+  /**
+   * 业务错误码处理（如 530 登录超时）
+   * 当后端返回特定业务码时触发
+   *
+   * 行为：
+   * 1. 显示提示消息
+   * 2. 清空所有相关 Store 数据
+   * 3. 跳转到登录页（携带 redirect 参数）
+   */
+  async function doLogoutOnBusinessError(code: number, message: string) {
+    console.warn(`Business error code ${code}: ${message}`);
+
+    // 1. 显示提示消息
+    Message.warning(message || '登录已过期，请重新登录');
+
+    // 2. 清空所有相关 Store
+    const accessStore = useAccessStore();
+    const authStore = useAuthStore();
+    const tabbarStore = useTabbarStore();
+
+    // 清空 Token
+    accessStore.setAccessToken(null);
+    // 执行 logout 清理用户信息和权限
+    await authStore.logout();
+    // 清空标签页
+    tabbarStore.tabs = [];
+    tabbarStore.cachedTabs = new Set();
+
+    // 3. 跳转到登录页，携带 redirect 参数
+    const currentPath = window.location.pathname + window.location.search;
+    const loginPath = currentPath !== '/login'
+      ? `/login?redirect=${encodeURIComponent(currentPath)}`
+      : '/login';
+    window.location.href = loginPath;
   }
 
   /**
@@ -115,7 +152,16 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   // 响应拦截器配置
   // =========================================================================
 
-  // 1. 处理标准响应数据结构
+  // 1. 处理业务错误码（如 530 登录超时）
+  // 必须在 defaultResponseInterceptor 之前注册，以便先处理业务码
+  client.addResponseInterceptor(
+    businessCodeResponseInterceptor({
+      businessCodes: [530], // 登录超时的业务码
+      onBusinessError: doLogoutOnBusinessError,
+    }),
+  );
+
+  // 2. 处理标准响应数据结构
   // 假设后端返回格式为 { code: 200, result: {...}, message: '...' }
   // 该拦截器会解包 response.data，如果 code === successCode，则返回 dataField 指定的数据
   // 这里 dataField 传入函数 (res) => res，表示返回整个响应对象，以便前端可以访问 message 和 result
@@ -127,7 +173,7 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
     }),
   );
 
-  // 2. 处理 Token 过期和自动刷新
+  // 3. 处理 Token 过期和自动刷新
   // 监听 401 或特定的业务错误码
   // 如果 Token 过期：尝试调用 doRefreshToken -> 成功则重试原请求 -> 失败则调用 doReAuthenticate
   client.addResponseInterceptor(
@@ -140,7 +186,7 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
     }),
   );
 
-  // 3. 全局通用错误处理
+  // 4. 全局通用错误处理
   // 捕获上述拦截器抛出的错误或网络错误
   client.addResponseInterceptor(
     errorMessageResponseInterceptor((msg: string, error) => {

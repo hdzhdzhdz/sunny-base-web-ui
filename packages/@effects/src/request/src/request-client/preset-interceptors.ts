@@ -164,3 +164,47 @@ export const errorMessageResponseInterceptor = (
     },
   };
 };
+
+/**
+ * 业务码响应拦截器
+ * 处理后端返回的业务错误码（如 530 登录超时）
+ */
+export const businessCodeResponseInterceptor = ({
+  businessCodes = [530],
+  onBusinessError,
+}: {
+  /**
+   * 需要特殊处理的业务错误码列表
+   * @default [530]
+   */
+  businessCodes?: number[];
+  /**
+   * 业务错误码处理回调
+   */
+  onBusinessError: (code: number, message: string) => Promise<void> | void;
+}): ResponseInterceptorConfig => {
+  return {
+    fulfilled: (response) => {
+      const { data: responseData, status } = response;
+
+      // 只处理 HTTP 200 的响应
+      if (status === 200 && responseData) {
+        const code = responseData.code;
+        const message = responseData.message || '';
+
+        // 检查是否是需要特殊处理的业务码
+        if (businessCodes.includes(code)) {
+          onBusinessError(code, message);
+          // 抛出错误，阻止后续处理
+          throw Object.assign(new Error(message), {
+            response,
+            code,
+            isBusinessError: true,
+          });
+        }
+      }
+
+      return response;
+    },
+  };
+};

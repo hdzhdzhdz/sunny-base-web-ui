@@ -35,7 +35,7 @@
             </template>
             修改密码
           </a-doption>
-          <a-doption>
+          <a-doption @click="handleOpenSettingsModal">
             <template #icon>
               <SunnyIcon icon="lucide:settings" :size="16" />
             </template>
@@ -54,6 +54,8 @@
 
   <!-- 修改密码弹窗 -->
   <PasswordModal ref="passwordModalRef" />
+  <!-- 设置弹窗 -->
+  <SettingsModal ref="settingsModalRef" />
 </template>
 
 <script setup lang="ts">
@@ -61,11 +63,13 @@ import { computed, ref } from 'vue';
 import { useUserStore } from '@sunny-base-web/stores';
 import { SunnyIcon } from '@sunny-base-web/ui';
 import PasswordModal from './password-modal.vue';
+import SettingsModal from './settings-modal.vue';
 
 defineOptions({ name: 'UserAvatar' });
 
 const userStore = useUserStore();
 const passwordModalRef = ref<InstanceType<typeof PasswordModal> | null>(null);
+const settingsModalRef = ref<InstanceType<typeof SettingsModal> | null>(null);
 
 /**
  * 获取头像显示文字（取名字最后两个字符或首字母）
@@ -84,5 +88,12 @@ const avatarText = computed(() => {
  */
 const handleOpenPasswordModal = () => {
   passwordModalRef.value?.open();
+};
+
+/**
+ * 打开设置弹窗
+ */
+const handleOpenSettingsModal = () => {
+  settingsModalRef.value?.open();
 };
 </script>
