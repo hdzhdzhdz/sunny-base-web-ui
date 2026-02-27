@@ -27,5 +27,31 @@
     "title": "数据查询",
     "helpTip": "支持跨页多选，双击行快速确认",
     "selectedRecords": "已选记录"
+  },
+  "systemSetting": {
+    "securitySetting": "安全设置",
+    "interfaceSetting": "界面设置",
+    "agentSetting": "智能体配置",
+    "initialPassword": "初始密码",
+    "initialPasswordPlaceholder": "新用户默认密码",
+    "weakPassword": "弱密码校验",
+    "weakPasswordPlaceholder": "添加禁止密码",
+    "weakPasswordEmpty": "暂无弱密码配置",
+    "subMenuIcon": "子级菜单图标",
+    "subMenuIconDesc": "控制侧边栏子菜单是否显示图标",
+    "enableAgent": "启用智能体",
+    "enableAgentDesc": "启用后可在系统中使用 AI 智能体",
+    "agentUrl": "服务地址",
+    "agentUrlPlaceholder": "https://api.example.com",
+    "agentToken": "Token",
+    "agentTokenPlaceholder": "访问令牌",
+    "save": "保存设置",
+    "loadFailed": "加载设置失败",
+    "saveFailed": "保存失败",
+    "saveSuccess": "设置已保存",
+    "enterWeakPassword": "请输入弱密码",
+    "weakPasswordExists": "该弱密码已存在",
+    "enterAgentUrl": "请输入智能体地址",
+    "enterAgentToken": "请输入智能体 Token"
   }
 }

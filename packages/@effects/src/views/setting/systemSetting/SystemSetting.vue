@@ -2,8 +2,11 @@
 import { ref, reactive, computed } from 'vue'
 import { Message } from '@arco-design/web-vue'
 import { IconPlus, IconSafe, IconMenu, IconRobot, IconSave } from '@arco-design/web-vue/es/icon'
+import { useI18n } from '@sunny-base-web/locales'
 import { findAllSettings, saveAllSettings } from './api'
 import type { SystemSettingForm, WeakPasswordItem } from './types'
+
+const { t } = useI18n()
 
 // ----------------------------------------------------------------------
 // 状态定义
@@ -32,11 +35,11 @@ const showAgentConfig = computed(() => formData.showAgent)
 const handleAddWeakPassword = () => {
   const password = newWeakPassword.value.trim()
   if (!password) {
-    Message.warning('请输入弱密码')
+    Message.warning(t('common.systemSetting.enterWeakPassword'))
     return
   }
   if (weakPasswordList.value.some(item => item.password === password)) {
-    Message.warning('该弱密码已存在')
+    Message.warning(t('common.systemSetting.weakPasswordExists'))
     return
   }
   weakPasswordList.value.push({ id: Date.now().toString(), password })
@@ -75,7 +78,7 @@ const loadSettings = async () => {
               formData.weakPasswords = pwdConfig.list
             }
           } catch (e) {
-            console.error('解析弱密码配置失败', e)
+            console.error('Parse weak password config failed', e)
           }
           break
         case 'SubMenuIconShow':
@@ -83,7 +86,7 @@ const loadSettings = async () => {
             const menuConfig = JSON.parse(item.cValue || '{}')
             formData.showSubMenuIcon = menuConfig.show === menuConfig.activeValue || menuConfig.show === '1'
           } catch (e) {
-            console.error('解析菜单图标配置失败', e)
+            console.error('Parse menu icon config failed', e)
           }
           break
         case 'ShowAgent':
@@ -93,13 +96,13 @@ const loadSettings = async () => {
             formData.agentUrl = agentConfig.agentUrl || ''
             formData.agentToken = agentConfig.token || ''
           } catch (e) {
-            console.error('解析智能体配置失败', e)
+            console.error('Parse agent config failed', e)
           }
           break
       }
     })
   } catch (error) {
-    Message.error('加载设置失败')
+    Message.error(t('common.systemSetting.loadFailed'))
   } finally {
     loading.value = false
   }
@@ -108,11 +111,11 @@ const loadSettings = async () => {
 const handleSave = async () => {
   if (formData.showAgent) {
     if (!formData.agentUrl.trim()) {
-      Message.warning('请输入智能体地址')
+      Message.warning(t('common.systemSetting.enterAgentUrl'))
       return
     }
     if (!formData.agentToken.trim()) {
-      Message.warning('请输入智能体 Token')
+      Message.warning(t('common.systemSetting.enterAgentToken'))
       return
     }
   }
@@ -157,9 +160,9 @@ const handleSave = async () => {
     ]
 
     await saveAllSettings(settings)
-    Message.success('设置已保存')
+    Message.success(t('common.systemSetting.saveSuccess'))
   } catch (error) {
-    Message.error('保存失败')
+    Message.error(t('common.systemSetting.saveFailed'))
   } finally {
     saving.value = false
   }
@@ -176,7 +179,7 @@ loadSettings()
         <div class="flex-1 overflow-auto">
           <div class="space-y-4">
             <!-- 安全设置 -->
-            <a-card title="安全设置" :bordered="false">
+            <a-card :title="t('common.systemSetting.securitySetting')" :bordered="false">
               <template #extra>
                 <IconSafe class="text-[var(--color-text-4)]" />
               </template>
@@ -184,10 +187,12 @@ loadSettings()
               <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
                 <!-- 初始密码 -->
                 <div class="flex items-center gap-3">
-                  <label class="shrink-0 w-20 text-sm text-[var(--color-text-2)]">初始密码</label>
+                  <label class="shrink-0 w-20 text-sm text-[var(--color-text-2)]">
+                    {{ t('common.systemSetting.initialPassword') }}
+                  </label>
                   <a-input-password
                     v-model="formData.initialPassword"
-                    placeholder="新用户默认密码"
+                    :placeholder="t('common.systemSetting.initialPasswordPlaceholder')"
                     allow-clear
                     class="flex-1"
                   />
@@ -195,12 +200,14 @@ loadSettings()
 
                 <!-- 弱密码 -->
                 <div class="flex items-start gap-3">
-                  <label class="shrink-0 w-20 pt-1.5 text-sm text-[var(--color-text-2)]">弱密码校验</label>
+                  <label class="shrink-0 w-20 pt-1.5 text-sm text-[var(--color-text-2)]">
+                    {{ t('common.systemSetting.weakPassword') }}
+                  </label>
                   <div class="flex-1">
                     <div class="flex gap-2">
                       <a-input
                         v-model="newWeakPassword"
-                        placeholder="添加禁止密码"
+                        :placeholder="t('common.systemSetting.weakPasswordPlaceholder')"
                         allow-clear
                         size="small"
                         @press-enter="handleAddWeakPassword"
@@ -229,15 +236,19 @@ loadSettings()
             <!-- 界面设置 & 智能体配置 -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
               <!-- 智能体配置 -->
-              <a-card title="智能体配置" :bordered="false">
+              <a-card :title="t('common.systemSetting.agentSetting')" :bordered="false">
                 <template #extra>
                   <IconRobot class="text-[var(--color-text-4)]" />
                 </template>
 
                 <div class="flex items-center justify-between">
                   <div>
-                    <div class="text-sm text-[var(--color-text-1)]">启用智能体</div>
-                    <div class="text-xs text-[var(--color-text-4)] mt-0.5">启用后可在系统中使用 AI 智能体</div>
+                    <div class="text-sm text-[var(--color-text-1)]">
+                      {{ t('common.systemSetting.enableAgent') }}
+                    </div>
+                    <div class="text-xs text-[var(--color-text-4)] mt-0.5">
+                      {{ t('common.systemSetting.enableAgentDesc') }}
+                    </div>
                   </div>
                   <a-switch v-model="formData.showAgent" />
                 </div>
@@ -245,19 +256,23 @@ loadSettings()
                 <transition name="expand">
                   <div v-if="showAgentConfig" class="mt-4 pt-4 border-t border-[var(--color-border-1)] space-y-3">
                     <div class="flex items-center gap-3">
-                      <label class="shrink-0 w-20 text-sm text-[var(--color-text-2)]">服务地址</label>
+                      <label class="shrink-0 w-20 text-sm text-[var(--color-text-2)]">
+                        {{ t('common.systemSetting.agentUrl') }}
+                      </label>
                       <a-input
                         v-model="formData.agentUrl"
-                        placeholder="https://api.example.com"
+                        :placeholder="t('common.systemSetting.agentUrlPlaceholder')"
                         allow-clear
                         class="flex-1"
                       />
                     </div>
                     <div class="flex items-center gap-3">
-                      <label class="shrink-0 w-20 text-sm text-[var(--color-text-2)]">Token</label>
+                      <label class="shrink-0 w-20 text-sm text-[var(--color-text-2)]">
+                        {{ t('common.systemSetting.agentToken') }}
+                      </label>
                       <a-input-password
                         v-model="formData.agentToken"
-                        placeholder="访问令牌"
+                        :placeholder="t('common.systemSetting.agentTokenPlaceholder')"
                         allow-clear
                         class="flex-1"
                       />
@@ -267,15 +282,19 @@ loadSettings()
               </a-card>
 
               <!-- 界面设置 -->
-              <a-card title="界面设置" :bordered="false">
+              <a-card :title="t('common.systemSetting.interfaceSetting')" :bordered="false">
                 <template #extra>
                   <IconMenu class="text-[var(--color-text-4)]" />
                 </template>
 
                 <div class="flex items-center justify-between">
                   <div>
-                    <div class="text-sm text-[var(--color-text-1)]">子级菜单图标</div>
-                    <div class="text-xs text-[var(--color-text-4)] mt-0.5">控制侧边栏子菜单是否显示图标</div>
+                    <div class="text-sm text-[var(--color-text-1)]">
+                      {{ t('common.systemSetting.subMenuIcon') }}
+                    </div>
+                    <div class="text-xs text-[var(--color-text-4)] mt-0.5">
+                      {{ t('common.systemSetting.subMenuIconDesc') }}
+                    </div>
                   </div>
                   <a-switch v-model="formData.showSubMenuIcon" />
                 </div>
@@ -289,7 +308,7 @@ loadSettings()
           <div class="flex justify-end">
             <a-button type="primary" :loading="saving" @click="handleSave">
               <template #icon><IconSave /></template>
-              保存设置
+              {{ t('common.systemSetting.save') }}
             </a-button>
           </div>
         </div>
@@ -298,21 +317,3 @@ loadSettings()
   </div>
 </template>
 
-<style scoped>
-.expand-enter-active,
-.expand-leave-active {
-  transition: all 0.2s ease;
-  overflow: hidden;
-}
-
-.expand-enter-from,
-.expand-leave-to {
-  opacity: 0;
-  max-height: 0;
-}
-
-.expand-enter-to,
-.expand-leave-from {
-  max-height: 200px;
-}
-</style>

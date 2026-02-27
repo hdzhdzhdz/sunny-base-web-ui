@@ -27,5 +27,31 @@
     "title": "Data Query",
     "helpTip": "Supports cross-page selection, double-click row to confirm",
     "selectedRecords": "Selected Records"
+  },
+  "systemSetting": {
+    "securitySetting": "Security Settings",
+    "interfaceSetting": "Interface Settings",
+    "agentSetting": "Agent Settings",
+    "initialPassword": "Initial Password",
+    "initialPasswordPlaceholder": "Default password for new users",
+    "weakPassword": "Weak Password Check",
+    "weakPasswordPlaceholder": "Add forbidden password",
+    "weakPasswordEmpty": "No weak passwords configured",
+    "subMenuIcon": "Submenu Icons",
+    "subMenuIconDesc": "Control whether to show icons for submenus",
+    "enableAgent": "Enable Agent",
+    "enableAgentDesc": "Enable AI agent features in the system",
+    "agentUrl": "Service URL",
+    "agentUrlPlaceholder": "https://api.example.com",
+    "agentToken": "Token",
+    "agentTokenPlaceholder": "Access token",
+    "save": "Save Settings",
+    "loadFailed": "Failed to load settings",
+    "saveFailed": "Failed to save",
+    "saveSuccess": "Settings saved",
+    "enterWeakPassword": "Please enter a weak password",
+    "weakPasswordExists": "This weak password already exists",
+    "enterAgentUrl": "Please enter agent URL",
+    "enterAgentToken": "Please enter agent token"
   }
 }
