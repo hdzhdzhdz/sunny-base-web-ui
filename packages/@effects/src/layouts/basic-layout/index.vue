@@ -14,7 +14,7 @@
       :width="config.sidebar?.width ?? 220"
       v-model:collapsed="collapsed"
       @collapse="onCollapse"
-      class="h-full bg-[var(--color-bg-2)] border-r border-[var(--color-border)] flex flex-col [&>.arco-layout-sider-children]:flex [&>.arco-layout-sider-children]:flex-col [&>.arco-layout-sider-children]:overflow-hidden [&>.arco-layout-sider-children]:flex-1"
+      class="h-full bg-[var(--color-bg-2)] border-r pb-0 border-[var(--color-border)] flex flex-col [&>.arco-layout-sider-children]:flex [&>.arco-layout-sider-children]:flex-col [&>.arco-layout-sider-children]:overflow-hidden [&>.arco-layout-sider-children]:flex-1"
     >
       <!-- 侧边栏 Logo 区域 -->
       <div 
