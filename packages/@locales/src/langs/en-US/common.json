@@ -53,5 +53,10 @@
     "weakPasswordExists": "This weak password already exists",
     "enterAgentUrl": "Please enter agent URL",
     "enterAgentToken": "Please enter agent token"
+  },
+  "modal": {
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "helpTip": "Double-click title bar to maximize/restore, press ESC to close"
   }
 }

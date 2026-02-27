@@ -11,6 +11,7 @@
     :closable="false"
     v-bind="$attrs"
     class="k-modal-custom"
+    :style="{ '--modal-bg-image': `url(${bgImage})` }"
   >
     <slot></slot>
 
@@ -20,7 +21,7 @@
           <slot name="title">{{ title }}</slot>
         </div>
         <div class="flex items-center gap-3 ml-3">
-          <a-tooltip v-if="helpMessage" :content="helpMessage">
+          <a-tooltip v-if="displayHelpMessage" :content="displayHelpMessage">
             <div class="cursor-pointer text-[var(--color-text-2)] flex items-center justify-center transition-colors duration-200 text-base hover:text-[var(--color-text-1)]">
               <icon-question-circle />
             </div>
@@ -48,7 +49,7 @@
           v-bind="(attrs.cancelButtonProps as any)"
           @click="handleCancel"
         >
-          {{ attrs.cancelText || "取消" }}
+          {{ attrs.cancelText || t('common.modal.cancel') }}
         </a-button>
 
         <slot name="centerFooter"></slot>
@@ -60,7 +61,7 @@
           @click="handleOk"
 
         >
-          {{ attrs.okText || "确定" }}
+          {{ attrs.okText || t('common.modal.confirm') }}
         </a-button>
 
         <slot name="appendFooter"></slot>
@@ -82,7 +83,11 @@ import {
   IconFullscreenExit,
   IconQuestionCircle,
 } from "@arco-design/web-vue/es/icon";
+import { useI18n } from "@sunny-base-web/locales";
 import type { ModalProps } from "./types";
+import bgImage from './bg.png';
+
+const { t } = useI18n();
 
 const props = withDefaults(defineProps<ModalProps>(), {
   modelValue: false,
@@ -92,7 +97,7 @@ const props = withDefaults(defineProps<ModalProps>(), {
   closeOnEsc: true,
   fullscreen: true,
   closeOnClickModal: true,
-  helpMessage: "双击标题栏可最大化/还原，按 ESC 可关闭弹窗",
+  helpMessage: "",
 });
 
 const emit = defineEmits<{
@@ -108,6 +113,10 @@ const loading = ref(false);
 const visible = computed({
   get: () => props.modelValue,
   set: (val) => emit("update:modelValue", val),
+});
+
+const displayHelpMessage = computed(() => {
+  return props.helpMessage || t('common.modal.helpTip');
 });
 
 const isMaximized = ref(false);
@@ -161,3 +170,12 @@ const handleClose = async () => {
   };
 </script>
 
+<style>
+.k-modal-custom .arco-modal-body {
+  background-color: transparent;
+  background-image: var(--modal-bg-image);
+  background-repeat: no-repeat !important;
+  background-size: 80% !important;
+  background-position: bottom !important;
+}
+</style>

@@ -53,5 +53,10 @@
     "weakPasswordExists": "该弱密码已存在",
     "enterAgentUrl": "请输入智能体地址",
     "enterAgentToken": "请输入智能体 Token"
+  },
+  "modal": {
+    "cancel": "取消",
+    "confirm": "确定",
+    "helpTip": "双击标题栏可最大化/还原，按 ESC 可关闭弹窗"
   }
 }
