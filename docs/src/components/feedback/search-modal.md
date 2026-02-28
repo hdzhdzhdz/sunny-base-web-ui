@@ -2,14 +2,16 @@
 
 基于配置驱动的通用查询弹窗组件，集成了搜索表单、分页表格、多选管理、已选列表展示等功能。
 
-## 功能特性
+## 何时使用
 
-- **配置驱动**：通过 JSON 配置即可生成搜索表单 (`formSchema`) 和表格列 (`tableColumns`)。
-- **自动布局**：表单支持响应式布局，表格支持高度自适应和全屏模式。
-- **状态管理**：内置分页逻辑、跨页多选状态保持、已选记录管理（侧边栏展示）。
-- **交互优化**：支持双击行快速选择（单选模式）、右侧已选列表快速移除。
+- 需要在弹窗中进行数据查询和选择的场景
+- 需要支持复杂搜索条件的数据选择
+- 需要支持跨页多选的场景
+- 需要快速选择（双击确认）的场景
 
-## 基础用法
+## 代码演示
+
+### 基础用法
 
 通过 `formSchema` 配置搜索表单，`tableColumns` 配置表格列，`searchApi` 提供数据查询接口。
 
@@ -17,7 +19,7 @@
 demo-preview=./demos/search-modal/BasicUsage.vue
 :::
 
-## 设置默认值
+### 设置默认值
 
 在 `formSchema` 中通过 `defaultValue` 设置表单字段默认值。弹窗打开时，会先设置默认值再触发查询。
 
@@ -25,25 +27,35 @@ demo-preview=./demos/search-modal/BasicUsage.vue
 demo-preview=./demos/search-modal/DefaultValue.vue
 :::
 
-## 表单校验
+### 自定义表单字段 Slot
+
+当内置的表单组件无法满足需求时，可以使用 Slot 自定义表单字段渲染。只需在 `formSchema` 中将 `component` 设置为 `'Slot'`，然后通过同名 slot 自定义渲染。
+
+:::preview
+demo-preview=./demos/search-modal/CustomSlot.vue
+:::
+
+## 交互说明
+
+### 表单校验
 
 组件内置了表单校验机制，在以下场景会自动进行表单校验：
 
-### 校验触发时机
-
 | 场景 | 校验行为 |
 | --- | --- |
-| 弹窗打开时 | 先设置默认值 → 校验表单 → 校验通过才执行查询 |
-| 点击查询按钮 | **重置分页为第一页** → 校验表单 → 校验通过才执行查询 |
-| 点击重置按钮 | 重置表单 → **重置分页为第一页** → 校验表单 → 校验通过才执行查询 |
+| 弹窗打开时 | 设置默认值 → 校验表单 → 校验通过才执行查询 |
+| 点击查询按钮 | 重置分页为第一页 → 校验表单 → 校验通过才执行查询 |
+| 点击重置按钮 | 重新初始化默认值 → 重置分页为第一页 → 校验表单 → 校验通过才执行查询 |
 
-::: tip 分页重置说明
-点击「查询」或「重置」按钮时，分页会自动重置为第一页，避免因翻页导致查询不到数据的问题。
+::: tip 校验流程
+```
+用户操作 → 触发表单校验 → 校验结果
+                          ├── 通过 → 执行查询（loading = true）
+                          └── 失败 → 显示错误信息，不执行查询，不触发 loading
+```
 :::
 
-### 校验规则配置
-
-通过 `formSchema` 中的 `rules` 字段配置校验规则：
+**校验规则配置：**
 
 ```typescript
 const formSchema = [
@@ -69,7 +81,7 @@ const formSchema = [
 ];
 ```
 
-### 校验规则类型
+**支持的校验规则：**
 
 | 规则名 | 说明 |
 | --- | --- |
@@ -77,81 +89,47 @@ const formSchema = [
 | `selectRequired` | 下拉框必填校验 |
 | Zod Schema | 支持使用 Zod 进行复杂校验 |
 
-### 校验流程说明
+### 分页重置
 
-```
-用户操作 → 触发表单校验 → 校验结果
-                          ├── 通过 → 执行查询（loading = true）
-                          └── 失败 → 显示错误信息，不执行查询
-```
+点击「查询」或「重置」按钮时，分页会**自动重置为第一页**，避免因停留在非第一页导致查询不到数据的问题。
 
-**重要提示**：校验失败时不会触发 `loading` 状态，用户可以继续修改表单后重新提交。
+### 双击选择
 
-## 自定义表单字段 Slot
+- **单选模式**：双击表格行直接选中并关闭弹窗
+- **多选模式**：双击表格行选中该行并关闭弹窗
 
-当内置的表单组件无法满足需求时，可以使用 Slot 自定义表单字段渲染。只需在 `formSchema` 中将 `component` 设置为 `'Slot'`，然后通过同名 slot 自定义渲染。
+### 跨页多选
 
-:::preview
-demo-preview=./demos/search-modal/CustomSlot.vue
-:::
-
-### Slot 使用说明
-
-1. 在 `formSchema` 中设置 `component: 'Slot'`
-2. 使用 `#fieldName` 作为 slot 名称
-3. Slot Props 提供字段值和更新方法
+组件支持跨页多选功能，翻页时会保留之前选中的数据。右侧已选列表实时展示所有已选数据，支持单个移除或清空全部。
 
 ## API
 
 ### Props
 
-| 参数名 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
-| modelValue | 默认选中的数据 (v-model) | `Record<string, any>[]` | `[]` |
-| visible | 弹窗显示状态 (v-model:visible) | `boolean` | `false` |
-| title | 弹窗标题 | `string` | `'数据查询'` |
-| width | 弹窗宽度 | `string \| number` | `'800px'` |
-| contentHeight | 内容区域高度 (表格区域) | `string \| number` | `300` |
-| formSchema | 搜索表单配置 (SunnyForm) | `FormSchema[]` | **必传** |
-| tableColumns | 表格列配置 (VxeGrid) | `VxeGridPropTypes.Columns` | **必传** |
-| searchApi | 数据查询接口 | `(params: any) => Promise<any>` | **必传** |
-| multiple | 是否多选 | `boolean` | `true` |
-| rowKey | 数据主键字段名 | `string` | `'id'` |
-| fieldNames | 字段映射配置 | `FieldNames` | `{ label: 'label', value: 'value', desc: 'desc' }` |
-| commonConfig | 表单通用配置 (传递给 SunnyForm) | `Record<string, any>` | `{ colProps: { xs: 24, ... } }` |
-| helpMessage | 帮助提示文本 (显示在标题栏) | `string` | `'支持跨页多选...'` |
+| 参数名 | 说明 | 类型 | 默认值 | 必填 |
+| --- | --- | --- | --- | --- |
+| modelValue | 默认选中的数据，支持 v-model 双向绑定 | `Record<string, any>[]` | `[]` | 否 |
+| visible | 弹窗显示状态，支持 v-model:visible | `boolean` | `false` | 是 |
+| title | 弹窗标题 | `string` | `'数据查询'` | 否 |
+| width | 弹窗宽度 | `string \| number` | `'800px'` | 否 |
+| contentHeight | 内容区域高度（表格区域） | `string \| number` | `300` | 否 |
+| formSchema | 搜索表单配置，参考 SunnyForm | `FormSchema[]` | - | **是** |
+| tableColumns | 表格列配置，参考 VxeGrid | `VxeGridPropTypes.Columns` | - | **是** |
+| searchApi | 数据查询接口 | `(params: SearchParams) => Promise<SearchResult>` | - | **是** |
+| multiple | 是否多选 | `boolean` | `true` | 否 |
+| rowKey | 数据主键字段名 | `string` | `'id'` | 否 |
+| fieldNames | 字段映射配置，用于已选列表展示 | `FieldNames` | 见下方 | 否 |
+| commonConfig | 表单通用配置，透传给 SunnyForm | `Record<string, any>` | 见下方 | 否 |
+| helpMessage | 帮助提示文本，显示在标题栏 | `string` | `'支持跨页多选...'` | 否 |
 
-### searchApi 说明
-
-`searchApi` 接收一个参数对象，包含分页参数和表单字段：
-
+**fieldNames 默认值：**
 ```typescript
-interface SearchParams {
-  pageNo: number;   // 当前页码
-  pageSize: number; // 每页条数
-  [key: string]: any; // 表单字段
-}
+{ label: 'label', value: 'value', desc: 'desc' }
 ```
 
-返回的 Promise 结果对象需包含列表和总数：
-
+**commonConfig 默认值：**
 ```typescript
-interface SearchResult {
-  list: any[];      // 或 records
-  total: number;    // 或 totalCount
-}
-```
-
-### FieldNames 配置
-
-用于指定回显时显示的文本字段和值字段，特别是在右侧“已选列表”中展示时使用。
-
-```typescript
-{
-  label: 'name',  // 主要显示的文本字段
-  value: 'id',    // 值字段
-  desc: 'code'    // 第二行辅助描述文本字段 (可选)
-}
+{ colProps: { xs: 24, sm: 12, md: 6, lg: 6, xl: 6, xxl: 6 } }
 ```
 
 ### Events
@@ -167,9 +145,76 @@ interface SearchResult {
 
 | 插槽名 | 说明 | 参数 |
 | --- | --- | --- |
-| `[fieldName]` | 自定义表单字段 (需在 formSchema 中设置 `component: 'Slot'`) | SlotProps |
-| submit-before | 查询按钮前插槽 | - |
-| reset-before | 重置按钮前插槽 | - |
+| `[fieldName]` | 自定义表单字段，需在 formSchema 中设置 `component: 'Slot'` | [SlotProps](#slotprops) |
+
+### searchApi
+
+`searchApi` 是数据查询的核心接口，组件会自动传入分页参数和表单字段。
+
+**请求参数：**
+
+```typescript
+interface SearchParams {
+  pageNo: number;      // 当前页码，从 1 开始
+  pageSize: number;    // 每页条数，默认 200
+  [key: string]: any;  // 表单字段（包含默认值和用户输入）
+}
+```
+
+**返回格式：**
+
+```typescript
+interface SearchResult {
+  list: any[];      // 数据列表（也支持 records 字段）
+  total: number;    // 总数（也支持 totalCount 字段）
+}
+```
+
+**示例：**
+
+```typescript
+const searchApi = async (params) => {
+  const { pageNo, pageSize, keyword, status } = params;
+
+  // 调用后端接口
+  const res = await requestClient.get('/api/data/list', {
+    params: { pageNo, pageSize, keyword, status }
+  });
+
+  // 返回标准格式
+  return {
+    list: res.data.records,
+    total: res.data.total
+  };
+};
+```
+
+### FieldNames
+
+用于指定已选列表中数据的显示字段：
+
+```typescript
+interface FieldNames {
+  label: string;  // 主要显示的文本字段（第一行）
+  value: string;  // 值字段（第二行，通常显示编码或ID）
+  desc?: string;  // 辅助描述字段（可选，第三行）
+}
+```
+
+**示例：**
+
+```typescript
+// 数据结构
+const data = { id: 1, name: '张三', code: 'ZS001', dept: '技术部' };
+
+// 配置
+<FieldNames label="name" value="code" desc="dept" />
+
+// 已选列表显示：
+// 张三
+// ZS001
+// 技术部
+```
 
 ### SlotProps
 
@@ -177,12 +222,12 @@ interface SearchResult {
 
 ```typescript
 interface SlotProps {
-  value: any;              // 当前字段值
-  setValue: (val: any) => void;  // 更新字段值的方法
-  model: Record<string, any>;    // 整个表单的值对象
-  disabled: boolean;       // 是否禁用
-  errorMessage?: string;   // 验证错误信息
-  componentProps: Record<string, any>;  // 组件属性
+  value: any;                            // 当前字段值
+  setValue: (val: any) => void;          // 更新字段值的方法
+  model: Record<string, any>;            // 整个表单的值对象
+  disabled: boolean;                     // 是否禁用
+  errorMessage?: string;                 // 验证错误信息
+  componentProps: Record<string, any>;   // 组件属性（来自 formSchema.componentProps）
 }
 ```
 
@@ -190,25 +235,81 @@ interface SlotProps {
 
 ```vue
 <template>
-  <SunnySearchModal :form-schema="formSchema" ...>
-    <!-- 自定义字段 Slot -->
-    <template #customField="{ value, setValue, disabled }">
+  <SunnySearchModal :form-schema="formSchema" v-model="selected" v-model:visible="visible">
+    <!-- 自定义数字输入字段 -->
+    <template #amount="{ value, setValue, disabled }">
       <a-input-number
         :value="value"
         :disabled="disabled"
+        :min="0"
+        :max="9999"
+        :precision="2"
         @change="setValue"
       />
     </template>
   </SunnySearchModal>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const formSchema = [
   {
-    fieldName: 'customField',
-    label: '自定义字段',
-    component: 'Slot',  // 必须设置为 'Slot'
+    fieldName: 'amount',       // 对应 slot 名称 #amount
+    label: '金额',
+    component: 'Slot',         // 必须设置为 'Slot'
+    componentProps: {
+      min: 0,
+      max: 9999,
+      precision: 2
+    }
   }
 ];
+</script>
+```
+
+## 常见问题
+
+### 1. 为什么打开弹窗时没有触发查询？
+
+可能原因：
+- 表单校验未通过（如必填字段为空）
+- `searchApi` 未正确配置
+
+### 2. 如何实现单选模式？
+
+设置 `multiple` 为 `false`：
+
+```vue
+<SunnySearchModal :multiple="false" ... />
+```
+
+### 3. 如何自定义表格的高度？
+
+通过 `contentHeight` 属性设置：
+
+```vue
+<SunnySearchModal :content-height="400" ... />
+<!-- 或 -->
+<SunnySearchModal content-height="50vh" ... />
+```
+
+### 4. 如何监听用户选择的数据？
+
+使用 `confirm` 事件或 `v-model`：
+
+```vue
+<template>
+  <SunnySearchModal
+    v-model="selected"
+    @confirm="handleConfirm"
+    ...
+  />
+</template>
+
+<script setup>
+const selected = ref([]);
+
+const handleConfirm = (values) => {
+  console.log('用户选择了：', values);
+};
 </script>
 ```
