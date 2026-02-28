@@ -16,6 +16,9 @@ import { preferences } from './preferences';
 import VxeUITable from 'vxe-table'
 import 'vxe-table/es/style.css'
 
+import VxeUIBase from 'vxe-pc-ui'
+import 'vxe-pc-ui/es/style.css'
+
 async function bootstrap(namespace: string) {
 	const app = createApp(App);
 	// 配置 pinia-tore
@@ -54,6 +57,7 @@ async function bootstrap(namespace: string) {
 
 	app.use(ArcoVue);
 	app.use(VxeUITable)
+	app.use(VxeUIBase)
 	app.mount('#app');
 }
 

@@ -11,6 +11,7 @@ export default defineConfig({
       cleanVueFileName: true,
       rollupTypes: true,
     }),
+    "@vue/babel-plugin-jsx"
   ],
   build: {
     lib: {
