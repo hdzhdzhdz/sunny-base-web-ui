@@ -5,6 +5,8 @@ import { SunnyResourceTree } from '@sunny-base-web/ui';
 import { findMenuAll, getMenu, delMenu, moveMenuOrder, findMenuTreeFuzzy } from '../../api/resource'
 
 // @ts-ignore
+import { find } from 'lodash-es';
+// @ts-ignore
 import ModuleEditor from './module/ModuleEditor.vue'
 // @ts-ignore
 import UrlEditor from './module/UrlEditor.vue'
@@ -28,9 +30,65 @@ const expandedKeys = ref<Array<string | number>>([]);
 const moduleEditor = ref();
 const urlEditor = ref();
 const menuPathEditor = ref();
+const emit = defineEmits(['currentChange']);
 
 const treeData = ref<ResourceNode[]>(JSON.parse(import.meta.env.VITE_APP_SYSTEM));
 
+/**
+ * 判断节点是否为根节点
+ * @param node 要判断的节点
+ * @returns 是否为根节点(id为0)
+ */
+const isRootNode = (node: ResourceNode) => find(JSON.parse(import.meta.env.VITE_APP_SYSTEM), ['id', node.id]);
+
+/**
+ * 右键菜单操作配置
+ */
+const contextMenuActions = [
+  {
+    key: 'create',
+    label: '新增下级资源',
+    handler: (node: ResourceNode) => createResource(node),
+  },
+  {
+    key: 'edit',
+    label: '编辑资源',
+    visible: (node: ResourceNode) => !isRootNode(node),
+    disabled: (node: ResourceNode) => node.cModname === 'EVERYONE',
+    handler: (node: ResourceNode) => editResource(node),
+  },
+  {
+    key: 'delete',
+    label: '删除资源',
+    visible: (node: ResourceNode) => !isRootNode(node),
+    disabled: (node: ResourceNode) => node.cModname === 'EVERYONE',
+    handler: (node: ResourceNode) => deleteNodeWithConfirm(node),
+  },
+  {
+    key: 'ModUrl',
+    label: '模块URL绑定',
+    visible: (node: ResourceNode) => !isRootNode(node),
+    handler: (node: ResourceNode) => urlEditor.value.openEditor(node.id)
+  },
+  {
+    key: 'PathChange',
+    label: '菜单路径变更',
+    visible: (node: ResourceNode) => !isRootNode(node),
+    disabled: (node: ResourceNode) => node.cModname === 'EVERYONE',
+    handler: (node: ResourceNode) => menuPathEditor?.value.openEditor(node),
+  },
+  {
+    key: 'refresh',
+    label: '刷新列表',
+    handler: (node: ResourceNode) => refreshNodeChildren(node),
+  },
+];
+
+/**
+ * 异步获取节点的子节点数据
+ * @param node 当前需要加载子节点的资源节点
+ * @returns 返回子节点数组,每个节点包含资源信息和状态标志
+ */
 const fetchChildren = async (node: ResourceNode) => {
   const { id, cSystem } = node
   const payload = {
@@ -52,53 +110,58 @@ const fetchChildren = async (node: ResourceNode) => {
   return children;
 };
 
-const isRootNode = (node: ResourceNode) => node.id === 0;
-
-const replaceNodeChildren = (
-  nodes: ResourceNode[],
-  targetId: number,
-  children: ResourceNode[]
-): boolean => {
-  for (let i = 0; i < nodes.length; i += 1) {
-    const node = nodes[i];
-    if (node.id === targetId) {
-      node.children = children;
-      return true;
-    }
-
-    if (node.children?.length) {
-      const replaced = replaceNodeChildren(node.children, targetId, children);
-      if (replaced) {
-        return true;
-      }
-    }
-  }
-
-  return false;
+/**
+ * 异步加载更多子节点数据
+ * @param node 需要加载子节点的节点
+ */
+const loadMore = async (node: ResourceNode) => {
+  const children = await fetchChildren(node);
+  node.children = children;
+  treeData.value = [...treeData.value];
 };
 
-const appendChildToNode = (
-  nodes: ResourceNode[],
-  targetId: number,
-  child: ResourceNode
-): boolean => {
-  for (const node of nodes) {
-    if (node.id === targetId) {
-      node.children = [...(node.children ?? []), child];
-      return true;
+/**
+ * 打开资源创建对话框
+ * @param node 父节点,新创建的资源将作为该节点的子节点
+ */
+const createResource = (node: ResourceNode) => {
+  moduleEditor.value?.openEditor({
+    type: 0,
+    data: {
+      nParkeyid: Number(node.id),
+      cSystem: node.cSystem,
+      cShow: '0'
     }
-
-    if (node.children?.length) {
-      const appended = appendChildToNode(node.children, targetId, child);
-      if (appended) {
-        return true;
-      }
-    }
-  }
-
-  return false;
+  });
 };
 
+/**
+ * 打开资源编辑对话框,并从远程加载资源信息
+ * @param node 要编辑的节点
+ */
+const editResource = (node: ResourceNode) => {
+  const payload = { authResMenu: { id: node.id }}
+  getMenu(payload).then((res) => {
+    if (res.success) {
+      moduleEditor.value?.openEditor({
+        type: 1,
+        data: res.result
+      });
+    } else {
+      Message.error({
+        closable: true,
+        content: `error:${res.message}`
+      })
+    }
+  })
+}
+
+/**
+ * 递归删除指定ID的节点
+ * @param nodes 节点数组
+ * @param targetId 目标节点ID
+ * @returns 是否成功删除
+ */
 const removeNodeById = (nodes: ResourceNode[], targetId: number): boolean => {
   const index = nodes.findIndex((item) => item.id === targetId);
   if (index > -1) {
@@ -118,6 +181,10 @@ const removeNodeById = (nodes: ResourceNode[], targetId: number): boolean => {
   return false;
 };
 
+/**
+ * 移除与指定节点相关的状态(选中状态和展开状态)
+ * @param targetId 目标节点ID,同时移除该节点ID开头的所有相关状态
+ */
 const removeRelatedStateById = (targetId: number) => {
   const shouldKeep = (id: string | number) => {
     const idText = String(id);
@@ -128,41 +195,10 @@ const removeRelatedStateById = (targetId: number) => {
   expandedKeys.value = expandedKeys.value.filter(shouldKeep);
 };
 
-const loadMore = async (node: ResourceNode) => {
-  const children = await fetchChildren(node);
-  node.children = children;
-  treeData.value = [...treeData.value];
-};
-
-const createResource = (node: ResourceNode) => {
-  moduleEditor.value?.openEditor({
-    type: 0,
-    data: {
-      nParkeyid: Number(node.id),
-      cSystem: node.cSystem,
-      cShow: '0'
-    }
-  });
-};
-
-const editResource = (node: ResourceNode) => {
-  // 远程获取menu信息
-  const payload = { authResMenu: { id: node.id }}
-  getMenu(payload).then((res) => {
-    if (res.success) {
-      moduleEditor.value?.openEditor({
-        type: 1,
-        data: res.result
-      });
-    } else {
-      Message.error({
-        closable: true,
-        content: `error:${res.message}`
-      })
-    }
-  })
-}
-
+/**
+ * 带确认提示的节点删除操作
+ * @param node 要删除的节点
+ */
 const deleteNodeWithConfirm = (node: ResourceNode) => {
   const targetId = Number(node.id);
 
@@ -198,6 +234,10 @@ const deleteNodeWithConfirm = (node: ResourceNode) => {
   });
 };
 
+/**
+ * 刷新指定节点的子节点数据
+ * @param node 要刷新的节点
+ */
 const refreshNodeChildren = async (node: ResourceNode) => {
   const targetId = Number(node.id);
   const children = await fetchChildren(node);
@@ -213,54 +253,53 @@ const refreshNodeChildren = async (node: ResourceNode) => {
   if (!expandedKeys.value.includes(targetId)) {
     expandedKeys.value = [...expandedKeys.value, targetId];
   }
-
-  // Message.success(`已刷新节点 ${node.cModname} 下的子节点`);
 };
 
-const contextMenuActions = [
-  {
-    key: 'create',
-    label: '新增下级资源',
-    handler: (node: ResourceNode) => createResource(node),
-  },
-  {
-    key: 'edit',
-    label: '编辑资源',
-    visible: (node: ResourceNode) => !isRootNode(node),
-    disabled: (node: ResourceNode) => node.cModname === 'EVERYONE',
-    handler: (node: ResourceNode) => editResource(node),
-  },
-  {
-    key: 'delete',
-    label: '删除资源',
-    visible: (node: ResourceNode) => !isRootNode(node),
-    disabled: (node: ResourceNode) => node.cModname === 'EVERYONE',
-    handler: (node: ResourceNode) => deleteNodeWithConfirm(node),
-  },
-  {
-    key: 'ModUrl',
-    label: '模块URL绑定',
-    visible: (node: ResourceNode) => !isRootNode(node),
-    handler: (node: ResourceNode) => urlEditor.value.openEditor(node.id)
-  },
-  {
-    key: 'PathChange',
-    label: '菜单路径变更',
-    visible: (node: ResourceNode) => !isRootNode(node),
-    handler: (node: ResourceNode) => menuPathEditor?.value.openEditor(node),
-  },
-  {
-    key: 'refresh',
-    label: '刷新列表',
-    handler: (node: ResourceNode) => refreshNodeChildren(node),
-  },
-];
+/**
+ * 递归替换指定节点的子节点
+ * @param nodes 节点数组
+ * @param targetId 目标节点ID
+ * @param children 新的子节点数组
+ * @returns 是否成功替换
+ */
+const replaceNodeChildren = (
+  nodes: ResourceNode[],
+  targetId: number,
+  children: ResourceNode[]
+): boolean => {
+  for (let i = 0; i < nodes.length; i += 1) {
+    const node = nodes[i];
+    if (node.id === targetId) {
+      node.children = children;
+      return true;
+    }
 
-// 树节点移动排序
+    if (node.children?.length) {
+      const replaced = replaceNodeChildren(node.children, targetId, children);
+      if (replaced) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+};
+
+/**
+ * 判断是否允许拖放节点
+ * @param options 拖放配置选项
+ * @returns 是否允许拖放,目前只允许同层级移动
+ */
 const allowDrop = (options: { dropNode: ResourceNode; dropPosition: -1 | 0 | 1;}) => {
-  return options.dropPosition === -1 // 只允许同层级移动
+  return options.dropPosition === -1
 }
 
+/**
+ * 处理节点拖放事件,更新树结构
+ * @param dragNode 被拖动的节点
+ * @param dropNode 目标节点
+ * @param dropPosition 放置位置:-1(前),0(内),1(后)
+ */
 const onDrop = ({ dragNode, dropNode, dropPosition }: { dragNode: ResourceNode; dropNode: ResourceNode; dropPosition: number }) => {
   const data = treeData.value;
   const loop = (data: ResourceNode[], id: number, callback: (item: ResourceNode, index: number, arr: ResourceNode[]) => void) => {
@@ -292,6 +331,11 @@ const onDrop = ({ dragNode, dropNode, dropPosition }: { dragNode: ResourceNode; 
   }
 }
 
+/**
+ * 拖放结束后的处理,同步节点排序到后端
+ * @param ev 拖放事件对象
+ * @param node 被拖动的节点
+ */
 const onDropEnd = (ev: DragEvent, node: any) => {
   const findSiblings = (data: ResourceNode[], targetId: number, callback: (siblings: ResourceNode[]) => void): boolean => {
     for (const item of data) {
@@ -309,8 +353,6 @@ const onDropEnd = (ev: DragEvent, node: any) => {
 
   findSiblings(treeData.value, node.id, (siblings) => {
     const sortedIds = siblings.map(item => item.id);
-    // console.log('同一层级的所有节点数据:', siblings);
-    // console.log('排序后的节点ID数组:', sortedIds);
     
     moveMenuOrder({ 'idList': sortedIds }).then(res => {
       Message.success({
@@ -321,6 +363,10 @@ const onDropEnd = (ev: DragEvent, node: any) => {
   });
 }
 
+/**
+ * 更新指定父节点下的子树数据
+ * @param parentId 父节点ID
+ */
 const updateTree = (parentId: number) => {
   const node = findNodeById(treeData.value, parentId);
   if (node) {
@@ -328,6 +374,10 @@ const updateTree = (parentId: number) => {
   }
 }
 
+/**
+ * 刷新多个指定节点的子节点数据
+ * @param nodeIds 要刷新的节点ID数组
+ */
 const refreshNodes = ({ nodeIds }: { nodeIds: (string | number)[] }) => {
   nodeIds.forEach(nodeId => {
     const node = findNodeById(treeData.value, Number(nodeId));
@@ -337,6 +387,12 @@ const refreshNodes = ({ nodeIds }: { nodeIds: (string | number)[] }) => {
   });
 }
 
+/**
+ * 递归查找指定ID的节点
+ * @param data 节点数组
+ * @param targetId 目标节点ID
+ * @returns 找到的节点对象,未找到返回null
+ */
 const findNodeById = (data: ResourceNode[], targetId: number): ResourceNode | null => {
   for (const item of data) {
     if (item.id === targetId) {
@@ -348,6 +404,10 @@ const findNodeById = (data: ResourceNode[], targetId: number): ResourceNode | nu
     }
   }
   return null;
+}
+
+const onSelect = (selectedKeys: number[], node: ResourceNode) => {
+  emit('currentChange', selectedKeys, node)
 }
 </script>
 
@@ -368,8 +428,10 @@ const findNodeById = (data: ResourceNode[], targetId: number): ResourceNode | nu
       :enable-root-context-menu="true"
       draggable
       :allow-drop="allowDrop"
+      size="small"
       @drop="onDrop"
       @drag-end="onDropEnd"
+      @select="onSelect"
     />
 
     <ModuleEditor ref="moduleEditor" @save="updateTree" />
