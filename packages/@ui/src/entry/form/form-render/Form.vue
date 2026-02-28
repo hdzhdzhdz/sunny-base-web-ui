@@ -25,6 +25,10 @@ const props = defineProps<{
   form?: any;
 }>();
 
+const emit = defineEmits<{
+  (e: 'submit', values: Record<string, any>): void;
+}>();
+
 // 获取传入的 slots，用于透传给 FormActions 和 FormField
 const slots = useSlots();
 
@@ -140,6 +144,27 @@ const { handleSubmit, resetForm, setValues, values, validate, errors, meta } = p
 });
 
 /**
+ * 暴露表单方法给父组件
+ */
+defineExpose({
+  /**
+   * 验证表单
+   * @returns Promise<{ valid: boolean; errors: Record<string, string> }>
+   */
+  validate: async () => {
+    const result = await validate();
+    return {
+      valid: result.valid,
+      errors: errors.value,
+    };
+  },
+  /**
+   * 获取 handleSubmit 方法（用于外部触发表单提交）
+   */
+  handleSubmit,
+});
+
+/**
  * 组件挂载时的逻辑
  * 
  * 核心任务：将表单内部的方法 (validate, submit 等) 挂载到 formApi 上，
@@ -163,12 +188,12 @@ onMounted(() => {
  * 表单提交处理函数
  */
 const onSubmit = handleSubmit((values: Record<string, any>) => {
+  // 发射 submit 事件，传递表单值给父组件
+  emit('submit', values);
+
   // 优先执行配置中的 handleSubmit 回调
   if (renderPropsState.handleSubmit) {
     renderPropsState.handleSubmit(values);
-  } else {
-    // 默认行为：打印日志 (开发环境调试用)
-    console.log('Form submitted:', values);
   }
 });
 

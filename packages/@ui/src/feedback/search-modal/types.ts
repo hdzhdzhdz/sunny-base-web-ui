@@ -86,3 +86,36 @@ export interface SunnySearchModalEmits {
    */
   (e: 'cancel'): void;
 }
+
+/**
+ * 搜索弹窗表单插槽
+ */
+export interface SunnySearchModalSlots {
+  /**
+   * 表单前置内容插槽
+   */
+  'form-prefix'?: () => any;
+  /**
+   * 表单后置内容插槽
+   */
+  'form-suffix'?: () => any;
+  /**
+   * 表单项前置插槽 (显示在查询按钮之前)
+   */
+  'submit-before'?: () => any;
+  /**
+   * 表单项后置插槽 (显示在重置按钮之后)
+   */
+  'reset-before'?: () => any;
+  /**
+   * 自定义表单项插槽
+   * 用法: #fieldName (需在 formSchema 中设置 component: 'Slot')
+   * @example
+   * ```vue
+   * <template #customField="{ value, setValue }">
+   *   <a-input :value="value" @input="setValue($event.target.value)" />
+   * </template>
+   * ```
+   */
+  [key: string]: (props: { schema: any; model: any; value: any; setValue: (val: any) => void }) => any;
+}

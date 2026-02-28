@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, nextTick, computed } from 'vue';
+import { ref, watch, nextTick, computed, useSlots } from 'vue';
 import { useSunnySearchModal } from './use-sunny-search-modal';
 import type { SunnySearchModalProps, SunnySearchModalEmits } from './types';
 import { $t } from '@sunny-base-web/locales';
@@ -18,6 +18,9 @@ defineOptions({
   name: 'SunnySearchModal',
   inheritAttrs: false,
 });
+
+// 获取外部传入的 slots，用于透传给 SunnyForm（支持字段级别的 slot）
+const externalSlots = useSlots();
 
 const props = withDefaults(defineProps<SunnySearchModalProps>(), {
   title: '数据查询', // Should be i18n in real app
@@ -40,6 +43,7 @@ const localVisible = computed({
 });
 
 const gridRef = ref();
+const formRef = ref<InstanceType<typeof SunnyForm> | null>(null);
 
 const {
   loading,
@@ -49,6 +53,7 @@ const {
   tableData,
   actualFieldNames,
   actualRowKey,
+  initDefaultValues,
   handleSearch,
   handlePageChange,
   handlePageSizeChange,
@@ -62,8 +67,45 @@ const {
 } = useSunnySearchModal(props, emit);
 
 const handleReset = async () => {
+  // 重置时重置分页为第一页，并重新初始化默认值
+  pagination.value.current = 1;
+  initDefaultValues();
   await nextTick();
-  handleSearch();
+  await validateAndSearch();
+};
+
+/**
+ * 校验表单并执行查询
+ * @returns {Promise<boolean>} 是否查询成功
+ */
+const validateAndSearch = async (): Promise<boolean> => {
+  if (!formRef.value) {
+    handleSearch();
+    return true;
+  }
+
+  try {
+    const { valid } = await formRef.value.validate();
+    if (valid) {
+      handleSearch();
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error('Form validation failed:', error);
+    return false;
+  }
+};
+
+/**
+ * 处理表单提交（点击查询按钮）
+ * 先重置分页为第一页，再校验并查询
+ * @param values - 表单提交的值
+ */
+const handleFormSubmit = async (values: Record<string, any>) => {
+  pagination.value.current = 1;
+  // 直接使用表单提交的值进行查询
+  handleSearch(values);
 };
 
 // --- Grid Config ---
@@ -145,7 +187,11 @@ watch(
   () => props.visible,
   (val) => {
     if (val) {
-      handleSearch();
+      // 先初始化默认值，再校验并触发查询
+      initDefaultValues();
+      nextTick(() => {
+        validateAndSearch();
+      });
     }
   }
 );
@@ -168,17 +214,19 @@ watch(
       <!-- Search Form -->
       <div class="mb-4 border-b border-gray-100 pb-4">
         <SunnyForm
-          v-model:model="searchParams"
+          ref="formRef"
+          v-model:values="searchParams"
           :schema="props.formSchema"
           :common-config="props.commonConfig"
           show-default-actions
           :reset-button-options="{ show: true }"
-          @submit="handleSearch"
+          @submit="handleFormSubmit"
           @reset="handleReset"
           layout="vertical"
         >
-          <template #submit-before>
-            <!-- Add any extra buttons if needed -->
+          <!-- 透传字段级别的 slots（如 form-item-fieldName） -->
+          <template v-for="(_, name) in externalSlots" :key="name" #[name]="slotProps">
+            <slot :name="name" v-bind="slotProps"></slot>
           </template>
         </SunnyForm>
       </div>

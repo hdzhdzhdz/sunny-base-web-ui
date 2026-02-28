@@ -4,6 +4,21 @@ import { cloneDeep, get } from 'lodash-es';
 // @ts-ignore
 import { Message } from '@arco-design/web-vue';
 
+/**
+ * 从 formSchema 中提取默认值
+ */
+function extractDefaultValues(formSchema: any[] | undefined): Record<string, any> {
+  if (!formSchema || !Array.isArray(formSchema)) return {};
+
+  const defaults: Record<string, any> = {};
+  formSchema.forEach((item) => {
+    if (item.fieldName && item.defaultValue !== undefined) {
+      defaults[item.fieldName] = item.defaultValue;
+    }
+  });
+  return defaults;
+}
+
 export function useSunnySearchModal(
   props: SunnySearchModalProps,
   emit: SunnySearchModalEmits
@@ -11,7 +26,7 @@ export function useSunnySearchModal(
   // --- State ---
   const loading = ref(false);
   const searchParams = ref<Record<string, any>>({});
-  
+
   // 选中的行 (Manual management)
   const selectedRows = ref<Record<string, any>[]>([]);
 
@@ -38,6 +53,14 @@ export function useSunnySearchModal(
   // --- Helpers ---
   const getRowKey = (row: any) => get(row, actualRowKey.value);
 
+  /**
+   * 初始化表单默认值
+   */
+  const initDefaultValues = () => {
+    const defaults = extractDefaultValues(props.formSchema);
+    searchParams.value = { ...defaults };
+  };
+
   // Sync modelValue to selectedRows when visible becomes true or modelValue changes
   watch(
     () => [props.visible, props.modelValue],
@@ -59,9 +82,15 @@ export function useSunnySearchModal(
 
   /**
    * Execute Search
+   * @param params - 可选的查询参数，如果不传则使用 searchParams
    */
-  const handleSearch = async () => {
+  const handleSearch = async (params?: Record<string, any>) => {
     if (!props.searchApi) return;
+
+    // 如果传入了参数，同步更新 searchParams
+    if (params) {
+      searchParams.value = { ...params };
+    }
 
     loading.value = true;
     try {
@@ -211,15 +240,16 @@ export function useSunnySearchModal(
     tableData,
     actualFieldNames,
     actualRowKey,
+    initDefaultValues,
     handleSearch,
     handlePageChange,
     handlePageSizeChange,
     handleCheckboxChange,
-  handleCheckboxAll,
-  handleRadioChange,
-  removeRow,
-  handleOk,
-  handleCancel,
-  toggleRowSelection
-};
+    handleCheckboxAll,
+    handleRadioChange,
+    removeRow,
+    handleOk,
+    handleCancel,
+    toggleRowSelection
+  };
 }
