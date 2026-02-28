@@ -36,7 +36,6 @@ export type FormActions = FormContext<GenericObject>;
 
 export type FormSchemaRuleType =
   | 'required'
-  | 'selectRequired'
   | null
   | ZodTypeAny;
 

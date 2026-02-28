@@ -148,9 +148,7 @@ const shouldRequired = computed(() => {
   // 如果规则是字符串简写 (如 'required')
   if (isString(currentRules.value)) {
     // 处理组合规则 (如 'required|phone')
-    return currentRules.value.split('|').some((rule) => 
-      ['required', 'selectRequired'].includes(rule)
-    );
+    return currentRules.value.split('|').includes('required');
   }
 
   // 处理 Zod Schema 的情况

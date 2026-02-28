@@ -70,7 +70,7 @@ const formSchema = [
     fieldName: 'type',
     label: '类型',
     component: 'Select',
-    rules: 'selectRequired', // 下拉框必填校验
+    rules: 'required', // 必填校验
     componentProps: {
       options: [
         { label: '类型A', value: 'A' },
@@ -85,8 +85,7 @@ const formSchema = [
 
 | 规则名 | 说明 |
 | --- | --- |
-| `required` | 必填校验（适用于 Input） |
-| `selectRequired` | 下拉框必填校验 |
+| `required` | 必填校验（适用于所有组件类型，包括 Input、Select 等） |
 | Zod Schema | 支持使用 Zod 进行复杂校验 |
 
 ### 分页重置
