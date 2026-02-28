@@ -1,4 +1,4 @@
-import { ref, computed, watch, nextTick } from 'vue';
+import { ref, computed, watch } from 'vue';
 import type { SunnySearchModalProps, SunnySearchModalEmits } from './types';
 import { cloneDeep, get } from 'lodash-es';
 // @ts-ignore
@@ -103,12 +103,8 @@ export function useSunnySearchModal(
       let result;
       if (typeof props.searchApi === 'function') {
         result = await props.searchApi(payload);
-      } else if (typeof props.searchApi === 'string') {
-        // TODO: Implement generic request here using your project's request utility
-        // For now assume global fetch or axios is available, or throw error if not integrated
-        console.warn('String searchApi requires a global request handler implementation.');
-        // result = await request.post(props.searchApi, payload);
       }
+      // Note: searchApi as string is not supported, please use function instead
 
       if (result) {
         // Assuming result structure: { list: [], total: 0 } or standard page wrapper
@@ -117,10 +113,6 @@ export function useSunnySearchModal(
         
         tableData.value = list;
         pagination.value.total = total;
-        
-        // Restore selection state for current page
-        await nextTick();
-        restoreSelection();
       }
     } catch (error) {
       console.error('Search failed:', error);
@@ -146,18 +138,6 @@ export function useSunnySearchModal(
     pagination.value.pageSize = pageSize;
     pagination.value.current = 1; // Reset to first page
     handleSearch();
-  };
-
-  /**
-   * Sync Grid Checkbox State with selectedRows
-   */
-  const restoreSelection = () => {
-    // This function needs access to grid instance, 
-    // but since we are in hook, we might return a handler or use a ref passed in.
-    // For simplicity in this architecture, we will let the Component handle the grid ref interaction
-    // OR we expose a method that the component calls.
-    // Actually, vxe-grid 'checkRowKeys' prop might be easier if supported, 
-    // but for 'reserve' and complex logic, manual 'setCheckboxRow' is often better.
   };
 
   /**
