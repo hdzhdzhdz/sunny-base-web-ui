@@ -1,21 +1,35 @@
 <script setup lang="ts">
-type ClassType = string | string[] | Record<string, boolean>;
-
 import { computed, ref } from 'vue';
 
 import { cn } from '@sunny-base-web/utils';
 
 import { ScrollArea, ScrollBar } from './components';
 
+defineOptions({
+  name: 'SunnyScrollbar',
+});
+
+/** 类名类型 */
+type ClassType = string | string[] | Record<string, boolean>;
+
 interface Props {
+  /** 自定义类名 */
   class?: ClassType;
+  /** 是否显示水平滚动条 @default false */
   horizontal?: boolean;
+  /** 滚动条自定义类名 */
   scrollBarClass?: ClassType;
+  /** 是否显示阴影效果 @default false */
   shadow?: boolean;
+  /** 阴影是否带边框 @default false */
   shadowBorder?: boolean;
+  /** 是否显示底部阴影 @default true */
   shadowBottom?: boolean;
+  /** 是否显示左侧阴影 @default false */
   shadowLeft?: boolean;
+  /** 是否显示右侧阴影 @default false */
   shadowRight?: boolean;
+  /** 是否显示顶部阴影 @default true */
   shadowTop?: boolean;
 }
 
@@ -51,7 +65,6 @@ const showShadowTop = computed(() => props.shadow && props.shadowTop);
 const showShadowBottom = computed(() => props.shadow && props.shadowBottom);
 const showShadowLeft = computed(() => props.shadow && props.shadowLeft);
 const showShadowRight = computed(() => props.shadow && props.shadowRight);
-
 
 const computedShadowClasses = computed(() => {
   return {
@@ -151,7 +164,7 @@ function handleScroll(event: Event) {
 .scrollbar-top-shadow {
   background: linear-gradient(
     to bottom,
-    hsl(var(--scroll-shadow, var(--background))),
+    var(--color-bg-2),
     transparent
   );
 }
@@ -159,7 +172,7 @@ function handleScroll(event: Event) {
 .scrollbar-bottom-shadow {
   background: linear-gradient(
     to top,
-    hsl(var(--scroll-shadow, var(--background))),
+    var(--color-bg-2),
     transparent
   );
 }

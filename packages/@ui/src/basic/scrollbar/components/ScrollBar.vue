@@ -7,8 +7,20 @@ import { cn } from '@sunny-base-web/utils';
 
 import { ScrollAreaScrollbar, ScrollAreaThumb } from 'reka-ui';
 
+defineOptions({
+  name: 'SunnyScrollBar',
+});
+
+/** 类名类型 */
+type ClassType = string | string[] | Record<string, boolean>;
+
 const props = withDefaults(
-  defineProps<ScrollAreaScrollbarProps & { class?: any }>(),
+  defineProps<
+    ScrollAreaScrollbarProps & {
+      /** 自定义类名 */
+      class?: ClassType;
+    }
+  >(),
   {
     orientation: 'vertical',
   },

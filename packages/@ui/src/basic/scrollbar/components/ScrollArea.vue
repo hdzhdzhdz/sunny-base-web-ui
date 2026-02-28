@@ -1,31 +1,39 @@
 <script setup lang="ts">
-import type { ScrollAreaRootProps } from 'reka-ui';
+import type { ScrollAreaRootProps } from 'reka-ui'
 
-import { computed } from 'vue';
+import { computed } from 'vue'
 
-import { cn } from '@sunny-base-web/utils';
+import { cn } from '@sunny-base-web/utils'
 
-import { ScrollAreaCorner, ScrollAreaRoot, ScrollAreaViewport } from 'reka-ui';
+import { ScrollAreaCorner, ScrollAreaRoot, ScrollAreaViewport } from 'reka-ui'
 
-import ScrollBar from './ScrollBar.vue';
+import { ScrollBar } from './index'
+
+defineOptions({
+  name: 'SunnyScrollArea',
+});
+
+/** 类名类型 */
+type ClassType = string | string[] | Record<string, boolean>;
 
 const props = withDefaults(
   defineProps<
     ScrollAreaRootProps & {
-      class?: any;
+      /** 自定义类名 */
+      class?: ClassType;
+      /** 滚动事件回调 */
       onScroll?: (event: Event) => void;
-      viewportProps?: { onScroll: (event: Event) => void };
     }
   >(),
   {
     onScroll: () => {},
   },
-);
+)
 
 const delegatedProps = computed(() => {
-  const { class: _, ...delegated } = props;
-  return delegated;
-});
+  const { class: _, onScroll: __, ...delegated } = props
+  return delegated
+})
 </script>
 
 <template>
