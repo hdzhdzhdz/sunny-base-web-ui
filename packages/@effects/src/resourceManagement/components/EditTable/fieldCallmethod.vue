@@ -1,14 +1,11 @@
 <template>
-  <Modal
-    ref="registerModal"
-    v-model="visible"
+  <a-modal
+    v-model:visible="visible"
     :title="title"
     :width="800"
-    :top="100"
-    :footer="false"
     :mask-closable="false"
   >
-    <a-form ref="formRef" :model="form" :rules="rules" layout="vertical">
+    <a-form ref="formRef" :model="form" :rules="getRules()" layout="vertical">
       <a-form-item label="导入/导出" field="callmethodType">
         <a-select v-model="form.callmethodType" placeholder="请选择">
           <a-option
@@ -80,24 +77,14 @@
         <a-button type="primary" :loading="loading" @click="handleOk">确 定</a-button>
       </div>
     </template>
-  </Modal>
+  </a-modal>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, nextTick } from 'vue'
-import { Modal as ArcoModal, Form as AForm, FormItem as AFormItem, Input as AInput, Select as ASelect, Option as AOption, Switch as ASwitch, Button as AButton, Message } from '@arco-design/web-vue'
-import { useSunnyForm } from '@sunny-base-web/ui'
-import selectOpts from '../../utils/select-options'
-import _ from 'lodash'
-
-const Modal = ArcoModal
-const Form = AForm
-const FormItem = AFormItem
-const Input = AInput
-const Select = ASelect
-const Option = AOption
-const Switch = ASwitch
-const Button = AButton
+import { ref, reactive, nextTick, watch } from 'vue'
+import { Message } from '@arco-design/web-vue'
+import selectOpts from '../../../utils/select-options'
+import { startsWith } from 'lodash-es'
 
 interface FData {
   rowIndex: number | null
@@ -148,19 +135,31 @@ const formRef = ref()
 const registerModal = ref()
 
 const emit = defineEmits<{
-  newFieldCallmethodEdit: [data: { rowIndex: number; json: string; field: string | null }]
+  fieldCallmethodEdit: [data: { rowIndex: number; json: string; field: string | null }]
 }>()
 
-const rules = {
-  callmethodType: [{ required: true, message: '请选择', trigger: 'change' }],
-  customType: [{ required: true, message: '请选择', trigger: 'change' }],
-  import1: [{ required: true, message: '请输入', trigger: 'change' }],
-  import2: [{ required: true, message: '请输入', trigger: 'blur' }],
-  import3: [{ required: true, message: '请输入', trigger: 'blur' }],
-  fileName: [{ required: true, message: '请输入', trigger: 'blur' }],
-  handleClassPrefix: [{ required: true, message: '请输入', trigger: 'blur' }],
-  exportType: [{ required: true, message: '请选择', trigger: 'change' }],
-  customTableHeadFunc: [{ required: true, message: '请选择', trigger: 'change' }]
+const getRules = () => {
+  const baseRules: any = {
+    callmethodType: [{ required: true, message: '请选择', trigger: 'change' }]
+  }
+
+  if (form.callmethodType === '导入') {
+    baseRules.import1 = [{ required: true, message: '请输入', trigger: 'blur' }]
+    baseRules.import2 = [{ required: true, message: '请输入', trigger: 'blur' }]
+    baseRules.import3 = [{ required: true, message: '请输入', trigger: 'blur' }]
+  }
+
+  if (form.callmethodType === '导出') {
+    baseRules.fileName = [{ required: true, message: '请输入', trigger: 'blur' }]
+    baseRules.handleClassPrefix = [{ required: true, message: '请输入', trigger: 'blur' }]
+    baseRules.exportType = [{ required: true, message: '请选择', trigger: 'change' }]
+    
+    if (form.bCustomTableHead === true) {
+      baseRules.customTableHeadFunc = [{ required: true, message: '请选择', trigger: 'change' }]
+    }
+  }
+
+  return baseRules
 }
 
 const resetForm = () => {
@@ -192,7 +191,7 @@ const openInit = ({ row, rowIndex, column }: { row: any; rowIndex: number; colum
       const beforeStr = fieldValue.split('@')[0]
       
       if (beforeStr.indexOf(',') !== -1) {
-        if (_.startsWith(fieldValue, '{')) {
+        if (startsWith(fieldValue, '{')) {
           Object.assign(form, JSON.parse(fieldValue))
         } else {
           form.callmethodType = '导出'
@@ -213,7 +212,7 @@ const openInit = ({ row, rowIndex, column }: { row: any; rowIndex: number; colum
         form.import2 = fieldValue.split(',')[0].split('@')[1]
         form.import3 = fieldValue.split(',')[1]
       }
-    } else if (_.startsWith(fieldValue, '{')) {
+    } else if (startsWith(fieldValue, '{')) {
       Object.assign(form, JSON.parse(fieldValue))
     } else {
       form.callmethodType = '导出'
@@ -249,13 +248,18 @@ const openInit = ({ row, rowIndex, column }: { row: any; rowIndex: number; colum
 }
 
 const handleOk = async () => {
+  if (!formRef.value) {
+    Message.error('表单初始化失败')
+    return
+  }
+
   try {
-    await formRef.value?.validate()
-    
+    const result = await formRef.value.validate()
+    if (result) return false
+
     loading.value = true
-    
     let json = ''
-    
+
     if (form.callmethodType === '导入') {
       json = `${form.import1}@${form.import2},${form.import3}`
     } else {
@@ -272,15 +276,19 @@ const handleOk = async () => {
       json = JSON.stringify(exportData)
     }
 
-    emit('newFieldCallmethodEdit', {
+    emit('fieldCallmethodEdit', {
       rowIndex: fData.rowIndex!,
       json: json,
       field: fData.field
     })
-    
+
     visible.value = false
-  } catch (error) {
-    Message.error('必填项未填写完整')
+  } catch (error: any) {
+    if (error?.errors) {
+      Message.error('必填项未填写完整')
+    } else {
+      Message.error('表单校验失败')
+    }
   } finally {
     loading.value = false
   }
@@ -289,6 +297,12 @@ const handleOk = async () => {
 const handleCancel = () => {
   visible.value = false
 }
+
+watch([() => form.callmethodType, () => form.bCustomTableHead], () => {
+  nextTick(() => {
+    formRef.value?.clearValidate()
+  })
+})
 
 defineExpose({
   openInit
