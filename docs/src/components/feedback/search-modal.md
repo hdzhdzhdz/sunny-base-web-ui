@@ -13,9 +13,9 @@
 
 通过 `formSchema` 配置搜索表单，`tableColumns` 配置表格列，`searchApi` 提供数据查询接口。
 
-<PreviewWrapper>
-  <BasicUsage />
-</PreviewWrapper>
+:::preview
+demo-preview=./demos/search-modal/BasicUsage.vue
+:::
 
 ## API
 
@@ -78,7 +78,3 @@ interface SearchResult {
 | update:modelValue | 选中数据变化 | `(values: any[]) => void` |
 | confirm | 点击确认按钮或双击行触发 | `(values: any[]) => void` |
 | cancel | 点击取消按钮或关闭弹窗触发 | `() => void` |
-
-<script setup>
-import BasicUsage from './demos/search-modal/BasicUsage.vue';
-</script>
