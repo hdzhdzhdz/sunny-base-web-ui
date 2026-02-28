@@ -28,7 +28,7 @@
       <cMetaEditor ref="cMetaEditorRef" @metaEmit="metaEditAction" />
       <!-- <chooseTable ref="chooseTableRef" @chooseTableEmit="chooseTableAction" /> -->
       <!-- <fieldShowRules ref="fieldShowRulesRef" @fieldDynamicEmit="fieldDynamicAction" /> -->
-      <!-- <newFieldCallmethod ref="newFieldCallmethodRef" @newFieldCallmethodEdit="newFieldCallmethodAction" /> -->
+      <fieldCallmethod ref="fieldCallmethodRef" @fieldCallmethodEdit="fieldCallmethodAction" />
     </template>
   </vxe-grid>
 </template>
@@ -43,7 +43,7 @@ import cols from './columns'
 import ButtonTemp from '../../../utils/DefaultButtonResource.js'
 import cMetaEditor from './cMetaEditor.vue'
 // import fieldShowRules from './fieldShowRules.vue'
-// import newFieldCallmethod from './newFieldCallmethod.vue'
+import fieldCallmethod from './fieldCallmethod.vue'
 
 const props = defineProps({
   moduleInfo: {
@@ -83,7 +83,7 @@ const editTable = ref(null)
 const cMetaEditorRef = ref()
 const chooseTableRef = ref()
 const fieldShowRulesRef = ref()
-const newFieldCallmethodRef = ref()
+const fieldCallmethodRef = ref()
 
 const columns = computed(() => cols.call({
   type: props.type,
@@ -348,14 +348,10 @@ const fieldDynamicAction = ({ rowIndex, json, field }: any) => {
 
 // 导入/导出配置弹窗
 const setCallmethodsJson = ({ row, rowIndex, column }: any) => {
-  newFieldCallmethodRef.value.openInit({ row, rowIndex, column, tableData: tableData.value })
+  fieldCallmethodRef.value.openInit({ row, rowIndex, column, tableData: tableData.value })
 }
 
 const fieldCallmethodAction = ({ rowIndex, json, field }: any) => {
-  tableData.value[rowIndex][field] = json
-}
-
-const newFieldCallmethodAction = ({ rowIndex, json, field }: any) => {
   tableData.value[rowIndex][field] = json
 }
 </script>
