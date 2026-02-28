@@ -14,6 +14,7 @@ import { patterns } from "@sunny-base-web/utils";
 
 
 export * from "./navigation/nprogress";
+export * from "./basic/icon/types";
 
 export { 
   Modal, 

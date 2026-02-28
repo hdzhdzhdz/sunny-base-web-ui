@@ -11,16 +11,25 @@ import {
   isString,
 } from '@sunny-base-web/utils';
 
-const props = defineProps<{
-  // 没有是否显示默认图标
-  fallback?: boolean;
-  icon?: Component | Function | string;
-}>();
+import type { SunnyIconProps } from './types';
 
+defineOptions({
+  name: 'SunnyIcon',
+});
+
+const props = defineProps<SunnyIconProps>();
+
+/**
+ * 判断是否为远程图标（通过 URL 加载）
+ * 使用 isHttpUrl 确保只允许 http/https 协议，防止 XSS 风险
+ */
 const isRemoteIcon = computed(() => {
   return isString(props.icon) && isHttpUrl(props.icon);
 });
 
+/**
+ * 判断是否为组件类型（Vue 组件或函数）
+ */
 const isComponent = computed(() => {
   const { icon } = props;
   return !isString(icon) && (isObject(icon) || isFunction(icon));
