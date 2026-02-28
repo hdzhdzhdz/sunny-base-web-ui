@@ -2,9 +2,6 @@
   <vxe-grid
     ref="editTable"
     v-bind="gridOptions"
-    :height="height"
-    :data="tableData"
-    :columns="columns"
   >
     <template #toolbar>
       <div class="flex justify-between">
@@ -12,7 +9,11 @@
           <a-dropdown-button size="mini" @click="handleClick" @select="handleCommand">
             新增
             <template #content>
-              <a-doption v-for="item in defaultButtons" :key="item.key" :value="item.key">{{ item.value }}</a-doption>
+              <a-doption
+                v-for="item in defaultButtons as any[]"
+                :value="item.value"
+                :label="item.label"
+              />
             </template>
           </a-dropdown-button>
         </div>
@@ -32,7 +33,7 @@
   </vxe-grid>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, watch, getCurrentInstance } from 'vue'
 import { Message } from '@arco-design/web-vue'
 import { useRouter } from 'vue-router'
@@ -75,6 +76,7 @@ const emit = defineEmits(['saveResourceCallback'])
 
 // const router = useRouter()
 
+const tableData = ref([] as any[])
 const loading = ref(false)
 const editTable = ref(null)
 
@@ -83,14 +85,29 @@ const chooseTableRef = ref()
 const fieldShowRulesRef = ref()
 const newFieldCallmethodRef = ref()
 
+const columns = computed(() => cols.call({
+  type: props.type,
+  area: props.area,
+  datePickSetMeta,
+  setDynamicJson,
+  setDynamicI18n,
+  pickTable,
+  deleteRow,
+  insertRow,
+  metaEdit,
+  setCallmethodsJson
+}))
+
 const gridOptions = ref({
+  columns: columns,
+  height: props.height,
+  data: tableData,
   border: 'inner',
   keepSource: true,
-  showOverflow: true,
+  showOverflow: true, // 保持原始值的状态，被某些功能所依赖，比如编辑状态、还原数据等
   showHeaderOverflow: true,
   loading: false,
   size: 'small',
-  minHeight: 500,
   autoResize: true,
   editConfig: {
     trigger: 'click',
@@ -137,32 +154,16 @@ const gridOptions = ref({
       { required: true }
     ]
   }
-})
-
-const columns = computed(() => cols.call({
-  type: props.type,
-  area: props.area,
-  datePickSetMeta,
-  setDynamicJson,
-  setDynamicI18n,
-  pickTable,
-  deleteRow,
-  insertRow,
-  metaEdit,
-  setCallmethodsJson
-}))
-
-const tableData = ref([])
+} as any)
 
 const defaultButtons = computed(() => {
   const btns = props.type === 'Button' ? reduce(ButtonTemp, function(result, value, key) {
     result.push({
-      key: key,
-      value: value.cName
+      value: key,
+      label: value.cName
     })
     return result
-  }, []) : []
-  console.log(btns)
+  }, [] as any[]) : []
   return btns
 })
 
@@ -177,7 +178,7 @@ const getTableData = () => {
   } else {
     data = cloneDeep(props.data[props.type])
   }
-  data.forEach(item => {
+  data.forEach((item: any) => {
     if (item.cMeta) {
       item.cTip = JSON.parse(item.cMeta)?.tip
     }
@@ -191,6 +192,7 @@ watch(() => props.data, () => {
 
 const saveResource = async () => {
   const $table = editTable.value
+  // @ts-ignore
   const errMap = await $table.validate(true).catch(errMap => errMap)
   if (errMap) {
     Message.error('校验不通过！')
@@ -200,14 +202,14 @@ const saveResource = async () => {
       'templatetype': props.moduleInfo.cTemplatetype,
       'area': props.area,
       'parId': props.moduleInfo.id
-    }
+    } as any
     if (props.type === 'Button') {
       json['authResButtonList'] = tableData.value.map((td, tn) => {
         return assign({}, td, { nOrder: tn + 1 })
       })
       saveButton(json).then(res => {
         Message[ res.success ? 'success' : 'error']({
-          showClose: true,
+          closable: true,
           content: res.message,
           duration: 3500
         })
@@ -216,7 +218,7 @@ const saveResource = async () => {
         loading.value = false
       })
     } else if (props.type === 'Field') {
-      json['authResFieldList'] = tableData.value.map((td, tn) => {
+      json['authResFieldList'] = tableData.value.map((td: any, tn: number) => {
         if (td.cTip) {
           let cMeta = JSON.parse(td.cMeta)
           if (cMeta) {
@@ -232,7 +234,7 @@ const saveResource = async () => {
       })
       saveField(json).then(res => {
         Message[res.success ? 'success' : 'error']({
-          showClose: true,
+          closable: true,
           content: res.message,
           duration: 3500
         })
@@ -244,7 +246,7 @@ const saveResource = async () => {
   }
 }
 
-const handleCommand = (command) => {
+const handleCommand = (command: string) => {
   var cStoremethod = ''
   var bf = props.moduleInfo.cViewpath.substring(0, props.moduleInfo.cViewpath.lastIndexOf('/')).split('/')
   var name = bf[bf.length - 1]
@@ -253,14 +255,14 @@ const handleCommand = (command) => {
   } else if (command === 'daoru' || command === 'daochu') {
     cStoremethod = command + '/show'
   }
-  tableData.value.push(assign({}, ButtonTemp[command], { cArea: props.area }, { cStoremethod: cStoremethod }))
+  tableData.value.push(assign({}, (ButtonTemp as any)[command], { cArea: props.area, cStoremethod: cStoremethod }))
 }
 
 const handleClick = () => {
   tableData.value.push({ cArea: props.area })
 }
 
-const insertRow = ({ rowIndex }) => {
+const insertRow = ({ rowIndex }: { rowIndex: number }) => {
   tableData.value.splice(rowIndex + 1, 0, { cArea: props.area })
 }
 
@@ -268,20 +270,20 @@ const resetValue = () => {
   tableData.value = getTableData()
 }
 
-const revertRowData = (row) => {
-  const originTable = editTable.value
+const revertRowData = (row: any) => {
+  const originTable = editTable.value as any
   originTable.revertData(row)
 }
 
-const deleteRow = (index) => {
+const deleteRow = (index: number) => {
   tableData.value.splice(index, 1)
 }
 
-const metaEdit = (scope) => {
+const metaEdit = (scope: any) => {
   cMetaEditorRef?.value?.openInit(scope)
 }
 
-const metaEditAction = ({ rowIndex, json }) => {
+const metaEditAction = ({ rowIndex, json }: { rowIndex: number, json: string }) => {
   tableData.value[rowIndex].cMeta = json
 }
 
@@ -292,7 +294,7 @@ const afterSaveAction = () => {
   })
 }
 
-const datePickSetMeta = ({ row, column }, fieldTypeObj) => {
+const datePickSetMeta = ({ row, column }: any, fieldTypeObj: any) => {
   if (fieldTypeObj.cMeta) {
     const rowMeta = JSON.parse(row.cMeta || '{}')
     const newMeta = fieldTypeObj.cMeta
@@ -306,16 +308,16 @@ const datePickSetMeta = ({ row, column }, fieldTypeObj) => {
   }
 }
 
-const pickTable = (data) => {
-  chooseTable.value.openInit(data)
+const pickTable = (data: any) => {
+  chooseTableRef.value.openInit(data)
 }
 
-const chooseTableAction = ({ selections, fData }) => {
+const chooseTableAction = ({ selections, fData }: any) => {
   if (fData.selection === false) {
     fData.row.cEntityTable = selections.tableName
     fData.row.cEntityCol = selections.columnName
   } else {
-    selections.forEach(sl => {
+    selections.forEach((sl: any) => {
       tableData.value.push({
         cProp: sl.camelColumnName,
         cLabel: sl.comments,
@@ -327,33 +329,33 @@ const chooseTableAction = ({ selections, fData }) => {
   }
 }
 
-const setDynamicJson = ({ row, rowIndex, column }) => {
+const setDynamicJson = ({ row, rowIndex, column }: any) => {
   fieldShowRulesRef.value.openInit({ row, rowIndex, column, tableData: tableData.value })
 }
 
-const setDynamicI18n = ({ row, rowIndex, column }) => {
-  store.dispatch('i18nDataDialog/showAuthResource', {
-    id: row.id,
-    cSystem: row.cSystem,
-    cName: props.type === 'Button' ? row.cName : row.cLabel,
-    nType: props.type === 'Button' ? '2' : 3
-  })
+const setDynamicI18n = ({ row, rowIndex, column }: any) => {
+  // store.dispatch('i18nDataDialog/showAuthResource', {
+  //   id: row.id,
+  //   cSystem: row.cSystem,
+  //   cName: props.type === 'Button' ? row.cName : row.cLabel,
+  //   nType: props.type === 'Button' ? '2' : 3
+  // })
 }
 
-const fieldDynamicAction = ({ rowIndex, json, field }) => {
+const fieldDynamicAction = ({ rowIndex, json, field }: any) => {
   tableData.value[rowIndex][field] = json
 }
 
 // 导入/导出配置弹窗
-const setCallmethodsJson = ({ row, rowIndex, column }) => {
+const setCallmethodsJson = ({ row, rowIndex, column }: any) => {
   newFieldCallmethodRef.value.openInit({ row, rowIndex, column, tableData: tableData.value })
 }
 
-const fieldCallmethodAction = ({ rowIndex, json, field }) => {
+const fieldCallmethodAction = ({ rowIndex, json, field }: any) => {
   tableData.value[rowIndex][field] = json
 }
 
-const newFieldCallmethodAction = ({ rowIndex, json, field }) => {
+const newFieldCallmethodAction = ({ rowIndex, json, field }: any) => {
   tableData.value[rowIndex][field] = json
 }
 </script>
