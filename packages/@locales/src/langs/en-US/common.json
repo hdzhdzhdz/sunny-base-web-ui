@@ -23,6 +23,36 @@
   "hideSearchPanel": "Hide search panel",
   "selected": "Selected",
   "clear": "Clear",
+  "dashboard": {
+    "greeting": {
+      "morning": "Good Morning",
+      "afternoon": "Good Afternoon",
+      "evening": "Good Evening",
+      "night": "Good Night"
+    },
+    "quickEntry": {
+      "title": "Quick Access",
+      "resourceManagement": "Resource Management",
+      "resourceManagementDesc": "Manage system menus and permissions",
+      "userManagement": "User Management",
+      "userManagementDesc": "Manage system user accounts",
+      "roleManagement": "Role Management",
+      "roleManagementDesc": "Manage system roles and permissions",
+      "operationLog": "Operation Log",
+      "operationLogDesc": "View system operation records",
+      "systemSetting": "System Settings",
+      "systemSettingDesc": "Configure system parameters",
+      "reportCenter": "Report Center",
+      "reportCenterDesc": "View statistical reports",
+      "category": "Category",
+      "available": "Available",
+      "selected": "Selected",
+      "selectCategory": "Select a category from the left",
+      "allAdded": "All added",
+      "noSelection": "No selection",
+      "addEntryTip": "Click module to add to selection, click again to remove"
+    }
+  },
   "searchModal": {
     "title": "Data Query",
     "helpTip": "Supports cross-page selection, double-click row to confirm",

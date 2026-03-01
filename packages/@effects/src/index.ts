@@ -1,7 +1,8 @@
 import Login from './login/index.vue';
 import ResourceManagement from './resourceManagement/index.vue'
+import Dashboard from './views/dashboard/Dashboard.vue';
 
-export { Login, ResourceManagement };
+export { Login, ResourceManagement, Dashboard };
 export * from './config';
 export * from './request/src';
 export * from './api/core';

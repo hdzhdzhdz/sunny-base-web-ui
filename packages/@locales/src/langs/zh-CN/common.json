@@ -23,6 +23,36 @@
   "hideSearchPanel": "隐藏搜索面板",
   "selected": "已选择",
   "clear": "清空",
+  "dashboard": {
+    "greeting": {
+      "morning": "早上好",
+      "afternoon": "下午好",
+      "evening": "晚上好",
+      "night": "夜深了"
+    },
+    "quickEntry": {
+      "title": "快捷入口",
+      "resourceManagement": "资源管理",
+      "resourceManagementDesc": "管理系统菜单和权限资源",
+      "userManagement": "用户管理",
+      "userManagementDesc": "管理系统用户账号",
+      "roleManagement": "角色管理",
+      "roleManagementDesc": "管理系统角色和权限",
+      "operationLog": "操作日志",
+      "operationLogDesc": "查看系统操作记录",
+      "systemSetting": "系统设置",
+      "systemSettingDesc": "配置系统参数",
+      "reportCenter": "报表中心",
+      "reportCenterDesc": "查看统计报表",
+      "category": "分类",
+      "available": "可选",
+      "selected": "已选",
+      "selectCategory": "选择左侧分类",
+      "allAdded": "已全部添加",
+      "noSelection": "暂无选择",
+      "addEntryTip": "点击模块添加到已选列表，再次点击可移除"
+    }
+  },
   "searchModal": {
     "title": "数据查询",
     "helpTip": "支持跨页多选，双击行快速确认",

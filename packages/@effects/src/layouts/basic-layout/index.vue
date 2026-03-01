@@ -58,7 +58,7 @@
       >
         <!-- 侧边栏折叠/展开按钮 -->
         <div
-          class="cursor-pointer flex items-center p-1 rounded transition-colors text-[var(--color-text-2)] hover:bg-[rgba(var(--primary-6),0.1)] hover:text-[rgb(var(--primary-6))]"
+          class="cursor-pointer flex items-center p-1 rounded transition-colors text-[var(--color-text-2)] hover:bg-[var(--color-fill-2)] hover:text-[rgb(var(--primary-6))]"
           @click="toggleCollapsed"
         >
           <SunnyIcon :icon="collapsed ? 'lucide:panel-left-open' : 'lucide:panel-left-close'" :size="24" />
@@ -89,7 +89,7 @@
         <Tabbar />
         
         <!-- 内容区域 -->
-        <a-layout-content class="flex-1 p-2 overflow-auto bg-[var(--color-fill-2)]">
+        <a-layout-content class="flex-1 p-2 overflow-auto bg-[var(--color-bg-1)]">
           <!-- 路由视图渲染 -->
           <router-view />
         </a-layout-content>
