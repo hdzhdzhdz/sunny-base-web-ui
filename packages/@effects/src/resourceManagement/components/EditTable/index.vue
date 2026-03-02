@@ -18,7 +18,7 @@
           </a-dropdown-button>
         </div>
         <a-space class="right-bar">
-          <!-- <a-button size="mini" :loading="loading" @click="pickTable({selection: true})">选择实体表</a-button> -->
+          <a-button size="mini" :loading="loading" @click="pickTable">选择实体表</a-button>
           <a-button size="mini" :loading="loading" @click="resetValue">还 原</a-button>
           <a-button status="success" size="mini" :loading="loading" @click="saveResource">保 存</a-button>
         </a-space>
@@ -26,7 +26,7 @@
 
       <!-- 弹窗 -->
       <cMetaEditor ref="cMetaEditorRef" @metaEmit="metaEditAction" />
-      <!-- <chooseTable ref="chooseTableRef" @chooseTableEmit="chooseTableAction" /> -->
+      <chooseTable ref="chooseTableRef" @chooseTableEmit="chooseTableAction" />
       <!-- <fieldShowRules ref="fieldShowRulesRef" @fieldDynamicEmit="fieldDynamicAction" /> -->
       <fieldCallmethod ref="fieldCallmethodRef" @fieldCallmethodEdit="fieldCallmethodAction" />
     </template>
@@ -43,6 +43,7 @@ import cols from './columns'
 import ButtonTemp from '../../../utils/DefaultButtonResource.js'
 import cMetaEditor from './cMetaEditor.vue'
 // import fieldShowRules from './fieldShowRules.vue'
+import chooseTable from './chooseTable.vue'
 import fieldCallmethod from './fieldCallmethod.vue'
 
 const props = defineProps({
@@ -308,25 +309,20 @@ const datePickSetMeta = ({ row, column }: any, fieldTypeObj: any) => {
   }
 }
 
-const pickTable = (data: any) => {
-  chooseTableRef.value.openInit(data)
+const pickTable = () => {
+  chooseTableRef.value.openInit()
 }
 
-const chooseTableAction = ({ selections, fData }: any) => {
-  if (fData.selection === false) {
-    fData.row.cEntityTable = selections.tableName
-    fData.row.cEntityCol = selections.columnName
-  } else {
-    selections.forEach((sl: any) => {
-      tableData.value.push({
-        cProp: sl.camelColumnName,
-        cLabel: sl.comments,
-        cArea: props.area,
-        cEntityTable: sl.tableName,
-        cEntityCol: sl.columnName
-      })
+const chooseTableAction = (selections: any[]) => {
+  selections.forEach((sl: any) => {
+    tableData.value.push({
+      cProp: sl.camelColumnName,
+      cLabel: sl.comments,
+      cArea: props.area,
+      cEntityTable: sl.tableName,
+      cEntityCol: sl.columnName
     })
-  }
+  })
 }
 
 const setDynamicJson = ({ row, rowIndex, column }: any) => {

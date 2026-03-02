@@ -120,7 +120,7 @@ export default function() {
               return [<span>{row[column.field]}</span>]
             },
             edit: ({ row, column, rowIndex }) => {
-              return [<a-button size='mini' type='text' onClick={() => setDynamicJson({ row, rowIndex, column })} onKeyPress={() => { }}>编辑</a-button>]
+              return [<vxe-button size='mini' mode='text' onClick={() => setDynamicJson({ row, rowIndex, column })} onKeyPress={() => { }}>编辑</vxe-button>]
             }
           }
         },
@@ -134,7 +134,7 @@ export default function() {
               return [<span>{row[column.field]}</span>]
             },
             edit: ({ row, rowIndex, column }) => {
-              return [<a-button size='mini' type='text' onClick={() => setDynamicJson({ row, rowIndex, column })} onKeyPress={() => { }}>编辑</a-button>]
+              return [<vxe-button size='mini' mode='text' onClick={() => setDynamicJson({ row, rowIndex, column })} onKeyPress={() => { }}>编辑</vxe-button>]
             }
           }
         },
@@ -148,7 +148,7 @@ export default function() {
               return [<span>{row[column.field]}</span>]
             },
             edit: ({ row, rowIndex, column }) => {
-              return [<a-button size='mini' type='text' onClick={() => setDynamicJson({ row, rowIndex, column })} onKeyPress={() => { }}>编辑</a-button>]
+              return [<vxe-button size='mini' mode='text' onClick={() => setDynamicJson({ row, rowIndex, column })} onKeyPress={() => { }}>编辑</vxe-button>]
             }
           }
         },
@@ -162,7 +162,7 @@ export default function() {
               return [<span>{row[column.field]}</span>]
             },
             edit: ({ row, column, rowIndex }) => {
-              return [<a-button size='mini' type='text' onClick={() => setDynamicI18n({ row, rowIndex, column })} onKeyPress={() => { }}>编辑</a-button>]
+              return [<vxe-button size='mini' mode='text' onClick={() => setDynamicI18n({ row, rowIndex, column })} onKeyPress={() => { }}>编辑</vxe-button>]
             }
           }
         },
@@ -224,7 +224,7 @@ export default function() {
               return [<span>{row[column.field]}</span>]
             },
             edit: ({ row, column, rowIndex }) => {
-              return [<a-button size='mini' type='text' onClick={() => pickTable({ 'selection': false, row, column, rowIndex })} onKeyPress={() => { }}>{row[column.field] ? row[column.field] : '选择'}</a-button>]
+              return [<vxe-button size='mini' mode='text' onClick={() => pickTable({ 'selection': false, row, column, rowIndex })} onKeyPress={() => { }}>{row[column.field] ? row[column.field] : '选择'}</vxe-button>]
             }
           }
         },
@@ -238,7 +238,7 @@ export default function() {
               return [<span>{row[column.field]}</span>]
             },
             edit: ({ row, column, rowIndex }) => {
-              return [<a-button size='mini' type='text' onClick={() => pickTable({ 'selection': false, row, column, rowIndex })} onKeyPress={() => { }}>{row[column.field] ? row[column.field] : '选择'}</a-button>]
+              return [<vxe-button size='mini' mode='text' onClick={() => pickTable({ 'selection': false, row, column, rowIndex })} onKeyPress={() => { }}>{row[column.field] ? row[column.field] : '选择'}</vxe-button>]
             }
           }
         },
@@ -380,7 +380,7 @@ export default function() {
               return [<span>{row[column.field]}</span>]
             },
             edit: ({ row, column, rowIndex }) => {
-              return [<a-button size='mini' type='text' onClick={() => setDynamicI18n({ row, rowIndex, column })} onKeyPress={() => { }}>编辑</a-button>]
+              return [<vxe-button size='mini' mode='text' onClick={() => setDynamicI18n({ row, rowIndex, column })} onKeyPress={() => { }}>编辑</vxe-button>]
             }
           }
         },
@@ -394,7 +394,7 @@ export default function() {
               return [<span>{row[column.field]}</span>]
             },
             edit: ({ row, column, rowIndex }) => {
-              return [<a-button size='mini' type='text' onClick={() => pickTable({ 'selection': false, row, column, rowIndex })} onKeyPress={() => { }}>{row[column.field] ? row[column.field] : '选择'}</a-button>]
+              return [<vxe-button size='mini' mode='text' onClick={() => pickTable({ 'selection': false, row, column, rowIndex })} onKeyPress={() => { }}>{row[column.field] ? row[column.field] : '选择'}</vxe-button>]
             }
           }
         },
@@ -408,7 +408,7 @@ export default function() {
               return [<span>{row[column.field]}</span>]
             },
             edit: ({ row, column, rowIndex }) => {
-              return [<a-button size='mini' type='text' onClick={() => pickTable({ 'selection': false, row, column, rowIndex })} onKeyPress={() => { }}>{row[column.field] ? row[column.field] : '选择'}</a-button>]
+              return [<vxe-button size='mini' mode='text' onClick={() => pickTable({ 'selection': false, row, column, rowIndex })} onKeyPress={() => { }}>{row[column.field] ? row[column.field] : '选择'}</vxe-button>]
             }
           }
         },
@@ -541,12 +541,13 @@ export default function() {
             field: 'cDynamicShow',
             title: '自定义显示/隐藏',
             minWidth: '140',
+            editRender: {},
             slots: {
               default: ({ row, column, rowIndex }) => {
                 return [<span>{row[column.field]}</span>]
               },
               edit: ({ row, rowIndex, column }) => {
-                return [<a-button size='mini' type='text' onClick={() => setDynamicJson({ row, rowIndex, column })} onKeyPress={() => { }}>编辑</a-button>]
+                return [<vxe-button size='mini' mode='text' onClick={() => setDynamicJson({ row, rowIndex, column })} onKeyPress={() => { }}>编辑</vxe-button>]
               }
             }
           },
@@ -560,7 +561,7 @@ export default function() {
                 return [<span>{row[column.field]}</span>]
               },
               edit: ({ row, rowIndex, column }) => {
-                return [<a-button size='mini' type='text' onClick={() => setDynamicJson({ row, rowIndex, column })} onKeyPress={() => { }}>编辑</a-button>]
+                return [<vxe-button size='mini' mode='text' onClick={() => setDynamicJson({ row, rowIndex, column })} onKeyPress={() => { }}>编辑</vxe-button>]
               }
             }
           },
@@ -574,7 +575,7 @@ export default function() {
                 return [<span>{row[column.field]}</span>]
               },
               edit: ({ row, rowIndex, column }) => {
-                return [<a-button size='mini' type='text' onClick={() => setDynamicJson({ row, rowIndex, column })} onKeyPress={() => { }}>编辑</a-button>]
+                return [<vxe-button size='mini' mode='text' onClick={() => setDynamicJson({ row, rowIndex, column })} onKeyPress={() => { }}>编辑</vxe-button>]
               }
             }
           },
@@ -636,7 +637,7 @@ export default function() {
                 return [<span>{row[column.field]}</span>]
               },
               edit: ({ row, column, rowIndex }) => {
-                return [<a-button size='mini' type='text' onClick={() => setDynamicI18n({ row, rowIndex, column })} onKeyPress={() => { }}>编辑</a-button>]
+                return [<vxe-button size='mini' mode='text' onClick={() => setDynamicI18n({ row, rowIndex, column })} onKeyPress={() => { }}>编辑</vxe-button>]
               }
             }
           },
@@ -674,7 +675,7 @@ export default function() {
                 return [<span>{row[column.field]}</span>]
               },
               edit: ({ row, column, rowIndex }) => {
-                return [<a-button size='mini' type='text' onClick={() => pickTable({ 'selection': false, row, column, rowIndex })} onKeyPress={() => { }}>{row[column.field] ? row[column.field] : '选择'}</a-button>]
+                return [<vxe-button size='mini' mode='text' onClick={() => pickTable({ 'selection': false, row, column, rowIndex })} onKeyPress={() => { }}>{row[column.field] ? row[column.field] : '选择'}</vxe-button>]
               }
             }
           },
@@ -688,7 +689,7 @@ export default function() {
                 return [<span>{row[column.field]}</span>]
               },
               edit: ({ row, column, rowIndex }) => {
-                return [<a-button size='mini' type='text' onClick={() => pickTable({ 'selection': false, row, column, rowIndex })} onKeyPress={() => { }}>{row[column.field] ? row[column.field] : '选择'}</a-button>]
+                return [<vxe-button size='mini' mode='text' onClick={() => pickTable({ 'selection': false, row, column, rowIndex })} onKeyPress={() => { }}>{row[column.field] ? row[column.field] : '选择'}</vxe-button>]
               }
             }
           },
@@ -846,7 +847,7 @@ function publicButtonColumns({ area, setCallmethodsJson, setDynamicI18n, deleteR
           return [<span>{row[column.field]}</span>]
         },
         edit: ({ row, rowIndex, column }) => {
-          return [<a-button size='mini' type='text' onClick={() => setCallmethodsJson({ row, rowIndex, column })} onKeyPress={() => { }}>编辑</a-button>]
+          return [<vxe-button size='mini' mode='text' onClick={() => setCallmethodsJson({ row, rowIndex, column })} onKeyPress={() => { }}>编辑</vxe-button>]
         }
       }
     },
@@ -860,7 +861,7 @@ function publicButtonColumns({ area, setCallmethodsJson, setDynamicI18n, deleteR
           return [<span>{row[column.field]}</span>]
         },
         edit: ({ row, column, rowIndex }) => {
-          return [<a-button size='mini' type='text' onClick={() => setDynamicI18n({ row, rowIndex, column })} onKeyPress={() => { }}>编辑</a-button>]
+          return [<vxe-button size='mini' mode='text' onClick={() => setDynamicI18n({ row, rowIndex, column })} onKeyPress={() => { }}>编辑</vxe-button>]
         }
       }
     },
