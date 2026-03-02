@@ -125,7 +125,7 @@ const formSchema = [
 | commonConfig | 表单通用配置，透传给 SunnyForm | `Record<string, any>` | 见下方 | 否 |
 | helpMessage | 帮助提示文本，显示在标题栏 | `string` | `'支持跨页多选...'` | 否 |
 | resetOnOpen | 是否在打开弹窗时重新查询表格数据 | `boolean` | `true` | 否 |
-| clearOnSearch | 是否在查询时清空已选数据 | `boolean` | `false` | 否 |
+| clearOnSearch | 是否在点击查询按钮时清空已选数据 | `boolean` | `false` | 否 |
 
 **fieldNames 默认值：**
 ```typescript

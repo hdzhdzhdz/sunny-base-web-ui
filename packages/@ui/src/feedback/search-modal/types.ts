@@ -73,9 +73,9 @@ export interface SunnySearchModalProps {
    */
   contentHeight?: string | number;
   /**
-   * 是否在打开弹窗时重新查询数据
-   * 设为 true 时，每次打开弹窗都会重新执行查询并清空已选数据
-   * 设为 false 时，保留上次的查询结果和已选数据
+   * 是否在打开弹窗时重新查询表格数据
+   * 设为 true 时，每次打开弹窗都会重新执行查询
+   * 设为 false 时，保留上次的表格数据，不重新查询
    * @default true
    */
   resetOnOpen?: boolean;

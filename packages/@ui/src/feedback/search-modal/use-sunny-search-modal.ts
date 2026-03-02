@@ -61,19 +61,16 @@ export function useSunnySearchModal(
     searchParams.value = { ...defaults };
   };
 
-  // Sync modelValue to selectedRows when visible becomes true or modelValue changes
+  // Sync modelValue to selectedRows when visible becomes true
   watch(
     () => props.visible,
     (visible) => {
       if (visible) {
-        // 根据 resetOnOpen 属性决定是否重置已选数据
-        if (props.resetOnOpen) {
-          selectedRows.value = [];
+        // 同步 modelValue 到 selectedRows
+        if (props.modelValue && Array.isArray(props.modelValue)) {
+          selectedRows.value = cloneDeep(props.modelValue as Record<string, any>[]);
         } else {
-          // 保留模式：使用 modelValue 或保持当前值
-          if (props.modelValue && Array.isArray(props.modelValue)) {
-            selectedRows.value = cloneDeep(props.modelValue as Record<string, any>[]);
-          }
+          selectedRows.value = [];
         }
       }
     },

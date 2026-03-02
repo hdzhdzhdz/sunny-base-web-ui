@@ -13,6 +13,8 @@ import SunnyModal from '../modal/Modal.vue';
 import { IconClose } from '@arco-design/web-vue/es/icon';
 // @ts-ignore
 import { Tooltip, Pagination, Button } from '@arco-design/web-vue';
+// @ts-ignore
+import SunnyScrollbar from '../../basic/scrollbar/scrollbar.vue';
 
 defineOptions({
   name: 'SunnySearchModal',
@@ -183,11 +185,17 @@ watch(
   () => props.visible,
   (val) => {
     if (val) {
-      // 先初始化默认值，再校验并触发查询
+      // 先初始化默认值
       initDefaultValues();
-      nextTick(() => {
-        validateAndSearch();
-      });
+      // 根据 resetOnOpen 决定是否重新查询表格数据
+      if (props.resetOnOpen) {
+        // 先清空表格数据，再触发查询
+        tableData.value = [];
+        pagination.value.total = 0;
+        nextTick(() => {
+          validateAndSearch();
+        });
+      }
     }
   }
 );
@@ -206,9 +214,9 @@ watch(
     @close="handleCancel"
     @ok="handleOk"
   >
-    <div class="flex flex-col">
+    <div class="flex flex-col h-full">
       <!-- Search Form -->
-      <div class="mb-4 border-b border-gray-100 pb-4">
+      <div class="mb-4 border-b border-gray-100 pb-4 shrink-0">
         <SunnyForm
           ref="formRef"
           v-model:values="searchParams"
@@ -227,16 +235,15 @@ watch(
         </SunnyForm>
       </div>
       <!-- Content Body -->
-      <div class="flex flex-1 overflow-hidden" :style="{ height: (typeof props.contentHeight === 'number' ? props.contentHeight + 'px' : props.contentHeight) }">
+      <div class="flex min-h-0 overflow-hidden box-border border border-gray-200 rounded" :style="{ height: (typeof props.contentHeight === 'number' ? props.contentHeight + 'px' : props.contentHeight) }">
         <!-- Left: Table -->
-        <div class="flex-1 h-full overflow-hidden flex flex-col">
+        <div class="flex-1 overflow-hidden">
            <SunnyQueryGrid
               ref="gridRef"
               :columns="props.tableColumns"
               :data="tableData"
               :loading="loading"
               v-bind="gridOptions"
-              class="flex-1"
               @checkbox-change="handleCheckboxChange"
               @checkbox-all="handleCheckboxAll"
               @radio-change="handleRadioChange"
@@ -245,18 +252,18 @@ watch(
         </div>
 
         <!-- Right: Sidebar -->
-        <div class="w-[180px] border-l border-gray-200 bg-gray-50 flex flex-col ml-2 pl-2 py-2">
-           <div class="font-bold mb-2 text-gray-700 flex justify-between items-center text-xs">
+        <div class="w-[180px] border-l border-gray-200 bg-gray-50 flex flex-col ml-2 overflow-hidden shrink-0">
+           <div class="font-bold px-2 py-2 text-gray-700 flex justify-between items-center text-xs border-b border-gray-200 shrink-0">
              <span>{{ $t('common.selected') }} ({{ selectedRows.length }})</span>
              <span v-if="selectedRows.length" class="text-xs text-blue-500 cursor-pointer" @click="selectedRows = []">
                {{ $t('common.clear') }}
              </span>
            </div>
-           
-           <div class="flex-1 overflow-y-auto pr-1 custom-scrollbar">
+
+           <div class="flex-1 min-h-0 overflow-y-auto p-2 custom-scrollbar">
               <template v-if="selectedRows.length">
-                <div 
-                  v-for="row in selectedRows" 
+                <div
+                  v-for="row in selectedRows"
                   :key="row[actualRowKey]"
                   class="relative group px-2 py-1 mb-1 bg-white border border-gray-200 rounded hover:shadow-sm transition-all h-[42px] flex flex-col justify-center"
                 >
@@ -268,8 +275,8 @@ watch(
                         {{ row[actualFieldNames.label] || '&nbsp;' }}
                       </div>
                    </Tooltip>
-                   
-                   <div 
+
+                   <div
                      class="absolute top-0.5 right-0.5 opacity-0 group-hover:opacity-100 cursor-pointer text-gray-400 hover:text-red-500 transition-opacity p-0.5 bg-white rounded-full shadow-sm"
                      @click="removeRow(row)"
                    >

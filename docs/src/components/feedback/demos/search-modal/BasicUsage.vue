@@ -100,6 +100,7 @@ const handleConfirm = (rows: any[]) => {
       :table-columns="tableColumns"
       :search-api="searchApi"
       :field-names="{ label: 'name', desc: 'code' }"
+      :resetOnOpen="true"
       @confirm="handleConfirm"
     />
   </div>
