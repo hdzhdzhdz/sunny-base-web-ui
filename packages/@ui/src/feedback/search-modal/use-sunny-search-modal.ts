@@ -48,7 +48,7 @@ export function useSunnySearchModal(
     ...props.fieldNames,
   }));
 
-  const actualRowKey = computed(() => props.rowKey || 'id');
+  const actualRowKey = computed(() => props.fieldNames?.value || 'id');
 
   // --- Helpers ---
   const getRowKey = (row: any) => get(row, actualRowKey.value);
@@ -109,7 +109,7 @@ export function useSunnySearchModal(
         // Assuming result structure: { list: [], total: 0 } or standard page wrapper
         const list = result.list || result.records || [];
         const total = result.total || result.totalCount || 0;
-        
+
         tableData.value = list;
         pagination.value.total = total;
       }
@@ -149,9 +149,9 @@ export function useSunnySearchModal(
     if (checked) {
       if (index === -1) {
         if (!props.multiple) {
-           selectedRows.value = [row];
+          selectedRows.value = [row];
         } else {
-           selectedRows.value.push(row);
+          selectedRows.value.push(row);
         }
       }
     } else {
@@ -171,19 +171,19 @@ export function useSunnySearchModal(
     // Note: 'records' only contains currently visible selected rows.
     // When unchecking all, we only remove currently visible rows from selectedRows
     // When checking all, we add currently visible rows
-    
+
     // Logic needs to be careful not to remove rows from other pages if "reserve" is true concept.
     // But vxe-table 'checkbox-all' event usually gives current page records.
-    
+
     // For robustness:
     // 1. If checked: Add all `records` to `selectedRows` (avoid duplicates)
     // 2. If unchecked: Remove all rows in current `tableData` from `selectedRows`
-    
+
     if (checked) {
-       records.forEach((row: any) => toggleRowSelection(row, true));
+      records.forEach((row: any) => toggleRowSelection(row, true));
     } else {
-       // Remove all visible rows
-       tableData.value.forEach(row => toggleRowSelection(row, false));
+      // Remove all visible rows
+      tableData.value.forEach(row => toggleRowSelection(row, false));
     }
   };
 
