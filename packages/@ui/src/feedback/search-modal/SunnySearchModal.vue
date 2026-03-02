@@ -260,7 +260,7 @@ watch(
                   :key="row[actualRowKey]"
                   class="relative group px-2 py-1 mb-1 bg-white border border-gray-200 rounded hover:shadow-sm transition-all h-[42px] flex flex-col justify-center"
                 >
-                   <Tooltip :content="`${row[actualFieldNames.value] || ''} ${row[actualFieldNames.label] || ''}`">
+                   <Tooltip :content="`${row[actualFieldNames.desc]}`">
                       <div class="text-xs font-medium text-gray-800 truncate leading-none mb-1">
                         {{ row[actualFieldNames.value] || '-' }}
                       </div>
