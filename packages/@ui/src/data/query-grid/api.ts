@@ -35,6 +35,17 @@ export class VxeGridApi {
   }
 
   /**
+   * 获取当前选中行
+   */
+  getSelection() {
+    const $grid = this.grid;
+    if ($grid) {
+      return $grid.getCheckboxRecords();
+    }
+    return [];
+  }
+
+  /**
    * 删除选中行
    */
   async deleteSelection() {

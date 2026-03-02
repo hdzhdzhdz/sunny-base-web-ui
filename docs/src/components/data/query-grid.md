@@ -53,6 +53,21 @@ gridApi.addEvent({
 });
 ```
 
+#### `getSelection()`
+
+获取表格中当前选中的（打钩的）所有行数据。
+
+- **返回值**: 选中行的数据数组。如果没有选中任何行，返回空数组 `[]`。
+
+```typescript
+// 获取选中行数据
+const selectedRows = gridApi.getSelection();
+
+if (selectedRows.length > 0) {
+  console.log('选中行:', selectedRows);
+}
+```
+
 #### `deleteSelection()`
 
 删除表格中当前选中的（打钩的）所有行。
