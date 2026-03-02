@@ -72,6 +72,20 @@ export interface SunnySearchModalProps {
    * @default 300
    */
   contentHeight?: string | number;
+  /**
+   * 是否在打开弹窗时重新查询数据
+   * 设为 true 时，每次打开弹窗都会重新执行查询并清空已选数据
+   * 设为 false 时，保留上次的查询结果和已选数据
+   * @default true
+   */
+  resetOnOpen?: boolean;
+  /**
+   * 是否在查询时清空已选数据
+   * 设为 true 时，点击查询按钮会清空右侧已选列表
+   * 设为 false 时，点击查询按钮保留已选数据，可跨页累加选择
+   * @default false
+   */
+  clearOnSearch?: boolean;
 }
 
 export interface SunnySearchModalEmits {
@@ -118,4 +132,15 @@ export interface SunnySearchModalSlots {
    * ```
    */
   [key: string]: (props: { schema: any; model: any; value: any; setValue: (val: any) => void }) => any;
+}
+
+/**
+ * 搜索弹窗暴露的方法
+ */
+export interface SunnySearchModalExpose {
+  /**
+   * 重置表格数据和已选数据
+   * 清空表格数据、已选数据，并重置分页
+   */
+  reset: () => void;
 }

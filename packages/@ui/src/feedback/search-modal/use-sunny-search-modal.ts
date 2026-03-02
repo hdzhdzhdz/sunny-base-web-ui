@@ -63,16 +63,18 @@ export function useSunnySearchModal(
 
   // Sync modelValue to selectedRows when visible becomes true or modelValue changes
   watch(
-    () => [props.visible, props.modelValue],
-    ([visible, modelValue]) => {
+    () => props.visible,
+    (visible) => {
       if (visible) {
-         if (modelValue && Array.isArray(modelValue)) {
-            // Merge or Replace? Usually Replace on open if strictly controlled.
-            // But let's respect current modelValue.
-             selectedRows.value = cloneDeep(modelValue as Record<string, any>[]);
-         } else {
-             selectedRows.value = [];
-         }
+        // 根据 resetOnOpen 属性决定是否重置已选数据
+        if (props.resetOnOpen) {
+          selectedRows.value = [];
+        } else {
+          // 保留模式：使用 modelValue 或保持当前值
+          if (props.modelValue && Array.isArray(props.modelValue)) {
+            selectedRows.value = cloneDeep(props.modelValue as Record<string, any>[]);
+          }
+        }
       }
     },
     { immediate: true }
@@ -208,8 +210,23 @@ export function useSunnySearchModal(
   };
 
   const handleCancel = () => {
+    // 取消时清空已选数据
+    selectedRows.value = [];
+    emit('update:modelValue', []);
     emit('cancel');
     emit('update:visible', false);
+  };
+
+  /**
+   * 重置表格数据和已选数据
+   * 清空表格数据、已选数据，并重置分页
+   */
+  const reset = () => {
+    tableData.value = [];
+    selectedRows.value = [];
+    pagination.value.current = 1;
+    pagination.value.total = 0;
+    emit('update:modelValue', []);
   };
 
   return {
@@ -230,6 +247,7 @@ export function useSunnySearchModal(
     removeRow,
     handleOk,
     handleCancel,
-    toggleRowSelection
+    toggleRowSelection,
+    reset
   };
 }

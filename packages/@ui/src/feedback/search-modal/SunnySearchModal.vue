@@ -33,6 +33,8 @@ const props = withDefaults(defineProps<SunnySearchModalProps>(), {
   }),
   width: '800px',
   contentHeight: 300,
+  resetOnOpen: true,
+  clearOnSearch: false,
 });
 
 const emit = defineEmits<SunnySearchModalEmits>();
@@ -63,8 +65,14 @@ const {
   removeRow,
   handleOk,
   handleCancel,
-  toggleRowSelection
+  toggleRowSelection,
+  reset
 } = useSunnySearchModal(props, emit);
+
+// 暴露方法给父组件调用
+defineExpose({
+  reset
+});
 
 const handleReset = async () => {
   // 重置时重置分页为第一页，并重新初始化默认值
@@ -104,6 +112,10 @@ const validateAndSearch = async (): Promise<boolean> => {
  */
 const handleFormSubmit = async (values: Record<string, any>) => {
   pagination.value.current = 1;
+  // 根据 clearOnSearch 配置决定是否清空已选数据
+  if (props.clearOnSearch) {
+    selectedRows.value = [];
+  }
   // 直接使用表单提交的值进行查询
   handleSearch(values);
 };
@@ -121,64 +133,48 @@ const gridOptions = computed(() => ({
   checkboxConfig: {
     trigger: 'row',
     highlight: true,
-    reserve: true, // Important for cross-page selection
+    reserve: false, // 关闭 reserve，完全由 selectedRows 控制选中状态
   },
   radioConfig: {
     trigger: 'row',
     highlight: true,
-    reserve: true,
+    reserve: false,
   },
 }));
 
-// Sync Grid Selection when selectedRows changes or data loads
+// 当 tableData 或 selectedRows 变化时，同步选中状态到表格
 watch(
-  [() => selectedRows.value, () => tableData.value],
+  [() => tableData.value, () => selectedRows.value],
   async () => {
     await nextTick();
     const $grid = gridRef.value?.getGrid?.() || gridRef.value;
-    if ($grid) {
-      // Use vxe-table setCheckboxRow to sync state
-      // We pass the selectedRows and true to check them
-      // But we need to be careful: setCheckboxRow(rows, checked)
-      
-      // Strategy: Clear all first? No, that clears reserve.
-      // Strategy: Set current page rows based on selectedRows
-      
-      const rowsToCheck = tableData.value.filter(row => 
+    if ($grid && tableData.value.length > 0) {
+      // 先清空当前页的所有选中
+      $grid.clearCheckboxRow();
+      // 然后选中当前页中应该在 selectedRows 中的行
+      const rowsToCheck = tableData.value.filter(row =>
         selectedRows.value.some(selected => selected[actualRowKey.value] === row[actualRowKey.value])
       );
-      
-      // Uncheck all on current page first to be safe?
-      // Actually vxe-table's setCheckboxRow handles 'toggling' if not specified, or explicit boolean
-      
-      // Ideally we want: "Make sure these rows are checked, and others on this page are unchecked"
-      // But 'reserve' mode complicates this.
-      
-      // Simple approach for now:
-      $grid.setCheckboxRow(rowsToCheck, true);
-      
-      // Find rows on current page that should NOT be checked
-      const rowsToUncheck = tableData.value.filter(row => 
-        !selectedRows.value.some(selected => selected[actualRowKey.value] === row[actualRowKey.value])
-      );
-      $grid.setCheckboxRow(rowsToUncheck, false);
+      if (rowsToCheck.length > 0) {
+        $grid.setCheckboxRow(rowsToCheck, true);
+      }
     }
   },
-  { deep: true } // selectedRows is deep
+  { deep: true }
 );
 
-// Double click to confirm
+// Double click to confirm (only in single mode)
 const handleCellDblClick = ({ row }: any) => {
   if (!props.multiple) {
-     // Single mode: clear others, select this, then OK
+     // Single mode: select this row and close
      selectedRows.value = [row];
      handleOk();
   } else {
-     // Multiple mode: Just toggle this one (if not selected) and maybe not confirm immediately?
-     // Spec says: Double Click -> Save & Close.
-     // So we ensure it is selected, then confirm.
-     toggleRowSelection(row, true);
-     handleOk();
+     // Multiple mode: toggle selection, don't close
+     const isSelected = selectedRows.value.some(
+       selected => selected[actualRowKey.value] === row[actualRowKey.value]
+     );
+     toggleRowSelection(row, !isSelected);
   }
 };
 

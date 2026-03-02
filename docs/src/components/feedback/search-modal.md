@@ -95,11 +95,15 @@ const formSchema = [
 ### 双击选择
 
 - **单选模式**：双击表格行直接选中并关闭弹窗
-- **多选模式**：双击表格行选中该行并关闭弹窗
+- **多选模式**：双击表格行切换该行的选中状态（选中/取消选中），不关闭弹窗
 
 ### 跨页多选
 
 组件支持跨页多选功能，翻页时会保留之前选中的数据。右侧已选列表实时展示所有已选数据，支持单个移除或清空全部。
+
+**查询时保留已选数据：**
+
+默认情况下（`clearOnSearch: false`），点击查询按钮不会清空已选数据，用户可以跨页累加选择。如果需要在每次查询时清空已选数据，可设置 `clearOnSearch: true`。
 
 ## API
 
@@ -120,6 +124,8 @@ const formSchema = [
 | fieldNames | 字段映射配置，用于已选列表展示 | `FieldNames` | 见下方 | 否 |
 | commonConfig | 表单通用配置，透传给 SunnyForm | `Record<string, any>` | 见下方 | 否 |
 | helpMessage | 帮助提示文本，显示在标题栏 | `string` | `'支持跨页多选...'` | 否 |
+| resetOnOpen | 是否在打开弹窗时重新查询表格数据 | `boolean` | `true` | 否 |
+| clearOnSearch | 是否在查询时清空已选数据 | `boolean` | `false` | 否 |
 
 **fieldNames 默认值：**
 ```typescript
@@ -145,6 +151,33 @@ const formSchema = [
 | 插槽名 | 说明 | 参数 |
 | --- | --- | --- |
 | `[fieldName]` | 自定义表单字段，需在 formSchema 中设置 `component: 'Slot'` | [SlotProps](#slotprops) |
+
+### Exposes
+
+组件通过 `defineExpose` 暴露以下方法，可通过 ref 调用：
+
+| 方法名 | 说明 | 参数 | 返回值 |
+| --- | --- | --- | --- |
+| reset | 重置表格数据和已选数据，清空表格、已选列表，并重置分页 | - | `void` |
+
+**使用示例：**
+
+```vue
+<template>
+  <SunnySearchModal ref="modalRef" ... />
+  <Button @click="handleReset">重置</Button>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+
+const modalRef = ref();
+
+const handleReset = () => {
+  modalRef.value?.reset();
+};
+</script>
+```
 
 ### searchApi
 
