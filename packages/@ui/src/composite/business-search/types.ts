@@ -51,8 +51,9 @@ export interface BusinessSearchConfig {
 export interface SunnyBusinessSearchProps {
   /**
    * 双向绑定的选中值
+   * 支持传入 null/undefined，组件内部会自动转换为空数组
    */
-  modelValue: any[];
+  modelValue?: any[] | null;
   /**
    * 业务类型 (e.g., 'user', 'dept')
    * 用于加载静态预设配置
