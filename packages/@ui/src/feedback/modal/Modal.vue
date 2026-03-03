@@ -12,6 +12,8 @@
     v-bind="$attrs"
     class="k-modal-custom"
     :style="{ '--modal-bg-image': `url(${bgImage})` }"
+    @click.stop
+    @mousedown.stop
   >
     <slot></slot>
 
