@@ -1,63 +1,18 @@
 export interface SelectOption {
   label: string
-  value: string | number
+  value: string
   cArea?: string[]
   cMeta?: Record<string, any>
   defaultMeta?: string
-}
-
-export interface SystemOpts {
-  systemOpts: SelectOption[]
-  menuType: SelectOption[]
-  searchFormLg: SelectOption[]
-  templateList: SelectOption[]
-  FormFieldTypes: SelectOption[]
-  TableFieldTypes: SelectOption[]
-  NewTableFieldTypes: SelectOption[]
-  selectType: SelectOption[]
-  signOpts: SelectOption[]
-  showOpts: SelectOption[]
-  alignOpts: SelectOption[]
-  requiredOpts: SelectOption[]
-  authOpts: SelectOption[]
-  sjzdSignOpts: SelectOption[]
-  sfggOpts: SelectOption[]
-  cbTypeOpts: SelectOption[]
-  nLikematchOpts: SelectOption[]
-  nCbtypeOpts: SelectOption[]
-  zdyxlkType: SelectOption[]
-  userYhlxOpts: SelectOption[]
-  userSfqyOpts: SelectOption[]
-  errorCodeType: SelectOption[]
-  buildInType: SelectOption[]
-  i18nLockOpts: SelectOption[]
-  i18nTypeOpts: SelectOption[]
-  nCbtype: SelectOption[]
-  nBillOpts: SelectOption[]
-  nYesNo: SelectOption[]
-  directivesOpts: SelectOption[]
-  logicalOperator: SelectOption[]
-  comparisonOperator: SelectOption[]
-  callmethodType: SelectOption[]
-  customType: SelectOption[]
-  exportType: SelectOption[]
-  scheduleType: SelectOption[]
-  glueType: SelectOption[]
-  triggerStatus: SelectOption[]
-  logStatus: SelectOption[]
-  triggerCode: SelectOption[]
-  handleCode: SelectOption[]
-  zcfsOpts: SelectOption[]
-  formBtnOpts: SelectOption[]
 }
 
 export interface BusinessOpts {
   [key: string]: SelectOption[]
 }
 
-export interface SelectOptions extends SystemOpts, BusinessOpts {}
+export interface SelectOptions extends Record<string, SelectOption[]> {}
 
-const systemOpts: SystemOpts = {
+const systemOpts: Record<string, SelectOption[]> = {
   systemOpts: [],
   menuType: [
     { label: "菜单", value: "1" },
@@ -66,9 +21,9 @@ const systemOpts: SystemOpts = {
     { label: "iframe", value: "6" }
   ],
   searchFormLg: [
-    { label: "一行四列", value: 6 },
-    { label: "一行三列", value: 8 },
-    { label: "一行二列", value: 12 }
+    { label: "一行四列", value: "6" },
+    { label: "一行三列", value: "8" },
+    { label: "一行二列", value: "12" }
   ],
   templateList: [
     {
@@ -288,8 +243,8 @@ const systemOpts: SystemOpts = {
     { label: "公共", value: "1" }
   ],
   cbTypeOpts: [
-    { label: "SQL", value: 0 },
-    { label: "自定义实现", value: 1 }
+    { label: "SQL", value: "0" },
+    { label: "自定义实现", value: "1" }
   ],
   nLikematchOpts: [
     { label: "完全模糊", value: "0" },
@@ -301,8 +256,8 @@ const systemOpts: SystemOpts = {
     { label: "自定义实现", value: "1" }
   ],
   zdyxlkType: [
-    { label: "下拉框", value: 0 },
-    { label: "可搜索下拉框", value: 1 }
+    { label: "下拉框", value: "0" },
+    { label: "可搜索下拉框", value: "1" }
   ],
   userYhlxOpts: [
     { label: "普通用户", value: "0" },
@@ -313,18 +268,18 @@ const systemOpts: SystemOpts = {
     { label: "禁用", value: "1" }
   ],
   errorCodeType: [
-    { label: "框架类报错", value: 0 },
-    { label: "业务主动报错", value: 1 },
-    { label: "数据库捕获报错", value: 2 },
-    { label: "通用提示", value: 3 },
-    { label: "暂无编码", value: -1 },
-    { label: "前端业务消息", value: 4 },
-    { label: "前端通用消息", value: 5 }
+    { label: "框架类报错", value: "0" },
+    { label: "业务主动报错", value: "1" },
+    { label: "数据库捕获报错", value: "2" },
+    { label: "通用提示", value: "3" },
+    { label: "暂无编码", value: "-1" },
+    { label: "前端业务消息", value: "4" },
+    { label: "前端通用消息", value: "5" }
   ],
   buildInType: [
-    { label: "框架类报错", value: 0 },
-    { label: "业务主动报错", value: 1 },
-    { label: "前端消息", value: 4 }
+    { label: "框架类报错", value: "0" },
+    { label: "业务主动报错", value: "1" },
+    { label: "前端消息", value: "4" }
   ],
   i18nLockOpts: [
     { label: "未锁定", value: "0" },
@@ -341,8 +296,8 @@ const systemOpts: SystemOpts = {
     { label: "模块自定义国际化", value: "8" }
   ],
   nCbtype: [
-    { label: "后端SQL", value: 0 },
-    { label: "自定义实现", value: 1 }
+    { label: "后端SQL", value: "0" },
+    { label: "自定义实现", value: "1" }
   ],
   nBillOpts: [
     { label: "单据号(单据号+模块ID查询)", value: "1" },

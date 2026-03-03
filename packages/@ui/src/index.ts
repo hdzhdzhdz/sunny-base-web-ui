@@ -7,6 +7,7 @@ import SunnyBatchSelect from "./entry/select/BatchSelect.vue";
 import SunnySearchInputTag from "./entry/search-input-tag";
 import { useSunnyForm, FormApi, SunnyForm, setupSunnyForm, z } from './entry/form';
 import { useSunnyEditGrid } from './data/edit-grid'
+import * as EditRender from './data/edit-grid/edit-render'
 import { useSunnyQueryGrid } from './data/query-grid'
 import { SunnyResourceTree } from './data/resource-tree'
 import { SunnySearchModal } from './feedback/search-modal'
@@ -30,6 +31,7 @@ export {
   FormApi,
   SunnyForm,
   setupSunnyForm,
+  EditRender,
   useSunnyEditGrid,
   useSunnyQueryGrid,
   SunnyResourceTree,

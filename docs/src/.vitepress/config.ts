@@ -60,6 +60,7 @@ export default defineConfig({
           items: [
             { text: 'Upload 上传', link: '/components/data/upload' },
             { text: 'QueryGrid 查询表格', link: '/components/data/query-grid' },
+            { text: 'EditGrid 编辑表格', link: '/components/data/edit-grid' },
             { text: 'ResourceTree 资源树', link: '/components/data/resource-tree' }
           ]
         },
