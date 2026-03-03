@@ -25,5 +25,6 @@ catalog:
   "@vue/shared": ^3.3.4
   "@vueuse/core": ^10.9.0
   vitepress: ^1.5.0
-  vxe-table: ^4.17.44
-  vxe-pc-ui: ^4.8.0
+  vxe-table: ^4.17.49
+  vxe-pc-ui: ^4.13.0
+  "@vxe-ui/plugin-render-arco": ^4.2.1

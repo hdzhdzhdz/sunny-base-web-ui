@@ -4,6 +4,10 @@ import PreviewWrapper from './PreviewWrapper.vue'
 import '@vitepress-demo-preview/component/dist/style.css'
 import '@arco-design/web-vue/dist/arco.css'
 import ArcoVue from '@arco-design/web-vue'
+import VxeUIBase, { VxeUI } from 'vxe-pc-ui'
+import 'vxe-pc-ui/es/style.css'
+import VxeUIPluginRenderArco from '@vxe-ui/plugin-render-arco'
+import '@vxe-ui/plugin-render-arco/dist/style.css'
 import { SunnyIcon, SunnySearchInputTag, SunnyBatchSelect, SunnySelect } from '@sunny-base-web/ui'
 import { setupI18n } from '@sunny-base-web/locales'
 import mediumZoom from 'medium-zoom'
@@ -38,6 +42,8 @@ export default {
     app.component('SunnyBatchSelect', SunnyBatchSelect)
     app.component('SunnySelect', SunnySelect)
     app.use(ArcoVue)
+    app.use(VxeUIBase)
+    VxeUI.use(VxeUIPluginRenderArco)
     setupI18n(app)
   }
 }

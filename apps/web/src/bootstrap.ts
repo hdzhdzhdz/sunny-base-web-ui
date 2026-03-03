@@ -16,8 +16,11 @@ import { preferences } from './preferences';
 import VxeUITable from 'vxe-table'
 import 'vxe-table/es/style.css'
 
-import VxeUIBase from 'vxe-pc-ui'
+import VxeUIBase, { VxeUI } from 'vxe-pc-ui'
 import 'vxe-pc-ui/es/style.css'
+import VxeUIPluginRenderArco from '@vxe-ui/plugin-render-arco'
+import '@vxe-ui/plugin-render-arco/dist/style.css'
+VxeUI.use(VxeUIPluginRenderArco)
 
 async function bootstrap(namespace: string) {
 	const app = createApp(App);

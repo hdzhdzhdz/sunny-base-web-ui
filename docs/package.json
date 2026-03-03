@@ -12,7 +12,10 @@
     "@arco-design/web-vue": "catalog:",
     "@sunny-base-web/ui": "workspace:*",
     "@vee-validate/rules": "^4.15.1",
+    "@vxe-ui/plugin-render-arco": "catalog:",
     "medium-zoom": "^1.1.0",
+    "vxe-pc-ui": "catalog:",
+    "vxe-table": "catalog:",
     "vue": "catalog:"
   },
   "devDependencies": {
