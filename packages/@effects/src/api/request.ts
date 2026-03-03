@@ -92,10 +92,11 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
     tabbarStore.cachedTabs = new Set();
 
     // 3. 跳转到登录页，携带 redirect 参数
-    const currentPath = window.location.pathname + window.location.search;
-    const loginPath = currentPath !== '/login'
-      ? `/login?redirect=${encodeURIComponent(currentPath)}`
-      : '/login';
+    // 使用 hash 路由获取当前路径（去掉 # 前缀）
+    const currentPath = window.location.hash.slice(1) || '/';
+    const loginPath = currentPath !== '/auth/login'
+      ? `/auth/login?redirect=${encodeURIComponent(currentPath)}`
+      : '/auth/login';
     window.location.href = loginPath;
   }
 
@@ -133,10 +134,10 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
 
       // 1. 自动注入 Token 到 Authorization Header
       config.headers.Authorization = formatToken(accessStore.accessToken);
-      
+
       // 2. 注入当前语言环境，用于后端国际化处理
       config.headers['Accept-Language'] = globalConfig.locale;
-      
+
       // 3. 动态设置 BaseURL
       // 如果全局配置中有 apiPrefix (如 '/api')，则覆盖默认的 baseURL
       // 这允许在运行时根据环境配置不同的 API 地址
@@ -192,12 +193,12 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
     errorMessageResponseInterceptor((msg: string, error) => {
       // 这里可以根据业务进行定制
       // error 是 axios 的错误对象或自定义错误对象
-      
+
       // 尝试解析后端返回的详细错误信息
       // 假设错误响应体结构为 { error: '...', message: '...' }
       const responseData = error?.response?.data ?? {};
       const errorMessage = responseData?.error ?? responseData?.message ?? '';
-      
+
       // 使用 Arco Design Message 组件显示错误提示
       // 如果后端没有返回具体错误信息，则显示通用的 msg (如 "Network Error")
       Message.error(errorMessage || msg);
