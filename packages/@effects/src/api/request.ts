@@ -94,10 +94,11 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
     // 3. 跳转到登录页，携带 redirect 参数
     // 使用 hash 路由获取当前路径（去掉 # 前缀）
     const currentPath = window.location.hash.slice(1) || '/';
-    const loginPath = currentPath !== '/auth/login'
-      ? `/auth/login?redirect=${encodeURIComponent(currentPath)}`
-      : '/auth/login';
-    window.location.href = loginPath;
+    const loginRoute = globalConfig.app?.loginPath || '/auth/login';
+    const redirectPath = currentPath !== loginRoute
+      ? `${loginRoute}?redirect=${encodeURIComponent(currentPath)}`
+      : loginRoute;
+    window.location.href = redirectPath;
   }
 
   /**
