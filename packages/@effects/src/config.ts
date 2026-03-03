@@ -45,6 +45,7 @@ export interface EffectsConfig {
    */
   app?: {
     name: string
+    loginPath?: string
   }
   /**
    * Logo 配置
