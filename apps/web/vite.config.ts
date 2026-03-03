@@ -17,6 +17,7 @@ export default defineConfig({
     }
   },
   server: {
+    port: 5001,
     proxy: {
       '/base/test': {
         target: 'https://basetest.pcloud.sunnyoptical.cn',

@@ -19,8 +19,9 @@
     "vue": "catalog:",
     "vue-i18n": "catalog:",
     "vue-router": "^4.6.4",
-    "vxe-pc-ui": "4.12.36",
-    "vxe-table": "4.17.48",
+    "vxe-pc-ui": "catalog:",
+    "vxe-table": "catalog:",
+    "@vxe-ui/plugin-render-arco": "catalog:",
     "xe-utils": "3.9.1",
     "lucide-vue-next": "^0.575.0"
   },

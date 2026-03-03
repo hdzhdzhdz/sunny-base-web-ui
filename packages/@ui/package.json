@@ -45,8 +45,9 @@
     "lodash-es": "^4.17.23",
     "vee-validate": "^4.15.1",
     "vue": "catalog:",
-    "vxe-pc-ui": "^4.8.0",
-    "vxe-table": "^4.17.44",
+    "vxe-pc-ui": "catalog:",
+    "vxe-table": "catalog:",
+    "@vxe-ui/plugin-render-arco": "catalog:",
     "zod": "^4.3.5"
   },
   "devDependencies": {
