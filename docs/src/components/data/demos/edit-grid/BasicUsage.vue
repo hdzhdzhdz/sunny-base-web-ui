@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive } from 'vue';
-import { useSunnyEditGrid, EditRender } from '@sunny-base-web/ui';
+import { useSunnyEditGrid, EditRender, SunnyIcon } from '@sunny-base-web/ui';
 
 const roleOptions = [
   { label: '管理员', value: '0' },
@@ -110,7 +110,7 @@ const gridOptions = reactive({
         }
       },
     },
-    { field: 'mySlots', title: '自定义插槽', width: 120, editRender: {}, slots: { default: 'mySlots', edit: 'mySlots' } },
+    { field: 'mySlots', title: '自定义插槽', width: 200, slots: { default: 'mySlots' } },
   ],
   data: [
     {
@@ -171,17 +171,29 @@ const handleAdd = () => {
 const handleDelete = () => {
   gridApi.deleteSelection();
 };
+
+const setHeader = (column: any) => {
+  column.slots.header = 'myTitle'
+}
 </script>
 
 <template>
   <div class="vp-raw">
     <Grid>
-      <!-- <template #toolbar>
+      <template #toolbar>
         <a-button type="primary" @click="handleAdd">添加</a-button>
         <a-button @click="handleDelete">删除选中</a-button>
-      </template> -->
-      <template #mySlots>
-        mySlots
+      </template>
+      <template #mySlots="{ row, column }">
+        <a-button type="primary" @click="setHeader(column)">设置自定义头</a-button>
+      </template>
+      <template #myTitle>
+        <div class="flex items-center gap-2">
+          这是自定义头
+          <a-tooltip content="这是提示">
+            <SunnyIcon icon="lucide:plus" class="cursor-pointer outline-none" />
+          </a-tooltip>
+        </div>
       </template>
     </Grid>
     <pre>{{ JSON.stringify(gridOptions.data, null, 2) }}</pre>
