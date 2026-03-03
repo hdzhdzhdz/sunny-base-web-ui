@@ -38,7 +38,13 @@ const gridOptions = reactive({
       width: 120,
       ...EditRender.BusinessSearchRender,
       params: {
-        cNum: 'XTGL_USER_ROLE'
+        cNum: 'XTGL_USER_ROLE',
+        multiple: false,
+        fieldNames: {
+          label: 'C_ROLENAME',
+          value: 'ID',
+          desc: 'C_ROLENUMB'
+        }
       }
     },
     { field: 'createTime', title: '日期选择器', width: 120, ...EditRender.DatePickerRender },
@@ -134,9 +140,8 @@ const gridOptions = reactive({
     },
   ],
   border: true,
-  showOverflow: true,
-  showHeaderOverflow: true,
-  showFooterOverflow: true,
+  showOverflow: 'title',
+  showHeaderOverflow: 'title',
   size: 'mini',
   // virtualYConfig: {
   //   enabled: true,
@@ -154,6 +159,9 @@ const gridOptions = reactive({
     trigger: 'click',
     mode: 'row'
   },
+  columnConfig: {
+    resizable: true,
+  }
 });
 
 const gridEvents = {

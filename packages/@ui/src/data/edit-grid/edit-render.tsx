@@ -337,14 +337,14 @@ export const BusinessSearchRender = {
   editRender: {},
   slots: {
     default: ({ row, column }: { row: any, column: any }) => {
-      return [<span>{row[column.field]}</span>]
+      return [<span>{JSON.stringify(row[column.field])}</span>]
     },
     edit: ({ row, column }: { row: any, column: any }) => {
       return [
         <SunnyBusinessSearch
           modelValue={row[column.field]}
           onUpdate:modelValue={(val: any) => { row[column.field] = val }}
-          cNum={column.params.cNum}
+          {...column.params}
         />]
     }
   }
