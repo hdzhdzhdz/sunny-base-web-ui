@@ -6,7 +6,7 @@
       :placeholder="placeholder"
       :disabled="disabled"
       :max-tag-count="maxTagCount"
-      :field-names="mergedModalProps.fieldNames"
+      :field-names="mergedFieldNames"
       @update:model-value="val => selectedValues = val"
       @search="handleOpen"
     >
@@ -56,6 +56,15 @@ const {
   handleConfirm
 } = useSunnyBusinessSearch(props, emit as any);
 
+// 合并 fieldNames
+// 优先级: props.fieldNames > props.modalProps.fieldNames > currentConfig.fieldNames > 默认值
+const mergedFieldNames = computed(() => {
+  return props.fieldNames
+    || props.modalProps?.fieldNames
+    || currentConfig.value.fieldNames
+    || { label: 'label', value: 'value' };
+});
+
 // 合并配置
 const mergedModalProps = computed(() => {
   // 优先级: props.modalProps.multiple > props.multiple > props.cSelectionMode > currentConfig.multiple > default(true)
@@ -64,20 +73,20 @@ const mergedModalProps = computed(() => {
   if (baseMultiple === undefined) {
     baseMultiple = props.multiple;
   }
-  
+
   if (baseMultiple === undefined && props.cSelectionMode) {
     baseMultiple = props.cSelectionMode !== 'single';
   }
-  
+
   baseMultiple = baseMultiple ?? currentConfig.value.multiple ?? true;
 
   // 处理表格列，自动注入选择列
   const rawColumns = props.modalProps.tableColumns || currentConfig.value.tableColumns || [];
   let tableColumns = [...rawColumns];
-  
+
   // 检查是否已存在选择列
   const hasSelectionCol = tableColumns.some((col: any) => col.type === 'checkbox' || col.type === 'radio');
-  
+
   if (!hasSelectionCol && tableColumns.length > 0) {
     if (baseMultiple) {
       tableColumns.unshift({ type: 'checkbox', width: 50, fixed: 'left', align: 'center' });
@@ -89,6 +98,7 @@ const mergedModalProps = computed(() => {
   return {
     ...currentConfig.value,
     multiple: baseMultiple,
+    fieldNames: mergedFieldNames.value,
     ...props.modalProps, // 用户传入的 modalProps 优先级最高
     tableColumns, // 覆盖处理后的 columns
   };

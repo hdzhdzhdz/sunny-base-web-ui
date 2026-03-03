@@ -1,6 +1,7 @@
 import type { VxeGridPropTypes } from 'vxe-table';
 import type { FormSchema } from '../../entry/form/types';
 import type { SunnySearchModalProps } from '../../feedback/search-modal/types';
+import type { FieldNames } from '../../entry/search-input-tag/types';
 
 /**
  * 业务搜索组件配置接口
@@ -92,6 +93,11 @@ export interface SunnyBusinessSearchProps {
    * @default false
    */
   disabled?: boolean;
+  /**
+   * 字段名映射
+   * 优先级: props.fieldNames > props.modalProps.fieldNames > currentConfig.fieldNames
+   */
+  fieldNames?: FieldNames;
 }
 
 /**
