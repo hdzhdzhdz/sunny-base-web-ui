@@ -28,6 +28,14 @@ export interface SunnySearchPlanProps {
    */
   currentSearchPlan?: SearchPlanItem;
   /**
+   * 资源ID
+   */
+  resourceId: string;
+  /**
+   * 资源编号
+   */
+  nResourceid?: number;
+  /**
    * 是否禁用
    */
   disabled?: boolean;
@@ -78,4 +86,12 @@ export interface SunnySearchPlanEmits {
    * 搜索
    */
   (e: 'search', model: Record<string, any>): void;
+  /**
+   * 错误事件
+   */
+  (e: 'error', error: any): void;
+  /**
+   * 默认查询方案加载完成
+   */
+  (e: 'default-plan-loaded', model: Record<string, any>): void;
 }

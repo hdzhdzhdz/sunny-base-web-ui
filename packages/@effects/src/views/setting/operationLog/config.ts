@@ -76,3 +76,11 @@ export const tableColumns: VxeGridProps<OperationLogVO>['columns'] = [
   { field: 'nSecond', title: '执行时间(秒)', width: 120 },
   { field: 'dCreate', title: '操作时间', width: 180 }
 ];
+
+/**
+ * 资源配置
+ */
+export const resourceConfig = {
+  resourceId: 'operationLog',
+  nResourceid: 103
+};

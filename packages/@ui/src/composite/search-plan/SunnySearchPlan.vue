@@ -1,8 +1,8 @@
 <template>
-  <div class="sunny-search-plan">
+  <div class="inline-block">
     <slot name="trigger" :open="customHandleOpen" :disabled="disabled">
       <button
-        class="sunny-search-plan-trigger"
+        class="px-3 py-1.5 border border-gray-300 rounded bg-white text-sm transition-all hover:border-blue-500 hover:text-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
         :disabled="disabled"
         @click="customHandleOpen"
       >
@@ -20,16 +20,16 @@
       @cancel="handleClose"
       @close="handleClose"
     >
-      <div class="sunny-search-plan-content">
+      <div class="p-5 relative">
         <!-- 加载遮罩 -->
-        <div v-if="props.loading" class="sunny-search-plan-loading">
-          <div class="sunny-search-plan-loading-spinner"></div>
-          <div class="sunny-search-plan-loading-text">加载中...</div>
+        <div v-if="props.loading" class="absolute inset-0 bg-white/80 flex flex-col items-center justify-center z-10 rounded">
+          <div class="w-7 h-7 border-3 border-gray-200 border-t-blue-500 rounded-full animate-spin mb-2.5"></div>
+          <div class="text-sm text-gray-600">加载中...</div>
         </div>
         
-        <div class="sunny-search-plan-main" :class="{ 'sunny-search-plan-main-loading': props.loading }">
+        <div :class="{ 'opacity-60': props.loading }" class="flex gap-5">
           <!-- 左侧表单区域 -->
-          <div class="sunny-search-plan-form">
+          <div class="flex-1 min-w-0">
             <SunnyUseForm
               :form-api="formApi"
               :schema="formConfig"
@@ -41,33 +41,33 @@
           </div>
 
           <!-- 右侧查询方案管理区域 -->
-          <div class="sunny-search-plan-view">
-            <h3>新建查询方案</h3>
+          <div class="w-60">
+            <h3 class="text-sm font-semibold mb-4 text-gray-800">新建查询方案</h3>
 
-            <div class="sunny-search-plan-create">
-              <div class="sunny-search-plan-form-item">
-                <label>查询方案名称</label>
+            <div class="mb-5">
+              <div class="mb-3">
+                <label class="block text-xs text-gray-600 mb-1">查询方案名称</label>
                 <input
                   v-model="inputValue"
                   type="text"
                   placeholder="请输入"
-                  class="sunny-search-plan-input"
+                  class="w-full px-2 py-1.5 border border-gray-300 rounded text-xs focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                   :disabled="props.loading"
                 />
-                <div v-if="!inputValue.trim() && showNameError" class="sunny-search-plan-error">
+                <div v-if="!inputValue.trim() && showNameError" class="text-xs text-red-500 mt-1">
                   请输入查询方案名称
                 </div>
               </div>
-              <div class="sunny-search-plan-actions">
+              <div class="flex gap-2 mt-3">
                 <button
-                  class="sunny-search-plan-btn sunny-search-plan-btn-primary"
+                  class="px-3 py-1 bg-blue-500 border border-blue-500 text-white text-xs rounded hover:bg-blue-600 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                   @click="handleAdd"
                   :disabled="props.loading"
                 >
                   新增
                 </button>
                 <button
-                  class="sunny-search-plan-btn sunny-search-plan-btn-danger"
+                  class="px-3 py-1 border border-red-500 text-red-500 text-xs rounded hover:bg-red-50 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                   :disabled="!currentSearchPlan || props.loading"
                   @click="handleUpdate"
                 >
@@ -76,28 +76,30 @@
               </div>
             </div>
 
-            <div class="sunny-search-plan-divider"></div>
+            <div class="h-px bg-gray-200 my-5"></div>
 
-            <h3>已保存的查询方案</h3>
+            <h3 class="text-sm font-semibold mb-4 text-gray-800">已保存的查询方案</h3>
 
-            <div class="sunny-search-plan-list">
+            <div class="max-h-44 overflow-y-auto border border-gray-200 rounded p-2">
               <div
                 v-for="(plan, index) in searchPlanList"
                 :key="plan.ID"
-                class="sunny-search-plan-item"
-                :class="{ 'active': currentSearchPlan?.ID === plan.ID }"
+                class="flex items-center p-2 mb-1 rounded cursor-pointer transition-all hover:bg-gray-100 border border-transparent"
+                :class="{ 'bg-blue-50 border-blue-300': currentSearchPlan && (currentSearchPlan.ID == plan.ID || currentSearchPlan.ID === plan.ID) }"
                 @click="handleSelect(plan)"
                 :style="{ cursor: props.loading ? 'not-allowed' : 'pointer' }"
               >
                 <div
-                  class="sunny-search-plan-item-index"
-                  :class="{ 'active': currentSearchPlan?.ID === plan.ID }"
+                  class="w-5 h-5 flex items-center justify-center rounded text-xs mr-2 text-gray-600"
+                  :class="currentSearchPlan && (currentSearchPlan.ID == plan.ID || currentSearchPlan.ID === plan.ID) ? 'bg-blue-600 text-white' : 'bg-gray-200'"
                 >
                   {{ String(index + 1).padStart(2, '0') }}
                 </div>
-                <div class="sunny-search-plan-item-name">{{ plan.CSEARCHPLANNAME }}</div>
+                <div class="flex-1 text-xs truncate" :class="currentSearchPlan && (currentSearchPlan.ID == plan.ID || currentSearchPlan.ID === plan.ID) ? 'text-blue-700 font-medium' : 'text-gray-800'">
+                  {{ plan.CSEARCHPLANNAME }}
+                </div>
                 <button
-                  class="sunny-search-plan-item-delete"
+                  class="w-4 h-4 flex items-center justify-center border-none bg-transparent cursor-pointer text-sm text-gray-400 transition-colors rounded hover:text-red-500 hover:bg-red-50"
                   @click.stop="handleDelete(plan)"
                   :disabled="props.loading"
                 >
@@ -111,16 +113,16 @@
 
       <!-- 底部按钮区域 -->
       <template #footer>
-        <div class="sunny-search-plan-footer">
+        <div class="flex justify-end gap-3 pt-5 border-t border-gray-200">
           <button
-            class="sunny-search-plan-btn"
+            class="px-3 py-1.5 border border-gray-300 rounded bg-white text-sm transition-colors hover:border-blue-500 hover:text-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
             @click="handleReset"
             :disabled="props.loading"
           >
             重置
           </button>
           <button
-            class="sunny-search-plan-btn sunny-search-plan-btn-primary"
+            class="px-3 py-1.5 bg-blue-500 border border-blue-500 text-white text-sm rounded hover:bg-blue-600 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
             @click="handleSearch"
             :disabled="props.loading"
           >
@@ -136,15 +138,24 @@
 import { computed, ref, watch } from 'vue';
 import { SunnyUseForm, useSunnyForm } from '../../entry/form';
 import { Modal } from '../../feedback/modal';
+// @ts-ignore
+import { Message } from '@arco-design/web-vue';
 import { useSunnySearchPlan } from './use-sunny-search-plan';
-import type { SunnySearchPlanProps, SunnySearchPlanEmits } from './types';
+import type { SunnySearchPlanProps, SunnySearchPlanEmits, SearchPlanItem } from './types';
+import type { SearchPlanApi } from './api';
+import { defaultSearchPlanApi } from './api';
 
 defineOptions({
   name: 'SunnySearchPlan',
   inheritAttrs: false,
 });
 
-const props = withDefaults(defineProps<SunnySearchPlanProps>(), {
+const props = withDefaults(defineProps<SunnySearchPlanProps & {
+  /**
+   * 查询方案API实现
+   */
+  api?: SearchPlanApi;
+}>(), {
   disabled: false,
   modalProps: () => ({}),
   formProps: () => ({}),
@@ -155,11 +166,15 @@ const props = withDefaults(defineProps<SunnySearchPlanProps>(), {
   width: 900,
   searchPlanList: () => [],
   loading: false,
+  api: () => defaultSearchPlanApi,
 });
 
 const emit = defineEmits<SunnySearchPlanEmits & {
   (e: 'update:model', value: Record<string, any>): void;
   (e: 'update:modelValue', value: Record<string, any>): void;
+  (e: 'update:currentSearchPlan', value: SearchPlanItem | undefined): void;
+  (e: 'update:searchPlanList', value: SearchPlanItem[]): void;
+  (e: 'error', error: any): void;
 }>();
 
 // 使用useSunnyForm hook创建表单实例
@@ -182,18 +197,39 @@ const {
   handleReset,
   handleSearch,
   handleClose,
-  handleOpen
-} = useSunnySearchPlan(props, emit, localModel, formApi);
+  handleOpen,
+  loadSearchPlans,
+  loadDefaultSearchPlan
+} = useSunnySearchPlan(props, emit, localModel, formApi, props.api);
 
-// 自定义 handleOpen 函数，确保打开弹窗时清空表单数据和清除查询方案选中状态
-const customHandleOpen = async () => {
-  // 调用原始的 handleOpen 函数，清空表单数据
-  await handleOpen();
-  // 清除查询方案选中状态
-  if (props.currentSearchPlan) {
-    // 触发一个事件，通知父组件清除选中状态
-    emit('update:currentSearchPlan', undefined);
+// 组件挂载时加载查询方案列表和默认查询方案
+import { onMounted } from 'vue';
+onMounted(async () => {
+  if (props.resourceId) {
+    try {
+      // 加载查询方案列表
+      const plans = await loadSearchPlans(props.resourceId);
+      emit('update:searchPlanList', plans);
+      
+      // 加载默认查询方案
+      await loadDefaultSearchPlan();
+    } catch (error) {
+      console.error('Failed to initialize search plan:', error);
+    }
+  } else {
+    // 即使没有resourceId，也尝试加载默认查询方案（可能使用nResourceid）
+    try {
+      await loadDefaultSearchPlan();
+    } catch (error) {
+      console.error('Failed to load default search plan:', error);
+    }
   }
+});
+
+// 自定义 handleOpen 函数，确保打开弹窗时清空表单数据
+const customHandleOpen = async () => {
+  // 调用原始的 handleOpen 函数，清空表单数据并加载查询方案
+  await handleOpen();
 };
 
 // 表单挂载完成后的处理
@@ -240,7 +276,17 @@ const modalProps = computed(() => ({
   ...props.modalProps,
 }));
 
-const formConfig = computed(() => props.formConfig);
+const formConfig = computed(() => {
+  // 对表单配置进行处理，将一行六列的配置改成一行三列，并添加 labelWidth: 80
+  return props.formConfig.map(field => ({
+    ...field,
+    labelWidth: 80,
+    colProps: {
+      ...field.colProps,
+      span: 8 // 一行三列
+    }
+  }));
+});
 const searchPlanList = computed(() => props.searchPlanList);
 const currentSearchPlan = computed(() => props.currentSearchPlan);
 const disabled = computed(() => props.disabled);
@@ -248,282 +294,3 @@ const formProps = computed(() => props.formProps);
 const title = computed(() => props.title);
 const width = computed(() => props.width);
 </script>
-
-<style scoped>
-.sunny-search-plan {
-  display: inline-block;
-}
-
-.sunny-search-plan-trigger {
-  padding: 6px 12px;
-  border: 1px solid #d9d9d9;
-  border-radius: 4px;
-  background-color: #fff;
-  cursor: pointer;
-  font-size: 14px;
-  transition: all 0.3s;
-}
-
-.sunny-search-plan-trigger:hover {
-  border-color: #1890ff;
-  color: #1890ff;
-}
-
-.sunny-search-plan-trigger:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-.sunny-search-plan-content {
-  padding: 20px;
-  position: relative;
-}
-
-.sunny-search-plan-loading {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(255, 255, 255, 0.8);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-  border-radius: 4px;
-}
-
-.sunny-search-plan-loading-spinner {
-  width: 30px;
-  height: 30px;
-  border: 3px solid #f3f3f3;
-  border-top: 3px solid #1890ff;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 10px;
-}
-
-.sunny-search-plan-loading-text {
-  font-size: 14px;
-  color: #666;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.sunny-search-plan-main-loading {
-  opacity: 0.6;
-}
-
-.sunny-search-plan-main {
-  display: flex;
-  gap: 20px;
-}
-
-.sunny-search-plan-form {
-  flex: 1;
-  min-width: 0;
-}
-
-.sunny-search-plan-view {
-  width: 240px;
-}
-
-.sunny-search-plan-view h3 {
-  font-size: 14px;
-  font-weight: 600;
-  margin: 0 0 16px 0;
-  color: #333;
-}
-
-.sunny-search-plan-create {
-  margin-bottom: 20px;
-}
-
-.sunny-search-plan-form-item {
-  margin-bottom: 12px;
-}
-
-.sunny-search-plan-form-item label {
-  display: block;
-  font-size: 12px;
-  color: #666;
-  margin-bottom: 4px;
-}
-
-.sunny-search-plan-input {
-  width: 100%;
-  padding: 6px 8px;
-  border: 1px solid #d9d9d9;
-  border-radius: 4px;
-  font-size: 12px;
-  box-sizing: border-box;
-}
-
-.sunny-search-plan-input:focus {
-  outline: none;
-  border-color: #1890ff;
-  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
-}
-
-.sunny-search-plan-error {
-  font-size: 12px;
-  color: #ff4d4f;
-  margin-top: 4px;
-  line-height: 1;
-}
-
-.sunny-search-plan-actions {
-  display: flex;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.sunny-search-plan-btn {
-  padding: 4px 12px;
-  border: 1px solid #d9d9d9;
-  border-radius: 4px;
-  background-color: #fff;
-  cursor: pointer;
-  font-size: 12px;
-  transition: all 0.3s;
-}
-
-.sunny-search-plan-btn:hover:not(:disabled) {
-  border-color: #1890ff;
-  color: #1890ff;
-}
-
-.sunny-search-plan-btn:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-  border-color: #d9d9d9;
-  color: #999;
-}
-
-.sunny-search-plan-btn:disabled:hover {
-  border-color: #d9d9d9;
-  color: #999;
-}
-
-.sunny-search-plan-btn-primary {
-  background-color: #1890ff;
-  border-color: #1890ff;
-  color: #fff;
-}
-
-.sunny-search-plan-btn-primary:hover:not(:disabled) {
-  background-color: #40a9ff;
-  border-color: #40a9ff;
-}
-
-.sunny-search-plan-btn-danger {
-  border-color: #ff4d4f;
-  color: #ff4d4f;
-}
-
-.sunny-search-plan-btn-danger:hover:not(:disabled) {
-  background-color: #fff2f0;
-}
-
-.sunny-search-plan-divider {
-  height: 1px;
-  background-color: #f0f0f0;
-  margin: 20px 0;
-}
-
-.sunny-search-plan-list {
-  max-height: 166px;
-  overflow-y: auto;
-  border: 1px solid #f0f0f0;
-  border-radius: 4px;
-  padding: 8px;
-}
-
-.sunny-search-plan-item {
-  display: flex;
-  align-items: center;
-  padding: 8px;
-  margin-bottom: 4px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.sunny-search-plan-item:hover {
-  background-color: #f5f5f5;
-}
-
-.sunny-search-plan-item.active {
-  background-color: #e6f7ff;
-}
-
-.sunny-search-plan-item-index {
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  font-size: 12px;
-  margin-right: 8px;
-  background-color: #f0f0f0;
-  color: #666;
-}
-
-.sunny-search-plan-item.active .sunny-search-plan-item-index {
-  background-color: #1890ff;
-  color: #fff;
-}
-
-.sunny-search-plan-item-name {
-  flex: 1;
-  font-size: 12px;
-  color: #333;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.sunny-search-plan-item-delete {
-  width: 16px;
-  height: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  background: none;
-  cursor: pointer;
-  font-size: 14px;
-  color: #999;
-  transition: color 0.3s;
-  border-radius: 2px;
-}
-
-.sunny-search-plan-item-delete:hover {
-  color: #ff4d4f;
-  background-color: #fff2f0;
-}
-
-.sunny-search-plan-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  padding-top: 20px;
-  border-top: 1px solid #f0f0f0;
-}
-
-@media (max-width: 768px) {
-  .sunny-search-plan-main {
-    flex-direction: column;
-  }
-
-  .sunny-search-plan-view {
-    width: 100%;
-    margin-top: 20px;
-  }
-}
-</style>
