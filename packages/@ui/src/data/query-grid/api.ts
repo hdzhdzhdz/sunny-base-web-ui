@@ -13,22 +13,31 @@ export class VxeGridApi {
   }
 
   /**
+   * 获取 VxeGrid 实例
+   * 可以直接调用 VxeTable 的所有方法
+   * @returns VxeGridInstance | undefined
+   */
+  get $grid(): VxeGridInstance | undefined {
+    return this.grid;
+  }
+
+  /**
    * 新增数据
-   * @param params 
-   * @returns 
+   * @param params
+   * @returns
    */
   async addEvent(params: {
     // 默认值
-    record?: any, 
+    record?: any,
     // 插入位置，默认最后，-1表示最后
     index?: number
   } = {}) {
     const $grid = this.grid;
     if ($grid) {
       const { record = {}, index = -1 } = params;
-      
+
       const { row: newRow } = await $grid.insertAt(record, index);
-      
+
       await nextTick();
       $grid.setEditRow(newRow);
     }

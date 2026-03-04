@@ -9,6 +9,7 @@ import { SunnyApiSelect } from "./entry/api-select";
 import { useSunnyForm, FormApi, SunnyForm, setupSunnyForm, z } from './entry/form';
 import { useSunnyEditGrid } from './data/edit-grid'
 import * as EditRender from './data/edit-grid/edit-render'
+import * as Validators from './data/edit-grid/validators'
 import { useSunnyQueryGrid } from './data/query-grid'
 import { SunnyResourceTree } from './data/resource-tree'
 import { SunnySearchModal } from './feedback/search-modal'
@@ -18,11 +19,11 @@ import { patterns } from "@sunny-base-web/utils";
 export * from "./navigation/nprogress";
 export * from "./basic/icon/types";
 
-export { 
-  Modal, 
-  useSunnyModal, 
-  ModalTypes, 
-  SunnyIcon, 
+export {
+  Modal,
+  useSunnyModal,
+  ModalTypes,
+  SunnyIcon,
   SunnyScrollbar,
   SunnyUpload,
   SunnyBatchSelect,
@@ -34,6 +35,7 @@ export {
   SunnyForm,
   setupSunnyForm,
   EditRender,
+  Validators,
   useSunnyEditGrid,
   useSunnyQueryGrid,
   SunnyResourceTree,
