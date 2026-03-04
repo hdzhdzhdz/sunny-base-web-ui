@@ -1,5 +1,5 @@
 ---
-outline: [2, 3，4]
+outline: [2, 4]
 ---
 
 # EditGrid 编辑表格
@@ -35,7 +35,7 @@ outline: [2, 3，4]
 
 ### `VxeGridApi 方法`
 
-#### `reloadData(data)`
+#### `reloadData`
 
 加载数据并清除所有状态。
 
@@ -46,7 +46,7 @@ outline: [2, 3，4]
 await gridApi.reloadData(newData);
 ```
 
-#### `getFullData()`
+#### `getFullData`
 
 获取完整的全量表体数据。
 
@@ -55,7 +55,7 @@ await gridApi.reloadData(newData);
 const data = await gridApi.getFullData();
 ```
 
-#### `getCheckboxRecords()`
+#### `getCheckboxRecords`
 
 获取选中的行数据。
 
@@ -64,7 +64,7 @@ const data = await gridApi.getFullData();
 const selectedRows = await gridApi.getCheckboxRecords();
 ```
 
-#### `addEvent(record?, index?)`
+#### `addEvent`
 
 向表格添加新行并激活该行的编辑模式。
 
@@ -79,7 +79,7 @@ gridApi.addEvent();
 gridApi.addEvent({ name: 'New User', age: 18 }, 0);
 ```
 
-#### `deleteSelection()`
+#### `deleteSelection`
 
 删除表格中当前选中的（打钩的）所有行。
 
@@ -88,7 +88,7 @@ gridApi.addEvent({ name: 'New User', age: 18 }, 0);
 gridApi.deleteSelection();
 ```
 
-#### `validate(full?)`
+#### `validate`
 
 校验表格数据。
 
@@ -171,12 +171,61 @@ const [Grid, gridApi] = useSunnyEditGrid({ gridOptions, gridEvents });
 
 > 💡 查看 [VxeTable 官方文档](https://vxetable.cn/v4/#/grid/api) 了解完整的 API 和配置选项。
 
+### Slots 示例
+#### 工具栏插槽
+
+使用 `#toolbar` 插槽自定义工具栏内容：
+
 ```vue
 <template>
   <Grid border :columns="columns">
     <template #toolbar>
-      <a-button @click="gridApi.addEvent()">添加</a-button>
+      <a-button type="primary" @click="gridApi.addEvent()">添加</a-button>
       <a-button @click="gridApi.deleteSelection()">删除</a-button>
+      <a-button @click="handleSave">保存</a-button>
+    </template>
+  </Grid>
+</template>
+```
+
+#### 列插槽
+
+在 columns 配置中使用 `slots` 自定义列的渲染内容：
+
+```typescript
+const columns = [
+  {
+    field: 'name',
+    title: '姓名',
+    slots: {
+      default: ({ row }: { row: any }) => {
+        return h('span', { style: { color: 'red' } }, row.name)
+      }
+    }
+  },
+  {
+    field: 'status',
+    title: '状态',
+    slots: {
+      default: ({ row }: { row: any }) => {
+        return row.status === 'active'
+          ? h('a-tag', { color: 'green' }, '激活')
+          : h('a-tag', { color: 'red' }, '禁用')
+      }
+    }
+  }
+]
+```
+
+或在模板中使用 `#column_{field}` 插槽：
+
+```vue
+<template>
+  <Grid border :columns="columns">
+    <template #column_status="{ row }">
+      <a-tag :color="row.status === 'active' ? 'green' : 'red'">
+        {{ row.status === 'active' ? '激活' : '禁用' }}
+      </a-tag>
     </template>
   </Grid>
 </template>
