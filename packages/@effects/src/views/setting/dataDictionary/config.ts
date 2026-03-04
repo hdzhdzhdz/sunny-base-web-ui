@@ -1,0 +1,119 @@
+import type { FormSchema } from '@sunny-base-web/ui';
+import type { VxeGridProps } from 'vxe-table';
+import type { DataDictionaryVO, DataDictionaryFormVO } from './types';
+import selectOptions from '../../../utils/select-options';
+
+/**
+ * 搜索表单配置
+ */
+export const searchFormSchema: FormSchema[] = [
+  {
+    fieldName: 'cXuhao',
+    label: '字典编号',
+    component: 'Input',
+    componentProps: {
+      placeholder: '请输入字典编号',
+      allowClear: true
+    },
+    colProps: { span: 6 }
+  },
+  {
+    fieldName: 'cName',
+    label: '字典名称',
+    component: 'Input',
+    componentProps: {
+      placeholder: '请输入字典名称',
+      allowClear: true
+    },
+    colProps: { span: 6 }
+  },
+  {
+    fieldName: 'cSign',
+    label: '是否启用',
+    component: 'Select',
+    componentProps: {
+      placeholder: '请选择是否启用',
+      allowClear: true,
+      options: selectOptions.sjzdSignOpts
+    },
+    colProps: { span: 6 }
+  }
+];
+
+/**
+ * 新增表单配置
+ */
+export const addFormSchema: FormSchema[] = [
+  {
+    fieldName: 'parentName',
+    label: '父级字典',
+    component: 'Input',
+    componentProps: {
+      disabled: true,
+      placeholder: '无'
+    }
+  },
+  {
+    fieldName: 'cXuhao',
+    label: '字典编号',
+    component: 'Input',
+    rules: 'required',
+    componentProps: {
+      placeholder: '请输入字典编号',
+      allowClear: true
+    }
+  },
+  {
+    fieldName: 'cName',
+    label: '字典名称',
+    component: 'Input',
+    rules: 'required',
+    componentProps: {
+      placeholder: '请输入字典名称',
+      allowClear: true
+    }
+  },
+  {
+    fieldName: 'cSign',
+    label: '是否启用',
+    component: 'Select',
+    rules: 'required',
+    componentProps: {
+      placeholder: '请选择是否启用',
+      options: selectOptions.sjzdSignOpts
+    }
+  },
+  {
+    fieldName: 'nOrder',
+    label: '排序',
+    component: 'InputNumber',
+    componentProps: {
+      placeholder: '请输入排序',
+      min: 0,
+      precision: 0
+    }
+  }
+];
+
+/**
+ * 表格列配置
+ */
+export const tableColumns: VxeGridProps<DataDictionaryVO>['columns'] = [
+  { type: 'checkbox', width: 50 },
+  { type: 'seq', title: '序号', width: 60 },
+  { field: 'id', title: '数据字典ID', minWidth: 140, treeNode: true },
+  { field: 'cXuhao', title: '字典编号', minWidth: 140 },
+  { field: 'cName', title: '字典名称', minWidth: 180 },
+  {
+    field: 'cSign',
+    title: '是否启用',
+    width: 100,
+    formatter: ({ cellValue }) => {
+      const option = selectOptions.sjzdSignOpts.find(opt => opt.value === cellValue);
+      return option?.label || cellValue;
+    }
+  },
+  { field: 'cCreateName', title: '创建人', width: 120 },
+  { field: 'dCreate', title: '创建时间', width: 180 },
+  { field: 'nOrder', title: '排序', width: 80 }
+];
