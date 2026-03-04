@@ -70,6 +70,7 @@ export default defineConfig({
             { text: 'Form 表单', link: '/components/entry/form' },
             { text: 'Select 选择器', link: '/components/entry/select' },
             { text: 'BatchSelect 批量选择器', link: '/components/entry/batch-select' },
+            { text: 'ApiSelect API下拉选择器', link: '/components/entry/api-select' },
             { text: 'SearchInputTag 公共查询', link: '/components/entry/search-input-tag' }
           ]
         },
@@ -122,7 +123,8 @@ export default defineConfig({
       alias: {
         '@sunny-base-web/utils': path.resolve(__dirname, '../../../packages/@utils/src'),
         '@sunny-base-web/ui': path.resolve(__dirname, '../../../packages/@ui/src/index.ts'),
-        '@sunny-base-web/locales': path.resolve(__dirname, '../../../packages/@locales/src/index.ts')
+        '@sunny-base-web/locales': path.resolve(__dirname, '../../../packages/@locales/src/index.ts'),
+        '@sunny-base-web/effects': path.resolve(__dirname, '../../../packages/@effects/src/index.ts')
       }
     },
     ssr: {

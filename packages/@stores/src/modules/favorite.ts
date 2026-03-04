@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore } from 'pinia';
-import { queryFavorites, addFavorite, removeFavorite } from '@sunny-base-web/effects/api/favorite';
-import type { FavoriteItem } from '@sunny-base-web/effects/api/favorite';
+import { queryFavorites, addFavorite, removeFavorite } from '@sunny-base-web/effects';
+import type { FavoriteItem } from '@sunny-base-web/effects';
 import { useUserStore } from './user';
 
 interface FavoriteState {
