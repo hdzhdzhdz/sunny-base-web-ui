@@ -321,6 +321,94 @@ const fullValidEvent = async () => {
 
 > 💡 查看 [VxeTable 官方文档](https://vxetable.cn/v4/#/grid/start/edit) 了解更多校验规则和配置选项。
 
+## 行拖拽排序
+
+EditGrid 支持通过拖拽行来调整行的顺序，适用于需要手动排序的场景。
+
+### 基础配置
+
+行拖拽排序需要同时配置两个属性：
+
+1. **列配置中的 `dragSort`**：在序号列或任意列中启用拖拽排序
+2. **行配置中的 `drag`**：启用行拖拽功能
+
+```typescript
+const gridOptions = {
+  columns: [
+    { type: 'checkbox', width: 40, align: 'center', fixed: 'left' },
+    {
+      type: 'seq',
+      title: '序号',
+      width: 50,
+      align: 'center',
+      fixed: 'left',
+      dragSort: true // 开启列拖拽排序功能，用于行拖拽排序
+    },
+    // ... 其他列
+  ],
+  rowConfig: {
+    keyField: 'id',
+    drag: true, // 开启行拖拽功能，配合 dragSort 实现行拖拽排序
+  },
+  // ... 其他配置
+}
+```
+
+### 配置说明
+
+| 配置项 | 位置 | 说明 |
+|--------|------|------|
+| `dragSort: true` | 列配置（columns） | 启用列的拖拽排序功能，通常配置在序号列上 |
+| `drag: true` | 行配置（rowConfig） | 启用行拖拽功能 |
+
+### 使用示例
+
+```vue
+<script setup lang="ts">
+import { reactive } from 'vue';
+import { useSunnyEditGrid } from '@sunny-base-web/ui';
+
+const gridOptions = reactive({
+  columns: [
+    { type: 'checkbox', width: 40, align: 'center', fixed: 'left' },
+    {
+      type: 'seq',
+      title: '序号',
+      width: 50,
+      align: 'center',
+      fixed: 'left',
+      dragSort: true // 开启列拖拽排序
+    },
+    { field: 'name', title: '姓名', width: 150 },
+    { field: 'age', title: '年龄', width: 100 },
+    { field: 'email', title: '邮箱', width: 200 }
+  ],
+  rowConfig: {
+    keyField: 'id',
+    drag: true // 开启行拖拽
+  },
+  editConfig: {
+    enabled: true,
+    trigger: 'click',
+    mode: 'row'
+  }
+});
+
+const [Grid, gridApi] = useSunnyEditGrid({ gridOptions });
+</script>
+
+<template>
+  <Grid border />
+</template>
+```
+
+### 注意事项
+
+1. **序号列推荐**：建议在序号列（`type: 'seq'`）上配置 `dragSort: true`，这样用户可以通过拖拽序号来调整行顺序，操作更直观
+2. **keyField 配置**：使用行拖拽时，需要在 `rowConfig` 中配置 `keyField` 指定行的唯一标识字段
+3. **编辑模式兼容**：行拖拽排序功能与编辑模式可以同时使用，拖拽操作不会影响编辑功能
+4. **数据顺序**：拖拽排序后会自动更新表格数据的顺序，可以通过 `gridApi.getFullData()` 获取排序后的数据
+
 ## 编辑器类型
 
 EditGrid 支持使用 Arco Design 的表单组件作为编辑器：

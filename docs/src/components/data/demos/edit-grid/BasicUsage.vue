@@ -13,6 +13,14 @@ const gridOptions = reactive({
   columns: [
     { type: 'checkbox', width: 40, align: 'center', fixed: 'left' },
     {
+      type: 'seq',
+      title: '序号',
+      width: 50,
+      align: 'center',
+      fixed: 'left',
+      dragSort: true
+    },
+    {
       field: 'name',
       title: '输入框',
       width: 120,
@@ -153,7 +161,8 @@ const gridOptions = reactive({
   //   gt: 0
   // },
   rowConfig: {
-    keyField: 'id'
+    keyField: 'id',
+    drag: true,
   },
   editConfig: {
     enabled: true,
