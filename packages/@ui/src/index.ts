@@ -5,7 +5,6 @@ import { SunnyUpload } from "./data/upload";
 import SunnySelect from "./entry/select";
 import SunnyBatchSelect from "./entry/select/BatchSelect.vue";
 import SunnySearchInputTag from "./entry/search-input-tag";
-import { SunnyApiSelect } from "./entry/api-select";
 import { useSunnyForm, FormApi, SunnyForm, setupSunnyForm, z } from './entry/form';
 import { useSunnyEditGrid } from './data/edit-grid'
 import * as EditRender from './data/edit-grid/edit-render'
@@ -28,7 +27,6 @@ export {
   SunnyUpload,
   SunnyBatchSelect,
   SunnySelect,
-  SunnyApiSelect,
   SunnySearchInputTag,
   useSunnyForm,
   FormApi,
@@ -46,7 +44,6 @@ export {
 
 export * from "./entry/select/types";
 export * from "./entry/search-input-tag/types";
-export * from "./entry/api-select/types";
 export * from "./entry/form/types";
 export * from "./composite/business-search";
 export * from "./composite/search-plan";

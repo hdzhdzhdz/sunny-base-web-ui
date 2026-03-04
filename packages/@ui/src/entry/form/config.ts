@@ -27,7 +27,6 @@ import type {
 import { defineRule } from 'vee-validate';
 
 const SunnyBusinessSearch = defineAsyncComponent(() => import('../../composite/business-search/SunnyBusinessSearch.vue'));
-const SunnyApiSelect = defineAsyncComponent(() => import('../api-select/SunnyApiSelect.vue'));
 
 // 注册基础验证规则
 defineRule('required', (value: any) => {
@@ -76,7 +75,6 @@ export const COMPONENT_MAP: Record<string, Component> = {
   SunnyTimePicker: TimePicker,
   SunnyUpload: Upload,
   SunnyBusinessSearch,
-  SunnyApiSelect,
 };
 
 export const COMPONENT_BIND_EVENT_MAP: Record<string, string> = {
