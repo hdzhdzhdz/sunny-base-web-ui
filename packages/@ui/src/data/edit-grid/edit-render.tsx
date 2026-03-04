@@ -1,6 +1,7 @@
-import { Input, InputNumber, Select, DatePicker, MonthPicker, YearPicker, WeekPicker, RangePicker, Switch, Button } from '@arco-design/web-vue'
+import { Input, InputNumber, Select, DatePicker, MonthPicker, YearPicker, WeekPicker, RangePicker, Switch, Button, Textarea, Popover } from '@arco-design/web-vue'
 import { SunnyBusinessSearch } from '@sunny-base-web/ui'
 import { isArray } from 'lodash-es'
+import { ref } from 'vue'
 
 // 输入框
 export const InputRender = {
@@ -333,11 +334,61 @@ export const InputRangeRender = {
 //   }
 // }
 
+// 多行文本框
+export const TextareaRender = {
+  editRender: {},
+  slots: {
+    default: ({ row, column }: { row: any, column: any }) => {
+      return [<span>{row[column.field]}</span>]
+    },
+    edit: ({ row, column }: { row: any, column: any }) => {
+      const visible = ref(false)
+      const inputValue = ref(row[column.field] || '')
+
+      return [
+        <Popover
+          v-model:popupVisible={visible.value}
+          trigger="click"
+          position="top"
+        >
+          {{
+            default: () => [
+              <Input
+                modelValue={inputValue.value}
+                onUpdate:modelValue={(val: any) => {
+                  inputValue.value = val
+                  row[column.field] = val
+                }}
+                onFocus={() => {
+                  visible.value = true
+                }}
+                {...column.params}
+              />
+            ],
+            content: () => [
+              <Textarea
+                modelValue={inputValue.value}
+                onUpdate:modelValue={(val: any) => {
+                  inputValue.value = val
+                  row[column.field] = val
+                }}
+                autoSize={{ minRows: 3, maxRows: 6 }}
+                placeholder={column.params?.placeholder || '请输入内容'}
+                {...column.params}
+              />
+            ]
+          }}
+        </Popover>
+      ]
+    }
+  }
+}
+
 export const BusinessSearchRender = {
   editRender: {},
   slots: {
     default: ({ row, column }: { row: any, column: any }) => {
-      return [<span>{JSON.stringify(row[column.field])}</span>]
+      return [<span>{row[column.field] ? JSON.stringify(row[column.field]) : ''}</span>]
     },
     edit: ({ row, column }: { row: any, column: any }) => {
       return [
