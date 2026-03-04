@@ -13,3 +13,4 @@ export * from './layouts';
 export * from './views/setting/operationLog';
 export * from './views/setting/systemSetting';
 export * from './views/setting/dataDictionary';
+export * from './form';

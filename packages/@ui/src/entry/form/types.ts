@@ -367,6 +367,128 @@ export interface FormApiOptions extends SunnyFormProps {
 }
 
 /**
+ * BusinessSearch 加载配置返回格式
+ * BusinessSearch load config return format
+ */
+export interface BusinessSearchConfig {
+  /**
+   * 弹窗标题
+   */
+  title?: string;
+  /**
+   * 弹窗宽度
+   */
+  width?: string | number;
+  /**
+   * 内容高度
+   */
+  contentHeight?: string | number;
+  /**
+   * 是否多选
+   */
+  multiple?: boolean;
+  /**
+   * 搜索表单配置 (FormSchema 格式)
+   */
+  formSchema?: any[];
+  /**
+   * 表格列配置 (VxeTable 格式)
+   */
+  tableColumns?: any[];
+  /**
+   * 字段名映射
+   */
+  fieldNames?: {
+    label: string;
+    value: string;
+    desc?: string;
+  };
+  /**
+   * 搜索 API 函数
+   */
+  searchApi?: (params: any) => Promise<{ records: any[]; total: number }>;
+}
+
+/**
+ * BusinessSearch 搜索参数格式
+ * BusinessSearch search params format
+ */
+export interface BusinessSearchParams {
+  /**
+   * 配置编码
+   */
+  cNum: string;
+  /**
+   * 分页：当前页 (别名)
+   */
+  page?: number;
+  /**
+   * 分页：当前页
+   */
+  pageNo?: number;
+  /**
+   * 分页：每页条数
+   */
+  pageSize?: number;
+  /**
+   * 搜索字段
+   */
+  [key: string]: any;
+}
+
+/**
+ * BusinessSearch 搜索结果格式
+ * BusinessSearch search result format
+ */
+export interface BusinessSearchResult {
+  /**
+   * 数据列表
+   */
+  records: any[];
+  /**
+   * 总数
+   */
+  total: number;
+}
+
+/**
+ * BusinessSearch API 适配器接口
+ * BusinessSearch API adapter interface
+ *
+ * 组件不关心数据如何获取和转换，全部由 adapter 负责
+ * The component doesn't care about how data is fetched and transformed, all handled by adapter
+ */
+export interface BusinessSearchAdapter {
+  /**
+   * 加载动态配置
+   * Load dynamic configuration
+   *
+   * 职责：
+   * 1. 调用后端接口获取原始配置
+   * 2. 转换成 BusinessSearchConfig 格式
+   *
+   * @param cNum 配置编码
+   * @returns 已转换好的配置数据 (BusinessSearchConfig)
+   */
+  loadConfig?: (cNum: string) => Promise<BusinessSearchConfig>;
+
+  /**
+   * 搜索数据
+   * Search data
+   *
+   * 职责：
+   * 1. 接收前端组件传入的搜索参数
+   * 2. 转换成后端需要的格式
+   * 3. 调用后端接口
+   * 4. 转换返回结果成 BusinessSearchResult 格式
+   *
+   * @param params 搜索参数 (已包含分页信息)
+   * @returns 搜索结果 (BusinessSearchResult)
+   */
+  search?: (params: BusinessSearchParams) => Promise<BusinessSearchResult>;
+}
+
+/**
  * 表单通用配置
  * Form common configuration
  */
@@ -386,6 +508,13 @@ export interface FormCommonConfig {
    * Empty state value
    */
   emptyStateValue?: any;
+  /**
+   * BusinessSearch API 适配器
+   * BusinessSearch API adapter
+   * 用于适配业务系统的后端接口格式
+   * Used to adapt business system backend API formats
+   */
+  businessSearchAdapter?: BusinessSearchAdapter;
 }
 
 /**

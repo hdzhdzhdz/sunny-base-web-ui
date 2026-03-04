@@ -112,6 +112,121 @@ modalProps: {
 }
 ```
 
+## API 适配器配置
+
+### 配置入口
+
+在应用入口（`apps/web/src/bootstrap.ts`）调用 `setupBusinessForm()` 初始化配置：
+
+```typescript
+import { setupBusinessForm } from '@sunny-base-web/effects';
+
+// 方式1：使用默认配置（适用于标准业务系统）
+setupBusinessForm();
+
+// 方式2：覆盖部分配置
+setupBusinessForm({
+  config: {
+    businessSearchAdapter: {
+      // 只覆盖 loadConfig，search 仍使用默认实现
+      loadConfig: async (cNum) => {
+        return myCustomApi.loadConfig(cNum);
+      },
+    },
+  },
+});
+
+// 方式3：完全自定义（适用于非标准业务系统）
+setupBusinessForm({
+  config: {
+    businessSearchAdapter: {
+      loadConfig: async (cNum) => {
+        const res = await myApi.getConfig(cNum);
+        // 完全自定义转换逻辑
+        return {
+          title: res.title,
+          formSchema: res.fields,
+          tableColumns: res.columns,
+        };
+      },
+      search: async (params) => {
+        const res = await myApi.search(params);
+        return {
+          records: res.data,
+          total: res.count,
+        };
+      },
+    },
+  },
+  defineRules: {
+    phone: (value) => /^1[3-9]\d{9}$/.test(value) || '请输入正确的手机号',
+  },
+});
+```
+
+### 默认适配器的转换逻辑
+
+默认的 `businessSearchAdapter` 会自动处理以下转换：
+
+#### 1. loadConfig 配置转换
+
+```
+后端格式 (openInit)               →  组件格式 (BusinessSearchConfig)
+─────────────────────────────────────────────────────────────────────
+{                                  →  {
+  "cTitle": "设备选择",                  title: "设备选择",
+  "cWidth": "800",                       width: "800px",
+  "cHeight": "500",                      contentHeight: 500,
+  "cSelectionMode": "multiple",          multiple: true,
+
+  "conditions": [                        formSchema: [
+    {                                        {
+      "label": "设备名称",                      label: "设备名称",
+      "type": "input",                          fieldName: "C_DEVICE_NAME",
+      "prop": "C_DEVICE_NAME"                   component: "Input"
+    }                                        }
+  ],                                     ],
+
+  "tableCols": [                         tableColumns: [
+    {                                        {
+      "label": "设备编号",                      title: "设备编号",
+      "prop": "C_DEVICE_NO",                   field: "C_DEVICE_NO"
+      "width": 150                             width: 150
+    }                                        }
+  ]                                      ]
+}                                      }
+```
+
+#### 2. search 参数转换
+
+```
+前端参数                           →  后端参数 (selectForPageCommon)
+─────────────────────────────────────────────────────────────────────
+{                                  →  {
+  "cNum": "MACHINE_SBBH",                "sqlNum": "MACHINE_SBBH",
+  "page": 1,                             "pageNo": 1,
+  "pageSize": 20,                        "pageSize": 20,
+  "C_DEVICE_NAME": "泵"                  "conditions": {
+                                           "C_DEVICE_NAME": "泵"
+                                         }
+}                                      }
+```
+
+#### 3. search 结果转换
+
+```
+后端结果                           →  前端结果
+─────────────────────────────────────────────────────────────────────
+{                                  →  {
+  "result": {                            records: [...],
+    "list": [...] | "records": [...]     total: 100
+    "totalSize" | "total": 100         }
+  }
+}
+```
+
+---
+
 ## API
 
 ### Props

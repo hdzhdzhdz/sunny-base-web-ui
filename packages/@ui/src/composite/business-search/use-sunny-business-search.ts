@@ -1,9 +1,9 @@
 import { ref, computed, watch, type WritableComputedRef, type Ref } from 'vue';
-import axios from 'axios';
 import type { SetupContext } from 'vue';
-import type { SunnyBusinessSearchProps, BusinessSearchConfig, DynamicConfigResponse } from './types';
-import { mapDynamicConfig, mapSearchRequest } from './utils/mapper';
+import type { SunnyBusinessSearchProps, BusinessSearchConfig } from './types';
 import { getBusinessConfig } from './configs';
+import { DEFAULT_FORM_COMMON_CONFIG } from '../../entry/form/config';
+import type { BusinessSearchAdapter } from '../../entry/form/types';
 
 export interface UseSunnyBusinessSearchReturn {
   visible: Ref<boolean>;
@@ -14,57 +14,92 @@ export interface UseSunnyBusinessSearchReturn {
   handleConfirm: (rows: any[]) => void;
 }
 
+/**
+ * BusinessSearch Hook
+ *
+ * 组件只负责 UI 组合，所有数据获取和格式转换都由 businessSearchAdapter 负责
+ * The component only handles UI composition, all data fetching and transformation is handled by businessSearchAdapter
+ */
 export function useSunnyBusinessSearch(
   props: SunnyBusinessSearchProps,
   emit: SetupContext['emit']
 ): UseSunnyBusinessSearchReturn {
-
   const visible = ref(false);
   const loading = ref(false);
   const currentConfig = ref<Partial<BusinessSearchConfig>>({});
-  
+
   // 内部维护的选中值，用于回显
   const selectedValues = computed({
     get: () => props.modelValue || [],
     set: (val) => {
       emit('update:modelValue', val);
       emit('change', val);
-    }
+    },
   });
 
-  // 动态搜索代理函数
-  const dynamicSearchProxy = async (params: any) => {
-    if (!props.cNum) return { records: [], total: 0 };
-    
-    const payload = mapSearchRequest(params, props.cNum);
-    try {
-      const res = await axios.post('/core/assDialog/selectForPageCommon', payload);
-      // 直接返回 result，因为 mapSearchRequest 已经处理了参数，
-      // 而后端返回结构 (records, total) 与组件期望一致 (或由 SunnySearchModal 处理)
-      return res.data?.result || { records: [], total: 0 };
-    } catch (error) {
-      console.error('[SunnyBusinessSearch] Dynamic search failed:', error);
-      throw error;
-    }
+  /**
+   * 获取全局配置的 adapter
+   * Get the globally configured adapter
+   */
+  const getAdapter = (): BusinessSearchAdapter | undefined => {
+    return DEFAULT_FORM_COMMON_CONFIG.businessSearchAdapter;
+  };
+
+  /**
+   * 创建搜索代理函数
+   * 这个函数会被注入到 currentConfig.searchApi 中，供 SunnySearchModal 调用
+   */
+  const createSearchProxy = (adapter: BusinessSearchAdapter) => {
+    return async (params: any) => {
+      if (!adapter?.search) {
+        console.warn('[SunnyBusinessSearch] No search adapter configured.');
+        return { records: [], total: 0 };
+      }
+
+      try {
+        // 调用 adapter.search，它负责：
+        // 1. 参数格式转换
+        // 2. 调用后端接口
+        // 3. 结果格式转换
+        // 4. 返回 { records, total } 格式
+        return await adapter.search({
+          ...params,
+          cNum: props.cNum,
+        });
+      } catch (error) {
+        console.error('[SunnyBusinessSearch] Search failed:', error);
+        throw error;
+      }
+    };
   };
 
   /**
    * 加载动态配置
+   * Load dynamic configuration
    */
   const loadDynamicConfig = async () => {
     if (!props.cNum) return;
-    
+
+    const adapter = getAdapter();
+    if (!adapter?.loadConfig) {
+      console.warn(
+        '[SunnyBusinessSearch] No loadConfig adapter configured. Please call setupBusinessForm() in your app entry.',
+      );
+      return;
+    }
+
     loading.value = true;
     try {
-      const res = await axios.post('/core/assDialog/openInit', { cNum: props.cNum });
-      if (res.data?.result) {
-        const mappedConfig = mapDynamicConfig(res.data.result as DynamicConfigResponse);
-        
-        // 注入动态搜索函数
-        mappedConfig.searchApi = dynamicSearchProxy;
-        
-        currentConfig.value = mappedConfig;
-      }
+      // 调用 adapter.loadConfig，它负责：
+      // 1. 调用后端接口
+      // 2. 格式转换
+      // 3. 返回 BusinessSearchConfig 格式
+      const config = await adapter.loadConfig(props.cNum);
+
+      // 注入搜索代理函数
+      config.searchApi = createSearchProxy(adapter);
+
+      currentConfig.value = config;
     } catch (error) {
       console.error('[SunnyBusinessSearch] Failed to load dynamic config:', error);
     } finally {
@@ -74,10 +109,11 @@ export function useSunnyBusinessSearch(
 
   /**
    * 加载静态配置
+   * Load static configuration
    */
   const loadStaticConfig = async () => {
     if (!props.type) return;
-    
+
     loading.value = true;
     try {
       const config = await getBusinessConfig(props.type);
@@ -93,17 +129,15 @@ export function useSunnyBusinessSearch(
 
   /**
    * 打开弹窗
+   * Open modal
    */
   const handleOpen = async () => {
     visible.value = true;
-    
-    // 如果已有配置且不是强制刷新，可考虑缓存。这里简化为每次打开检查
+
     // 优先动态配置
     if (props.cNum) {
-      // 简单缓存：如果已经加载过且 cNum 没变，可以不重新加载
-      // 这里为了保证数据实时性，每次打开都重新加载配置，或者可以加一个 loaded 标志
-      if (!currentConfig.value.title) { // 简单判断是否已加载
-         await loadDynamicConfig();
+      if (!currentConfig.value.title) {
+        await loadDynamicConfig();
       }
     } else if (props.type) {
       if (!currentConfig.value.title) {
@@ -114,6 +148,7 @@ export function useSunnyBusinessSearch(
 
   /**
    * 确认选择
+   * Confirm selection
    */
   const handleConfirm = (rows: any[]) => {
     selectedValues.value = rows;
@@ -122,10 +157,14 @@ export function useSunnyBusinessSearch(
 
   /**
    * 监听 cNum 或 type 变化，重置配置
+   * Reset config when cNum or type changes
    */
-  watch(() => [props.cNum, props.type], () => {
-    currentConfig.value = {};
-  });
+  watch(
+    () => [props.cNum, props.type],
+    () => {
+      currentConfig.value = {};
+    },
+  );
 
   return {
     visible,
@@ -133,6 +172,6 @@ export function useSunnyBusinessSearch(
     currentConfig,
     selectedValues,
     handleOpen,
-    handleConfirm
+    handleConfirm,
   };
 }

@@ -108,6 +108,9 @@ export function setupSunnyForm(options: SunnyFormAdapterOptions) {
     // 空状态时的默认值 (通常为 undefined)
     // Default value for empty state (Usually undefined)
     emptyStateValue = undefined,
+    // BusinessSearch API 适配器
+    // BusinessSearch API adapter
+    businessSearchAdapter,
   } = (config || {}) as FormCommonConfig;
 
   // 将配置应用到全局默认配置对象中，供其他组件使用
@@ -116,6 +119,7 @@ export function setupSunnyForm(options: SunnyFormAdapterOptions) {
     disabledOnChangeListener,
     disabledOnInputListener,
     emptyStateValue,
+    businessSearchAdapter,
   });
 
 

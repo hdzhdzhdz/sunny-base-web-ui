@@ -1,23 +1,14 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { useSunnyForm } from '@sunny-base-web/ui';
 import { Message, Input, Button, Modal } from '@arco-design/web-vue';
-import axios from 'axios';
 
 const cNum = ref('MACHINE_SBBH');
-const token = ref('');
-
-// 监听 Token 变化并设置到全局 axios header
-watch(token, (newVal) => {
-  if (newVal) {
-    axios.defaults.headers.common['Authorization'] = newVal.startsWith('Bearer ') ? newVal : `Bearer ${newVal}`;
-  } else {
-    delete axios.defaults.headers.common['Authorization'];
-  }
-});
 
 const [Form, formApi] = useSunnyForm({
   layout: 'horizontal',
+  // 隐藏默认的提交/重置按钮
+  showDefaultActions: false,
   // 配置对象数组与值字符串的双向转换字段
   // Configure bidirectional conversion between object array and value string
   // setValues: 'M001,M002' → [{ C_DEVICE_NO: 'M001', ... }, ...]
@@ -70,30 +61,20 @@ const handleSetMockValue = () => {
 
 <template>
   <div class="space-y-4">
-    <div class="flex gap-4 mb-4 bg-gray-50 p-4 rounded">
-      <div class="flex-1">
-        <label class="block text-sm font-medium mb-1">C-Num (动态参数)</label>
-        <Input v-model="cNum" placeholder="请输入配置编码" />
-      </div>
-      <div class="flex-1">
-        <label class="block text-sm font-medium mb-1">Token (Authorization)</label>
-        <Input v-model="token" placeholder="请输入 Token" />
-      </div>
+    <div class="mb-4 bg-gray-50 p-4 rounded">
+      <label class="block text-sm font-medium mb-1">C-Num (动态参数)</label>
+      <Input v-model="cNum" placeholder="请输入配置编码" />
     </div>
 
     <Form />
-    
+
     <div class="flex gap-4">
       <Button type="primary" @click="handleCheckValues">查看表单值</Button>
       <Button @click="handleSetMockValue">设置模拟值</Button>
     </div>
-    
+
     <div class="bg-gray-100 p-4 rounded mt-4">
       <h3 class="font-bold mb-2">实时表单值 (Reactive):</h3>
-      <!-- Correctly unwrap the Ref value using .value in JS expression if useStore returns Ref, 
-           BUT in template top-level refs are unwrapped. 
-           However, inside JSON.stringify(), they are NOT. 
-           We should assign it to a variable in script or use .value inside stringify -->
       <pre class="text-xs">{{ JSON.stringify(formApi.useStore((s) => s.values).value, null, 2) }}</pre>
     </div>
   </div>

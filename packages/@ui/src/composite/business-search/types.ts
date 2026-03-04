@@ -5,6 +5,7 @@ import type { FieldNames } from '../../entry/search-input-tag/types';
 
 /**
  * 业务搜索组件配置接口
+ * Business search component configuration interface
  * 用于定义特定业务类型（如用户、部门）的搜索弹窗结构
  */
 export interface BusinessSearchConfig {
@@ -15,19 +16,21 @@ export interface BusinessSearchConfig {
   /**
    * 搜索表单配置
    */
-  formSchema: FormSchema[];
+  formSchema?: FormSchema[];
   /**
    * 表格列配置
    */
-  tableColumns: VxeGridPropTypes.Columns;
+  tableColumns?: VxeGridPropTypes.Columns;
   /**
-   * 查询接口地址或函数
+   * 查询接口函数
+   * Search API function
+   * 由 adapter.search 代理注入，组件内部不再直接调用 axios
    */
-  searchApi: string | ((params: any) => Promise<any>);
+  searchApi?: (params: any) => Promise<any>;
   /**
    * 字段名映射
    */
-  fieldNames: {
+  fieldNames?: {
     label: string;
     value: string;
     desc?: string;
@@ -98,47 +101,4 @@ export interface SunnyBusinessSearchProps {
    * 优先级: props.fieldNames > props.modalProps.fieldNames > currentConfig.fieldNames
    */
   fieldNames?: FieldNames;
-}
-
-/**
- * 后端动态配置接口响应结构
- * 对应 /core/assDialog/openInit 接口返回的 result
- */
-export interface DynamicConfigResponse {
-  /**
-   * 弹窗标题
-   */
-  cTitle: string;
-  /**
-   * 弹窗宽度
-   */
-  cWidth: string;
-  /**
-   * 内容高度
-   */
-  cHeight: string;
-  /**
-   * 选择模式
-   * 'single' | 'multiple'
-   */
-  cSelectionMode?: string;
-  /**
-   * 表单查询条件配置
-   */
-  conditions: Array<{
-    label: string;
-    type: string; // 'input' | 'select' | 'date' ...
-    prop: string;
-    meta?: any;
-    [key: string]: any;
-  }>;
-  /**
-   * 表格列配置
-   */
-  tableCols: Array<{
-    label: string;
-    prop: string;
-    width?: string;
-    [key: string]: any;
-  }>;
 }

@@ -12,7 +12,9 @@
       "Bash(tr }:*)",
       "Bash(pnpm:*)",
       "WebSearch",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "WebFetch(domain:arco.design)",
+      "Bash(npx tsc:*)"
     ]
   },
   "enabledPlugins": {
