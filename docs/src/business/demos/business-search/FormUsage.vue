@@ -18,8 +18,10 @@ watch(token, (newVal) => {
 
 const [Form, formApi] = useSunnyForm({
   layout: 'horizontal',
-  // 配置对象数组转值字符串的字段 (会读取 fieldNames.value 进行提取)
-  // Configure object array to value string fields (extracts using fieldNames.value)
+  // 配置对象数组与值字符串的双向转换字段
+  // Configure bidirectional conversion between object array and value string
+  // setValues: 'M001,M002' → [{ C_DEVICE_NO: 'M001', ... }, ...]
+  // getValues/submit: [{ C_DEVICE_NO: 'M001', ... }, ...] → 'M001,M002'
   objectToValueFields: ['machineCode'],
   schema: [
     {
@@ -57,11 +59,10 @@ const handleCheckValues = async () => {
 };
 
 const handleSetMockValue = () => {
+  // 现在可以直接使用字符串格式，会自动转换成组件需要的对象数组
+  // Now you can use string format directly, it will be automatically converted to object array
   formApi.setValues({
-    machineCode: [
-      { C_DEVICE_NO: 'M001', C_DEVICE_NAME: '测试设备1' },
-      { C_DEVICE_NO: 'M002', C_DEVICE_NAME: '测试设备2' }
-    ]
+    machineCode: 'M001,M002'
   });
   Message.success('已设置模拟值');
 };

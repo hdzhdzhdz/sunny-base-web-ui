@@ -28,12 +28,12 @@
 
 默认情况下，`SunnyBusinessSearch` 返回的是对象数组（例如 `[{ id: '1', name: 'A' }]`）。但在提交表单给后端时，通常只需要 ID 字符串（例如 `'1,2,3'`）。
 
-`SunnyForm` 提供了 `objectToValueFields` 配置项，可以自动完成这个转换。
+`SunnyForm` 提供了 `objectToValueFields` 配置项，可以自动完成**双向转换**。
 
 ```typescript
 const [Form, formApi] = useSunnyForm({
-  // 指定哪些字段需要进行 "对象数组 -> 值字符串" 的转换
-  objectToValueFields: ['machineCode'], 
+  // 指定哪些字段需要进行 "对象数组 <-> 值字符串" 的双向转换
+  objectToValueFields: ['machineCode'],
   schema: [
     {
       fieldName: 'machineCode',
@@ -50,9 +50,28 @@ const [Form, formApi] = useSunnyForm({
 ```
 
 **工作原理：**
-1. Form 在 `getValues()` 或提交时，检查 `objectToValueFields` 列表。
-2. 找到对应字段的 Schema，获取 `componentProps.modalProps.fieldNames.value`。
-3. 提取数组中每个对象的 `value` 字段，拼接成逗号分隔的字符串。
+
+| 操作 | 转换方向 | 说明 |
+| --- | --- | --- |
+| `setValues()` | 字符串 → 对象数组 | `'1,2,3'` → `[{ C_DEVICE_NO: '1', C_DEVICE_NAME: '1' }, ...]` |
+| `getValues()` / 提交 | 对象数组 → 字符串 | `[{ C_DEVICE_NO: '1', ... }, ...]` → `'1,2,3'` |
+
+**设置值示例：**
+
+```typescript
+// 从后端获取数据后，直接设置字符串格式即可
+const backendData = { machineCode: 'M001,M002' };
+await formApi.setValues(backendData);
+// 内部自动转换成组件需要的对象数组格式
+
+// 也可以设置对象数组格式（兼容旧写法）
+await formApi.setValues({
+  machineCode: [
+    { C_DEVICE_NO: 'M001', C_DEVICE_NAME: '设备1' },
+    { C_DEVICE_NO: 'M002', C_DEVICE_NAME: '设备2' }
+  ]
+});
+```
 
 #### 2. 动态响应式参数
 

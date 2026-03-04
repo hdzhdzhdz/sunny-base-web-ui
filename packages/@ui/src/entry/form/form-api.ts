@@ -523,15 +523,20 @@ export class FormApi {
     const form = await this.getForm();
     const currentValues = form.values || {};
 
+    // 处理值字符串转对象数组（反向转换 objectToValueFields）
+    // Transform value string to object array (reverse transformation for objectToValueFields)
+    const processedFields = { ...fields };
+    this.handleValueToObjectFields(processedFields);
+
     // 检查是否有嵌套路径的 key
-    const hasNestedPath = Object.keys(fields).some(
+    const hasNestedPath = Object.keys(processedFields).some(
       key => key.includes('.') || key.includes('[')
     );
 
     if (hasNestedPath) {
       // 处理嵌套路径
       let newValues = { ...currentValues };
-      for (const [key, value] of Object.entries(fields)) {
+      for (const [key, value] of Object.entries(processedFields)) {
         newValues = lodashSet(newValues, key, value);
       }
 
@@ -546,12 +551,12 @@ export class FormApi {
 
     // 简单路径处理
     if (!filterFields) {
-      form.setValues(fields, shouldValidate);
+      form.setValues(processedFields, shouldValidate);
       return;
     }
 
     // 智能合并与过滤 (Smart merge and filter)
-    const filteredFields = this.filterAndMergeValues(fields, currentValues);
+    const filteredFields = this.filterAndMergeValues(processedFields, currentValues);
     form.setValues(filteredFields, shouldValidate);
   }
 
@@ -900,6 +905,75 @@ export class FormApi {
         })
         .filter((v) => v !== undefined && v !== null)
         .join(',');
+
+      originValues[field] = newValue;
+    });
+  };
+
+  /**
+   * 处理值字符串转对象数组（反向转换）
+   * Handle value string to object array (reverse transformation)
+   * 将 "1,2,3" 转换为 [{ [valueKey]: '1' }, { [valueKey]: '2' }, { [valueKey]: '3' }]
+   */
+  private handleValueToObjectFields = (originValues: Record<string, any>) => {
+    const objectToValueFields = this.state?.objectToValueFields;
+    if (!objectToValueFields || !Array.isArray(objectToValueFields)) {
+      return;
+    }
+
+    objectToValueFields.forEach((field) => {
+      const value = originValues[field];
+
+      // 只处理字符串类型的值
+      if (typeof value !== 'string' || value === '') {
+        return;
+      }
+
+      // 如果已经是数组，跳过
+      if (Array.isArray(value)) {
+        return;
+      }
+
+      // Find schema item
+      const schemaItem = this.state?.schema?.find(
+        (item) => item.fieldName === field,
+      );
+      if (!schemaItem) return;
+
+      // Resolve componentProps
+      let componentProps = schemaItem.componentProps;
+      if (typeof componentProps === 'function') {
+        try {
+          componentProps = componentProps(originValues, this.form);
+        } catch (e) {
+          console.warn(
+            `[SunnyForm] Failed to resolve componentProps for field ${field}`,
+            e,
+          );
+          return;
+        }
+      }
+
+      // Get fieldNames from componentProps
+      // Try modalProps.fieldNames (common in search-modal) or fieldNames (common in select/tree)
+      const fieldNames =
+        componentProps?.modalProps?.fieldNames || componentProps?.fieldNames;
+      const valueKey = fieldNames?.value || 'value';
+      const labelKey = fieldNames?.label || 'label';
+
+      if (!fieldNames?.value) {
+        return;
+      }
+
+      // Transform: "1,2,3" -> [{ [valueKey]: '1', [labelKey]: '1' }, ...]
+      const newValue = value
+        .split(',')
+        .map((v) => v.trim())
+        .filter((v) => v !== '')
+        .map((v) => ({
+          [valueKey]: v,
+          [labelKey]: v, // 使用 value 作为 label 的备选值
+        }));
 
       originValues[field] = newValue;
     });
