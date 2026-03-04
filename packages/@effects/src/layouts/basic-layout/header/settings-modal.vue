@@ -12,7 +12,7 @@
     @ok="handleOk"
     @cancel="handleCancel"
   >
-    <div class="space-y-6">
+    <div class="space-y-6" @click="colorPickerVisible = false">
       <!-- 主题色设置 -->
       <div class="space-y-3">
         <div class="flex items-center justify-between">
@@ -20,14 +20,13 @@
         </div>
 
         <!-- 颜色选择器 -->
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-4" @click.stop>
           <a-color-picker
             v-model="tempPrimaryColor"
+            v-model:popup-visible="colorPickerVisible"
             format="hex"
             showText
             showPreset
-            :historyColors="historyColors"
-            @popup-visible-change="handleColorPopupChange"
           />
         </div>
       </div>
@@ -35,9 +34,9 @@
       <!-- 分割线 -->
       <a-divider class="!my-4" />
 
-      <!-- 预览效果 -->
+      <!-- 主题色预览效果 -->
       <div class="space-y-2">
-        <span class="text-sm font-medium text-[var(--color-text-1)]">预览效果</span>
+        <span class="text-sm font-medium text-[var(--color-text-1)]">主题色预览</span>
         <div
           class="p-4 rounded-lg border border-[var(--color-border-2)] bg-[var(--color-fill-1)]"
         >
@@ -61,65 +60,74 @@
         </div>
       </div>
 
-      <!-- TODO: 字体大小设置 (暂时注释)
+      <!-- 分割线 -->
+      <a-divider class="!my-4" />
+
+      <!-- 表格行高设置 -->
       <div class="space-y-3">
         <div class="flex items-center justify-between">
-          <span class="text-sm font-medium text-[var(--color-text-1)]">字体大小</span>
-          <span class="text-xs text-[var(--color-text-3)]">{{ currentLabel }} ({{ currentSize }}px)</span>
+          <span class="text-sm font-medium text-[var(--color-text-1)]">表格行高</span>
+          <span class="text-xs text-[var(--color-text-3)]">{{ currentRowHeightLabel }} ({{ tempTableRowHeight }}px)</span>
         </div>
 
-        <div class="flex items-center gap-4">
-          <span class="text-xs text-[var(--color-text-4)] w-6">Aa</span>
-          <a-slider
-            v-model="fontSizeIndex"
-            :min="0"
-            :max="FONT_SIZE_OPTIONS.length - 1"
-            :step="1"
-            :marks="sliderMarks"
-            class="flex-1"
-            @change="handleSliderChange"
-          />
-          <span class="text-lg text-[var(--color-text-4)] w-8">Aa</span>
+        <!-- 提示信息 -->
+        <div class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[var(--color-primary-1)] text-xs text-[var(--color-text-3)]">
+          <IconInfoCircle />
+          <span>修改后需刷新页面生效</span>
         </div>
 
         <div class="flex justify-center gap-2">
           <a-button
-            v-for="opt in FONT_SIZE_OPTIONS"
+            v-for="opt in TABLE_ROW_HEIGHT_OPTIONS"
             :key="opt.value"
-            :type="tempFontSize === opt.value ? 'primary' : 'text'"
+            :type="tempTableRowHeight === opt.value ? 'primary' : 'text'"
             size="small"
-            @click="tempFontSize = opt.value"
+            @click="tempTableRowHeight = opt.value"
           >
             {{ opt.label }}
           </a-button>
         </div>
-      </div>
 
-      <a-divider class="!my-4" />
-
-      <div class="space-y-2">
-        <span class="text-sm font-medium text-[var(--color-text-1)]">预览效果</span>
-        <div
-          class="p-4 rounded-lg border border-[var(--color-border-2)] bg-[var(--color-fill-1)] transition-all duration-200"
-          :style="{ fontSize: `${tempFontSize}px` }"
-        >
-          <div class="space-y-2">
-            <p class="font-medium">这是一段预览文字</p>
-            <p class="text-[var(--color-text-3)]">
-              用来展示当前字体大小效果，调整上方滑块可以实时预览。
-            </p>
+        <!-- 预览效果 -->
+        <div class="space-y-2 mt-3">
+          <div
+            class="p-3 rounded-lg border border-[var(--color-border-2)] bg-[var(--color-fill-1)]"
+          >
+            <div class="overflow-hidden">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="border-b border-[var(--color-border-2)]">
+                    <th class="text-left py-2 font-medium">列1</th>
+                    <th class="text-left py-2 font-medium">列2</th>
+                    <th class="text-left py-2 font-medium">列3</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="i in 3"
+                    :key="i"
+                    class="border-b border-[var(--color-border-1)] last:border-0"
+                    :style="{ height: `${tempTableRowHeight}px` }"
+                  >
+                    <td class="py-1">数据 {{ i }}-1</td>
+                    <td class="py-1">数据 {{ i }}-2</td>
+                    <td class="py-1">数据 {{ i }}-3</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
-      -->
     </div>
   </Modal>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { Modal } from '@sunny-base-web/ui';
-import { useSettingsStore } from '@sunny-base-web/stores';
+import { useSettingsStore, TABLE_ROW_HEIGHT_OPTIONS } from '@sunny-base-web/stores';
+import { IconInfoCircle } from '@arco-design/web-vue/es/icon';
 
 defineOptions({ name: 'SettingsModal' });
 
@@ -129,33 +137,23 @@ const loading = ref(false);
 
 // 临时主题色（用于预览）
 const tempPrimaryColor = ref(settingsStore.primaryColor);
+// 颜色选择器弹窗状态
+const colorPickerVisible = ref(false);
+// 临时表格行高（用于预览）
+const tempTableRowHeight = ref(settingsStore.tableRowHeight);
 
-// 历史颜色（用于颜色选择器的 historyColors）
-const historyColors = ref<string[]>([]);
-
-/**
- * 颜色选择器弹出状态变化
- */
-const handleColorPopupChange = (visible: boolean) => {
-  // 关闭时添加到历史颜色
-  if (!visible && tempPrimaryColor.value) {
-    const index = historyColors.value.indexOf(tempPrimaryColor.value);
-    if (index !== -1) {
-      historyColors.value.splice(index, 1);
-    }
-    historyColors.value.unshift(tempPrimaryColor.value);
-    // 最多保留 8 个历史颜色
-    if (historyColors.value.length > 8) {
-      historyColors.value.pop();
-    }
-  }
-};
+// 当前行高标签
+const currentRowHeightLabel = computed(() => {
+  const option = TABLE_ROW_HEIGHT_OPTIONS.find(opt => opt.value === tempTableRowHeight.value);
+  return option?.label || '默认';
+});
 
 /**
  * 打开弹窗
  */
 const open = () => {
   tempPrimaryColor.value = settingsStore.primaryColor;
+  tempTableRowHeight.value = settingsStore.tableRowHeight;
   visible.value = true;
 };
 
@@ -174,6 +172,8 @@ const handleOk = async () => {
   try {
     // 保存主题色设置
     settingsStore.setPrimaryColor(tempPrimaryColor.value);
+    // 保存表格行高设置
+    settingsStore.setTableRowHeight(tempTableRowHeight.value);
     visible.value = false;
   } finally {
     loading.value = false;

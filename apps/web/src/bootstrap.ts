@@ -13,7 +13,7 @@ import { setupI18n } from '#/locales';
 import { initStores, useSettingsStore } from '@sunny-base-web/stores';
 import { preferences } from './preferences';
 
-import VxeUITable from 'vxe-table'
+import VxeUITable, { VXETable } from 'vxe-table'
 import 'vxe-table/es/style.css'
 
 import VxeUIBase, { VxeUI } from 'vxe-pc-ui'
@@ -30,6 +30,13 @@ async function bootstrap(namespace: string) {
 	// 初始化设置（恢复保存的主题色等）
 	const settingsStore = useSettingsStore();
 	settingsStore.initSettings();
+
+	// 配置 vxe-table 全局行高（必须在 app.use 之前）
+	VXETable.setup({
+		table: {
+			rowHeight: settingsStore.tableRowHeight,
+		}
+	});
 
 	// 注册 @effects 业务组件包的全局配置
 	// 作用：统一注入 API 前缀和 SSO 地址，使 Login 等组件能自动获取配置，
