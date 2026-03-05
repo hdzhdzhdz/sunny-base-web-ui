@@ -88,5 +88,18 @@
     "cancel": "Cancel",
     "confirm": "Confirm",
     "helpTip": "Double-click title bar to maximize/restore, press ESC to close"
+  },
+  "searchPlan": {
+    "title": "Search Plan",
+    "newPlan": "New Search Plan",
+    "planName": "Plan Name",
+    "planNamePlaceholder": "Please input",
+    "planNameRequired": "Please enter plan name",
+    "savedPlans": "Saved Search Plans",
+    "add": "Add",
+    "update": "Update",
+    "reset": "Reset",
+    "search": "Search",
+    "loading": "Loading..."
   }
 }

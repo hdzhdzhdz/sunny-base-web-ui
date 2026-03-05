@@ -5,6 +5,7 @@ import { useSunnyQueryGrid, useSunnyForm, SunnySearchPlan } from "@sunny-base-we
 import { searchFormSchema, tableColumns, resourceConfig } from './config'
 import type { OperationLogVO } from './types'
 import { requestClient } from '@sunny-base-web/effects'
+import { searchPlanApi } from '@sunny-base-web/effects/hooks/useSearchPlanApi'
 import { Filter } from "lucide-vue-next";
 
 
@@ -138,15 +139,7 @@ const searchPlanList = ref([]);
 // 当前选中的搜索方案
 const currentSearchPlan = ref(undefined);
 
-// 查询方案API实现
-const searchPlanApi = {
-  findAllByResourceid: (data) => requestClient.post('/core/assSearchplan/findAllByResourceid', data),
-  findSearchPlanColsByPlanId: (data) => requestClient.post('/core/assSearchplan/findSearchPlanColsByPlanId', data),
-  insert: (data) => requestClient.post('/core/assSearchplan/insert', data),
-  update: (data) => requestClient.post('/core/assSearchplan/update', data),
-  del: (data) => requestClient.post('/core/assSearchplan/delete', data),
-  findDefSearchPlan: (data) => requestClient.post('/core/assSearchplan/findDefSearchPlan', data)
-};
+
 
 // 处理查询方案搜索
 const handleSearchPlanSearch = async (formValues) => {
@@ -188,7 +181,7 @@ const handleDefaultPlanLoaded = async (formValues) => {
               <template #trigger="{ open }">
                 <button
                   type="button"
-                  class="px-3 py-1.5 border border-gray-300 rounded bg-white text-sm transition-all hover:border-blue-500 hover:text-blue-500 disabled:cursor-not-allowed disabled:opacity-60 mr-2"
+                  class="px-3 py-1.5 border border-[var(--color-border-2)] rounded bg-white text-sm transition-all hover:border-[rgb(var(--primary-6))] hover:text-[rgb(var(--primary-6))] disabled:cursor-not-allowed disabled:opacity-60 mr-2"
                   @click="open"
                   title="查询方案"
                 >

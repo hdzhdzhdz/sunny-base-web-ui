@@ -19,6 +19,8 @@
 | formConfig | 表单配置 | `array` | `[]` |
 | searchPlanList | 查询方案列表 | `array` | `[]` |
 | currentSearchPlan | 当前选中的查询方案 | `object` | `undefined` |
+| resourceId | 资源ID | `string` | - |
+| nResourceid | 资源编号 | `number` | - |
 | loading | 加载状态 | `boolean` | `false` |
 | title | 弹窗标题 | `string` | `'查询方案'` |
 | width | 弹窗宽度 | `string \| number` | `900` |
@@ -38,6 +40,7 @@
 | delete | 删除方案时触发 | `(id: string \| number)` |
 | select | 选择方案时触发 | `(plan: object)` |
 | reset | 重置表单时触发 | - |
+| default-plan-loaded | 默认查询方案加载完成 | `(model: object)` |
 
 ### Methods
 
@@ -137,6 +140,7 @@ const formConfig = [
   }
 ];
 
+// 事件处理函数
 const handleAdd = async (name, formModel) => {
   loading.value = true;
   try {
@@ -147,7 +151,6 @@ const handleAdd = async (name, formModel) => {
       CSEARCHPLANNAME: name
     };
     searchPlanList.value.push(newPlan);
-    // 自动切换到新查询方案
     currentSearchPlan.value = newPlan;
     Message.success('新增查询方案成功');
   } catch (error) {
@@ -197,23 +200,7 @@ const handleDelete = async (id) => {
 const handleSelect = (plan) => {
   currentSearchPlan.value = plan;
   // 根据选择的方案设置表单值
-  if (plan.ID === 1) {
-    formData.name = '';
-    formData.age = undefined;
-    formData.gender = '';
-  } else if (plan.ID === 2) {
-    formData.name = '';
-    formData.age = undefined;
-    formData.gender = 'male';
-  } else if (plan.ID === 3) {
-    formData.name = '';
-    formData.age = undefined;
-    formData.gender = 'female';
-  } else {
-    formData.name = '';
-    formData.age = undefined;
-    formData.gender = '';
-  }
+  // ...
   Message.success('切换查询方案成功');
 };
 
@@ -225,122 +212,7 @@ const handleSearch = (values) => {
 </script>
 ```
 
-### 2. 通过本地 JSON 文件获取表单配置
-
-```vue
-<template>
-  <div>
-    <button @click="searchPlanRef?.open()">打开查询方案</button>
-    <SunnySearchPlan
-      ref="searchPlanRef"
-      v-model:model="formData"
-      :form-config="formConfig"
-      :search-plan-list="searchPlanList"
-      v-model:current-search-plan="currentSearchPlan"
-      :loading="loading"
-      @add="handleAdd"
-      @update="handleUpdate"
-      @delete="handleDelete"
-      @select="handleSelect"
-      @search="handleSearch"
-    />
-  </div>
-</template>
-
-<script setup lang="ts">
-import { ref, reactive } from 'vue';
-import { SunnySearchPlan } from '@ui';
-import { Message } from '@arco-design/web-vue';
-import formConfigData from './formConfig.json';
-
-const searchPlanRef = ref<InstanceType<typeof SunnySearchPlan>>();
-const formData = reactive({
-  name: '',
-  age: undefined,
-  gender: ''
-});
-
-const searchPlanList = ref([
-  {
-    ID: 1,
-    CSEARCHPLANNAME: '全部用户'
-  },
-  {
-    ID: 2,
-    CSEARCHPLANNAME: '男性用户'
-  },
-  {
-    ID: 3,
-    CSEARCHPLANNAME: '女性用户'
-  }
-]);
-
-const currentSearchPlan = ref(undefined);
-const loading = ref(false);
-
-// 从 JSON 文件获取表单配置
-const formConfig = formConfigData.formConfig;
-
-// 初始化，模拟调用 API 获取查询方案列表
-const initSearchPlans = async () => {
-  loading.value = true;
-  try {
-    // 模拟 API 调用延迟
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    // 模拟返回的假数据
-    const mockData = [
-      {
-        ID: 1,
-        CSEARCHPLANNAME: '全部用户'
-      },
-      {
-        ID: 2,
-        CSEARCHPLANNAME: '男性用户'
-      },
-      {
-        ID: 3,
-        CSEARCHPLANNAME: '女性用户'
-      }
-    ];
-    searchPlanList.value = mockData;
-  } catch (error) {
-    console.error('初始化查询方案列表失败:', error);
-    Message.error('初始化查询方案列表失败');
-  } finally {
-    loading.value = false;
-  }
-};
-
-// 调用初始化函数
-initSearchPlans();
-
-const handleAdd = async (name, formModel) => {
-  loading.value = true;
-  try {
-    // 模拟 API 调用
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    const newPlan = {
-      ID: Date.now(),
-      CSEARCHPLANNAME: name
-    };
-    searchPlanList.value.push(newPlan);
-    // 自动切换到新查询方案
-    currentSearchPlan.value = newPlan;
-    Message.success('新增查询方案成功');
-  } catch (error) {
-    console.error('新增查询方案失败:', error);
-    Message.error('新增查询方案失败');
-  } finally {
-    loading.value = false;
-  }
-};
-
-// 其他事件处理函数与基本用法相同
-// ...
-</script>
-```
-
-### 2. 自定义表单和弹窗配置
+### 2. 自定义配置
 
 ```vue
 <template>
@@ -401,6 +273,7 @@ const formConfig = [
   }
 ];
 
+// 事件处理函数
 const handleSearch = (values) => {
   console.log('搜索参数:', values);
 };
@@ -425,41 +298,32 @@ const handleSelectPlan = (plan) => {
 
 ## 高级特性
 
-### 1. 表单数据同步
+### 1. 方案管理
 
-组件内部会自动同步 `modelValue` 和 `model` 的值，确保双向绑定生效。当选择不同的查询方案时，表单数据会自动切换。
-
-### 2. 方案管理
-
-支持以下方案管理操作：
-- **新增方案**：保存当前表单配置为新方案，新增后会自动切换到该方案
-- **覆盖方案**：更新现有方案的配置，必须先选中一个方案才能覆盖
-- **删除方案**：移除不需要的方案，删除当前选中的方案后会自动清除选中状态
+- **新增方案**：保存当前表单配置为新方案，新增后自动切换到该方案
+- **覆盖方案**：更新现有方案的配置，必须先选中一个方案
+- **删除方案**：移除不需要的方案，删除当前选中的方案后自动清除选中状态
 - **选择方案**：加载已保存的方案配置，同时更新表单数据
 
-### 3. 表单验证
+### 2. 表单数据同步
 
-新增方案时会验证方案名称是否为空，确保方案名称的有效性。覆盖方案时会验证是否有选中的方案，确保操作的安全性。
+组件内部自动同步 `modelValue` 和 `model` 的值，确保双向绑定生效。当选择不同的查询方案时，表单数据会自动切换。
 
-### 4. 操作反馈
+### 3. 操作反馈
 
 所有操作都会通过 `Message` 组件提供明确的反馈信息，包括成功提示和错误提示。
 
-### 5. 加载状态管理
+### 4. 加载状态管理
 
-组件支持 `loading` 属性，用于显示 API 调用期间的加载状态。当执行新增、覆盖、删除等操作时，可以设置 `loading` 为 `true`，组件会显示加载遮罩，防止用户在操作期间进行其他操作。
+组件支持 `loading` 属性，用于显示 API 调用期间的加载状态，防止用户在操作期间进行其他操作。
 
-### 6. 弹窗初始化
+### 5. 弹窗初始化
 
 打开弹窗时，组件会自动清空表单数据和清除查询方案选中状态，确保每次打开弹窗时都是一个干净的初始状态。
 
-### 7. 表单 API 集成
-
-组件内部集成了 `formApi`，可以通过它来获取和设置表单值，确保表单数据的准确性和一致性。
-
 ## 注意事项
 
-1. **表单配置**：`formConfig` 需要符合 `SunnyUseForm` 的配置格式，确保表单能够正确渲染。可以通过本地 JSON 文件获取表单配置，提高代码的可维护性。
+1. **表单配置**：`formConfig` 需要符合 `SunnyUseForm` 的配置格式，确保表单能够正确渲染。
 
 2. **数据结构**：`modelValue` 和 `model` 应该是一个对象，用于存储表单字段的键值对。`searchPlanList` 应该是一个数组，每个元素包含 `ID` 和 `CSEARCHPLANNAME` 属性。
 
@@ -468,13 +332,3 @@ const handleSelectPlan = (plan) => {
 4. **方案存储**：组件内部使用内存存储方案数据，刷新页面后会丢失。如果需要持久化存储，建议监听 `add`、`update` 和 `delete` 事件，将方案数据保存到后端或本地存储。
 
 5. **加载状态**：在执行 API 调用时，建议设置 `loading` 为 `true`，提供更好的用户体验。API 调用完成后，无论成功还是失败，都应该设置 `loading` 为 `false`。
-
-6. **方案管理**：
-   - 新增方案时，组件会自动切换到新方案
-   - 覆盖方案时，必须先选中一个方案
-   - 删除方案时，如果删除的是当前选中的方案，组件会自动清除选中状态
-   - 打开弹窗时，组件会自动清空表单数据和清除选中状态
-
-7. **性能优化**：如果表单配置较大或查询方案较多，建议使用 `v-memo` 或其他优化手段来提高组件的渲染性能。
-
-8. **类型安全**：在 TypeScript 项目中，建议为表单数据和查询方案定义明确的类型，确保类型安全。

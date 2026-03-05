@@ -2,11 +2,11 @@
   <div class="inline-block">
     <slot name="trigger" :open="customHandleOpen" :disabled="disabled">
       <button
-        class="px-3 py-1.5 border border-gray-300 rounded bg-white text-sm transition-all hover:border-blue-500 hover:text-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
+        class="px-3 py-1.5 border border-[var(--color-border-2)] rounded bg-white text-sm transition-all hover:border-[rgb(var(--primary-6))] hover:text-[rgb(var(--primary-6))] disabled:cursor-not-allowed disabled:opacity-60"
         :disabled="disabled"
         @click="customHandleOpen"
       >
-        查询方案
+        {{ $t('common.searchPlan.title') }}
       </button>
     </slot>
 
@@ -23,8 +23,8 @@
       <div class="p-5 relative">
         <!-- 加载遮罩 -->
         <div v-if="props.loading" class="absolute inset-0 bg-white/80 flex flex-col items-center justify-center z-10 rounded">
-          <div class="w-7 h-7 border-3 border-gray-200 border-t-blue-500 rounded-full animate-spin mb-2.5"></div>
-          <div class="text-sm text-gray-600">加载中...</div>
+          <div class="w-7 h-7 border-3 border-[var(--color-border-2)] border-t-[rgb(var(--primary-6))] rounded-full animate-spin mb-2.5"></div>
+          <div class="text-sm text-[var(--color-text-2)]">{{ $t('common.searchPlan.loading') }}</div>
         </div>
         
         <div :class="{ 'opacity-60': props.loading }" class="flex gap-5">
@@ -42,64 +42,64 @@
 
           <!-- 右侧查询方案管理区域 -->
           <div class="w-60">
-            <h3 class="text-sm font-semibold mb-4 text-gray-800">新建查询方案</h3>
+            <h3 class="text-sm font-semibold mb-4 text-[var(--color-text-1)]">{{ $t('common.searchPlan.newPlan') }}</h3>
 
             <div class="mb-5">
               <div class="mb-3">
-                <label class="block text-xs text-gray-600 mb-1">查询方案名称</label>
+                <label class="block text-xs text-[var(--color-text-2)] mb-1">{{ $t('common.searchPlan.planName') }}</label>
                 <input
                   v-model="inputValue"
                   type="text"
-                  placeholder="请输入"
-                  class="w-full px-2 py-1.5 border border-gray-300 rounded text-xs focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                  :placeholder="$t('common.searchPlan.planNamePlaceholder')"
+                  class="w-full px-2 py-1.5 border border-[var(--color-border-2)] rounded text-xs focus:outline-none focus:border-[rgb(var(--primary-6))] focus:ring-2 focus:ring-[rgb(var(--primary-1))]"
                   :disabled="props.loading"
                 />
                 <div v-if="!inputValue.trim() && showNameError" class="text-xs text-red-500 mt-1">
-                  请输入查询方案名称
+                  {{ $t('common.searchPlan.planNameRequired') }}
                 </div>
               </div>
               <div class="flex gap-2 mt-3">
                 <button
-                  class="px-3 py-1 bg-blue-500 border border-blue-500 text-white text-xs rounded hover:bg-blue-600 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+                  class="px-3 py-1 bg-[rgb(var(--primary-6))] border border-[rgb(var(--primary-6))] text-white text-xs rounded hover:bg-[rgb(var(--primary-7))] transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                   @click="handleAdd"
                   :disabled="props.loading"
                 >
-                  新增
+                  {{ $t('common.searchPlan.add') }}
                 </button>
                 <button
-                  class="px-3 py-1 border border-red-500 text-red-500 text-xs rounded hover:bg-red-50 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+                  class="px-3 py-1 border border-[var(--color-border-2)] text-[var(--color-text-1)] text-xs rounded hover:bg-[var(--color-fill-1)] hover:border-[rgb(var(--primary-6))] hover:text-[rgb(var(--primary-6))] transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                   :disabled="!currentSearchPlan || props.loading"
                   @click="handleUpdate"
                 >
-                  覆盖
+                  {{ $t('common.searchPlan.update') }}
                 </button>
               </div>
             </div>
 
-            <div class="h-px bg-gray-200 my-5"></div>
+            <div class="h-px bg-[var(--color-border-2)] my-5"></div>
 
-            <h3 class="text-sm font-semibold mb-4 text-gray-800">已保存的查询方案</h3>
+            <h3 class="text-sm font-semibold mb-4 text-[var(--color-text-1)]">{{ $t('common.searchPlan.savedPlans') }}</h3>
 
-            <div class="max-h-44 overflow-y-auto border border-gray-200 rounded p-2">
+            <div class="max-h-44 overflow-y-auto border border-[var(--color-border-2)] rounded p-2">
               <div
                 v-for="(plan, index) in searchPlanList"
                 :key="plan.ID"
-                class="flex items-center p-2 mb-1 rounded cursor-pointer transition-all hover:bg-gray-100 border border-transparent"
-                :class="{ 'bg-blue-50 border-blue-300': currentSearchPlan && (currentSearchPlan.ID == plan.ID || currentSearchPlan.ID === plan.ID) }"
+                class="flex items-center p-2 mb-1 rounded cursor-pointer transition-all hover:bg-[var(--color-fill-1)] border border-transparent"
+                :class="{ 'bg-[rgb(var(--primary-1))] border-[rgb(var(--primary-6))]': currentSearchPlan && (currentSearchPlan.ID == plan.ID || currentSearchPlan.ID === plan.ID) }"
                 @click="handleSelect(plan)"
                 :style="{ cursor: props.loading ? 'not-allowed' : 'pointer' }"
               >
                 <div
-                  class="w-5 h-5 flex items-center justify-center rounded text-xs mr-2 text-gray-600"
-                  :class="currentSearchPlan && (currentSearchPlan.ID == plan.ID || currentSearchPlan.ID === plan.ID) ? 'bg-blue-600 text-white' : 'bg-gray-200'"
+                  class="w-5 h-5 flex items-center justify-center rounded text-xs mr-2 text-[var(--color-text-2)]"
+                  :class="currentSearchPlan && (currentSearchPlan.ID == plan.ID || currentSearchPlan.ID === plan.ID) ? 'bg-[rgb(var(--primary-6))] text-white' : 'bg-[var(--color-fill-2)]'"
                 >
                   {{ String(index + 1).padStart(2, '0') }}
                 </div>
-                <div class="flex-1 text-xs truncate" :class="currentSearchPlan && (currentSearchPlan.ID == plan.ID || currentSearchPlan.ID === plan.ID) ? 'text-blue-700 font-medium' : 'text-gray-800'">
+                <div class="flex-1 text-xs truncate" :class="currentSearchPlan && (currentSearchPlan.ID == plan.ID || currentSearchPlan.ID === plan.ID) ? 'text-[rgb(var(--primary-6))] font-medium' : 'text-[var(--color-text-1)]'">
                   {{ plan.CSEARCHPLANNAME }}
                 </div>
                 <button
-                  class="w-4 h-4 flex items-center justify-center border-none bg-transparent cursor-pointer text-sm text-gray-400 transition-colors rounded hover:text-red-500 hover:bg-red-50"
+                  class="w-4 h-4 flex items-center justify-center border-none bg-transparent cursor-pointer text-sm text-[var(--color-text-3)] transition-colors rounded hover:text-[var(--color-danger)] hover:bg-[var(--color-danger-light)]"
                   @click.stop="handleDelete(plan)"
                   :disabled="props.loading"
                 >
@@ -113,20 +113,20 @@
 
       <!-- 底部按钮区域 -->
       <template #footer>
-        <div class="flex justify-end gap-3 pt-5 border-t border-gray-200">
+        <div class="flex justify-end gap-3 pt-5 border-t border-[var(--color-border-2)]">
           <button
-            class="px-3 py-1.5 border border-gray-300 rounded bg-white text-sm transition-colors hover:border-blue-500 hover:text-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
+            class="px-3 py-1.5 border border-[var(--color-border-2)] rounded bg-white text-sm transition-colors hover:border-[rgb(var(--primary-6))] hover:text-[rgb(var(--primary-6))] disabled:cursor-not-allowed disabled:opacity-60"
             @click="handleReset"
             :disabled="props.loading"
           >
-            重置
+            {{ $t('common.searchPlan.reset') }}
           </button>
           <button
-            class="px-3 py-1.5 bg-blue-500 border border-blue-500 text-white text-sm rounded hover:bg-blue-600 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+            class="px-3 py-1.5 bg-[rgb(var(--primary-6))] border border-[rgb(var(--primary-6))] text-white text-sm rounded hover:bg-[rgb(var(--primary-7))] transition-colors disabled:cursor-not-allowed disabled:opacity-60"
             @click="handleSearch"
             :disabled="props.loading"
           >
-            查询
+            {{ $t('common.searchPlan.search') }}
           </button>
         </div>
       </template>
@@ -144,6 +144,7 @@ import { useSunnySearchPlan } from './use-sunny-search-plan';
 import type { SunnySearchPlanProps, SunnySearchPlanEmits, SearchPlanItem } from './types';
 import type { SearchPlanApi } from './api';
 import { defaultSearchPlanApi } from './api';
+import { $t } from '@sunny-base-web/locales';
 
 defineOptions({
   name: 'SunnySearchPlan',
@@ -162,7 +163,7 @@ const props = withDefaults(defineProps<SunnySearchPlanProps & {
   formConfig: () => [],
   model: () => ({}),
   modelValue: () => ({}),
-  title: '查询方案',
+  title: () => $t('common.searchPlan.title'),
   width: 900,
   searchPlanList: () => [],
   loading: false,

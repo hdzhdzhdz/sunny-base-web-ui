@@ -57,6 +57,16 @@ export function useSunnySearchPlan(
       }
     }
     
+    // 检查是否有查询条件
+    const hasSearchConditions = Object.values(formValues).some(value => {
+      return value !== '' && value !== undefined && value !== null;
+    });
+    
+    if (!hasSearchConditions) {
+      Message.error('请输入查询条件');
+      return;
+    }
+    
     try {
       // 构建查询方案名称
       let planName = inputValue.value.trim();
@@ -117,6 +127,16 @@ export function useSunnySearchPlan(
       } catch (error) {
         console.error('handleUpdate getValues error:', error);
       }
+    }
+    
+    // 检查是否有查询条件
+    const hasSearchConditions = Object.values(formValues).some(value => {
+      return value !== '' && value !== undefined && value !== null;
+    });
+    
+    if (!hasSearchConditions) {
+      Message.error('请输入查询条件');
+      return;
     }
     
     try {

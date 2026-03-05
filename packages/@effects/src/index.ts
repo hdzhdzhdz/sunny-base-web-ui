@@ -15,3 +15,4 @@ export * from './views/setting/systemSetting';
 export * from './views/setting/dataDictionary';
 export * from './form';
 export * from './utils/utils';
+export * from './hooks/useSearchPlanApi';
