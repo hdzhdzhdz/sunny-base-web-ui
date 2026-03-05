@@ -9,10 +9,12 @@ const cModnumb = ref('95597ea3-a2f2-47cb-8b87-e5116b2b716d')
 const token = ref('Bearer%20eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMTk4NTA3IiwiaXNzIjoiZWNoaXNhbiIsImV4cCI6MTc3Mjc1NzA5NiwiaWF0IjoxNzcyMTUyMjk2LCJyb2wiOlsiMSJdfQ.zw9JEzZgMViXCNMxekMsIRO7BOvsLmRaaIK39lHlPpzqOdsHbPydZrzxocpqSoKV2KI6FU33jPWMcnV5f1x9wg')
 
 const gridOptions = reactive({
+  id: 'ResourceUsage-demo',
   data: [],
   columns: [],
   border: true,
   size: 'mini',
+  height: 400,
   editConfig: {
     enabled: true,
     trigger: 'click',
@@ -20,6 +22,9 @@ const gridOptions = reactive({
   },
   columnConfig: {
     resizable: true,
+  },
+  customConfig: {
+    storage: true
   }
 } as any);
 
@@ -71,6 +76,8 @@ const handleOpen = () => {
       ...resColumnList['table'],
     ]
     gridOptions.toolbarConfig = {
+      zoom: true,
+      custom: true,
       buttons: resButtonList['table']
     }
     gridApi.reloadData([])
