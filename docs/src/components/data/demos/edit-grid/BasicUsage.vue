@@ -138,6 +138,15 @@ const gridOptions = reactive({
         placeholder: '请输入描述内容'
       }
     },
+    {
+      field: 'upload',
+      title: '上传文件',
+      width: 200,
+      ...EditRender.UploadRender,
+      params: {
+        placeholder: '请上传文件'
+      }
+    },
     { field: 'mySlots', title: '自定义插槽', width: 200, slots: { default: 'mySlots' } },
   ],
   editRules: {
@@ -152,14 +161,14 @@ const gridOptions = reactive({
   showOverflow: 'title',
   showHeaderOverflow: 'title',
   size: 'mini',
-  // virtualYConfig: {
-  //   enabled: true,
-  //   gt: 0
-  // },
-  // virtualXConfig: {
-  //   enabled: true,
-  //   gt: 0
-  // },
+  virtualYConfig: {
+    enabled: true,
+    gt: 0
+  },
+  virtualXConfig: {
+    enabled: true,
+    gt: 0
+  },
   rowConfig: {
     keyField: 'id',
     drag: true,

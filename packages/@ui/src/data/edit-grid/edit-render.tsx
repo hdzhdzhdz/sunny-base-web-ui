@@ -1,5 +1,5 @@
 import { Input, InputNumber, Select, DatePicker, MonthPicker, YearPicker, WeekPicker, RangePicker, Switch, Button, Textarea, Popover } from '@arco-design/web-vue'
-import { SunnyBusinessSearch } from '@sunny-base-web/ui'
+import { SunnyBusinessSearch, SunnySimpleUpload } from '@sunny-base-web/ui'
 import { isArray } from 'lodash-es'
 import { ref } from 'vue'
 
@@ -405,6 +405,23 @@ export const BusinessSearchRender = {
     edit: ({ row, column }: { row: any, column: any }) => {
       return [
         <SunnyBusinessSearch
+          modelValue={row[column.field]}
+          onUpdate:modelValue={(val: any) => { row[column.field] = val }}
+          {...column.params}
+        />]
+    }
+  }
+}
+
+export const UploadRender = {
+  editRender: {},
+  slots: {
+    default: ({ row, column }: { row: any, column: any }) => {
+      return [<span>{row[column.field] ? JSON.stringify(row[column.field]) : ''}</span>]
+    },
+    edit: ({ row, column }: { row: any, column: any }) => {
+      return [
+        <SunnySimpleUpload
           modelValue={row[column.field]}
           onUpdate:modelValue={(val: any) => { row[column.field] = val }}
           {...column.params}

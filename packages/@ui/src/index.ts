@@ -2,6 +2,7 @@ import { Modal, useSunnyModal, ModalTypes } from "./feedback/modal";
 import { SunnyIcon } from "./basic/icon";
 import { SunnyScrollbar } from "./basic/scrollbar";
 import { SunnyUpload } from "./data/upload";
+import { SunnySimpleUpload } from "./data/simple-upload";
 import SunnySelect from "./entry/select";
 import SunnyBatchSelect from "./entry/select/BatchSelect.vue";
 import SunnySearchInputTag from "./entry/search-input-tag";
@@ -25,6 +26,7 @@ export {
   SunnyIcon,
   SunnyScrollbar,
   SunnyUpload,
+  SunnySimpleUpload,
   SunnyBatchSelect,
   SunnySelect,
   SunnySearchInputTag,
