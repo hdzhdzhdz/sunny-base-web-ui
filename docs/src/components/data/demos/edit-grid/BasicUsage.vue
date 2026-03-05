@@ -144,7 +144,8 @@ const gridOptions = reactive({
       width: 200,
       ...EditRender.UploadRender,
       params: {
-        placeholder: '请上传文件'
+        action: 'https://basetest.pcloud.sunnyoptical.cn/base/test/upload/commonFileUpload',
+        delAction: 'https://basetest.pcloud.sunnyoptical.cn/base/test/upload/commonFileDelete'
       }
     },
     { field: 'mySlots', title: '自定义插槽', width: 200, slots: { default: 'mySlots' } },
@@ -161,14 +162,6 @@ const gridOptions = reactive({
   showOverflow: 'title',
   showHeaderOverflow: 'title',
   size: 'mini',
-  virtualYConfig: {
-    enabled: true,
-    gt: 0
-  },
-  virtualXConfig: {
-    enabled: true,
-    gt: 0
-  },
   rowConfig: {
     keyField: 'id',
     drag: true,

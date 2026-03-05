@@ -4,8 +4,8 @@ import type { VxeGridProps, VxeGridListeners } from 'vxe-table'
 import { useSunnyQueryGrid, useSunnyForm, SunnySearchPlan } from "@sunny-base-web/ui"
 import { searchFormSchema, tableColumns, resourceConfig } from './config'
 import type { OperationLogVO } from './types'
-import { requestClient } from '@sunny-base-web/effects'
-import { searchPlanApi } from '@sunny-base-web/effects/hooks/useSearchPlanApi'
+import { requestClient } from '../../../api/request'
+import { searchPlanApi } from '../../../hooks/useSearchPlanApi'
 import { Filter } from "lucide-vue-next";
 
 
