@@ -489,12 +489,27 @@ export default function() {
             minWidth: '140',
             editRender: {
               ...SelectRender,
-              options: [...selectOpts.FormFieldTypes, ...selectOpts.TableFieldTypes],
+              options: [{
+                label: '表单',
+                options: selectOpts.FormFieldTypes
+              },
+              {
+                label: '表格',
+                options: selectOpts.EditColumnTypes
+              }],
               events: {
                 change(cellParams, eventParams) {
                   const { row, column, rowIndex } = cellParams;
                   datePickSetMeta({ row, column }, find(selectOpts.FormFieldTypes, ['value', row[column.field]]))
                 }
+              }
+            },
+            slots: {
+              default: ({ row, column, rowIndex }) => {
+                return [<span>{row[column.field]}</span>]
+              },
+              edit: ({ row, column, rowIndex }) => {
+                return [<vxe-select v-model={row[column.field]} options={column.editRender.options} allow-clear />]
               }
             }
           },

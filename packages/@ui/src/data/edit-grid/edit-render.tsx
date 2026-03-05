@@ -3,6 +3,29 @@ import { SunnyBusinessSearch } from '@sunny-base-web/ui'
 import { isArray } from 'lodash-es'
 import { ref } from 'vue'
 
+// 文本
+export const SpanRender = {
+  editRender: {},
+  slots: {
+    default: ({ row, column }: { row: any, column: any }) => {
+      const value = row[column.field]
+      const options = column.params?.options
+      const option = options?.find((item: any) => item.value === value)
+      return [<span>{option?.label ?? value}</span>]
+    }
+  }
+}
+
+// 文本-选项筛选
+export const SpanselectRender = {
+  editRender: {},
+  slots: {
+    default: ({ row, column }: { row: any, column: any }) => {
+      return [<span>{row[column.field]}</span>]
+    }
+  }
+}
+
 // 输入框
 export const InputRender = {
   editRender: {},
@@ -322,18 +345,6 @@ export const InputRangeRender = {
   }
 }
 
-// const SearchInputTagRender = {
-//   editRender: {},
-//   slots: {
-//     default: ({ row, column }) => {
-//       return [<span>{row[column.field]}</span>]
-//     },
-//     edit: ({ row, column }) => {
-//       return [<sunny-search-input-tag modelValue={row[column.field]} onUpdate:modelValue={(val: any) => { row[column.field] = val }} {...column.params} />]
-//     }
-//   }
-// }
-
 // 多行文本框
 export const TextareaRender = {
   editRender: {},
@@ -384,6 +395,7 @@ export const TextareaRender = {
   }
 }
 
+// 业务搜索组件(公共查询弹窗)
 export const BusinessSearchRender = {
   editRender: {},
   slots: {

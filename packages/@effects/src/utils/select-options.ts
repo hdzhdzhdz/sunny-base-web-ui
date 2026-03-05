@@ -132,7 +132,21 @@ const systemOpts: Record<string, SelectOption[]> = {
   TableFieldTypes: [
     { label: "span(文本)", value: "span" },
     { label: "spanselect(选项筛选)", value: "spanselect" },
-    { label: "spandate(日期文本)", value: "spandate" }
+    { label: "spandate(日期文本)", value: "spandate" },
+  ],
+  EditColumnTypes: [
+    { label: "input(输入框)", value: 'InputRender' },
+    { label: "inputNumber(数字输入框)", value: 'InputNumberRender' },
+    { label: "select(选择框)", value: 'SelectRender' },
+    { label: "datePicker(日期选择器)", value: 'DatePickerRender' },
+    { label: "monthPicker(月份选择器)", value: 'MonthPickerRender' },
+    { label: "yearPicker(年份选择器)", value: 'YearPickerRender' },
+    { label: "weekPicker(周选择器)", value: 'WeekPickerRender' },
+    { label: "rangePicker(日期范围选择器)", value: 'RangePickerRender' },
+    { label: "switch(开关)", value: 'SwitchRender' },
+    { label: "inputRange(区间输入框)", value: 'InputRangeRender' },
+    { label: "textarea(多行文本框)", value: 'TextareaRender' },
+    { label: "businessSearch(业务搜索)", value: 'BusinessSearchRender' }
   ],
   NewTableFieldTypes: [
     { label: "span(文本)", value: "span" },

@@ -16,6 +16,9 @@ outline: [2, 4]
 ### 完整用法
 <preview path="./demos/edit-grid/BasicUsage.vue" title="完整用法" description="演示编辑表格的完整功能，包括所有编辑器类型、校验、事件处理等" />
 
+### 加载资源用法
+<preview path="./demos/edit-grid/ResourceUsage.vue" title="加载资源用法" description="演示编辑表格的加载资源功能，包括数据加载、列定义等" />
+
 ## API
 
 ### `useSunnyEditGrid(options)`
@@ -417,6 +420,88 @@ EditGrid 支持使用 Arco Design 的表单组件作为编辑器：
 > - 所有编辑器的 `params` 数据默认会透传给对应的 Arco Design 组件
 > - 可以直接使用对应组件的所有 props（如 `placeholder`、`allowClear` 等）
 > - 部分编辑器提供了特殊参数（如 `fieldNames`、`inputType`），用于扩展组件功能
+
+
+### SpanRender
+文本-选项筛选，纯文本显示类型。
+
+**适用场景**：
+- 只读列，需要显示原始值
+- 不需要值到文本的转换
+- 配合表格筛选功能使用（如 VxeTable 的 filter）
+
+```typescript
+const gridOptions = {
+  columns: [
+    {
+      field: 'code',
+      title: '编码',
+      ...EditRender.SpanRender
+    },
+    {
+      field: 'category',
+      title: '分类',
+      ...EditRender.SpanRender
+    }
+  ]
+}
+```
+
+**特点**：
+- 纯文本显示，不进行任何转换
+- 支持配合 VxeTable 的筛选功能
+- 适合显示编码、ID 等不需要转换的值
+
+**参数说明**：
+- 无特殊参数，直接显示字段原始值
+
+**与 SpanRender 的区别**：
+| 特性 | SpanRender | SpanselectRender |
+|------|-----------|------------------|
+| 显示方式 | 支持从 options 映射显示 label | 直接显示原始值 |
+| 适用场景 | 需要值转换的场景（如状态码转文本） | 不需要转换的场景（如编码、ID） |
+| 配置复杂度 | 需要配置 options 参数 | 无需配置 |
+
+### SpanselectRender
+
+纯文本显示，支持从 options 中查找对应的 label 显示值。
+
+**适用场景**：
+- 只读列，需要显示文本但不需要编辑
+- 需要将值转换为对应的标签显示（如将状态码转换为状态文本）
+- 配合 `options` 参数实现值到文本的映射
+
+```typescript
+const statusOptions = [
+  { label: '启用', value: '1' },
+  { label: '禁用', value: '0' }
+]
+
+const gridOptions = {
+  columns: [
+    {
+      field: 'status',
+      title: '状态',
+      width: 120,
+      ...EditRender.SpanselectRender,
+      params: {
+        options: statusOptions
+      }
+    }
+  ]
+}
+```
+
+**示例说明**：
+- 当 `row.status` 的值为 `'1'` 时，显示 `'启用'`
+- 当 `row.status` 的值为 `'0'` 时，显示 `'禁用'`
+- 如果在 options 中找不到对应的值，则直接显示原始值
+
+**参数说明**：
+- `options`: 可选参数，用于值到文本的映射配置
+  - `label`: 选项显示的文本
+  - `value`: 选项对应的值
+- 不配置 `options` 时，直接显示字段原始值
 
 ### InputRender
 

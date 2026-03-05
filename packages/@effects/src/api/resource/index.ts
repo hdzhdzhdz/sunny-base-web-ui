@@ -125,3 +125,11 @@ export function findTableColumns(data: any) {
 export function findMenuTreeFuzzy(data: any) {
   return requestClient.post('/core/authResource/findMenuTreeFuzzy', data);
 }
+
+
+/**
+ * 根据父级资源ID获取子集资源
+ */
+export function getCurrentUserResourcesByParId(data: any) {
+  return requestClient.post('/core/contact/getCurrentUserResourcesByParId', data);
+}

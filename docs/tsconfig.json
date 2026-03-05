@@ -9,6 +9,7 @@
     "jsxImportSource": "vue",
     "paths": {
       "@sunny-base-web/ui": ["../packages/@ui/src/index.ts"],
+      "@sunny-base-web/effects": ["../packages/@effects/src/index.ts"],
       "@sunny-base-web/utils": ["../packages/@utils/src/index.ts"]
     }
   },
