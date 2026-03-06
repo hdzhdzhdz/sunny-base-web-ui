@@ -56,83 +56,29 @@ const systemOpts: Record<string, SelectOption[]> = {
     { label: "自定义模板", value: "-1" }
   ],
   FormFieldTypes: [
-    { label: "span(文本)", value: "span" },
+    // { label: "span(文本)", value: "span" },
     { label: "Input(输入框)", value: "Input" },
-    { label: "InputNumber(计数器)", value: "InputNumber" },
-    { label: "InputSearch(放大镜输入框)", value: "InputSearch" },
-    { label: "SelectSearch(选择框输入框)", value: "SelectSearch" },
-    { label: "Autocomplete(建议输入框)", value: "Autocomplete" },
+    { label: "InputPassword(密码输入框)", value: "InputPassword" },
+    { label: "InputNumber(数字输入框)", value: "InputNumber" },
+    { label: "Textarea(多行文本框)", value: "Textarea" },
     { label: "Select(单项选择器)", value: "Select" },
-    { label: "Cascader(级联选择器)", value: "Cascader" },
-    { label: "RadioGroup(单选框)", value: "RadioGroup" },
-    { label: "Checkbox(多选框)", value: "Checkbox" },
+    { label: "Checkbox(复选框)", value: "Checkbox" },
+    { label: "CheckboxGroup(复选框组)", value: "CheckboxGroup" },
+    { label: "Radio(单选框)", value: "Radio" },
+    { label: "RadioGroup(单选框组)", value: "RadioGroup" },
     { label: "Switch(开关)", value: "Switch" },
-    {
-      label: "date(日期选择)",
-      value: "date",
-      cMeta: {
-        components: "DatePicker",
-        type: "date",
-        valueFormat: "yyyy-MM-dd"
-      }
-    },
-    {
-      label: "datetime(日期时间选择)",
-      value: "datetime",
-      cMeta: {
-        components: "DatePicker",
-        type: "datetime",
-        valueFormat: "yyyy-MM-dd HH:mm:ss"
-      }
-    },
-    {
-      label: "daterange(日期区间选择)",
-      value: "daterange",
-      cMeta: {
-        components: "DatePicker",
-        type: "daterange",
-        valueFormat: "yyyy-MM-dd"
-      }
-    },
-    {
-      label: "datetimerange(日期时间区间)",
-      value: "datetimerange",
-      cMeta: {
-        components: "DatePicker",
-        type: "datetimerange",
-        valueFormat: "yyyy-MM-dd HH:mm:ss"
-      }
-    },
-    {
-      label: "month(月份选择)",
-      value: "month",
-      cMeta: {
-        components: "DatePicker",
-        type: "month",
-        valueFormat: "yyyy-MM"
-      }
-    },
-    {
-      label: "monthrange(月份区间选择)",
-      value: "monthrange",
-      cMeta: {
-        components: "DatePicker",
-        type: "monthrange",
-        valueFormat: "yyyy-MM"
-      }
-    },
-    {
-      label: "year(年份选择)",
-      value: "year",
-      cMeta: { components: "DatePicker", type: "year", valueFormat: "yyyy" }
-    },
-    { label: "Index(行序号，不传后端值)", value: "Index" },
+    { label: "Cascader(级联选择器)", value: "Cascader" },
+    { label: "DatePicker(日期选择器)", value: "DatePicker" },
+    { label: "RangePicker(日期选择器)", value: "RangePicker" },
+    { label: "TimePicker(日期选择器)", value: "TimePicker" },
+    { label: "Upload(文件上传)", value: "Upload" },
+    { label: "SunnyBusinessSearch(业务搜索组件)", value: "SunnyBusinessSearch" },
     { label: "Slot(自定义内容)", value: "Slot" }
   ],
   TableFieldTypes: [
     { label: "span(文本)", value: "span" },
     { label: "spanselect(选项筛选)", value: "spanselect" },
-    { label: "spandate(日期文本)", value: "spandate" },
+    // { label: "spandate(日期文本)", value: "spandate" },
   ],
   EditColumnTypes: [
     { label: "input(输入框)", value: 'InputRender' },

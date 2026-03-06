@@ -1,7 +1,33 @@
 import SelectOptions from './select-options'
 import { getCurrentUserResourcesByParId } from '../api/resource'
-import { groupBy, orderBy, map, unset } from 'lodash-es'
+import { groupBy, orderBy, map, unset, first } from 'lodash-es'
 import { EditRender, Validators } from '@sunny-base-web/ui'
+import { FormItem } from './types'
+
+function buildConditionString(rules: any, model: any) {
+  if (Array.isArray(rules)) {
+    const cList = rules.map(tt => {
+      return `'${model[tt.prop] || undefined}' ${tt.comparison} '${tt.value || undefined}'`
+    })
+    const cLogical = first(rules)?.logical || '&&'
+    return cList.join(` ${cLogical} `)
+  } else if (rules && rules.type === 'group') {
+    if (!rules.children || rules.children.length === 0) return ''
+
+    const childStrings = rules.children.map((child: any) => {
+      if (child.type === 'group') {
+        const sub = buildConditionString(child, model)
+        return sub ? `(${sub})` : null
+      } else {
+        return `'${model[child.prop] || undefined}' ${child.comparison} '${child.value || undefined}'`
+      }
+    }).filter(s => s)
+
+    if (childStrings.length === 0) return ''
+    return childStrings.join(` ${rules.logical} `)
+  }
+  return ''
+}
 
 /**
  * 构建按钮a-button配置项
@@ -28,6 +54,67 @@ export function initButtonItem(data: any) {
 }
 
 /**
+ * 构建表单form-item配置项
+ * @param {*} resource
+ */
+export function initFormItem(data: any) {
+  const { cFieldtype, cLabel, cProp, cMeta, cSeltype, cSelval, cRequired, cPlaceholder, nOrder, cSign, cShow, nLg, cDefVal, nI18ndata, cDirectives, cDynamicShow, cDynamicRules, cDynamicDisabled, cWidth } = data
+  const MetaObj = cMeta ? JSON.parse(cMeta) : {}
+  var itemObj: FormItem = {
+    components: cFieldtype,
+    label: cLabel,
+    fieldName: cProp,
+    componentProps: {
+      placeholder: cPlaceholder,
+      disabled: cSign === '0',
+    },
+    hidden: cShow !== '1', // 是否隐藏字段（静态隐藏，不参与联动逻辑）。
+    rules: cRequired === '0' ? 'required': null,
+    colSpan: nLg, // 简化的栅格跨度设置 (1-24)。
+    defaultValue: cDefVal, // 字段默认值。
+    order: nOrder,
+  }
+
+  // 先合并额外属性，再进行特殊情况处理
+  itemObj = { ...itemObj, ...MetaObj }
+
+  if (cFieldtype === 'Input' || cFieldtype === 'Select') {
+    itemObj.componentProps.allowClear = true
+  }
+
+  if (cSeltype && cSelval && MetaObj.components !== 'DatePicker') {
+    itemObj.componentProps.options = getOptionsForSelectType(data)
+    if (cSeltype === '3') {
+      itemObj.components = 'SunnyCustomizeSelect'
+      itemObj.componentProps.cNum = cSelval
+    }
+  }
+
+  itemObj.dependencies = {
+    show: (values: any) => {
+      const cRules = JSON.parse(cDynamicShow)
+      const cStr = buildConditionString(cRules, values)
+      if (!cStr) return true
+      return new Function(`return ${cStr}`)()
+    },
+    required: (values: any) => {
+      const cRules = JSON.parse(cDynamicRules)
+      const cStr = buildConditionString(cRules, values)
+      if (!cStr) return true
+      return new Function(`return ${cStr}`)()
+    },
+    disabled: (values: any) => {
+      const cRules = JSON.parse(cDynamicDisabled)
+      const cStr = buildConditionString(cRules, values)
+      if (!cStr) return false
+      return new Function(`return ${cStr}`)()
+    }
+  }
+  
+  return itemObj
+}
+
+/**
  * 构建表格vxe-column配置项
  * @param {*} resource
  */
@@ -47,6 +134,8 @@ export function initVxeColumn(data: any) {
       nBill: nBill, // 业务履历
       cEntityTable: cEntityTable // 对应后端实体表名
     },
+    // dynamicRules: cDynamicRules,
+    // components: cFieldtype,
   }
 
   // 先进行额外数据合并，再进行特殊情况数据操作
@@ -102,8 +191,7 @@ export function initResourceConstructor(result: any): {
 } {
     const resFieldList = groupBy(orderBy(result.resFieldList.map((fl: any) => {
       return {
-        // ...initFormItem.apply(this, [fl]),
-        ...fl,
+        ...initFormItem(fl),
         cArea: fl.cArea
       }
     }), ['order'], ['asc']), 'cArea')
