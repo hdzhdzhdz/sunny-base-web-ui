@@ -72,7 +72,8 @@ export default defineConfig({
             { text: 'Select 选择器', link: '/components/entry/select' },
             { text: 'BatchSelect 批量选择器', link: '/components/entry/batch-select' },
             { text: 'ApiSelect API下拉选择器', link: '/components/entry/api-select' },
-            { text: 'SearchInputTag 公共查询', link: '/components/entry/search-input-tag' }
+            { text: 'SearchInputTag 公共查询', link: '/components/entry/search-input-tag' },
+            { text: 'CustomizeSelect 自定义下拉框', link: '/components/entry/customize-select' },
           ]
         },
         {
