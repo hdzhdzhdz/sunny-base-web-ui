@@ -65,10 +65,10 @@ export const searchFormSchema: FormSchema[] = [
  */
 export const tableColumns: VxeGridProps<OperationLogVO>['columns'] = [
   { type: 'seq', width: 60, title: '序号' },
-  { field: 'cModname', title: '模块名称', minWidth: 120 },
-  { field: 'cSystem', title: '所属系统', minWidth: 120 },
+  { field: 'cModname', title: '模块名称', minWidth: 120, filters: [{ data: '' }], filterRender: { name: 'MyFilterComplex' } },
+  { field: 'cSystem', title: '所属系统', minWidth: 120, filters: [{ data: '' }], filterRender: { name: 'MyFilterComplex' } },
   { field: 'cDanju', title: '单据号', minWidth: 140 },
-  { field: 'cUser', title: '用户工号', width: 100 },
+  { field: 'cUser', title: '用户工号', width: 100, filters: [{ data: '' }], filterRender: { name: 'MyFilterComplex' } },
   { field: 'cUsername', title: '用户名称', minWidth: 120 },
   { field: 'cDongzuo', title: '描述', minWidth: 200, align: 'left' },
   { field: 'cUrl', title: '接口地址', minWidth: 200 },

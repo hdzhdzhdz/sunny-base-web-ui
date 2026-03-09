@@ -8,15 +8,19 @@ const __dirname = path.dirname(__filename)
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "My Monorepo Docs",
-  description: "Documentation for my Vue 3 Monorepo",
+  title: "Sunny Base Web",
+  description: "企业级 Vue 3 前端解决方案 - 基于 Arco Design 的组件库",
+  lang: 'zh-CN',
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
+    logo: '/logo.svg',
+    siteTitle: 'Sunny Base Web',
     nav: [
-      { text: 'Home', link: '/' },
-      { text: 'Components', link: '/components/basic/icon' },
-      { text: 'Business', link: '/business/' },
-      { text: 'AI', link: '/ai/ai-assistant' }
+      { text: '首页', link: '/' },
+      { text: '组件库', link: '/components/basic/icon' },
+      { text: '业务组件', link: '/business/' },
+      { text: '工具函数', link: '/utilities/composables/use-namespace' },
+      { text: 'AI 助手', link: '/ai/ai-assistant' }
     ],
 
     sidebar: {
