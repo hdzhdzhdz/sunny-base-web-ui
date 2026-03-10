@@ -145,6 +145,7 @@ function getDefaultState(): SunnyFormProps {
     submitButtonOptions: {},
     submitOnChange: false,
     submitOnEnter: false,
+    useFieldSettings: true,
     wrapperClass: 'grid-cols-1',
     values: {},
   };

@@ -28,6 +28,7 @@ const props = withDefaults(defineProps<SunnyFormProps & { formApi: FormApi }>(),
   showCollapseButton: undefined,
   collapseTriggerResize: undefined,
   compact: undefined,
+  useFieldSettings: undefined,
 });
 
 // 同步 Store 状态 (状态由 useSunnyForm/FormApi 管理)

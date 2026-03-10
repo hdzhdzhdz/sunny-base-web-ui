@@ -54,10 +54,34 @@ export function useSunnyForm(options: SunnyFormProps = {}) {
   const Form = defineComponent({
     name: 'useSunnyFormWrapper',
     setup(props, { attrs, slots }) {
-      // 将组件的 props 和 attrs 同步到 store 中 / Sync component props and attrs to store
+      // 过滤掉值为 false 的布尔 prop，只保留值为 true 的布尔 prop
+      // 这样当用户没有传递布尔 prop 时，不会覆盖 store 中的默认值
+      const filteredProps = Object.entries(props).reduce((acc, [key, value]) => {
+        if (typeof value === 'boolean') {
+          if (value) {
+            acc[key] = value;
+          }
+        } else if (value !== undefined) {
+          acc[key] = value;
+        }
+        return acc;
+      }, {} as Record<string, any>);
+
+      const filteredAttrs = Object.entries(attrs).reduce((acc, [key, value]) => {
+        if (typeof value === 'boolean') {
+          if (value) {
+            acc[key] = value;
+          }
+        } else if (value !== undefined) {
+          acc[key] = value;
+        }
+        return acc;
+      }, {} as Record<string, any>);
+
+      // 将过滤后的 props 和 attrs 同步到 store 中 / Sync filtered props and attrs to store
       // 这允许用户在使用 <Form /> 组件时直接传递属性来覆盖配置
       // This allows users to pass props directly when using <Form /> to override config
-      api.setState({ ...props, ...attrs });
+      api.setState({ ...filteredProps, ...filteredAttrs });
 
       // 渲染函数 / Render function
       return () => h(SunnyUseForm, {
