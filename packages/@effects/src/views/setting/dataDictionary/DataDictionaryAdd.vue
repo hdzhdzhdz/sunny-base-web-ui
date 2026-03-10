@@ -35,7 +35,8 @@ const [Form, formApi] = useSunnyForm({
   size: 'small',
   labelWidth: 100,
   showDefaultActions: false,
-  schema: addFormSchema
+  schema: addFormSchema,
+  id: 'd925795d-58c0-4adf-b287-cc04233ada6d'
 })
 
 // 监听弹窗打开，重置表单并设置父级字典
