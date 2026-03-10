@@ -37,7 +37,8 @@ const [Form, formApi] = useSunnyForm({
   labelWidth: 100,
   showDefaultActions: false,
   scrollToFirstError: true,
-  schema: addFormSchema
+  schema: addFormSchema,
+  id: 'd925795d-58c0-4adf-b287-cc04233ada6d'
 })
 
 // 额外属性表格配置
@@ -133,14 +134,8 @@ function handleClose() {
 </script>
 
 <template>
-  <Modal
-    :model-value="props.visible"
-    :title="modalTitle"
-    :width="700"
-    :on-before-ok="handleSubmit"
-    @update:model-value="emit('update:visible', $event)"
-    @close="handleClose"
-  >
+  <Modal :model-value="props.visible" :title="modalTitle" :width="700" :on-before-ok="handleSubmit"
+    @update:model-value="emit('update:visible', $event)" @close="handleClose">
     <Form />
 
     <!-- 额外属性 -->

@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, useSlots, watch } from 'vue';
+import { computed, onMounted, reactive, ref, useSlots, watch } from 'vue';
+import { VxeGrid } from 'vxe-table';
+import type { VxeGridProps, VxeGridListeners, VxeGridInstance } from 'vxe-table';
+import 'vxe-table/lib/style.css';
+import { Modal } from '@arco-design/web-vue';
 import { useForm } from 'vee-validate';
 import { injectFormProps } from '../use-form-context';
 import FormField from './FormField.vue';
@@ -45,13 +49,90 @@ const formProps = injectFormProps();
  */
 const renderPropsState = reactive({ ...formProps.value });
 
+// 字段设置相关
+const fieldSettingsVisible = ref(false);
+const fieldList = ref<any[]>([]);
+
+// 初始化字段列表
+const initFieldList = () => {
+  const formId = renderPropsState.id;
+  let storedFieldList = null;
+  
+  // 如果有 formId，尝试从 localStorage 读取存储的字段设置
+  if (formId) {
+    try {
+      const storedData = localStorage.getItem(`form-field-settings-${formId}`);
+      if (storedData) {
+        storedFieldList = JSON.parse(storedData);
+      }
+    } catch (error) {
+      console.error('Failed to read field settings from localStorage:', error);
+    }
+  }
+  
+  if (storedFieldList) {
+    // 使用存储的字段设置
+    fieldList.value = storedFieldList;
+  } else {
+    // 生成默认字段列表
+    fieldList.value = computedSchema.value.map((field, index) => ({
+      id: field.fieldName || index,
+      fieldName: field.fieldName,
+      label: field.label,
+      required: field.rules === 'required' || false,
+      visible: true,
+      sort: index
+    }));
+  }
+};
+
+// 应用字段设置到表单
+const applyFieldSettings = () => {
+  const formId = renderPropsState.id;
+  if (!formId || !renderPropsState.schema) return;
+  
+  try {
+    const storedData = localStorage.getItem(`form-field-settings-${formId}`);
+    if (storedData) {
+      const storedFieldList = JSON.parse(storedData);
+      const schemaMap = new Map(renderPropsState.schema.map(item => [item.fieldName, item]));
+      const newSchema = storedFieldList
+        .map(item => {
+          const field = schemaMap.get(item.fieldName);
+          if (field) {
+            return {
+              ...field,
+              hidden: !item.visible
+            };
+          }
+          return field;
+        })
+        .filter((item): item is typeof item => item !== undefined) as typeof renderPropsState.schema;
+      
+      // 检查新的schema是否与当前的schema相同，避免死循环
+      const isSchemaSame = JSON.stringify(newSchema) === JSON.stringify(renderPropsState.schema);
+      if (!isSchemaSame) {
+        if (props.formApi) {
+          props.formApi.setState({ schema: newSchema });
+        } else {
+          renderPropsState.schema = newSchema;
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Failed to apply field settings from localStorage:', error);
+  }
+};
+
 // 监听上层配置变化，并同步到本地渲染状态
 watch(
   () => formProps.value,
   (newVal) => {
     Object.assign(renderPropsState, newVal);
+    // 当配置变化时，重新应用字段设置
+    applyFieldSettings();
   },
-  { deep: true } // 深度监听，确保对象内部属性变化也能捕获
+  { deep: true, immediate: true } // 深度监听，确保对象内部属性变化也能捕获，并且立即执行一次
 );
 
 // 向下层组件 (如 FormField, dependencies) 提供最新的表单渲染配置
@@ -63,6 +144,148 @@ provideFieldSlots(slots);
 // 使用响应式 Hook 计算栅格布局的 span (跨度)
 // 处理响应式布局逻辑，根据屏幕宽度自动计算每个字段占用的列数
 const { spans, actionSpan } = useResponsiveState(renderPropsState as any);
+
+// 字段设置 grid 配置
+const fieldSettingsGridOptions = reactive<VxeGridProps<any>>({
+  id: 'field-settings-grid',
+  border: true,
+  size: 'mini',
+  height: 400,
+  columnConfig: {
+    resizable: true
+  },
+  pagerConfig: {
+    enabled: false
+  },
+  rowConfig: {
+    drag: true,
+    keyField: 'id'
+  },
+  toolbarConfig: {
+    enabled: false
+  },
+  editConfig: {
+    trigger: 'click',
+    mode: 'cell',
+    showAsterisk: true,
+    activeMethod: ({ row, column }) => {
+      if (column.field === 'visible' && row.required) {
+        return false;
+      }
+      return true;
+    }
+  },
+  data: [],
+  columns: [
+    {
+      type: 'seq',
+      width: 60,
+      title: '序号'
+    },
+    {
+      field: 'label',
+      title: '字段标题',
+      minWidth: 200,
+      sortable: true,
+      sortBy: 'sort',
+      dragSort: true
+    },
+    {
+      field: 'visible',
+      title: '是否显示',
+      width: 120,
+      editRender: {
+        name: 'VxeSelect',
+        props: {
+          options: [
+            { label: '是', value: true },
+            { label: '否', value: false }
+          ]
+        }
+      },
+      formatter: ({ cellValue }) => {
+        return cellValue ? '是' : '否';
+      }
+    }
+  ]
+});
+
+// 字段设置 grid 事件
+const fieldSettingsGridEvents: VxeGridListeners = {
+  cellClick: ({ row, column }) => {
+    // 当字段为必填时，禁止编辑是否显示列
+    if (column.field === 'visible' && (row as any).required) {
+      return false;
+    }
+  },
+  rowDragend: () => {
+    if (fieldSettingsGridRef.value) {
+      fieldSettingsGridOptions.data = fieldSettingsGridRef.value.getFullData();
+    }
+  }
+};
+
+// 字段设置表格引用
+const fieldSettingsGridRef = ref<VxeGridInstance>();
+
+// 打开字段设置弹窗
+const openFieldSettings = () => {
+  initFieldList();
+  fieldSettingsGridOptions.data = fieldList.value;
+  fieldSettingsVisible.value = true;
+};
+
+// 关闭字段设置弹窗
+const closeFieldSettings = () => {
+  fieldSettingsVisible.value = false;
+};
+
+// 保存字段设置
+const saveFieldSettings = () => {
+  // 从表格数据获取排序后的字段列表
+  const $grid = fieldSettingsGridRef.value;
+  let sortedFields = fieldSettingsGridOptions.data || [];
+  
+  if ($grid) {
+    sortedFields = $grid.getFullData();
+  }
+  
+  // 如果有 formId，将字段设置存储到 localStorage
+  const formId = renderPropsState.id;
+  if (formId) {
+    try {
+      localStorage.setItem(`form-field-settings-${formId}`, JSON.stringify(sortedFields));
+    } catch (error) {
+      console.error('Failed to save field settings to localStorage:', error);
+    }
+  }
+  
+  // 根据新顺序重新构建 schema
+  if (renderPropsState.schema) {
+    const schemaMap = new Map(renderPropsState.schema.map(item => [item.fieldName, item]));
+    const newSchema = sortedFields
+      .map(item => {
+        const field = schemaMap.get(item.fieldName);
+        if (field) {
+          // 创建新的字段对象，而不是修改原有的只读对象
+          return {
+            ...field,
+            hidden: !item.visible
+          };
+        }
+        return field;
+      })
+      .filter((item): item is typeof item => item !== undefined) as typeof renderPropsState.schema; // 过滤掉可能不存在的字段（安全处理）
+    // 触发 schema 更新
+    if (props.formApi) {
+      props.formApi.setState({ schema: newSchema });
+    } else {
+      // 或者直接修改 renderPropsState（谨慎使用，可能破坏单向数据流）
+      renderPropsState.schema = newSchema;
+    }
+  }
+  fieldSettingsVisible.value = false;
+};
 
 /**
  * 计算最终的表单 Schema
@@ -102,9 +325,9 @@ const computedSchema = computed(() => {
       ...globalConfig,
       ...item,
 
-      // 显隐逻辑：只处理 Item 自身配置的 hide 属性
+      // 显隐逻辑：只处理 Item 自身配置的 hidden 属性
       // (v-if/v-show 的动态逻辑由 dependencies.ts 处理)
-      hidden: item.hide,
+      hidden: item.hidden,
 
       // 注入通用组件属性 
       // 注意：这里只是透传，最终合并逻辑在 FormField 组件内部进行
@@ -236,64 +459,113 @@ const computedGap = computed(() => {
 
 <template>
   <!-- Arco Design Form 组件作为最外层容器 -->
-  <a-form
-    :model="{}" 
-    :layout="formProps.layout || 'horizontal'"
-    :size="formProps.size || 'small'"
-    class="arco-form"
-    @submit="(_data: any, ev: any) => onSubmit(ev)"
-  >
-    <!-- 
-      核心布局容器：使用 a-row 和 a-col 替代 a-grid
-      a-row 的 gutter 能更稳健地处理左右(xGap)和上下(yGap)间距，且不会撑破布局。
-    -->
-    <a-row
-      :gutter="[computedGap.x, computedGap.y]"
-      :class="renderPropsState.wrapperClass"
-      :align="(renderPropsState.layout || 'horizontal') === 'vertical' ? 'stretch' : undefined"
-    >
-      <template v-for="(item, index) in computedSchema" :key="item.fieldName || index">
-        <a-col
-          v-if="item.fieldName && !item.hidden && (!renderPropsState.collapsed || index < (24 / (spans[item.fieldName] ?? 24)) * (renderPropsState.collapsedRows ?? 1) - 1)"
-          :span="spans[item.fieldName] ?? (isInline ? undefined : 24)"
-        >
-          <FormField :schema="item" />
-        </a-col>
-      </template>
-      
-      <!-- 操作栏区域 -->
-
-      <a-col
-        v-if="renderPropsState.showDefaultActions || slots['actions']"
-        :span="actionSpan"
-        :style="isInline ? { marginLeft: '16px' } : { flex: 1, textAlign: 'right' }"
+  <div class="flex flex-col w-full relative">
+    <!-- 字段设置按钮 -->
+    <div class="self-end mb-3 z-10">
+      <button
+        class="vxe-button type--button vxe-toolbar-custom-target size--mini is--circle"
+        title="字段设置"
+        type="button"
+        @click="openFieldSettings"
       >
-        <div class="h-full flex flex-col justify-end">
-          <!-- 自定义操作栏插槽：完全替换默认操作栏 -->
-          <slot v-if="slots['actions']" name="actions" :collapsed="renderPropsState.collapsed" :form-api="props.formApi"></slot>
-          <!-- 默认操作栏 -->
-          <FormActions
-            v-else
-            :model-value="renderPropsState.collapsed"
-            @update:model-value="handleCollapsedUpdate"
-            :form-api="props.formApi"
+        <i class="vxe-button--item vxe-button--prefix-icon vxe-table-icon-custom-column"></i>
+      </button>
+    </div>
+    
+    <div class="w-full">
+      <a-form
+        :model="{}" 
+        :layout="formProps.layout || 'horizontal'"
+        :size="formProps.size || 'small'"
+        class="arco-form"
+        @submit="(_data: any, ev: any) => onSubmit(ev)"
+      >
+        <!-- 
+          核心布局容器：使用 a-row 和 a-col 替代 a-grid
+          a-row 的 gutter 能更稳健地处理左右(xGap)和上下(yGap)间距，且不会撑破布局。
+        -->
+        <a-row
+          :gutter="[computedGap.x, computedGap.y]"
+          :class="renderPropsState.wrapperClass"
+          :align="(renderPropsState.layout || 'horizontal') === 'vertical' ? 'stretch' : undefined"
+        >
+          <template v-for="(item, index) in computedSchema" :key="item.fieldName || index">
+            <a-col
+              v-if="item.fieldName && !item.hidden && (!renderPropsState.collapsed || index < (24 / (spans[item.fieldName] ?? 24)) * (renderPropsState.collapsedRows ?? 1) - 1)"
+              :span="spans[item.fieldName] ?? (isInline ? undefined : 24)"
+            >
+              <FormField :schema="item" />
+            </a-col>
+          </template>
+          
+          <!-- 操作栏区域 -->
+
+          <a-col
+            v-if="renderPropsState.showDefaultActions || slots['actions']"
+            :span="actionSpan"
+            :style="isInline ? { marginLeft: '16px' } : { flex: 1, textAlign: 'right' }"
           >
-            <!-- 透传 slots 给 FormActions -->
-            <template v-if="slots['submit-before']" #submit-before>
-              <slot name="submit-before"></slot>
-            </template>
-            <template v-if="slots['reset-before']" #reset-before>
-              <slot name="reset-before"></slot>
-            </template>
-            <template v-if="slots['expand-before']" #expand-before>
-              <slot name="expand-before"></slot>
-            </template>
-            <template v-if="slots['expand-after']" #expand-after>
-              <slot name="expand-after"></slot>
-            </template>
-          </FormActions>
+            <div class="h-full flex flex-col justify-end">
+              <!-- 自定义操作栏插槽：完全替换默认操作栏 -->
+              <slot v-if="slots['actions']" name="actions" :collapsed="renderPropsState.collapsed" :form-api="props.formApi"></slot>
+              <!-- 默认操作栏 -->
+              <FormActions
+                v-else
+                :model-value="renderPropsState.collapsed"
+                @update:model-value="handleCollapsedUpdate"
+                :form-api="props.formApi"
+              >
+                <!-- 透传 slots 给 FormActions -->
+                <template v-if="slots['submit-before']" #submit-before>
+                  <slot name="submit-before"></slot>
+                </template>
+                <template v-if="slots['reset-before']" #reset-before>
+                  <slot name="reset-before"></slot>
+                </template>
+                <template v-if="slots['expand-before']" #expand-before>
+                  <slot name="expand-before"></slot>
+                </template>
+                <template v-if="slots['expand-after']" #expand-after>
+                  <slot name="expand-after"></slot>
+                </template>
+              </FormActions>
+            </div>
+          </a-col>
+        </a-row>
+      </a-form>
+    </div>
+    
+    <!-- 字段设置弹窗 -->
+    <Modal
+      v-model:visible="fieldSettingsVisible"
+      title="字段设置"
+      width="600px"
+    >
+      <div class="p-4">
+        <vxe-grid
+          ref="fieldSettingsGridRef"
+          v-bind="fieldSettingsGridOptions"
+          v-on="fieldSettingsGridEvents"
+        />
+      </div>
+      <template #footer>
+        <div class="flex justify-end gap-3">
+          <button
+            class="px-4 py-2 border border-[var(--color-border-2)] rounded bg-white text-sm transition-colors hover:border-[rgb(var(--primary-6))] hover:text-[rgb(var(--primary-6))]"
+            @click="closeFieldSettings"
+          >
+            取消
+          </button>
+          <button
+            class="px-4 py-2 bg-[rgb(var(--primary-6))] border border-[rgb(var(--primary-6))] text-white text-sm rounded hover:bg-[rgb(var(--primary-7))] transition-colors"
+            @click="saveFieldSettings"
+          >
+            保存
+          </button>
         </div>
-      </a-col>
-    </a-row>
-  </a-form>
+      </template>
+    </Modal>
+  </div>
 </template>
+
+
