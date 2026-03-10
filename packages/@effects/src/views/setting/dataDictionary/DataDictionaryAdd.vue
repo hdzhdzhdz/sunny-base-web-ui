@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, reactive } from 'vue'
 import { Message } from '@arco-design/web-vue'
-import { Plus } from '@sunny-base-web/icons'
+import { Plus, Trash2 } from '@sunny-base-web/icons'
 import { useSunnyForm, Modal, useSunnyEditGrid } from '@sunny-base-web/ui'
 import { requestClient } from '@sunny-base-web/effects'
 import { addFormSchema, metaGridColumns, metaGridEditRules } from './config'
@@ -43,6 +43,7 @@ const [Form, formApi] = useSunnyForm({
 
 // 额外属性表格配置
 const metaGridOptions = reactive({
+  id: 'meta-grid',
   columns: metaGridColumns,
   data: [] as MetaItem[],
   editRules: metaGridEditRules,
@@ -50,6 +51,18 @@ const metaGridOptions = reactive({
     enabled: true,
     trigger: 'click',
     mode: 'row'
+  },
+  toolbarConfig: {
+    enabled: true,
+    zoom: true,
+    custom: true,
+    buttons: [
+      { code: 'insert', name: '添加属性' },
+      { code: 'remove', name: '删除' }
+    ]
+  },
+  zoomConfig: {
+    enabled: true
   }
 })
 
@@ -140,16 +153,8 @@ function handleClose() {
 
     <!-- 额外属性 -->
     <div class="mt-4">
-      <div class="flex items-center justify-between mb-2">
-        <span class="text-sm font-medium text-gray-700">额外属性</span>
-        <a-button type="text" size="small" @click="metaGridApi.addEvent()">
-          <template #icon>
-            <Plus :size="14" />
-          </template>
-          添加属性
-        </a-button>
-      </div>
-      <MetaGrid border max-height="200" />
+      <span class="text-sm font-medium text-[var(--color-text-1)] mb-2 block">额外属性</span>
+      <MetaGrid id="metaGrid" border max-height="200" />
     </div>
   </Modal>
 </template>
