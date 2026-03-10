@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, reactive } from 'vue'
 import { Message } from '@arco-design/web-vue'
-import { useSunnyForm, Modal } from '@sunny-base-web/ui'
+import { Plus } from '@sunny-base-web/icons'
+import { useSunnyForm, Modal, useSunnyEditGrid } from '@sunny-base-web/ui'
 import { requestClient } from '@sunny-base-web/effects'
-import { addFormSchema } from './config'
-import type { DataDictionaryFormVO } from './types'
+import { addFormSchema, metaGridColumns, metaGridEditRules } from './config'
+import type { DataDictionaryFormVO, MetaItem } from './types'
 
 defineOptions({
   name: 'DataDictionaryAdd'
@@ -35,7 +36,24 @@ const [Form, formApi] = useSunnyForm({
   size: 'small',
   labelWidth: 100,
   showDefaultActions: false,
+  scrollToFirstError: true,
   schema: addFormSchema
+})
+
+// 额外属性表格配置
+const metaGridOptions = reactive({
+  columns: metaGridColumns,
+  data: [] as MetaItem[],
+  editRules: metaGridEditRules,
+  editConfig: {
+    enabled: true,
+    trigger: 'click',
+    mode: 'row'
+  }
+})
+
+const [MetaGrid, metaGridApi] = useSunnyEditGrid({
+  gridOptions: metaGridOptions
 })
 
 // 监听弹窗打开，重置表单并设置父级字典
@@ -46,6 +64,8 @@ watch(() => props.visible, (val) => {
     formApi.setValues({
       parentName: props.parentName || '无'
     })
+    // 重置额外属性表格
+    metaGridApi.reloadData([])
   }
 })
 
@@ -59,11 +79,31 @@ const modalTitle = computed(() => {
 // 提交表单
 async function handleSubmit() {
   try {
-    const valid = await formApi.validate()
-    if (!valid) return
+    const { valid } = await formApi.validate()
+    if (!valid) return false
 
-    loading.value = true
+    // 校验额外属性表格
+    const gridErrMap = await metaGridApi.validate()
+    if (gridErrMap) return false
+
+    // 检查属性键是否重复
+    const metaData = await metaGridApi.getFullData()
+    const keys = metaData.filter(item => item.key).map(item => item.key)
+    const uniqueKeys = new Set(keys)
+    if (keys.length !== uniqueKeys.size) {
+      Message.warning('属性键不能重复')
+      return false
+    }
+
     const values = await formApi.getValues() as DataDictionaryFormVO
+
+    // 将额外属性转换为 JSON 对象
+    const metaObj: Record<string, string> = {}
+    metaData.forEach(item => {
+      if (item.key) {
+        metaObj[item.key] = item.value || ''
+      }
+    })
 
     const params = {
       authDict: {
@@ -72,19 +112,17 @@ async function handleSubmit() {
         cSign: values.cSign,
         nParent: props.parentId || '0',
         nOrder: values.nOrder || 0,
-        cMeta: '{}'
+        cMeta: JSON.stringify(metaObj)
       }
     }
 
     const res = await requestClient.post<{ message?: string }>('/core/authDict/add', params)
     Message.success(res.message)
-    emit('update:visible', false)
     emit('success')
+    return true
   } catch (error: any) {
     console.error('新增失败:', error)
-    // 错误消息由拦截器统一处理，这里不再重复提示
-  } finally {
-    loading.value = false
+    return false
   }
 }
 
@@ -98,12 +136,25 @@ function handleClose() {
   <Modal
     :model-value="props.visible"
     :title="modalTitle"
-    :width="600"
-    :loading="loading"
+    :width="700"
+    :on-before-ok="handleSubmit"
     @update:model-value="emit('update:visible', $event)"
-    @ok="handleSubmit"
     @close="handleClose"
   >
     <Form />
+
+    <!-- 额外属性 -->
+    <div class="mt-4">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-sm font-medium text-gray-700">额外属性</span>
+        <a-button type="text" size="small" @click="metaGridApi.addEvent()">
+          <template #icon>
+            <Plus :size="14" />
+          </template>
+          添加属性
+        </a-button>
+      </div>
+      <MetaGrid border max-height="200" />
+    </div>
   </Modal>
 </template>

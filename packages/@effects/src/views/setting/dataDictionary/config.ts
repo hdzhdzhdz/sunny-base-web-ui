@@ -1,6 +1,7 @@
 import type { FormSchema } from '@sunny-base-web/ui';
+import { EditRender } from '@sunny-base-web/ui';
 import type { VxeGridProps } from 'vxe-table';
-import type { DataDictionaryVO, DataDictionaryFormVO } from './types';
+import type { DataDictionaryVO, DataDictionaryFormVO, MetaItem } from './types';
 import selectOptions from '../../../utils/select-options';
 
 /**
@@ -117,3 +118,38 @@ export const tableColumns: VxeGridProps<DataDictionaryVO>['columns'] = [
   { field: 'dCreate', title: '创建时间', width: 180 },
   { field: 'nOrder', title: '排序', width: 80 }
 ];
+
+/**
+ * 额外属性表格列配置
+ */
+export const metaGridColumns: VxeGridProps<MetaItem>['columns'] = [
+  { type: 'checkbox', width: 50, align: 'center' },
+  { type: 'seq', title: '序号', width: 60, align: 'center' },
+  {
+    field: 'key',
+    title: '属性键',
+    minWidth: 150,
+    ...EditRender.InputRender,
+    params: {
+      placeholder: '如: icon, color',
+      allowClear: true
+    }
+  },
+  {
+    field: 'value',
+    title: '属性值',
+    minWidth: 200,
+    ...EditRender.InputRender,
+    params: {
+      placeholder: '请输入属性值',
+      allowClear: true
+    }
+  }
+];
+
+/**
+ * 额外属性表格校验规则
+ */
+export const metaGridEditRules = {
+  key: [{ required: true, message: '请输入属性键' }]
+};

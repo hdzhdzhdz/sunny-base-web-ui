@@ -26,6 +26,14 @@ export interface DataDictionaryVO {
 }
 
 /**
+ * 额外属性项
+ */
+export interface MetaItem {
+  key: string;    // 属性键
+  value: string;  // 属性值
+}
+
+/**
  * 数据字典表单VO
  */
 export interface DataDictionaryFormVO {
@@ -33,4 +41,5 @@ export interface DataDictionaryFormVO {
   cName: string;       // 字典名称
   cSign: string;       // 是否启用
   nOrder?: number;     // 排序
+  metaItems?: MetaItem[];  // 额外属性列表
 }
