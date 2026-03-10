@@ -3,7 +3,7 @@ import { type Router, type RouteRecordRaw, RouterView, type RouteMeta } from 'vu
 import { cloneDeep } from 'lodash-es';
 import { mapTree, sortTree, filterTree } from '@sunny-base-web/utils';
 import { accessRoutes } from './routes';
-import { getTreeRoutes } from './routes/utils';
+import { getTreeRoutes, flattenRoutes } from './routes/utils';
 
 interface MenuRecordRaw {
   name: string;
@@ -164,11 +164,14 @@ export async function generateAccess(params: { roles: string[], resources?: any[
   // cloneDeep to avoid modifying original objects
   const accessibleRoutes = cloneDeep([...accessRoutes, ...dynamicRoutes]);
 
+  // 路由扁平化处理。解决嵌套路由keepalive失效问题
+  const flatAccessibleRoutes = flattenRoutes(accessibleRoutes);
+
   const root = router.getRoutes().find((item) => item.path === '/');
   
   const names = root?.children?.map((item) => item.name) ?? [];
 
-  accessibleRoutes.forEach((route) => {
+  flatAccessibleRoutes.forEach((route) => {
     if (root && !route.meta?.noBasicLayout) {
       // Avoid multi-layer BasicLayout
       // If the route has children, remove the component (assumed to be BasicLayout)

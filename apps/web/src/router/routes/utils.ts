@@ -33,6 +33,7 @@ export function getTreeRoutes(routes: any[], Pid: number = 0, isSuperAdmin: bool
         id: id,
         type: cType,
         hideInMenu: cShow === '1',
+        keepAlive: true
       },
       component: undefined,
     };
@@ -76,4 +77,46 @@ export function getTreeRoutes(routes: any[], Pid: number = 0, isSuperAdmin: bool
   }
 
   return result;
+}
+
+/**
+ * Resolve path
+ * @param parentPath Parent path
+ * @param path Current path
+ */
+function resolvePath(parentPath: string, path: string): string {
+  if (path.startsWith('/')) return path;
+  if (!parentPath.endsWith('/')) parentPath += '/';
+  return parentPath + path;
+}
+
+/**
+ * Flatten routes
+ * @param routes Route list
+ * @param parentPath Parent path
+ * @description 递归扁平化路由，将所有深层嵌套的路由提升为 BasicLayout 的直接子路由（在路由层面拉平，菜单层级保持不变）。这样 BasicLayout 就能直接渲染 DashboardPage ， keep-alive 也能正确匹配到组件名称。
+ */
+export function flattenRoutes(routes: RouteRecordRaw[], parentPath = ''): RouteRecordRaw[] {
+  let res: RouteRecordRaw[] = [];
+  
+  routes.forEach(route => {
+    const fullPath = resolvePath(parentPath, route.path);
+    const { children, ...rest } = route;
+    
+    // Create a copy of the route with the full path
+    const routeCopy = { ...rest, path: fullPath };
+    
+    if (children && children.length > 0) {
+      // Add the parent route itself (useful for redirects)
+      res.push({ ...routeCopy, children: [] });
+      
+      // Flatten children
+      const flatChildren = flattenRoutes(children, fullPath);
+      res.push(...flatChildren);
+    } else {
+      res.push(routeCopy);
+    }
+  });
+  
+  return res;
 }

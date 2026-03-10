@@ -8,12 +8,13 @@ const dashboard: RouteRecordRaw = {
   children: [
     {
       path: 'index',
-      name: 'Dashboard',
+      name: 'DashboardPage',
       component: () => import('#/views/dashboard/index.vue'),
       meta: {
         title: 'Dashboard',
         icon: 'lucide:layout-dashboard',
         affix: true,
+        keepAlive: true
       },
     },
   ],

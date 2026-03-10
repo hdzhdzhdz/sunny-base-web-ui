@@ -91,7 +91,11 @@
         <!-- 内容区域 -->
         <a-layout-content class="flex-1 p-2 overflow-auto bg-[var(--color-bg-1)]">
           <!-- 路由视图渲染 -->
-          <router-view />
+          <router-view v-slot="{ Component, route }">
+            <keep-alive :exclude="getExcludeCachedTabs" :include="getCachedTabs">
+              <component :is="Component" :key="route.name" />
+            </keep-alive>
+          </router-view>
         </a-layout-content>
       </div>
     </a-layout>
@@ -100,7 +104,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { useAccessStore, useTabbarStore } from '@sunny-base-web/stores';
+import { useAccessStore, useTabbarStore, storeToRefs } from '@sunny-base-web/stores';
 import { useRouter, useRoute } from 'vue-router';
 import { SunnyIcon, SunnyScrollbar } from '@sunny-base-web/ui';
 import { useEffectsConfig } from '../../config';
@@ -123,6 +127,7 @@ const accessStore = useAccessStore();
 const tabbarStore = useTabbarStore();
 const router = useRouter();
 const route = useRoute();
+const { getCachedTabs, getExcludeCachedTabs, renderRouteView } = storeToRefs(tabbarStore);
 
 // 侧边栏折叠状态
 const collapsed = ref(false);
