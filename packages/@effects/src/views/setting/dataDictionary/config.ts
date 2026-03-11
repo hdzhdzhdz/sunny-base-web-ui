@@ -153,3 +153,12 @@ export const metaGridColumns: VxeGridProps<MetaItem>['columns'] = [
 export const metaGridEditRules = {
   key: [{ required: true, message: '请输入属性键' }]
 };
+
+/**
+ * 资源配置
+ */
+export const resourceConfig = {
+  resourceId: 'dataDictionary',
+  nResourceid: 62,
+  cModnumb: '40577f0e-1c19-4fa6-bb88-d247fff5e32a'
+};

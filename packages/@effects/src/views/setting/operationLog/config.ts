@@ -82,5 +82,6 @@ export const tableColumns: VxeGridProps<OperationLogVO>['columns'] = [
  */
 export const resourceConfig = {
   resourceId: 'operationLog',
-  nResourceid: 103
+  nResourceid: 103,
+  cModnumb: 'aaa722d3-fe09-4992-a96a-39bfc466bcb3'
 };
