@@ -5,7 +5,7 @@ import { Message, Modal } from '@arco-design/web-vue'
 import { useSunnyQueryGrid, useSunnyForm, SunnyIcon } from "@sunny-base-web/ui"
 import { searchFormSchema, tableColumns } from './config'
 import type { DataDictionaryVO } from './types'
-import { requestClient } from '@sunny-base-web/effects'
+import { requestClient } from '../../../api/request'
 import DataDictionaryAdd from './DataDictionaryAdd.vue'
 
 // ----------------------------------------------------------------------

@@ -3,7 +3,7 @@ import { ref, computed, watch, reactive } from 'vue'
 import { Message } from '@arco-design/web-vue'
 import { Plus, Trash2 } from '@sunny-base-web/icons'
 import { useSunnyForm, Modal, useSunnyEditGrid } from '@sunny-base-web/ui'
-import { requestClient } from '@sunny-base-web/effects'
+import { requestClient } from '../../../api/request'
 import { addFormSchema, metaGridColumns, metaGridEditRules } from './config'
 import type { DataDictionaryFormVO, MetaItem } from './types'
 

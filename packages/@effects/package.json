@@ -27,8 +27,10 @@
     "@sunny-base-web/ui": "workspace:*",
     "@sunny-base-web/utils": "workspace:*",
     "@vueuse/core": "catalog:",
+    "@vxe-ui/plugin-render-arco": "catalog:",
     "axios": "^1.13.2",
     "jsencrypt": "^3.3.2",
+    "pinia": "^2.3.1",
     "qs": "^6.14.1",
     "reka-ui": "catalog:",
     "vue": "catalog:",
@@ -37,8 +39,8 @@
     "vue3-slide-verify": "^1.1.8",
     "vxe-pc-ui": "catalog:",
     "vxe-table": "catalog:",
-    "@vxe-ui/plugin-render-arco": "catalog:",
-    "xe-utils": "3.9.1"
+    "xe-utils": "3.9.1",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@sunny-base-web/constants": "workspace:*",

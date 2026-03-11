@@ -1,7 +1,7 @@
 import { ref, reactive } from 'vue';
 import { useSunnyForm, useSunnyQueryGrid } from '@sunny-base-web/ui';
 import type { VxeGridProps, VxeGridListeners } from 'vxe-table';
-import { requestClient } from '@sunny-base-web/effects';
+import { requestClient } from '../api/request';
 
 /**
  * 列表页通用配置

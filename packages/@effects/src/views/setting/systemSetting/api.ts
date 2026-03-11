@@ -1,4 +1,4 @@
-import { requestClient } from '@sunny-base-web/effects'
+import { requestClient } from '../../../api/request'
 
 /**
  * 系统设置项

@@ -1,9 +1,9 @@
 <script lang="tsx" setup>
-import { SunnySearchPlan } from "@sunny-base-web/ui"
+import { SunnySearchPlan, SunnyIcon } from "@sunny-base-web/ui"
 import { searchFormSchema, tableColumns, resourceConfig } from './config'
 import type { OperationLogVO } from './types'
-import { requestClient, searchPlanApi, useList } from '@sunny-base-web/effects'
-import { Filter } from "lucide-vue-next";
+import { requestClient } from '../../../api/request'
+import { searchPlanApi, useList } from '../../../hooks/useList'
 
 
 // ----------------------------------------------------------------------
@@ -77,7 +77,7 @@ const {
                   @click="open"
                   title="查询方案"
                 >
-                  <Filter class="w-4 h-4" />
+                  <SunnyIcon icon="lucide:filter" class="w-4 h-4" />
                 </button>
               </template>
             </SunnySearchPlan>
