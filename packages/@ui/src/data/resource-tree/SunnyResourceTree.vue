@@ -85,9 +85,9 @@ const handleDropdownSelect = (
   handleActionClick(value as string | number, nodeData);
 };
 
-const passThroughSlotNames = computed(() =>
-  Object.keys(slots).filter((name) => name !== 'title')
-);
+const passThroughSlotNames = computed(() => {
+  return Object.keys(slots).filter((name) => name !== 'title');
+});
 
 const callTreeMethod = (method: string, ...args: any[]) => {
   return treeRef.value?.[method]?.(...args);

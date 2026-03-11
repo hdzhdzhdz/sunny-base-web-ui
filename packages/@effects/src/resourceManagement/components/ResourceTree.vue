@@ -32,14 +32,15 @@ const urlEditor = ref();
 const menuPathEditor = ref();
 const emit = defineEmits(['currentChange']);
 
-const treeData = ref<ResourceNode[]>(JSON.parse(import.meta.env.VITE_APP_SYSTEM));
+const appSystem = import.meta.env.VITE_APP_SYSTEM ? JSON.parse(import.meta.env.VITE_APP_SYSTEM) : [];
+const treeData = ref<ResourceNode[]>(appSystem);
 
 /**
  * 判断节点是否为根节点
  * @param node 要判断的节点
  * @returns 是否为根节点(id为0)
  */
-const isRootNode = (node: ResourceNode) => find(JSON.parse(import.meta.env.VITE_APP_SYSTEM), ['id', node.id]);
+const isRootNode = (node: ResourceNode) => find(appSystem, ['id', node.id]);
 
 /**
  * 右键菜单操作配置
