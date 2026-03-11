@@ -1,4 +1,4 @@
-import { acceptHMRUpdate, defineStore } from 'pinia';
+import { defineStore } from 'pinia';
 
 interface UserState {
   /**
@@ -60,9 +60,3 @@ export const useUserStore = defineStore('core-user', {
     },
   },
 });
-
-// 解决热更新问题
-const hot = import.meta.hot;
-if (hot) {
-  hot.accept(acceptHMRUpdate(useUserStore, hot));
-}

@@ -11,7 +11,7 @@ import { toRaw } from 'vue';
 import { TABBAR_MAX_COUNT } from '@sunny-base-web/constants';
 import { startProgress, stopProgress } from '@sunny-base-web/ui';
 
-import { acceptHMRUpdate, defineStore } from 'pinia';
+import { defineStore } from 'pinia';
 
 interface TabbarState {
   /**
@@ -403,12 +403,6 @@ export const useTabbarStore = defineStore('core-tabbar', {
     },
   ],
 });
-
-// 解决热更新问题
-const hot = import.meta.hot;
-if (hot) {
-  hot.accept(acceptHMRUpdate(useTabbarStore, hot));
-}
 
 // --- 内部辅助函数 ---
 

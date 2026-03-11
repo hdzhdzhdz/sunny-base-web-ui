@@ -1,4 +1,4 @@
-import { acceptHMRUpdate, defineStore } from 'pinia';
+import { defineStore } from 'pinia';
 import { applyPrimaryColor } from '@sunny-base-web/utils';
 import { VXETable } from 'vxe-table';
 
@@ -179,9 +179,3 @@ export const useSettingsStore = defineStore('core-settings', {
     pick: ['fontSize', 'primaryColor', 'tableRowHeight'],
   },
 });
-
-// 解决热更新问题
-const hot = import.meta.hot;
-if (hot) {
-  hot.accept(acceptHMRUpdate(useSettingsStore, hot));
-}

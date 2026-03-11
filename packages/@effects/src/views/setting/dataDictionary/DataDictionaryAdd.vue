@@ -35,6 +35,11 @@ const [Form, formApi] = useSunnyForm({
   layout: 'horizontal',
   size: 'small',
   labelWidth: 100,
+  // 栅格容器配置 (a-grid props)
+  gridProps: {
+    xGap: 0,
+    yGap: 0,
+  },
   showDefaultActions: false,
   scrollToFirstError: true,
   schema: addFormSchema,
@@ -52,6 +57,7 @@ const metaGridOptions = reactive({
     trigger: 'click',
     mode: 'row'
   },
+  height: 'auto',
   toolbarConfig: {
     enabled: true,
     zoom: true,
@@ -63,7 +69,14 @@ const metaGridOptions = reactive({
   },
   zoomConfig: {
     enabled: true
-  }
+  },
+  customConfig: {
+    storage: true,
+    mode: 'popup',
+    visibleMethod: (params: any) => { // 在个性化列弹窗中，不显示 checkbox 和 seq 列
+      return !(params.column.type === 'checkbox' || params.column.type === 'seq')
+    }
+  },
 })
 
 const [MetaGrid, metaGridApi] = useSunnyEditGrid({
@@ -154,7 +167,7 @@ function handleClose() {
     <!-- 额外属性 -->
     <div class="mt-4">
       <span class="text-sm font-medium text-[var(--color-text-1)] mb-2 block">额外属性</span>
-      <MetaGrid id="metaGrid" border max-height="200" />
+      <MetaGrid id="metaGrid" border max-height="300" />
     </div>
   </Modal>
 </template>

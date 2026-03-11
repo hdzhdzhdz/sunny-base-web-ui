@@ -1,4 +1,4 @@
-import { acceptHMRUpdate, defineStore } from 'pinia';
+import { defineStore } from 'pinia';
 import { queryFavorites, addFavorite, removeFavorite } from '@sunny-base-web/effects';
 import type { FavoriteItem } from '@sunny-base-web/effects';
 import { useUserStore } from './user';
@@ -176,9 +176,3 @@ export const useFavoriteStore = defineStore('core-favorite', {
     },
   },
 });
-
-// 解决热更新问题
-const hot = import.meta.hot;
-if (hot) {
-  hot.accept(acceptHMRUpdate(useFavoriteStore, hot));
-}
