@@ -1,31 +1,9 @@
 import { requestClient } from '../request';
 import type { ResponseResult } from '../core';
+import type { FavoriteItem } from '@sunny-base-web/stores';
 
-/**
- * 收藏菜单项
- */
-export interface FavoriteItem {
-  /**
-   * 资源ID（用于删除）
-   */
-  nResourceid: number;
-  /**
-   * 模块名称
-   */
-  cModname: string;
-  /**
-   * 图标
-   */
-  cIcon?: string;
-  /**
-   * 路由路径
-   */
-  cUrl?: string;
-  /**
-   * 创建人（工号）
-   */
-  cCreateuser?: string;
-}
+// 重新导出类型以保持向后兼容
+export type { FavoriteItem } from '@sunny-base-web/stores';
 
 /**
  * 查询收藏菜单参数

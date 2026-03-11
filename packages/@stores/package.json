@@ -31,13 +31,10 @@
   },
   "dependencies": {
     "@sunny-base-web/constants": "workspace:*",
-    "@sunny-base-web/effects": "workspace:*",
-    "@sunny-base-web/ui": "workspace:*",
     "@sunny-base-web/utils": "workspace:*",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^4.7.1",
     "secure-ls": "^2.0.0",
-    "vxe-table": "^4.13.0",
     "vue-router": "^4.6.4"
   },
   "devDependencies": {

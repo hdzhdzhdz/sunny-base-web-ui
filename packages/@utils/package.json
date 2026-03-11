@@ -35,11 +35,13 @@
     "@vue/shared": "catalog:",
     "clsx": "^2.1.1",
     "defu": "^6.1.4",
+    "nprogress": "^0.2.0",
     "tailwind-merge": "^3.4.0",
     "vue-i18n": "catalog:"
   },
   "devDependencies": {
     "@sunny-base-web/tsconfig": "workspace:*",
+    "@types/nprogress": "^0.2.3",
     "tsup": "^8.5.1",
     "typescript": "catalog:",
     "vue-router": "^4.6.4"

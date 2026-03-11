@@ -16,3 +16,4 @@ export * from './views/setting/dataDictionary';
 export * from './form';
 export * from './utils/utils';
 export * from './hooks/useList';
+export * from './composables/use-favorite';

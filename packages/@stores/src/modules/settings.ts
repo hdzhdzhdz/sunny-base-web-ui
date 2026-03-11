@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
 import { applyPrimaryColor } from '@sunny-base-web/utils';
-import { VXETable } from 'vxe-table';
 
 interface SettingsState {
   /**
@@ -60,7 +59,7 @@ const applyFontSize = (size: number) => {
 };
 
 /**
- * 应用表格行高到 DOM (vxe-table CSS 变量 + 全局配置)
+ * 应用表格行高到 DOM (通过 CSS 变量)
  * 同时设置所有尺寸的行高，确保无论表格使用哪个 size 都能生效
  */
 const applyTableRowHeight = (height: number) => {
@@ -70,13 +69,6 @@ const applyTableRowHeight = (height: number) => {
   root.style.setProperty('--vxe-ui-table-row-height-medium', `${height}px`);
   root.style.setProperty('--vxe-ui-table-row-height-small', `${height}px`);
   root.style.setProperty('--vxe-ui-table-row-height-mini', `${height}px`);
-
-  // 同时更新 VXETable 全局配置（影响新创建的表格）
-  VXETable.setup({
-    table: {
-      rowHeight: height,
-    }
-  });
 };
 
 /**

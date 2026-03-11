@@ -9,7 +9,7 @@ import type { TabDefinition } from '../types';
 import { toRaw } from 'vue';
 
 import { TABBAR_MAX_COUNT } from '@sunny-base-web/constants';
-import { startProgress, stopProgress } from '@sunny-base-web/ui';
+import { startProgress, stopProgress } from '@sunny-base-web/utils';
 
 import { defineStore } from 'pinia';
 

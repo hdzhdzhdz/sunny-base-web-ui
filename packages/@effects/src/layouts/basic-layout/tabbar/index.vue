@@ -177,6 +177,7 @@ import { SunnyIcon, SunnyScrollbar } from '@sunny-base-web/ui';
 import type { TabDefinition } from '@sunny-base-web/stores';
 import { storeToRefs } from 'pinia';
 import { Message } from '@arco-design/web-vue';
+import { useFavorite } from '@sunny-base-web/effects';
 
 defineOptions({ name: 'Tabbar' });
 
@@ -185,6 +186,9 @@ const accessStore = useAccessStore();
 const favoriteStore = useFavoriteStore();
 const router = useRouter();
 const route = useRoute();
+
+// 使用收藏功能 composable
+const { fetchFavorites, addCurrentPage, removeFavoriteItem } = useFavorite();
 
 // 收藏菜单状态
 const { favorites, loading: favoritesLoading, hasFavorites, adding: addingFavorite } = storeToRefs(favoriteStore);
@@ -199,7 +203,7 @@ const handleFavoriteDropdownChange = (visible: boolean) => {
   favoriteDropdownVisible.value = visible;
   // 展开时加载收藏列表
   if (visible && !hasFavorites.value) {
-    favoriteStore.fetchFavorites();
+    fetchFavorites();
   }
 };
 
@@ -216,7 +220,7 @@ const handleFavoriteClick = (item: { cUrl?: string }) => {
  * 添加当前页面到收藏
  */
 const handleAddFavorite = async () => {
-  const result = await favoriteStore.addCurrentPage(route.path);
+  const result = await addCurrentPage(route.path);
   if (result.success) {
     Message.success(result.message);
   } else {
@@ -228,7 +232,7 @@ const handleAddFavorite = async () => {
  * 移除收藏
  */
 const handleRemoveFavorite = async (nResourceid: number) => {
-  const result = await favoriteStore.removeFavorite(nResourceid);
+  const result = await removeFavoriteItem(nResourceid);
   if (result.success) {
     Message.success(result.message);
   } else {
