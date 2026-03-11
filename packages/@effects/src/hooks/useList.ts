@@ -1,7 +1,8 @@
-import { ref, reactive } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
 import { useSunnyForm, useSunnyQueryGrid } from '@sunny-base-web/ui';
 import type { VxeGridProps, VxeGridListeners } from 'vxe-table';
 import { requestClient } from '../api/request';
+import { getResourceByParIdOrModnumb, initResourceConstructor } from '../api/resource';
 
 /**
  * 列表页通用配置
@@ -26,13 +27,21 @@ export function useList<T>(options: {
   resourceConfig: {
     resourceId: string;
     nResourceid: number;
+    /**
+     * 模块编号
+     */
+    cModnumb?: string;
   };
   /**
    * 表格查询函数
    */
   queryFunction: (params: any) => Promise<any>;
+  /**
+   * 表格事件配置
+   */
+  gridEvents?: any;
 }) {
-  const { searchFormSchema, tableColumns, dataType, resourceConfig, queryFunction } = options;
+  const { searchFormSchema, tableColumns, dataType, resourceConfig, queryFunction, gridEvents } = options;
 
   // ----------------------------------------------------------------------
   // 1. Query Form Configuration
@@ -68,6 +77,18 @@ export function useList<T>(options: {
     showOverflow: true,
     height: 'auto',
     align: 'center',
+    rowConfig: {
+      keyField: 'id',
+      isCurrent: true,
+      isHover: true
+    },
+    checkboxConfig: {
+      highlight: true,       // 选中行高亮
+      range: true,           // 支持范围选择（Shift+点击）
+      reserve: true,         // 跨页保留选中状态
+      trigger: 'row',        // 点击行触发选择
+      checkStrictly: true    // 父子节点不关联选择
+    },
     columnConfig: {
       resizable: true
     },
@@ -86,6 +107,14 @@ export function useList<T>(options: {
       mode: 'popup',
       storage: true
     },
+    // 树形配置 - 懒加载模式
+    treeConfig: {
+      lazy: true,              // 开启懒加载
+      rowField: 'id',          // 行唯一标识
+      hasChild: 'hasChildren', // 标识是否有子节点的字段
+      expandAll: false,        // 不默认展开
+      loadMethod: undefined    // 懒加载方法由外部提供
+    },
     proxyConfig: {
       seq: true,
       response: {
@@ -102,11 +131,7 @@ export function useList<T>(options: {
     columns: tableColumns
   });
 
-  const gridEvents: VxeGridListeners = {
-    // Add grid events if needed
-  };
-
-  const [Grid, gridApi] = useSunnyQueryGrid({ gridOptions, gridEvents });
+  const [Grid, gridApi] = useSunnyQueryGrid({ gridOptions, gridEvents: gridEvents || {} });
 
   // ----------------------------------------------------------------------
   // 3. Form Submit Handler
@@ -143,13 +168,16 @@ export function useList<T>(options: {
   // ----------------------------------------------------------------------
 
   // 从配置中获取资源信息
-  const { resourceId, nResourceid } = resourceConfig;
+  const { resourceId, nResourceid, cModnumb } = resourceConfig;
 
   // 搜索方案列表
   const searchPlanList = ref([]);
 
   // 当前选中的搜索方案
   const currentSearchPlan = ref(undefined);
+
+  // 资源按钮列表
+  const resourceButtons = ref<any[]>([]);
 
   // 处理查询方案搜索
   const handleSearchPlanSearch = async (formValues) => {
@@ -165,6 +193,44 @@ export function useList<T>(options: {
     await formApi.setValues(formValues);
   };
 
+  // 获取资源配置
+  const fetchResourceConfig = async () => {
+    if (!cModnumb) {
+      console.warn('[useList] 未配置 cModnumb，跳过资源获取');
+      return;
+    }
+
+    try {
+      const res = await getResourceByParIdOrModnumb({ modnumb: cModnumb });
+      if (res.code === 200 && res.result) {
+        const { resButtonList } = initResourceConstructor(res.result);
+        // 更新资源按钮列表 - 检查所有可能的parentcode
+        resourceButtons.value = [];
+        Object.values(resButtonList).forEach(buttons => {
+          resourceButtons.value = [...resourceButtons.value, ...buttons];
+        });
+        
+        // 按order排序
+        resourceButtons.value.sort((a, b) => (a.order || 0) - (b.order || 0));
+        
+        // 更新表格按钮配置
+        if (resourceButtons.value.length > 0) {
+          gridOptions.toolbarConfig = {
+            ...gridOptions.toolbarConfig,
+            buttons: resourceButtons.value
+          };
+        }
+      }
+    } catch (error) {
+      console.error('[useList] 获取资源配置失败:', error);
+    }
+  };
+
+  // 组件挂载时获取资源配置
+  onMounted(() => {
+    fetchResourceConfig();
+  });
+
   return {
     QueryForm,
     formApi,
@@ -176,8 +242,10 @@ export function useList<T>(options: {
     currentSearchPlan,
     resourceId,
     nResourceid,
+    resourceButtons,
     handleSearchPlanSearch,
-    handleDefaultPlanLoaded
+    handleDefaultPlanLoaded,
+    fetchResourceConfig
   };
 }
 

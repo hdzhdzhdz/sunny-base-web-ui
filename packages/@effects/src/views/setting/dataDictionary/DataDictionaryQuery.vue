@@ -1,223 +1,104 @@
 <script lang="tsx" setup>
-import { reactive, ref } from 'vue'
-import type { VxeGridProps, VxeGridListeners } from 'vxe-table'
+import { ref } from 'vue'
 import { Message, Modal } from '@arco-design/web-vue'
-import { useSunnyQueryGrid, useSunnyForm, SunnyIcon } from "@sunny-base-web/ui"
-import { searchFormSchema, tableColumns } from './config'
+import { SunnySearchPlan, SunnyIcon } from '@sunny-base-web/ui'
+import { searchPlanApi, useList } from '../../../hooks/useList'
+import { searchFormSchema, tableColumns, resourceConfig } from './config'
 import type { DataDictionaryVO } from './types'
 import { requestClient } from '../../../api/request'
 import DataDictionaryAdd from './DataDictionaryAdd.vue'
 
 // ----------------------------------------------------------------------
-// 1. Query Form Configuration
+// 1. List Configuration
 // ----------------------------------------------------------------------
 
-const submitting = ref(false)
 
-const [QueryForm, formApi] = useSunnyForm({
-  layout: 'vertical',
-  size: 'small',
-  gridProps: {
-    xGap: 16,
-    yGap: 0,
-    collapsed: true,
-    collapsedRows: 1
-  },
-  showCollapseButton: true,
-  showDefaultActions: true,
-  submitOnEnter: true,
-  submitButtonOptions: { loading: submitting },
-  actionColProps: { span: 4 },
-  schema: searchFormSchema
-})
 
-// ----------------------------------------------------------------------
-// 2. Grid Configuration
-// ----------------------------------------------------------------------
-
-/**
- * 加载子节点数据
- * @param row - 父节点行数据
- */
-async function loadChildren({ row }: { row: DataDictionaryVO & { hasChildren?: boolean } }) {
-  const formValues = await formApi.getValues()
-
+// 表格查询函数
+const queryFunction = async ({ page, formValues }) => {
   const queryParams = {
-    pageNo: 1,
-    pageSize: 9999,
+    pageNo: page.currentPage,
+    pageSize: page.pageSize,
     authDict: {
       cSign: formValues.cSign || '',
       cXuhao: formValues.cXuhao || '',
       cName: formValues.cName || '',
-      nParent: row.id  // 查询该节点的子节点
+      nParent: 0  // 首次只查根节点
     }
   }
 
-  try {
-    const response = await requestClient.post<{ result: { records: DataDictionaryVO[] } }>('/core/authDict/selectForPage', queryParams)
-    const records = response.result?.records || []
-    // 给每条记录添加 hasChildren 标识，支持继续展开
-    return records.map(item => ({
+  const response = await requestClient.post('/core/authDict/selectForPage', queryParams)
+  // 给每条记录添加 hasChildren 标识，让所有节点都可展开
+  if (response.result?.records) {
+    response.result.records = response.result.records.map((item: DataDictionaryVO) => ({
       ...item,
       hasChildren: true
     }))
-  } catch (error) {
-    console.error('加载子节点失败:', error)
-    return []
   }
-}
+  return response
+};
 
-const gridOptions = reactive<VxeGridProps<DataDictionaryVO>>({
-  id: 'DataDictionaryQuery',
-  border: true,
-  size: 'mini',
-  showOverflow: true,
-  height: 'auto',
-  align: 'center',
-  rowConfig: {
-    keyField: 'id',
-    isCurrent: true,
-    isHover: true
-  },
-  checkboxConfig: {
-    highlight: true,       // 选中行高亮
-    range: true,           // 支持范围选择（Shift+点击）
-    reserve: true,         // 跨页保留选中状态
-    trigger: 'row',        // 点击行触发选择
-    checkStrictly: true    // 父子节点不关联选择
-  },
-  columnConfig: {
-    resizable: true
-  },
-  pagerConfig: {
-    enabled: true,
-    size: 'mini',
-    pageSize: 20,
-    pageSizes: [10, 20, 50, 100]
-  },
-  toolbarConfig: {
-    refresh: true,
-    zoom: true,
-    custom: true,
-    buttons: [
-      {
-        code: 'add',
-        name: '新增',
-        icon: 'vxe-icon-add'
-      },
-      {
-        code: 'enable',
-        name: '启用',
-        icon: 'vxe-icon-check'
-      },
-      {
-        code: 'disable',
-        name: '禁用',
-        icon: 'vxe-icon-close'
-      },
-      {
-        code: 'delete',
-        name: '删除',
-        icon: 'vxe-icon-delete'
+// 使用useList钩子
+const {
+  QueryForm,
+  formApi,
+  Grid,
+  gridApi,
+  submitting,
+  handleGlobalEnter,
+  searchPlanList,
+  currentSearchPlan,
+  resourceId,
+  nResourceid,
+  handleSearchPlanSearch,
+  handleDefaultPlanLoaded
+} = useList<DataDictionaryVO>({
+  searchFormSchema,
+  tableColumns,
+  resourceConfig,
+  queryFunction,
+  gridEvents: {
+    toolbarButtonClick: ({ code }: { code: string }) => {
+      if (code === 'add') {
+        handleAdd()
+      } else if (code === 'enable') {
+        handleSign('10001')
+      } else if (code === 'disable') {
+        handleSign('10002')
+      } else if (code === 'delete') {
+        handleDelete()
       }
-    ]
-  },
-  customConfig: {
-    mode: 'popup',
-    storage: true
-  },
-  // 树形配置 - 懒加载模式
-  treeConfig: {
-    lazy: true,              // 开启懒加载
-    rowField: 'id',          // 行唯一标识
-    hasChild: 'hasChildren', // 标识是否有子节点的字段
-    expandAll: false,        // 不默认展开
-    loadMethod: loadChildren // 懒加载方法
-  },
-  proxyConfig: {
-    seq: true,
-    response: {
-      result: 'result.records',
-      total: 'result.total'
     },
-    ajax: {
-      query: async ({ page }) => {
-        const formValues = await formApi.getValues()
+    // 树形表格懒加载
+    treeNodeExpand: async ({ row }: { row: DataDictionaryVO & { hasChildren?: boolean } }) => {
+      const formValues = await formApi.getValues()
 
-        const queryParams = {
-          pageNo: page.currentPage,
-          pageSize: page.pageSize,
-          authDict: {
-            cSign: formValues.cSign || '',
-            cXuhao: formValues.cXuhao || '',
-            cName: formValues.cName || '',
-            nParent: 0  // 首次只查根节点
-          }
+      const queryParams = {
+        pageNo: 1,
+        pageSize: 9999,
+        authDict: {
+          cSign: formValues.cSign || '',
+          cXuhao: formValues.cXuhao || '',
+          cName: formValues.cName || '',
+          nParent: row.id  // 查询该节点的子节点
         }
+      }
 
-        const response = await requestClient.post('/core/authDict/selectForPage', queryParams)
-        // 给每条记录添加 hasChildren 标识，让所有节点都可展开
-        if (response.result?.records) {
-          response.result.records = response.result.records.map((item: DataDictionaryVO) => ({
-            ...item,
-            hasChildren: true
-          }))
-        }
-        return response
+      try {
+        const response = await requestClient.post<{ result: { records: DataDictionaryVO[] } }>('/core/authDict/selectForPage', queryParams)
+        const records = response.result?.records || []
+        // 给每条记录添加 hasChildren 标识，支持继续展开
+        return records.map(item => ({
+          ...item,
+          hasChildren: true
+        }))
+      } catch (error) {
+        console.error('加载子节点失败:', error)
+        return []
       }
     }
-  },
-  columns: tableColumns
-})
-
-const gridEvents: VxeGridListeners = {
-  toolbarButtonClick: ({ code }: { code: string }) => {
-    if (code === 'add') {
-      handleAdd()
-    } else if (code === 'enable') {
-      handleSign('10001')
-    } else if (code === 'disable') {
-      handleSign('10002')
-    } else if (code === 'delete') {
-      handleDelete()
-    }
   }
-}
-
-const [Grid, gridApi] = useSunnyQueryGrid({ gridOptions, gridEvents })
-
-// ----------------------------------------------------------------------
-// 3. Form Submit Handler
-// ----------------------------------------------------------------------
-
-// 设置表单提交回调，触发表格查询
-formApi.setState({
-  handleSubmit: async () => {
-    submitting.value = true
-    try {
-      await gridApi.commitProxy('query')
-    } catch (error) {
-      console.error('查询失败:', error)
-      Message.error('查询失败，请重试')
-    } finally {
-      submitting.value = false
-    }
-  },
-  handleReset: async () => {
-    await formApi.resetForm()
-    gridApi.commitProxy('query')
-  }
-})
-
-// 全局回车触发查询
-function handleGlobalEnter(e: KeyboardEvent) {
-  // 排除多行文本框
-  if (e.target instanceof HTMLTextAreaElement) {
-    return
-  }
-  e.preventDefault()
-  formApi.submitForm()
-}
+});
 
 // ----------------------------------------------------------------------
 // 4. Add Form Handler
@@ -343,7 +224,31 @@ function handleFormSuccess() {
     >
       <!-- Search Form Area -->
       <div class="px-4 border-b py-2 pb-3 border-[var(--color-border)]">
-        <QueryForm />
+        <QueryForm>
+          <template #expand-before>
+            <SunnySearchPlan
+                :form-config="searchFormSchema"
+                v-model:current-search-plan="currentSearchPlan"
+                v-model:search-plan-list="searchPlanList"
+                :resource-id="resourceId"
+                :n-resourceid="nResourceid"
+                :api="searchPlanApi"
+                @search="handleSearchPlanSearch"
+                @default-plan-loaded="handleDefaultPlanLoaded"
+              >
+              <template #trigger="{ open }">
+                <button
+                  type="button"
+                  class="px-3 py-1.5 border border-[var(--color-border-2)] rounded bg-white text-sm transition-all hover:border-[rgb(var(--primary-6))] hover:text-[rgb(var(--primary-6))] disabled:cursor-not-allowed disabled:opacity-60 mr-2"
+                  @click="open"
+                  title="查询方案"
+                >
+                  <SunnyIcon icon="lucide:filter" class="w-4 h-4" />
+                </button>
+              </template>
+            </SunnySearchPlan>
+          </template>
+        </QueryForm>
       </div>
 
       <!-- Data Grid Area -->
