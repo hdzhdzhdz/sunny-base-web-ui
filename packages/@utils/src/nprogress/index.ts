@@ -1,7 +1,8 @@
-import type NProgress from 'nprogress';
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
 
 // 创建一个NProgress实例的变量，初始值为null
-let nProgressInstance: null | typeof NProgress = null;
+let nProgressInstance: NProgress.NProgress | null = null;
 
 /**
  * 动态加载NProgress库，并进行配置。
@@ -14,7 +15,9 @@ async function loadNprogress() {
   if (nProgressInstance) {
     return nProgressInstance;
   }
-  nProgressInstance = await import('nprogress');
+  const nprogress = await import('nprogress');
+  // 动态导入返回模块对象，需要访问 .default 获取实际实例
+  nProgressInstance = nprogress.default;
   nProgressInstance.configure({
     showSpinner: true,
     speed: 300,
