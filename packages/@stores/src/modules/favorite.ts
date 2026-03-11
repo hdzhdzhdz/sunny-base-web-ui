@@ -26,7 +26,7 @@ export interface FavoriteItem {
   cCreateuser?: string;
 }
 
-interface FavoriteState {
+export interface FavoriteState {
   /**
    * 收藏菜单列表
    */

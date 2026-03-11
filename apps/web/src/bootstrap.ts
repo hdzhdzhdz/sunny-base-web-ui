@@ -32,7 +32,7 @@ async function bootstrap(namespace: string) {
 	settingsStore.initSettings();
 
 	// 配置 vxe-table 全局行高（必须在 app.use 之前）
-	VXETable.setup({
+	VXETable.setConfig({
 		table: {
 			rowHeight: settingsStore.tableRowHeight,
 		}

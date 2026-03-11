@@ -1,6 +1,5 @@
 import { useFavoriteStore, useUserStore } from '@sunny-base-web/stores';
 import { queryFavorites, addFavorite, removeFavorite } from '../api/favorite';
-import type { FavoriteItem } from '@sunny-base-web/stores';
 
 /**
  * 收藏功能 Composable
