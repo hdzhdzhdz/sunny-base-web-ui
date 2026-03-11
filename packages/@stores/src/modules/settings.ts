@@ -128,14 +128,25 @@ export const useSettingsStore = defineStore('core-settings', {
      * 设置字体大小
      */
     setFontSize(size: number) {
+      const validSizes = FONT_SIZE_OPTIONS.map(opt => opt.value);
+      if (!validSizes.includes(size as any)) {
+        console.warn(`Invalid font size: ${size}, using default`);
+        size = DEFAULT_FONT_SIZE;
+      }
       this.fontSize = size;
       applyFontSize(size);
     },
+
 
     /**
      * 设置主题色
      */
     setPrimaryColor(color: string) {
+      // 验证颜色格式
+      if (!/^#[0-9A-Fa-f]{6}$/.test(color)) {
+        console.warn(`Invalid primary color format: ${color}, expected hex format like #165DFF`);
+        return;
+      }
       this.primaryColor = color;
       applyPrimaryColor(color);
     },
