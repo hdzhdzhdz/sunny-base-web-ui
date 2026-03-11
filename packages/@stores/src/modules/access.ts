@@ -1,5 +1,18 @@
 import { defineStore } from 'pinia';
 import type { RouteRecordRaw } from 'vue-router';
+
+/**
+ * 菜单记录
+ */
+export interface MenuRecord {
+  id: string;
+  name: string;
+  path: string;
+  icon?: string;
+  children?: MenuRecord[];
+  [key: string]: any;
+}
+
 interface AccessState {
   /**
    * 登录 accessToken
@@ -12,13 +25,17 @@ interface AccessState {
   /**
    * 可访问的菜单列表
    */
-  accessMenus: any[];  // MenuRecordRaw 后期再加
+  accessMenus: MenuRecord[];
   /**
    * 可访问的路由列表
    */
   accessRoutes: RouteRecordRaw[];
 }
 
+/**
+ * 权限管理 Store
+ * 管理用户访问权限、 菜单和路由信息
+ */
 export const useAccessStore = defineStore('core-access', {
   state: (): AccessState => ({
     accessToken: null,
@@ -27,17 +44,42 @@ export const useAccessStore = defineStore('core-access', {
     accessRoutes: []
   }),
   actions: {
-    setAccessToken(token: string | null) {
+    /**
+     * 设置访问令牌
+     * @param token - 访问令牌
+     */
+    setAccessToken(token: string | null): void {
       this.accessToken = token;
     },
-    setIsAccessChecked(isChecked: boolean) {
+    /**
+     * 设置是否已检查权限
+     * @param isChecked - 是否已检查
+     */
+    setIsAccessChecked(isChecked: boolean): void {
       this.isAccessChecked = isChecked;
     },
-    setAccessMenus(menus: any[]) {
+    /**
+     * 设置访问菜单
+     * @param menus - 菜单列表
+     */
+    setAccessMenus(menus: MenuRecord[]): void {
       this.accessMenus = menus;
     },
-    setAccessRoutes(routes: RouteRecordRaw[]) {
+    /**
+     * 设置访问路由
+     * @param routes - 路由列表
+     */
+    setAccessRoutes(routes: RouteRecordRaw[]): void {
       this.accessRoutes = routes;
+    },
+    /**
+     * 重置状态（用于登出）
+     */
+    resetState(): void {
+      this.accessToken = null;
+      this.isAccessChecked = false;
+      this.accessMenus = [];
+      this.accessRoutes = [];
     },
   },
   persist: {
