@@ -361,12 +361,7 @@ export interface SunnyFormProps {
    * 会自动从组件配置的 fieldNames 中读取 value 字段进行提取
    */
   objectToValueFields?: string[];
-  /**
-   * 是否显示字段设置按钮
-   * Whether to show field settings button
-   * @default true
-   */
-  useFieldSettings?: boolean;
+
 }
 
 export interface FormApiOptions extends SunnyFormProps {

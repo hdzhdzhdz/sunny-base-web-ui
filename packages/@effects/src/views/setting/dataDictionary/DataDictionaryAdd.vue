@@ -42,8 +42,7 @@ const [Form, formApi] = useSunnyForm({
   },
   showDefaultActions: false,
   scrollToFirstError: true,
-  schema: addFormSchema,
-  id: 'd925795d-58c0-4adf-b287-cc04233ada6d'
+  schema: addFormSchema
 })
 
 // 额外属性表格配置
