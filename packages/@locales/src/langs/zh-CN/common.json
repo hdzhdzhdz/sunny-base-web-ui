@@ -114,6 +114,8 @@
     "goBack": "返回上一页",
     "details": "错误详情",
     "errorMessage": "错误消息",
-    "errorStack": "错误堆栈"
+    "errorStack": "错误堆栈",
+    "loading": "加载中...",
+    "noPlans": "暂无保存的查询方案"
   }
 }

@@ -114,6 +114,8 @@
     "goBack": "Go Back",
     "details": "Error Details",
     "errorMessage": "Error Message",
-    "errorStack": "Error Stack"
+    "errorStack": "Error Stack",
+    "loading": "Loading...",
+    "noPlans": "No saved search plans"
   }
 }
