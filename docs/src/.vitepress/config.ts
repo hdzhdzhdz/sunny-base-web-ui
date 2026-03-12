@@ -84,7 +84,8 @@ export default defineConfig({
           text: 'Feedback 反馈组件',
           items: [
             { text: 'Modal 弹窗', link: '/components/feedback/modal' },
-            { text: 'SearchModal 查询弹窗', link: '/components/feedback/search-modal' }
+            { text: 'SearchModal 查询弹窗', link: '/components/feedback/search-modal' },
+            { text: 'ErrorBoundary 错误边界', link: '/components/feedback/error-boundary' }
           ]
         },
         {

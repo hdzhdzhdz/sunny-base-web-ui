@@ -113,7 +113,41 @@ export default {
     app.use(ArcoVue)
     app.use(VxeUIBase)
     VxeUI.use(VxeUIPluginRenderArco)
-    setupI18n(app)
+
+    // 文档站点使用的翻译文本
+    const localeMessages = {
+      'zh-CN': {
+        error: {
+          title: '页面出现错误',
+          message: '抱歉，页面遇到了一些问题',
+          retry: '重试',
+          reportError: '上报错误',
+          refresh: '刷新页面',
+          details: '错误详情',
+          errorMessage: '错误消息',
+          errorStack: '错误堆栈',
+        },
+      },
+      'en-US': {
+        error: {
+          title: 'Page Error',
+          message: 'Sorry, something went wrong',
+          retry: 'Retry',
+          reportError: 'Report Error',
+          refresh: 'Refresh Page',
+          details: 'Error Details',
+          errorMessage: 'Error Message',
+          errorStack: 'Error Stack',
+        },
+      },
+    };
+
+    setupI18n(app, {
+      defaultLocale: 'zh-CN',
+      loadMessages: async (lang: string) => {
+        return localeMessages[lang as keyof typeof localeMessages] || {};
+      },
+    })
 
     // 使用 docs 专用适配器初始化
     setupBusinessForm({

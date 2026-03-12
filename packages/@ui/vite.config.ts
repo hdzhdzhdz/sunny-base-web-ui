@@ -33,6 +33,7 @@ export default defineConfig({
         'nprogress',
         'reka-ui',
         'vee-validate',
+        'vue-router',
         'vxe-pc-ui',
         'vxe-table',
         'zod',

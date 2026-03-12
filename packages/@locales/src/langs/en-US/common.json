@@ -102,5 +102,18 @@
     "reset": "Reset",
     "search": "Search",
     "loading": "Loading..."
+  },
+  "error": {
+    "title": "Page Error",
+    "message": "Sorry, something went wrong",
+    "retry": "Retry",
+    "reportError": "Report Error",
+    "refresh": "Refresh Page",
+    "globalError": "Application error occurred, please refresh and try again",
+    "asyncError": "Async operation failed",
+    "goBack": "Go Back",
+    "details": "Error Details",
+    "errorMessage": "Error Message",
+    "errorStack": "Error Stack"
   }
 }

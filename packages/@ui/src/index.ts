@@ -1,4 +1,5 @@
 import { Modal, useSunnyModal, ModalTypes } from "./feedback/modal";
+import { ErrorBoundary } from "./feedback/error-boundary";
 import { SunnyIcon } from "./basic/icon";
 import { SunnyScrollbar } from "./basic/scrollbar";
 import { SunnyUpload } from "./data/upload";
@@ -24,6 +25,7 @@ export {
   Modal,
   useSunnyModal,
   ModalTypes,
+  ErrorBoundary,
   SunnyIcon,
   SunnyScrollbar,
   SunnyUpload,
@@ -49,6 +51,7 @@ export {
 export * from "./entry/select/types";
 export * from "./entry/search-input-tag/types";
 export * from "./entry/form/types";
+export * from "./feedback/error-boundary/types";
 export * from "./composite/business-search";
 export * from "./composite/search-plan";
 export * from './data/resource-tree/types';

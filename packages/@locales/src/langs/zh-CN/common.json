@@ -102,5 +102,18 @@
     "reset": "重置",
     "search": "查询",
     "loading": "加载中..."
+  },
+  "error": {
+    "title": "页面出现错误",
+    "message": "抱歉，页面遇到了一些问题",
+    "retry": "重试",
+    "reportError": "上报错误",
+    "refresh": "刷新页面",
+    "globalError": "应用发生错误，请刷新页面重试",
+    "asyncError": "异步操作失败",
+    "goBack": "返回上一页",
+    "details": "错误详情",
+    "errorMessage": "错误消息",
+    "errorStack": "错误堆栈"
   }
 }

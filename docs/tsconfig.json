@@ -7,6 +7,7 @@
     "target": "ESNext",
     "jsx": "preserve",
     "jsxImportSource": "vue",
+    "resolveJsonModule": true,
     "paths": {
       "@sunny-base-web/ui": ["../packages/@ui/src/index.ts"],
       "@sunny-base-web/effects": ["../packages/@effects/src/index.ts"],
@@ -14,10 +15,11 @@
     }
   },
   "include": [
-    "src/**/*.ts", 
-    "src/**/*.d.ts", 
-    "src/**/*.tsx", 
-    "src/**/*.vue", 
-    "src/**/*.md"
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "src/**/*.md",
+    "src/**/*.json"
   ]
 }

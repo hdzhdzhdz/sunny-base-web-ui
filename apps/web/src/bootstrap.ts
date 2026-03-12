@@ -3,9 +3,9 @@ import App from './App.vue';
 
 import "@arco-design/web-vue/dist/arco.css";
 import "./style.css";
-import ArcoVue from "@arco-design/web-vue";
+import ArcoVue, { Message } from "@arco-design/web-vue";
 
-import { createEffects } from '@sunny-base-web/effects'
+import { createEffects, reportError, reportUnhandledRejection, reportGlobalError } from '@sunny-base-web/effects'
 
 import { router } from './router';
 import { setupI18n } from '#/locales';
@@ -24,7 +24,89 @@ VxeUI.use(VxeUIPluginRenderArco)
 
 async function bootstrap(namespace: string) {
 	const app = createApp(App);
-	// 配置 pinia-tore
+
+	// ========== 全局错误处理 ========== todo 后续接入sentry
+	// 1. Vue 组件错误处理器
+	// app.config.errorHandler = (err, instance, info) => {
+	// 	const error = err as Error;
+
+	// 	// 显示错误提示，避免白屏
+	// 	Message.error({
+	// 		content: `应用发生错误: ${error.message}`,
+	// 		duration: 5000,
+	// 		closable: true,
+	// 	});
+
+	// 	// 开发环境打印详细错误信息
+	// 	if (import.meta.env.DEV) {
+	// 		console.group('🔴 Vue Error');
+	// 		console.error('Error:', error);
+	// 		console.error('Component:', instance?.$options?.name || 'Unknown');
+	// 		console.error('Error Info:', info);
+	// 		console.error('Stack:', error.stack);
+	// 		console.groupEnd();
+	// 	}
+
+	// 	// 生产环境上报错误
+	// 	if (import.meta.env.PROD) {
+	// 		reportError(error, {
+	// 			component: instance?.$options?.name,
+	// 			info,
+	// 		});
+	// 	}
+	// };
+
+	// // 2. 处理未捕获的 Promise 错误
+	// window.addEventListener('unhandledrejection', (event) => {
+	// 	const error = event.reason instanceof Error
+	// 		? event.reason
+	// 		: new Error(String(event.reason));
+
+	// 	// 显示错误提示
+	// 	Message.error({
+	// 		content: '异步操作发生错误',
+	// 		duration: 5000,
+	// 		closable: true,
+	// 	});
+
+	// 	// 开发环境打印详细错误
+	// 	if (import.meta.env.DEV) {
+	// 		console.group('🔴 Unhandled Promise Rejection');
+	// 		console.error('Reason:', event.reason);
+	// 		console.error('Promise:', event.promise);
+	// 		console.groupEnd();
+	// 	}
+
+	// 	// 生产环境上报错误
+	// 	if (import.meta.env.PROD) {
+	// 		reportUnhandledRejection(event);
+	// 	}
+
+	// 	// 阻止默认行为（控制台报错）
+	// 	event.preventDefault();
+	// });
+
+	// // 3. 处理全局 JavaScript 错误
+	// window.addEventListener('error', (event) => {
+	// 	// 开发环境打印详细错误
+	// 	if (import.meta.env.DEV) {
+	// 		console.group('🔴 Global Error');
+	// 		console.error('Message:', event.message);
+	// 		console.error('Filename:', event.filename);
+	// 		console.error('Line:', event.lineno, 'Column:', event.colno);
+	// 		console.error('Error:', event.error);
+	// 		console.groupEnd();
+	// 	}
+
+	// 	// 生产环境上报错误
+	// 	if (import.meta.env.PROD) {
+	// 		reportGlobalError(event);
+	// 	}
+	// });
+
+	// ========== 初始化应用 ==========
+
+	// 配置 pinia-store
 	await initStores(app as any, { namespace });
 
 	// 初始化设置（恢复保存的主题色等）
@@ -62,8 +144,8 @@ async function bootstrap(namespace: string) {
 	// 配置路由及路由守卫
 	app.use(router);
 
-  // 国际化 i18n 配置
-  await setupI18n(app);
+	// 国际化 i18n 配置
+	await setupI18n(app);
 
 	app.use(ArcoVue);
 	app.use(VxeUITable)
