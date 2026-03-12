@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@arco-design/web-vue": "^2.57.0",
+    "@arco-design/web-vue": "catalog:",
     "@sunny-base-web/constants": "workspace:^",
     "@sunny-base-web/effects": "workspace:*",
     "@sunny-base-web/stores": "workspace:*",

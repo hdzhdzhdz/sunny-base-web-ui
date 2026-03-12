@@ -17,7 +17,7 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
-    "@arco-design/web-vue": "^2.57.0",
+    "@arco-design/web-vue": "catalog:",
     "@sunny-base-web/icons": "workspace:*",
     "@sunny-base-web/locales": "workspace:*",
     "@sunny-base-web/stores": "workspace:*",

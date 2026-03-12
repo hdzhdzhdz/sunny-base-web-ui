@@ -33,10 +33,10 @@ export default defineConfig({
         'vue-i18n',
         '@arco-design/web-vue',
         '@vueuse/core',
-         'reka-ui',
-         'vue-router',
-         '@sunny-base-web/locales',
-         '#/preferences',
+        'reka-ui',
+        'vue-router',
+        '@sunny-base-web/locales',
+        '#/preferences',
        ],
       output: {
         globals: {
