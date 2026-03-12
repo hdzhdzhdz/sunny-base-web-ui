@@ -101,7 +101,8 @@
     "update": "覆盖",
     "reset": "重置",
     "search": "查询",
-    "loading": "加载中..."
+    "loading": "加载中...",
+    "noPlans": "暂无保存的查询方案"
   },
   "error": {
     "title": "页面出现错误",

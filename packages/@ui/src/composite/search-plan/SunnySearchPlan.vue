@@ -2,7 +2,7 @@
   <div class="inline-block">
     <slot name="trigger" :open="customHandleOpen" :disabled="disabled">
       <button
-        class="px-3 py-1.5 border border-[var(--color-border-2)] rounded bg-white text-sm transition-all hover:border-[rgb(var(--primary-6))] hover:text-[rgb(var(--primary-6))] disabled:cursor-not-allowed disabled:opacity-60"
+        class="px-3 py-1.5 border border-[var(--color-border-2)] rounded bg-white text-base transition-all hover:border-[rgb(var(--primary-6))] hover:text-[rgb(var(--primary-6))] disabled:cursor-not-allowed disabled:opacity-60"
         :disabled="disabled"
         @click="customHandleOpen"
       >
@@ -29,24 +29,25 @@
         
         <div :class="{ 'opacity-60': props.loading }" class="flex gap-5">
           <!-- 左侧表单区域 -->
-          <div class="flex-1 min-w-0">
+          <div class="w-2/3 min-w-0 pr-6 border-r border-[#D8D8D8]">
             <SunnyUseForm
               :form-api="formApi"
               :schema="formConfig"
               :show-default-actions="false"
               :show-message="false"
+              :layout="'vertical'"
               v-bind="formProps"
               @mounted="onFormMounted"
             />
           </div>
 
           <!-- 右侧查询方案管理区域 -->
-          <div class="w-60">
-            <h3 class="text-sm font-semibold mb-4 text-[var(--color-text-1)]">{{ $t('common.searchPlan.newPlan') }}</h3>
+          <div class="w-1/3 pl-6">
+            <h3 class="text-base font-semibold mb-4 text-[var(--color-text-1)]">{{ $t('common.searchPlan.newPlan') }}</h3>
 
             <div class="mb-5">
               <div class="mb-3">
-                <label class="block text-xs text-[var(--color-text-2)] mb-1">{{ $t('common.searchPlan.planName') }}</label>
+                <label class="block text-sm text-[var(--color-text-2)] mb-1">{{ $t('common.searchPlan.planName') }}</label>
                 <input
                   v-model="inputValue"
                   type="text"
@@ -60,14 +61,14 @@
               </div>
               <div class="flex gap-2 mt-3">
                 <button
-                  class="px-3 py-1 bg-[rgb(var(--primary-6))] border border-[rgb(var(--primary-6))] text-white text-xs rounded hover:bg-[rgb(var(--primary-7))] transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+                  class="px-3 py-1 border border-[rgb(var(--primary-6))] text-[rgb(var(--primary-6))] text-xs rounded hover:bg-[rgb(var(--primary-6))] hover:text-white transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                   @click="handleAdd"
                   :disabled="props.loading"
                 >
                   {{ $t('common.searchPlan.add') }}
                 </button>
                 <button
-                  class="px-3 py-1 border border-[var(--color-border-2)] text-[var(--color-text-1)] text-xs rounded hover:bg-[var(--color-fill-1)] hover:border-[rgb(var(--primary-6))] hover:text-[rgb(var(--primary-6))] transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+                  class="px-3 py-1 border border-[#ff4949] text-[#ff4949] text-xs rounded hover:bg-[#ff4949] hover:text-white transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                   :disabled="!currentSearchPlan || props.loading"
                   @click="handleUpdate"
                 >
@@ -78,7 +79,7 @@
 
             <div class="h-px bg-[var(--color-border-2)] my-5"></div>
 
-            <h3 class="text-sm font-semibold mb-4 text-[var(--color-text-1)]">{{ $t('common.searchPlan.savedPlans') }}</h3>
+            <h3 class="text-base font-semibold mb-4 text-[var(--color-text-1)]">{{ $t('common.searchPlan.savedPlans') }}</h3>
 
             <div class="max-h-44 overflow-y-auto border border-[var(--color-border-2)] rounded p-2">
               <div
@@ -105,6 +106,9 @@
                 >
                   ×
                 </button>
+              </div>
+              <div v-if="searchPlanList.length === 0" class="text-center py-8 text-sm text-[var(--color-text-3)]">
+                {{ $t('common.searchPlan.noPlans') }}
               </div>
             </div>
           </div>
@@ -278,7 +282,7 @@ const modalProps = computed(() => ({
 }));
 
 const formConfig = computed(() => {
-  // 对表单配置进行处理，将一行六列的配置改成一行三列，并添加 labelWidth: 80
+  // 对表单配置进行处理，设置为垂直布局，使label和输入框呈上下结构显示
   return props.formConfig.map(field => ({
     ...field,
     labelWidth: 80,
