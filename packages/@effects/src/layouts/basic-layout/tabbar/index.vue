@@ -177,7 +177,7 @@ import { SunnyIcon, SunnyScrollbar } from '@sunny-base-web/ui';
 import type { TabDefinition } from '@sunny-base-web/stores';
 import { storeToRefs } from 'pinia';
 import { Message } from '@arco-design/web-vue';
-import { useFavorite } from '@sunny-base-web/effects';
+import { useFavorite } from '../../../composables';
 
 defineOptions({ name: 'Tabbar' });
 
