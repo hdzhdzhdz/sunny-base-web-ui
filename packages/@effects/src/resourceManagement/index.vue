@@ -14,7 +14,7 @@
       :max="1"
     >
       <template #first>
-        <ResourceTree @currentChange="treeCurrentChange" />
+        <ResourceTree @currentChange="treeCurrentChange" :app-system="props.appSystem" />
       </template>
       <template #second>
         <ConstructionConfig ref="constructionSeletor" />
@@ -24,9 +24,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, PropType } from 'vue'
 import ResourceTree from './components/ResourceTree.vue'
 import ConstructionConfig from './components/ConstructionConfig.vue'
+
+const props = defineProps({
+  appSystem: {
+    type: Array as PropType<any[]>,
+    default: () => []
+  }
+});
 
 const size = ref('300px')
 const constructionSeletor = ref()

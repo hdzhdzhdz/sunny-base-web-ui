@@ -1,6 +1,9 @@
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 
+// 兼容性处理：处理 ESM/CommonJS 互操作性问题
+const NProgressCompatible = (NProgress as any).default || NProgress;
+
 // 创建NProgress实例的变量
 let nProgressInstance: typeof NProgress | null = null;
 
@@ -16,8 +19,8 @@ function getNprogress() {
     return nProgressInstance;
   }
   // NProgress 本身就是一个可配置的对象
-  nProgressInstance = NProgress;
-  nProgressInstance.configure({
+  nProgressInstance = NProgressCompatible;
+  nProgressInstance?.configure({
     showSpinner: true,
     speed: 300,
   });

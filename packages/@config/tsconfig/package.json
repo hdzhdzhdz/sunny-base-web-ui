@@ -1,8 +1,12 @@
 {
   "name": "@sunny-base-web/tsconfig",
-  "version": "0.2.0",
-  "private": true,
+  "version": "0.3.0",
+  "private": false,
   "files": [
     "base.json"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
 }

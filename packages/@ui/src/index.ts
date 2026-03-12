@@ -1,3 +1,5 @@
+import "./style.css";
+
 import { Modal, useSunnyModal, ModalTypes } from "./feedback/modal";
 import { ErrorBoundary } from "./feedback/error-boundary";
 import { SunnyIcon } from "./basic/icon";
