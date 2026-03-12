@@ -1,4 +1,5 @@
 import { Modal, useSunnyModal, ModalTypes } from "./feedback/modal";
+import "./style.css";
 import { SunnyIcon } from "./basic/icon";
 import { SunnyScrollbar } from "./basic/scrollbar";
 import { SunnyUpload } from "./data/upload";

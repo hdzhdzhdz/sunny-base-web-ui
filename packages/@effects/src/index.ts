@@ -1,4 +1,5 @@
 import Login from './login/index.vue';
+import './style.css';
 import ResourceManagement from './resourceManagement/index.vue'
 import Dashboard from './views/dashboard/Dashboard.vue';
 

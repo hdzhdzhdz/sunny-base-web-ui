@@ -1,6 +1,6 @@
 {
   "name": "@sunny-base-web/effects",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "private": false,
   "files": [
     "dist"
@@ -9,11 +9,8 @@
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
-    }
+    ".": "./src/index.ts",
+    "./style.css": "./src/style.css"
   },
   "scripts": {
     "build": "vite build",
@@ -63,8 +60,10 @@
         "types": "./dist/index.d.ts",
         "import": "./dist/index.mjs",
         "require": "./dist/index.js"
-      }
+      },
+      "./style.css": "./dist/effects.css"
     },
+    "style": "./dist/effects.css",
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   }

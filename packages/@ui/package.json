@@ -1,6 +1,6 @@
 {
   "name": "@sunny-base-web/ui",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": false,
   "main": "./src/index.ts",
   "module": "./src/index.ts",
@@ -9,7 +9,8 @@
     "dist"
   ],
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./style.css": "./src/style.css"
   },
   "publishConfig": {
     "main": "./dist/index.js",
@@ -23,6 +24,7 @@
       },
       "./style.css": "./dist/ui.css"
     },
+    "style": "./dist/ui.css",
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
@@ -56,6 +58,9 @@
     "@types/lodash-es": "^4.17.12",
     "@types/nprogress": "^0.2.3",
     "@vitejs/plugin-vue": "^6.0.4",
+    "autoprefixer": "catalog:",
+    "postcss": "catalog:",
+    "tailwindcss": "catalog:",
     "typescript": "catalog:",
     "vite": "^7.3.1",
     "vite-plugin-dts": "^4.5.4",
