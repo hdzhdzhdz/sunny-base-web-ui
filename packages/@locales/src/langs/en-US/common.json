@@ -101,7 +101,8 @@
     "update": "Update",
     "reset": "Reset",
     "search": "Search",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "noPlans": "No saved search plans"
   },
   "error": {
     "title": "Page Error",
@@ -114,8 +115,6 @@
     "goBack": "Go Back",
     "details": "Error Details",
     "errorMessage": "Error Message",
-    "errorStack": "Error Stack",
-    "loading": "Loading...",
-    "noPlans": "No saved search plans"
+    "errorStack": "Error Stack"
   }
 }
