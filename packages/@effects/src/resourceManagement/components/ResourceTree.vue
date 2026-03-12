@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, PropType } from 'vue';
 import { Message, Modal } from '@arco-design/web-vue';
 import { SunnyResourceTree } from '@sunny-base-web/ui';
 import { findMenuAll, getMenu, delMenu, moveMenuOrder, findMenuTreeFuzzy } from '../../api/resource'
@@ -32,15 +32,21 @@ const urlEditor = ref();
 const menuPathEditor = ref();
 const emit = defineEmits(['currentChange']);
 
-const appSystem = import.meta.env.VITE_APP_SYSTEM ? JSON.parse(import.meta.env.VITE_APP_SYSTEM) : [];
-const treeData = ref<ResourceNode[]>(appSystem);
+const props = defineProps({
+  appSystem: {
+    type: Array as PropType<ResourceNode[]>,
+    default: () => []
+  }
+});
+
+const treeData = ref<ResourceNode[]>(props.appSystem);
 
 /**
  * 判断节点是否为根节点
  * @param node 要判断的节点
  * @returns 是否为根节点(id为0)
  */
-const isRootNode = (node: ResourceNode) => find(appSystem, ['id', node.id]);
+const isRootNode = (node: ResourceNode) => find(props.appSystem, ['id', node.id]);
 
 /**
  * 右键菜单操作配置
