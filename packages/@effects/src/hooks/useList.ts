@@ -81,6 +81,7 @@ export function useList<T>(options: {
     border: true,
     size: 'mini',
     showOverflow: true,
+    stripe: true,
     height: 'auto',
     align: 'center',
     rowConfig: {

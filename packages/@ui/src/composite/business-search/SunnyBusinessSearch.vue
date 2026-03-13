@@ -1,28 +1,16 @@
 <template>
-  <div class="sunny-business-search">
-    <SunnySearchInputTag
-      v-bind="$attrs"
-      :model-value="selectedValues"
-      :placeholder="placeholder"
-      :disabled="disabled"
-      :max-tag-count="maxTagCount"
-      :field-names="mergedFieldNames"
-      @update:model-value="val => selectedValues = val"
-      @search="handleOpen"
-    >
+  <div class="sunny-business-search w-full">
+    <SunnySearchInputTag v-bind="$attrs" :model-value="selectedValues" :placeholder="placeholder" :disabled="disabled"
+      :max-tag-count="maxTagCount" :field-names="mergedFieldNames" @update:model-value="val => selectedValues = val"
+      @search="handleOpen">
       <!-- 透传 slot -->
       <template v-for="(_value, slot) of ($slots as Record<string, any>)" #[slot]="scope">
         <slot :name="slot" v-bind="scope || {}"></slot>
       </template>
     </SunnySearchInputTag>
 
-    <SunnySearchModal
-      v-if="currentConfig.title || visible"
-      v-model:visible="visible"
-      :model-value="selectedValues"
-      v-bind="mergedModalProps"
-      @confirm="handleConfirm"
-    />
+    <SunnySearchModal v-if="currentConfig.title || visible" v-model:visible="visible" :model-value="selectedValues"
+      v-bind="mergedModalProps" @confirm="handleConfirm" />
   </div>
 </template>
 

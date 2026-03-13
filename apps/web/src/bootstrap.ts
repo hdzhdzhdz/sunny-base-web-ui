@@ -3,9 +3,10 @@ import App from './App.vue';
 
 import "@arco-design/web-vue/dist/arco.css";
 import "./style.css";
+import "./arco.css";
 import ArcoVue, { Message } from "@arco-design/web-vue";
 
-import { createEffects, reportError, reportUnhandledRejection, reportGlobalError } from '@sunny-base-web/effects'
+import { createEffects, reportError, reportUnhandledRejection, reportGlobalError, setupBusinessForm, requestClient } from '@sunny-base-web/effects'
 
 import { router } from './router';
 import { setupI18n } from '#/locales';
@@ -140,6 +141,36 @@ async function bootstrap(namespace: string) {
 		logo: preferences.logo,
 		sidebar: preferences.sidebar
 	}))
+
+	// 初始化 BusinessSearch 业务搜索适配器
+	// 自定义 loadConfig 处理后端返回的 res.result 包装
+	setupBusinessForm({
+		config: {
+			businessSearchAdapter: {
+				loadConfig: async (cNum: string) => {
+					const res = await requestClient.post<any>('/core/assDialog/openInit', { cNum });
+					// 后端接口返回格式为 { result: { ... } }，需要取 result 里的数据
+					const data = res.result || res;
+					return {
+						title: data.cTitle,
+						width: data.cWidth ? isNaN(Number(data.cWidth)) ? data.cWidth : `${data.cWidth}px` : undefined,
+						contentHeight: data.cHeight ? isNaN(Number(data.cHeight)) ? data.cHeight : Number(data.cHeight) : 300,
+						multiple: data.cSelectionMode !== 'single',
+						formSchema: (data.conditions || []).map((item: any) => ({
+							fieldName: item.prop,
+							label: item.label,
+							component: item.type === 'input' ? 'Input' : item.type === 'select' ? 'Select' : 'Input'
+						})),
+						tableColumns: (data.tableCols || []).map((item: any) => ({
+							field: item.prop,
+							title: item.label,
+							width: item.width
+						}))
+					};
+				}
+			}
+		}
+	})
 
 	// 配置路由及路由守卫
 	app.use(router);
