@@ -6,42 +6,25 @@
 <template>
   <a-layout class="h-screen w-screen" ref="rootLayoutRef">
     <!-- 侧边栏区域 -->
-    <a-layout-sider
-      v-if="!tabbarStore.contentFullScreen"
-      breakpoint="xl"
-      collapsible
-      :trigger="null"
-      :width="config.sidebar?.width ?? 220"
-      v-model:collapsed="collapsed"
-      @collapse="onCollapse"
-      class="h-full bg-[var(--color-bg-2)] border-r pb-0 border-[var(--color-border)] flex flex-col [&>.arco-layout-sider-children]:flex [&>.arco-layout-sider-children]:flex-col [&>.arco-layout-sider-children]:overflow-hidden [&>.arco-layout-sider-children]:flex-1"
-    >
+    <a-layout-sider v-if="!tabbarStore.contentFullScreen" breakpoint="xl" collapsible :trigger="null"
+      :width="config.sidebar?.width ?? 220" v-model:collapsed="collapsed" @collapse="onCollapse"
+      class="h-full bg-[var(--color-bg-2)] border-r pb-0 border-[var(--color-border)] flex flex-col [&>.arco-layout-sider-children]:flex [&>.arco-layout-sider-children]:flex-col [&>.arco-layout-sider-children]:overflow-hidden [&>.arco-layout-sider-children]:flex-1">
       <!-- 侧边栏 Logo 区域 -->
-      <div 
-        class="h-16 shrink-0 flex items-center justify-center border-b border-[var(--color-border)] gap-2 overflow-hidden whitespace-nowrap" 
-        v-if="config.logo?.enable"
-        :style="{ height: (config.header?.height ?? 64) + 'px' }"
-      >
+      <div
+        class="h-16 shrink-0 flex items-center justify-center border-b border-[var(--color-border)] gap-2 overflow-hidden whitespace-nowrap"
+        v-if="config.logo?.enable" :style="{ height: (config.header?.height ?? 64) + 'px' }">
         <!-- Logo 图片 -->
-        <img 
-          class="h-8 w-8"
-          :src="config.logo?.source || 'https://v2.vuejs.org/images/logo.svg'" 
-          :style="{ objectFit: (config.logo?.fit as any) || 'contain' }" 
-          alt="Logo" 
-        />
+        <img class="h-8 w-8" :src="config.logo?.source || 'https://v2.vuejs.org/images/logo.svg'"
+          :style="{ objectFit: (config.logo?.fit as any) || 'contain' }" alt="Logo" />
         <!-- 应用名称 (仅在展开时显示) -->
-        <span v-if="!collapsed" class="text-lg font-bold text-[var(--color-text-1)]">{{ config.app?.name || 'Admin' }}</span>
+        <span v-if="!collapsed" class="text-lg font-bold text-[var(--color-text-1)]">{{ config.app?.name || 'Admin'
+          }}</span>
       </div>
-      
+
       <!-- 侧边栏菜单区域 (使用滚动条包裹) -->
       <SunnyScrollbar class="flex-1 overflow-hidden">
-        <a-menu
-          v-model:selected-keys="selectedKeys"
-          v-model:open-keys="openKeys"
-          @menu-item-click="handleMenuClick"
-          :style="{ width: '100%' }"
-          :auto-open="true"
-        >
+        <a-menu v-model:selected-keys="selectedKeys" v-model:open-keys="openKeys" @menu-item-click="handleMenuClick"
+          :style="{ width: '100%' }" :auto-open="true">
           <!-- 递归渲染菜单项 -->
           <MenuItem :menus="accessStore.accessMenus" />
         </a-menu>
@@ -51,35 +34,32 @@
     <!-- 右侧主体区域 -->
     <a-layout ref="innerLayoutRef">
       <!-- 顶部导航栏 -->
-      <a-layout-header 
-        v-if="!tabbarStore.contentFullScreen"
+      <a-layout-header v-if="!tabbarStore.contentFullScreen"
         class="h-16 bg-[var(--color-bg-2)] border-b border-[var(--color-border)] flex items-center px-5"
-        :style="{ height: (config.header?.height ?? 64) + 'px' }"
-      >
+        :style="{ height: (config.header?.height ?? 64) + 'px' }">
         <!-- 侧边栏折叠/展开按钮 -->
         <div
           class="cursor-pointer flex items-center p-1 rounded transition-colors text-[var(--color-text-2)] hover:bg-[var(--color-fill-2)] hover:text-[rgb(var(--primary-6))]"
-          @click="toggleCollapsed"
-        >
+          @click="toggleCollapsed">
           <SunnyIcon :icon="collapsed ? 'lucide:panel-left-open' : 'lucide:panel-left-close'" :size="24" />
         </div>
 
         <!-- 面包屑导航 -->
         <HeaderBreadcrumb />
-        
+
         <!-- 占位符，将右侧操作推到最右 -->
         <div style="flex: 1;"></div>
-        
+
         <!-- 顶部右侧操作栏 -->
         <div class="header-actions flex items-center gap-4">
-           <!-- 搜索组件 -->
-           <HeaderSearch />
-           <!-- 语言切换组件 -->
-           <LanguageToggle />
-           <!-- 主题切换组件 -->
-           <ThemeToggle />
-           <!-- 用户头像 -->
-           <UserAvatar />
+          <!-- 搜索组件 -->
+          <HeaderSearch />
+          <!-- 语言切换组件 -->
+          <LanguageToggle />
+          <!-- 主题切换组件 -->
+          <ThemeToggle />
+          <!-- 用户头像 -->
+          <UserAvatar />
         </div>
       </a-layout-header>
 
@@ -87,14 +67,16 @@
       <div id="layout-content-wrapper" class="flex flex-col flex-1 overflow-hidden">
         <!-- 标签栏 -->
         <Tabbar />
-        
+
         <!-- 内容区域 -->
         <a-layout-content class="flex-1 p-2 overflow-auto bg-[var(--color-bg-1)]">
-          <!-- 路由视图渲染 -->
+          <!-- 路由视图渲染 - 添加过渡动画 -->
           <router-view v-slot="{ Component, route }">
-            <keep-alive :exclude="getExcludeCachedTabs" :include="getCachedTabs">
-              <component :is="Component" :key="route.name" />
-            </keep-alive>
+            <transition name="fade" mode="out-in">
+              <keep-alive :exclude="getExcludeCachedTabs" :include="getCachedTabs">
+                <component :is="Component" :key="route.name" />
+              </keep-alive>
+            </transition>
           </router-view>
         </a-layout-content>
       </div>
@@ -154,16 +136,16 @@ watch(
   (newPath) => {
     // 设置当前选中的菜单项
     selectedKeys.value = [newPath];
-    
+
     // 自动展开父级菜单
     const activeItem = findItem(accessStore.accessMenus, newPath);
     if (activeItem && activeItem.parents) {
       const parents = activeItem.parents;
       parents.forEach((p: string) => {
-          // 如果父级尚未展开，则添加到展开列表
-          if (!openKeys.value.includes(p)) {
-              openKeys.value.push(p);
-          }
+        // 如果父级尚未展开，则添加到展开列表
+        if (!openKeys.value.includes(p)) {
+          openKeys.value.push(p);
+        }
       });
     }
   },
@@ -187,18 +169,33 @@ const handleMenuClick = (key: string) => {
 </script>
 
 <style scoped>
-/* 菜单项基础样式 - 统一圆角和内边距，避免选中时抖动 */
-:deep(.arco-menu-item),
-:deep(.arco-menu-inline-header) {
+/* ========== 路由切换过渡动画 ========== */
+/* 纯淡入淡出效果（无缩放、无位移，避免触发滚动条） */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.15s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* ========== 菜单样式优化（仅展开状态）========== */
+/* 菜单展开状态 - 添加圆角和间距 */
+:deep(.arco-menu:not(.arco-menu-collapsed) .arco-menu-item),
+:deep(.arco-menu:not(.arco-menu-collapsed) .arco-menu-inline-header) {
   border-radius: 8px !important;
   margin: 4px 8px !important;
   padding-left: 16px !important;
 }
 
-/* 菜单图标动画基础样式 */
+/* ========== 菜单图标动画（展开和收起都生效）========== */
+/* 菜单图标动画基础样式 - 固定中心点 */
 :deep(.arco-menu-item .arco-menu-icon),
 :deep(.arco-menu-inline-header .arco-menu-icon) {
   transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center center;
 }
 
 /* 菜单图标 hover 放大效果 */
@@ -207,25 +204,51 @@ const handleMenuClick = (key: string) => {
   transform: scale(1.15);
 }
 
-/* 菜单选中状态跟随主题色 - 仅针对叶子菜单项 */
-:deep(.arco-menu-item.arco-menu-selected) {
+/* ========== 菜单展开状态 - 背景色跟随主题色 ========== */
+/* 菜单展开状态 - 选中背景色跟随主题色 */
+:deep(.arco-menu:not(.arco-menu-collapsed) .arco-menu-item.arco-menu-selected) {
   background-color: rgba(var(--primary-6), 0.1) !important;
   color: rgb(var(--primary-6)) !important;
 }
 
-/* 菜单项 hover 状态跟随主题色 */
-:deep(.arco-menu-item:hover) {
+/* 菜单展开状态 - hover 背景色跟随主题色 */
+:deep(.arco-menu:not(.arco-menu-collapsed) .arco-menu-item:hover) {
   background-color: rgba(var(--primary-6), 0.08) !important;
   color: rgb(var(--primary-6)) !important;
 }
 
-/* 父级菜单 hover 状态 */
-:deep(.arco-menu-inline-header:hover) {
+/* 菜单展开状态 - 父级菜单 hover */
+:deep(.arco-menu:not(.arco-menu-collapsed) .arco-menu-inline-header:hover) {
   background-color: rgba(var(--primary-6), 0.05) !important;
 }
 
-/* 菜单图标跟随主题色 - 仅针对叶子菜单项 */
-:deep(.arco-menu-item.arco-menu-selected .arco-menu-icon) {
+/* 菜单展开状态 - 选中图标颜色跟随主题色 */
+:deep(.arco-menu:not(.arco-menu-collapsed) .arco-menu-item.arco-menu-selected .arco-menu-icon) {
+  color: rgb(var(--primary-6)) !important;
+}
+
+/* ========== 菜单收起状态 - 背景色跟随主题色 ========== */
+/* 菜单收起状态 - 选中背景色跟随主题色 */
+:deep(.arco-menu-collapsed .arco-menu-item.arco-menu-selected) {
+  background-color: rgba(var(--primary-6), 0.1) !important;
+  color: rgb(var(--primary-6)) !important;
+}
+
+/* 菜单收起状态 - hover 背景色跟随主题色 */
+:deep(.arco-menu-collapsed .arco-menu-item:hover),
+:deep(.arco-menu-collapsed .arco-menu-inline-header:hover) {
+  background-color: rgba(var(--primary-6), 0.08) !important;
+  color: rgb(var(--primary-6)) !important;
+}
+
+/* 菜单收起状态 - 父级菜单 hover */
+:deep(.arco-menu-pop-header:hover) {
+  background-color: rgba(var(--primary-6), 0.08) !important;
+  color: rgb(var(--primary-6)) !important;
+}
+
+/* 菜单收起状态 - 选中图标颜色跟随主题色 */
+:deep(.arco-menu-collapsed .arco-menu-item.arco-menu-selected .arco-menu-icon) {
   color: rgb(var(--primary-6)) !important;
 }
 </style>
