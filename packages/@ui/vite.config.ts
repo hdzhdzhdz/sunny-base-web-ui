@@ -23,9 +23,11 @@ export default defineConfig({
     rollupOptions: {
       external: [
         'vue',
+        'vue-i18n',
         '@arco-design/web-vue',
         '@sunny-base-web/icons',
         '@sunny-base-web/utils',
+        '@sunny-base-web/locales',
         '@tanstack/store',
         '@tanstack/vue-store',
         '@vee-validate/zod',
@@ -43,7 +45,11 @@ export default defineConfig({
       output: {
         globals: {
           vue: 'Vue',
+          'vue-i18n': 'vueI18n',
           '@arco-design/web-vue': 'ArcoVue',
+          '@sunny-base-web/icons': 'SunnyBaseWebIcons',
+          '@sunny-base-web/utils': 'SunnyBaseWebUtils',
+          '@sunny-base-web/locales': 'SunnyBaseWebLocales',
         },
       },
     },
