@@ -14,7 +14,7 @@ export interface SunnySearchPlanProps {
   /**
    * 表单模型数据
    */
-  model: Record<string, any>;
+  model?: Record<string, any>;
   /**
    * 双向绑定的表单数据
    */
