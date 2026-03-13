@@ -40,8 +40,13 @@ export function useList<T>(options: {
    * 表格事件配置
    */
   gridEvents?: any;
+  /**
+   * 对象转值字段列表
+   * 用于将 BusinessSearch 等返回的对象数组转换为值字符串
+   */
+  objectToValueFields?: string[];
 }) {
-  const { searchFormSchema, tableColumns, dataType, resourceConfig, queryFunction, gridEvents } = options;
+  const { searchFormSchema, tableColumns, dataType, resourceConfig, queryFunction, gridEvents, objectToValueFields } = options;
 
   // ----------------------------------------------------------------------
   // 1. Query Form Configuration
@@ -53,8 +58,8 @@ export function useList<T>(options: {
     layout: 'vertical',
     size: 'small',
     gridProps: {
-      xGap: 16,
-      yGap: 0,
+      xGap: 8,
+      yGap: 8,
       collapsed: true,
       collapsedRows: 1
     },
@@ -63,7 +68,8 @@ export function useList<T>(options: {
     submitOnEnter: true,
     submitButtonOptions: { loading: submitting },
     actionColProps: { span: 4 },
-    schema: searchFormSchema
+    schema: searchFormSchema,
+    objectToValueFields
   });
 
   // ----------------------------------------------------------------------
