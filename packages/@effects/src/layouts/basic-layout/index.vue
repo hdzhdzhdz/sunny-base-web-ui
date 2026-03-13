@@ -185,3 +185,47 @@ const handleMenuClick = (key: string) => {
   router.push(key);
 };
 </script>
+
+<style scoped>
+/* 菜单项基础样式 - 统一圆角和内边距，避免选中时抖动 */
+:deep(.arco-menu-item),
+:deep(.arco-menu-inline-header) {
+  border-radius: 8px !important;
+  margin: 4px 8px !important;
+  padding-left: 16px !important;
+}
+
+/* 菜单图标动画基础样式 */
+:deep(.arco-menu-item .arco-menu-icon),
+:deep(.arco-menu-inline-header .arco-menu-icon) {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 菜单图标 hover 放大效果 */
+:deep(.arco-menu-item:hover .arco-menu-icon),
+:deep(.arco-menu-inline-header:hover .arco-menu-icon) {
+  transform: scale(1.15);
+}
+
+/* 菜单选中状态跟随主题色 - 仅针对叶子菜单项 */
+:deep(.arco-menu-item.arco-menu-selected) {
+  background-color: rgba(var(--primary-6), 0.1) !important;
+  color: rgb(var(--primary-6)) !important;
+}
+
+/* 菜单项 hover 状态跟随主题色 */
+:deep(.arco-menu-item:hover) {
+  background-color: rgba(var(--primary-6), 0.08) !important;
+  color: rgb(var(--primary-6)) !important;
+}
+
+/* 父级菜单 hover 状态 */
+:deep(.arco-menu-inline-header:hover) {
+  background-color: rgba(var(--primary-6), 0.05) !important;
+}
+
+/* 菜单图标跟随主题色 - 仅针对叶子菜单项 */
+:deep(.arco-menu-item.arco-menu-selected .arco-menu-icon) {
+  color: rgb(var(--primary-6)) !important;
+}
+</style>
