@@ -227,7 +227,8 @@ function handleFormSuccess() {
         <QueryForm>
           <template #expand-before>
             <SunnySearchPlan :form-config="searchFormSchema" v-model:current-search-plan="currentSearchPlan"
-              v-model:search-plan-list="searchPlanList" :resource-id="resourceId" :n-resourceid="nResourceid"
+              v-model:search-plan-list="searchPlanList"
+              :resource-id="resourceId" :n-resourceid="nResourceid"
               :api="searchPlanApi" @search="handleSearchPlanSearch" @default-plan-loaded="handleDefaultPlanLoaded">
               <template #trigger="{ open }">
                 <button type="button"
