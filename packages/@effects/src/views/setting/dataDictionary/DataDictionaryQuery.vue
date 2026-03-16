@@ -59,13 +59,15 @@ const {
   queryFunction,
   gridEvents: {
     toolbarButtonClick: ({ code }: { code: string }) => {
-      if (code === 'add') {
+      if (code === 'dataDictionary/add') {
         handleAdd()
-      } else if (code === 'enable') {
+      } else if (code === 'dataDictionary/update') {
+        // handleUpdate()
+      } else if (code === 'dataDictionary/enable') {
         handleSign('10001')
-      } else if (code === 'disable') {
+      } else if (code === 'dataDictionary/disable') {
         handleSign('10002')
-      } else if (code === 'delete') {
+      } else if (code === 'dataDictionary/del') {
         handleDelete()
       }
     },
@@ -97,7 +99,8 @@ const {
         return []
       }
     }
-  }
+  },
+  lazy: true
 });
 
 // ----------------------------------------------------------------------

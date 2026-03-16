@@ -50,6 +50,7 @@ export function initButtonItem(data: any) {
     // vxe-grid 按钮配置项
     name: cName,
     code: cStoremethod,
+    params: JSON.stringify(data), // 额外参数-用于部分功能
   }
 }
 
@@ -174,15 +175,11 @@ export function initVxeColumn(data: any) {
   return itemObj
 }
 
-export function getResourceByParIdOrModnumb({ parId, modnumb }: { parId?: string; modnumb?: string }) {
-  if (parId || modnumb) {
-    return getCurrentUserResourcesByParId({ parId, modnumb, types: [2, 3] }).then(({ data }) => {
-      debugger
-      return data || []
-    })
-  }
-}
 
+/**
+ * 根据资源接口返回构建配置（表单、表格、按钮）项
+ * @param {*} resource
+ */
 export function initResourceConstructor(result: any): {
   resFieldList: Record<string, any[]>
   resButtonList: Record<string, any[]>
