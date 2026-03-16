@@ -38,6 +38,47 @@ const queryFunction = async ({ page, formValues }) => {
   return response
 };
 
+/**
+ * 加载子节点数据
+ * @param row - 父节点行数据
+ */
+async function loadChildren({ row }: { row: DataDictionaryVO & { hasChildren?: boolean } }) {
+  const formValues = await formApi.getValues()
+
+  const queryParams = {
+    pageNo: 1,
+    pageSize: 9999,
+    authDict: {
+      cSign: formValues.cSign || '',
+      cXuhao: formValues.cXuhao || '',
+      cName: formValues.cName || '',
+      nParent: row.id  // 查询该节点的子节点
+    }
+  }
+
+  try {
+    const response = await requestClient.post<{ result: { records: DataDictionaryVO[] } }>('/core/authDict/selectForPage', queryParams)
+    const records = response.result?.records || []
+    // 给每条记录添加 hasChildren 标识，支持继续展开
+    return records.map(item => ({
+      ...item,
+      hasChildren: true
+    }))
+  } catch (error) {
+    console.error('加载子节点失败:', error)
+    return []
+  }
+}
+
+// 树形配置
+const treeConfig = {
+  lazy: true,              // 开启懒加载
+  rowField: 'id',          // 行唯一标识
+  hasChild: 'hasChildren', // 标识是否有子节点的字段
+  expandAll: false,        // 不默认展开
+  loadMethod: loadChildren // 懒加载方法
+};
+
 // 使用useList钩子
 const {
   QueryForm,
@@ -70,36 +111,9 @@ const {
       } else if (code === 'dataDictionary/del') {
         handleDelete()
       }
-    },
-    // 树形表格懒加载
-    treeNodeExpand: async ({ row }: { row: DataDictionaryVO & { hasChildren?: boolean } }) => {
-      const formValues = await formApi.getValues()
-
-      const queryParams = {
-        pageNo: 1,
-        pageSize: 9999,
-        authDict: {
-          cSign: formValues.cSign || '',
-          cXuhao: formValues.cXuhao || '',
-          cName: formValues.cName || '',
-          nParent: row.id  // 查询该节点的子节点
-        }
-      }
-
-      try {
-        const response = await requestClient.post<{ result: { records: DataDictionaryVO[] } }>('/core/authDict/selectForPage', queryParams)
-        const records = response.result?.records || []
-        // 给每条记录添加 hasChildren 标识，支持继续展开
-        return records.map(item => ({
-          ...item,
-          hasChildren: true
-        }))
-      } catch (error) {
-        console.error('加载子节点失败:', error)
-        return []
-      }
     }
   },
+  treeConfig: treeConfig,
   lazy: true
 });
 
