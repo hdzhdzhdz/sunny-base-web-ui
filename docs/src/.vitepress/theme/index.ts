@@ -76,6 +76,17 @@ const docsBusinessSearchAdapter: BusinessSearchAdapter = {
   },
 };
 
+const docsCustomizeSelectAdapter = {
+  query: async (params: any) => {
+    const res = await axios.post('/core/assSelect/commonQuery', params);
+    const data = res.data?.result || res.data;
+    return {
+      options: data?.optionList || [],
+      config: data?.assSelect || undefined,
+    };
+  },
+};
+
 function mapComponentType(type: string): string {
   const map: Record<string, string> = {
     input: 'Input',
@@ -153,6 +164,7 @@ export default {
     setupBusinessForm({
       config: {
         businessSearchAdapter: docsBusinessSearchAdapter,
+        customizeSelectAdapter: docsCustomizeSelectAdapter,
       },
     })
   }

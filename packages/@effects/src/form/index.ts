@@ -14,6 +14,9 @@ import {
   type BusinessSearchParams,
   type BusinessSearchResult,
   type FormSchema,
+  type CustomizeSelectAdapter,
+  type CustomizeSelectQueryParams,
+  type CustomizeSelectQueryResult,
 } from '@sunny-base-web/ui';
 import { requestClient } from '../api/request';
 import type { VxeGridPropTypes } from 'vxe-table';
@@ -239,6 +242,17 @@ export const defaultBusinessSearchAdapter: BusinessSearchAdapter = {
   },
 };
 
+const defaultCustomizeSelectAdapter: CustomizeSelectAdapter = {
+  query: async (params: CustomizeSelectQueryParams): Promise<CustomizeSelectQueryResult> => {
+    const res = await requestClient.post('/core/assSelect/commonQuery', params as any);
+    const result = (res as any)?.result || {};
+    return {
+      options: result.optionList || [],
+      config: result.assSelect || undefined,
+    };
+  },
+};
+
 // =============================================================================
 // 默认表单配置
 // =============================================================================
@@ -251,6 +265,7 @@ const defaultFormConfig: FormCommonConfig = {
   disabledOnInputListener: true,
   emptyStateValue: undefined,
   businessSearchAdapter: defaultBusinessSearchAdapter,
+  customizeSelectAdapter: defaultCustomizeSelectAdapter,
 };
 
 // =============================================================================
@@ -323,6 +338,10 @@ export function setupBusinessForm(options: SetupBusinessFormOptions = {}) {
     businessSearchAdapter: {
       ...defaultFormConfig.businessSearchAdapter,
       ...customConfig?.businessSearchAdapter,
+    },
+    customizeSelectAdapter: {
+      ...defaultFormConfig.customizeSelectAdapter,
+      ...(customConfig as any)?.customizeSelectAdapter,
     },
   };
 

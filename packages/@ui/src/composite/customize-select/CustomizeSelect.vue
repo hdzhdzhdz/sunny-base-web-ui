@@ -36,7 +36,7 @@
 import { ref, computed, watch, onMounted, getCurrentInstance } from 'vue'
 import { debounce, toString } from 'lodash-es'
 import { Select, Option, Message } from '@arco-design/web-vue'
-import axios from 'axios'
+import { DEFAULT_FORM_COMMON_CONFIG } from '../../entry/form/config'
 
 const aSelect = Select
 const aOption = Option
@@ -110,23 +110,32 @@ const newValue = computed({
 
 const search = async () => {
   if (props.cNum) {
-    const json: Record<string, any> = {
-      cNum: props.cNum,
-      attrParam: {
-        ...props.attrParam
+    try {
+      const adapter = DEFAULT_FORM_COMMON_CONFIG.customizeSelectAdapter
+      if (!adapter?.query) {
+        error.value = true
+        Message.error('CustomizeSelect adapter not configured')
+        return
       }
-    }
-    if (newValue.value) {
-      json.cVal = toString(newValue.value)
-    }
-    const res = await axios.post('/core/assSelect/commonQuery', json)
-    if (res.data.code === 200) {
-      optionlist.value = res.data.result.optionList
-      defaultOptionlist.value = res.data.result.optionList
+      const payload: Record<string, any> = {
+        cNum: props.cNum,
+        attrParam: {
+          ...props.attrParam
+        }
+      }
+      if (newValue.value) {
+        payload.cVal = toString(newValue.value)
+      }
+      const res = await adapter.query(payload)
+      optionlist.value = res.options || []
+      defaultOptionlist.value = res.options || []
+      if (res.config) {
+        config.value = Object.assign({}, config.value, res.config)
+      }
       error.value = false
-    } else {
+    } catch (e: any) {
       error.value = true
-      Message.error(res.data.message)
+      Message.error(e?.message || '加载失败')
     }
   }
 }
@@ -138,6 +147,7 @@ const selectChange = (value: string | number) => {
 const remoteMethod = debounce((queryString: string) => {
   if (queryString !== '') {
     loading.value = true
+    const adapter = DEFAULT_FORM_COMMON_CONFIG.customizeSelectAdapter
     const json: Record<string, any> = {
       cNum: props.cNum,
       attrParam: {
@@ -145,13 +155,26 @@ const remoteMethod = debounce((queryString: string) => {
       },
       searchCondition: queryString
     }
-    axios.post('/core/assSelect/commonQuery', json).then((res: any) => {
-      config.value = res.data.result.assSelect
-      optionlist.value = res.data.result.optionList
-      defaultOptionlist.value = res.data.result.optionList
-    }).finally(() => {
-      loading.value = false
-    })
+    Promise.resolve()
+      .then(async () => {
+        if (!adapter?.query) {
+          throw new Error('CustomizeSelect adapter not configured')
+        }
+        return adapter.query(json)
+      })
+      .then((res) => {
+        if (res.config) {
+          config.value = Object.assign({}, config.value, res.config)
+        }
+        optionlist.value = res.options || []
+        defaultOptionlist.value = res.options || []
+      })
+      .catch((e: any) => {
+        Message.error(e?.message || '查询失败')
+      })
+      .finally(() => {
+        loading.value = false
+      })
   } else {
     optionlist.value = defaultOptionlist.value
   }

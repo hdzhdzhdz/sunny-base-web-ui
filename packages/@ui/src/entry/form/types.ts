@@ -494,6 +494,34 @@ export interface BusinessSearchAdapter {
   search?: (params: BusinessSearchParams) => Promise<BusinessSearchResult>;
 }
 
+export interface CustomizeSelectConfig {
+  nType?: number;
+  cLabelslotcol?: string;
+  nSearchinterval?: number;
+}
+
+export interface CustomizeSelectOption {
+  cKeynumb: string | number;
+  cKeyname: string;
+  cSlot?: string;
+}
+
+export interface CustomizeSelectQueryParams {
+  cNum: string | number;
+  attrParam?: Record<string, any>;
+  cVal?: string;
+  searchCondition?: string;
+}
+
+export interface CustomizeSelectQueryResult {
+  options: CustomizeSelectOption[];
+  config?: CustomizeSelectConfig;
+}
+
+export interface CustomizeSelectAdapter {
+  query: (params: CustomizeSelectQueryParams) => Promise<CustomizeSelectQueryResult>;
+}
+
 /**
  * 表单通用配置
  * Form common configuration
@@ -521,6 +549,10 @@ export interface FormCommonConfig {
    * Used to adapt business system backend API formats
    */
   businessSearchAdapter?: BusinessSearchAdapter;
+  /**
+   * CustomizeSelect API 适配器
+   */
+  customizeSelectAdapter?: CustomizeSelectAdapter;
 }
 
 /**

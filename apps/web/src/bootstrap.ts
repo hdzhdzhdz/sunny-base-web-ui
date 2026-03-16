@@ -168,7 +168,17 @@ async function bootstrap(namespace: string) {
 						}))
 					};
 				}
-			}
+			},
+			customizeSelectAdapter: {
+				query: async (params: any) => {
+					const res = await requestClient.post('/core/assSelect/commonQuery', params);
+					const data = (res as any)?.result || res;
+					return {
+						options: data?.optionList || [],
+						config: data?.assSelect || undefined,
+					};
+				}
+			},
 		}
 	})
 

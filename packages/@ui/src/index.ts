@@ -8,7 +8,6 @@ import { SunnyUpload } from "./data/upload";
 import { SunnySimpleUpload } from "./data/simple-upload";
 import SunnySelect from "./entry/select";
 import SunnyBatchSelect from "./entry/select/BatchSelect.vue";
-import SunnyCustomizeSelect from "./entry/customize-select";
 import SunnySearchInputTag from "./entry/search-input-tag";
 import { useSunnyForm, FormApi, SunnyForm, setupSunnyForm, z } from './entry/form';
 import { useSunnyEditGrid } from './data/edit-grid'
@@ -56,5 +55,6 @@ export * from "./entry/form/types";
 export * from "./feedback/error-boundary/types";
 export * from "./composite/business-search";
 export * from "./composite/search-plan";
+export * from "./composite/customize-select";
 export * from './data/resource-tree/types';
 export * from './data/resource-tree/use-sunny-resource-tree';

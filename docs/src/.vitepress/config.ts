@@ -40,7 +40,8 @@ export default defineConfig({
           items: [
             { text: 'Introduction 介绍', link: '/business/' },
             { text: 'BusinessSearch 业务搜索', link: '/business/business-search' },
-            { text: 'SearchPlan 查询方案', link: '/business/search-plan' }
+            { text: 'SearchPlan 查询方案', link: '/business/search-plan' },
+            { text: 'CustomizeSelect 自定义下拉框', link: '/business/customize-select' }
           ]
         }
       ],
@@ -77,7 +78,6 @@ export default defineConfig({
             { text: 'BatchSelect 批量选择器', link: '/components/entry/batch-select' },
             { text: 'ApiSelect API下拉选择器', link: '/components/entry/api-select' },
             { text: 'SearchInputTag 公共查询', link: '/components/entry/search-input-tag' },
-            { text: 'CustomizeSelect 自定义下拉框', link: '/components/entry/customize-select' },
           ]
         },
         {
