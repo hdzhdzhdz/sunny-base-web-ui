@@ -2,6 +2,7 @@ import "./style.css";
 
 import { Modal, useSunnyModal, ModalTypes } from "./feedback/modal";
 import { ErrorBoundary } from "./feedback/error-boundary";
+import { SunnyLoading, SunnySpinner } from "./feedback/spinner";
 import { SunnyIcon } from "./basic/icon";
 import { SunnyScrollbar } from "./basic/scrollbar";
 import { SunnyUpload } from "./data/upload";
@@ -27,6 +28,8 @@ export {
   useSunnyModal,
   ModalTypes,
   ErrorBoundary,
+  SunnyLoading,
+  SunnySpinner,
   SunnyIcon,
   SunnyScrollbar,
   SunnyUpload,

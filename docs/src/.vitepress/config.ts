@@ -85,6 +85,7 @@ export default defineConfig({
           items: [
             { text: 'Modal 弹窗', link: '/components/feedback/modal' },
             { text: 'SearchModal 查询弹窗', link: '/components/feedback/search-modal' },
+            { text: 'Spinner 加载动画', link: '/components/feedback/spinner' },
             { text: 'ErrorBoundary 错误边界', link: '/components/feedback/error-boundary' }
           ]
         },
@@ -132,7 +133,8 @@ export default defineConfig({
         '@sunny-base-web/utils': path.resolve(__dirname, '../../../packages/@utils/src'),
         '@sunny-base-web/ui': path.resolve(__dirname, '../../../packages/@ui/src/index.ts'),
         '@sunny-base-web/locales': path.resolve(__dirname, '../../../packages/@locales/src/index.ts'),
-        '@sunny-base-web/effects': path.resolve(__dirname, '../../../packages/@effects/src/index.ts')
+        '@sunny-base-web/effects': path.resolve(__dirname, '../../../packages/@effects/src/index.ts'),
+        '@sunny-base-web/icons': path.resolve(__dirname, '../../../packages/@icons/src/index.ts')
       }
     },
     ssr: {
