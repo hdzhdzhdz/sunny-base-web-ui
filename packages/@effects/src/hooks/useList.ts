@@ -2,8 +2,8 @@ import { ref, reactive, onMounted } from 'vue';
 import { useSunnyForm, useSunnyQueryGrid } from '@sunny-base-web/ui';
 import type { VxeGridProps, VxeGridListeners } from 'vxe-table';
 import { requestClient } from '../api/request';
-import { getResourceByParIdOrModnumb, initResourceConstructor } from '../api/resource';
-
+import { getResourceByParIdOrModnumb } from '../api/resource';
+import { initResourceConstructor } from '../utils/utils';
 /**
  * 列表页通用配置
  * @param options 配置选项
@@ -16,7 +16,7 @@ export function useList<T>(options: {
   /**
    * 表格列配置
    */
-  tableColumns: any[];
+  tableColumns: VxeGridProps['columns'];
   /**
    * 表格数据类型
    */
@@ -45,8 +45,12 @@ export function useList<T>(options: {
    * 用于将 BusinessSearch 等返回的对象数组转换为值字符串
    */
   objectToValueFields?: string[];
+  /**
+   * 是否开启懒加载
+   */
+  lazy?: boolean;
 }) {
-  const { searchFormSchema, tableColumns, dataType, resourceConfig, queryFunction, gridEvents, objectToValueFields } = options;
+  const { searchFormSchema, tableColumns, dataType, resourceConfig, queryFunction, gridEvents, objectToValueFields, lazy } = options;
 
   // ----------------------------------------------------------------------
   // 1. Query Form Configuration
@@ -116,7 +120,7 @@ export function useList<T>(options: {
     },
     // 树形配置 - 懒加载模式
     treeConfig: {
-      lazy: true,              // 开启懒加载
+      lazy: lazy,              // 开启懒加载
       rowField: 'id',          // 行唯一标识
       hasChild: 'hasChildren', // 标识是否有子节点的字段
       expandAll: false,        // 不默认展开
@@ -211,15 +215,8 @@ export function useList<T>(options: {
       const res = await getResourceByParIdOrModnumb({ modnumb: cModnumb });
       if (res.code === 200 && res.result) {
         const { resButtonList } = initResourceConstructor(res.result);
-        // 更新资源按钮列表 - 检查所有可能的parentcode
-        resourceButtons.value = [];
-        Object.values(resButtonList).forEach(buttons => {
-          resourceButtons.value = [...resourceButtons.value, ...buttons];
-        });
-        
-        // 按order排序
-        resourceButtons.value.sort((a, b) => (a.order || 0) - (b.order || 0));
-        
+        // 更新资源按钮列表 - 获取searchTable下所有按钮
+        resourceButtons.value = resButtonList?.searchTable || []
         // 更新表格按钮配置
         if (resourceButtons.value.length > 0) {
           gridOptions.toolbarConfig = {
