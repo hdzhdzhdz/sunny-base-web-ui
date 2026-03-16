@@ -126,7 +126,7 @@ export const searchFormSchema: FormSchema[] = [
     componentProps: {
       placeholder: '请选择',
       allowClear: true,
-      cNum: 'user_search', // 业务编码，必填项
+      cNum: 'UserSearch1', // 业务编码，必填项
       // 示例配置，实际使用需要根据业务配置
       fieldConfig: {
         label: 'name',
