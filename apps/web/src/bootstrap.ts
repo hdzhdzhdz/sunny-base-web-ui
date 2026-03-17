@@ -4,9 +4,9 @@ import App from './App.vue';
 import "@arco-design/web-vue/dist/arco.css";
 import "./style.css";
 import "./arco.css";
-import ArcoVue, { Message } from "@arco-design/web-vue";
+import ArcoVue from "@arco-design/web-vue";
 
-import { createEffects, reportError, reportUnhandledRejection, reportGlobalError, setupBusinessForm, requestClient } from '@sunny-base-web/effects'
+import { createEffects, setupBusinessForm, requestClient, loadingManager } from '@sunny-base-web/effects'
 
 import { router } from './router';
 import { setupI18n } from '#/locales';
@@ -23,8 +23,24 @@ import VxeUIPluginRenderArco from '@vxe-ui/plugin-render-arco'
 import '@vxe-ui/plugin-render-arco/dist/style.css'
 VxeUI.use(VxeUIPluginRenderArco)
 
+import { setupApiLoadingInterceptor } from './utils/api-loading-interceptor';
+import { setupLoadingDebugTool } from './utils/loading-debug';
+
 async function bootstrap(namespace: string) {
 	const app = createApp(App);
+
+	// 开发环境：加载调试工具
+	if (import.meta.env.DEV) {
+		setupLoadingDebugTool();
+	}
+
+	// ========== 应用启动时显示加载动画 ==========
+	// 在 Vue 应用挂载前显示加载动画，避免白屏
+	if (preferences.transition.loading.enableRouteLoading &&
+	    preferences.transition.loading.type !== 'nprogress') {
+		console.log('[Bootstrap] Showing initial loading animation');
+		loadingManager.startLoading();
+	}
 
 	// ========== 全局错误处理 ========== todo 后续接入sentry
 	// 1. Vue 组件错误处理器
@@ -184,6 +200,9 @@ async function bootstrap(namespace: string) {
 
 	// 配置路由及路由守卫
 	app.use(router);
+
+	// 初始化 API 加载拦截器
+	setupApiLoadingInterceptor();
 
 	// 国际化 i18n 配置
 	await setupI18n(app);

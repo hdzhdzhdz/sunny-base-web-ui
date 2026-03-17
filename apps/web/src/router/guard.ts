@@ -4,6 +4,7 @@ import type { Router } from 'vue-router';
 import { preferences } from '../preferences';
 import { useAccessStore, useUserStore, useAuthStore } from '@sunny-base-web/stores';
 import { startProgress, stopProgress } from '@sunny-base-web/ui';
+import { loadingManager } from '@sunny-base-web/effects';
 
 import { accessRoutes, coreRouteNames } from './routes';
 import { generateAccess } from './access';
@@ -16,24 +17,69 @@ import { fetchUserInfo } from '../api/user';
 function setupCommonGuard(router: Router) {
   // 记录已经加载的页面
   const loadedPaths = new Set<string>();
+  // 追踪正在进行的导航数量
+  let pendingNavigations = 0;
+  // 防抖定时器
+  let stopTimer: ReturnType<typeof setTimeout> | null = null;
 
-  router.beforeEach((to) => {
+  router.beforeEach((to, from) => {
     to.meta.loaded = loadedPaths.has(to.path);
-    // 页面加载进度条
-    if (!to.meta.loaded && preferences.transition.progress) {
-      startProgress();
+
+    // 页面加载动画
+    const { loading } = preferences.transition;
+
+    // 根据配置选择加载方式
+    if (!to.meta.loaded && loading.enableRouteLoading) {
+      if (loading.type === 'nprogress') {
+        // 使用 NProgress
+        startProgress();
+      } else {
+        // 使用 Spinner/Loading
+        console.log('[Router Guard] beforeEach - calling startLoading() for:', to.path);
+        loadingManager.startLoading();
+        pendingNavigations++;
+
+        // 清除之前的防抖定时器
+        if (stopTimer) {
+          clearTimeout(stopTimer);
+          stopTimer = null;
+        }
+      }
     }
+
     return true;
   });
 
-  router.afterEach((to) => {
+  router.afterEach((to, from) => {
     // 记录页面是否加载,如果已经加载，后续的页面切换动画等效果不在重复执行
-
     loadedPaths.add(to.path);
 
-    // 关闭页面加载进度条
-    if (preferences.transition.progress) {
-      stopProgress();
+    // 关闭页面加载动画
+    const { loading } = preferences.transition;
+
+    if (loading.enableRouteLoading) {
+      if (loading.type === 'nprogress') {
+        // 关闭 NProgress
+        stopProgress();
+      } else {
+        // 关闭 Spinner/Loading
+        console.log('[Router Guard] afterEach - calling stopLoading() for:', to.path);
+        loadingManager.stopLoading();
+        pendingNavigations--;
+
+        // 使用防抖确保所有导航完成后才真正停止加载
+        if (stopTimer) {
+          clearTimeout(stopTimer);
+        }
+
+        stopTimer = setTimeout(() => {
+          console.log('[Router Guard] All navigations complete - force stopping loading');
+          console.log('[Router Guard] Pending navigations:', pendingNavigations);
+          loadingManager.forceStop();
+          pendingNavigations = 0;
+          stopTimer = null;
+        }, 150); // 150ms 防抖延迟
+      }
     }
   });
 }
@@ -93,13 +139,16 @@ function setupAccessGuard(router: Router) {
     // 注意：这里获取用户信息和菜单，好像必须得耦合在业务代码中，因为store只能在组件中使用，不能在守卫中使用
     // effect 组件，也进不到路由守卫中
     let userInfo = userStore.userInfo;
-    if (!userInfo || !userInfo.code) {
+    if (!userInfo?.code) {
+      console.log('[Router Guard] setupAccessGuard - fetching user info...');
       try {
         const res = await fetchUserInfo({ 'types': [0, 1, 4] });
         const { user, resource } = res.result || {};
         userInfo = { ...user, resources: resource, code: user.cWork, name: user.cUsername };
         userStore.setUserInfo(userInfo);
+        console.log('[Router Guard] setupAccessGuard - user info fetched successfully');
       } catch (error) {
+        console.error('[Router Guard] setupAccessGuard - fetch user info failed:', error);
         // 如果获取用户信息失败（比如登录过期），跳转到登录页面
         accessStore.setAccessToken(null);
         authStore.$reset();
@@ -149,6 +198,17 @@ function createRouterGuard(router: Router) {
   setupCommonGuard(router);
   /** 权限访问 */
   setupAccessGuard(router);
+
+  // 路由错误处理：确保导航失败时也停止加载动画
+  router.onError((error, to) => {
+    console.error('[Router Guard] Navigation error:', error);
+    const { loading } = preferences.transition;
+
+    if (loading.enableRouteLoading && loading.type !== 'nprogress') {
+      console.log('[Router Guard] onError - calling forceStop() due to error');
+      loadingManager.forceStop();
+    }
+  });
 }
 
 export { createRouterGuard };

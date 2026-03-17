@@ -27,8 +27,35 @@ export const preferences = {
 	},  
 	transition: {
 		enable: true,
-		loading: true,
 		name: 'fade-slide',
-		progress: true,
+		progress: {
+			enable: true, // 保持向后兼容
+		},
+		// 加载动画配置
+		loading: {
+			/**
+			 * 全局加载动画类型
+			 * - 'nprogress': 顶部进度条（默认，向后兼容）
+			 * - 'spinner': 方块跳跃动画
+			 * - 'loading': 四点旋转动画
+			 * - 'none': 禁用加载动画
+			 */
+			type: 'spinner' as 'nprogress' | 'spinner' | 'loading' | 'none',
+
+			/**
+			 * 路由切换时是否显示加载动画
+			 */
+			enableRouteLoading: true,
+
+			/**
+			 * API 请求时是否显示全局加载动画
+			 */
+			enableApiLoading: false,
+
+			/**
+			 * 最小加载时间（毫秒），避免闪烁
+			 */
+			minLoadingTime: 50,
+		},
 	},
 }
