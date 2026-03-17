@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue';
 import { useSunnyEditGrid, EditRender, useSunnyModal } from '@sunny-base-web/ui';
-import { getResourceByParIdOrModnumb, initResourceConstructor } from '@sunny-base-web/effects'
+import { initResourceConstructor } from '@sunny-base-web/effects'
 import type { VxeGridProps, VxeGridListeners } from 'vxe-table'
 // @ts-ignore
 import axios from 'axios';
@@ -50,11 +50,6 @@ const gridEvents: VxeGridListeners = {
 const [ConnectedModal, { open }] = useSunnyModal();
 const [Grid, gridApi] = useSunnyEditGrid({ gridOptions, gridEvents });
 const handleOpen = () => {
-  // getResourceByParIdOrModnumb({ modnumb: cModnumb.value }, {
-  //   headers: {
-  //     'Authorization': token.value
-  //   }
-  // })
   axios.post('https://basetest.pcloud.sunnyoptical.cn/base/test/core/contact/getCurrentUserResourcesByParId', {
     // parId: cModnumb.value
     modnumb: cModnumb.value,
