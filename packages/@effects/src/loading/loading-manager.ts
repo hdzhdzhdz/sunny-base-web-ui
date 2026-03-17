@@ -1,25 +1,21 @@
-import { ref, computed, readonly } from 'vue';
+import { ref, computed } from 'vue';
 
 /**
  * 全局加载状态管理器
- * @description 单例模式，管理全局加载动画的显示状态，支持并发请求
+ * @description 单例模式，管理全局加载动画的显示状态
+ * @since 简化版：仅使用布尔值，不使用计数器（因为只处理路由导航）
  */
 export class LoadingManager {
   private static instance: LoadingManager;
 
-  private _loadingCount = ref(0);
-
-  /**
-   * 当前加载计数（只读）
-   */
-  readonly loadingCount = readonly(this._loadingCount);
+  private _isLoading = ref(false);
 
   /**
    * 当前是否处于加载状态（响应式）
    */
   readonly isLoading = computed(() => {
-    const result = this._loadingCount.value > 0;
-    console.log('[LoadingManager] isLoading computed:', result, 'count:', this._loadingCount.value);
+    const result = this._isLoading.value;
+    console.log('[LoadingManager] isLoading computed:', result);
     return result;
   });
 
@@ -38,31 +34,27 @@ export class LoadingManager {
   }
 
   /**
-   * 开始加载（增加计数）
+   * 开始加载
    */
   startLoading(): void {
-    console.log('[LoadingManager] startLoading called, current count:', this._loadingCount.value);
-    this._loadingCount.value++;
-    console.log('[LoadingManager] After startLoading, count:', this._loadingCount.value);
+    console.log('[LoadingManager] startLoading called');
+    this._isLoading.value = true;
   }
 
   /**
-   * 结束加载（减少计数）
+   * 结束加载
    */
   stopLoading(): void {
-    console.log('[LoadingManager] stopLoading called, current count:', this._loadingCount.value);
-    if (this._loadingCount.value > 0) {
-      this._loadingCount.value--;
-    }
-    console.log('[LoadingManager] After stopLoading, count:', this._loadingCount.value);
+    console.log('[LoadingManager] stopLoading called');
+    this._isLoading.value = false;
   }
 
   /**
-   * 强制停止所有加载（重置计数）
+   * 强制停止加载（等同于 stopLoading，为了保持 API 兼容性）
    */
   forceStop(): void {
     console.log('[LoadingManager] forceStop called');
-    this._loadingCount.value = 0;
+    this._isLoading.value = false;
   }
 }
 
