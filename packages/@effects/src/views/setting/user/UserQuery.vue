@@ -1,12 +1,16 @@
 <script lang="tsx" setup>
 import { SunnySearchPlan } from "@sunny-base-web/ui"
-import { searchFormSchema, tableColumns, resourceConfig } from './config'
+import { getUserConfig } from './config'
 // import type { OperationLogVO } from './types'
 import { requestClient, searchPlanApi, useList } from '@sunny-base-web/effects'
 import type { VxeGridProps, VxeGridListeners } from 'vxe-table'
 import { Modal, Message } from '@arco-design/web-vue';
 
-// 表格查询函数
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+
+const { searchFormSchema, tableColumns, resourceConfig } = getUserConfig({ t })
+
 const queryFunction = async ({ page, formValues }: { page: { currentPage: number; pageSize: number }; formValues: Record<string, any> }) => {
   const queryParams = {
     pageNo: page.currentPage,

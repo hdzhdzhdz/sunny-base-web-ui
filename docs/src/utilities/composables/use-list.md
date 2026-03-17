@@ -32,11 +32,36 @@ export function useList<T>(options: {
   resourceConfig: {
     resourceId: string;
     nResourceid: number;
+    /**
+     * 模块编号
+     */
+    cModnumb?: string;
   };
   /**
    * 表格查询函数
    */
   queryFunction: (params: any) => Promise<any>;
+  /**
+   * 表格事件配置
+   */
+  gridEvents?: any;
+  /**
+   * 树形配置
+   */
+  treeConfig?: any;
+  /**
+   * 树形表格懒加载方法
+   */
+  loadMethod?: (row: any) => Promise<any[]>;
+  /**
+   * 对象转值字段列表
+   * 用于将 BusinessSearch 等返回的对象数组转换为值字符串
+   */
+  objectToValueFields?: string[];
+  /**
+   * 是否开启懒加载
+   */
+  lazy?: boolean;
 })
 ```
 
@@ -47,8 +72,13 @@ export function useList<T>(options: {
 | `searchFormSchema` | `any[]` | 搜索表单配置，遵循 SunnyForm 的 schema 格式 |
 | `tableColumns` | `any[]` | 表格列配置，遵循 VxeTable 的 columns 格式 |
 | `dataType` | `new () => T` | 表格数据类型（可选） |
-| `resourceConfig` | `object` | 资源配置，包含 `resourceId` 和 `nResourceid` |
+| `resourceConfig` | `object` | 资源配置，包含 `resourceId`、`nResourceid` 和可选的 `cModnumb`（模块编号） |
 | `queryFunction` | `(params: any) => Promise<any>` | 表格查询函数，接收 `page` 和 `formValues` 参数 |
+| `gridEvents` | `any` | 表格事件配置（可选） |
+| `treeConfig` | `any` | 树形配置（可选） |
+| `loadMethod` | `(row: any) => Promise<any[]>` | 树形表格懒加载方法（可选） |
+| `objectToValueFields` | `string[]` | 对象转值字段列表，用于将 BusinessSearch 等返回的对象数组转换为值字符串（可选） |
+| `lazy` | `boolean` | 是否开启懒加载（可选） |
 
 ## 返回值
 
@@ -64,10 +94,124 @@ export function useList<T>(options: {
 | `currentSearchPlan` | `Ref<any>` | 当前选中的搜索方案 |
 | `resourceId` | `string` | 资源 ID |
 | `nResourceid` | `number` | 数字类型的资源 ID |
+| `resourceButtons` | `Ref<any[]>` | 资源按钮列表 |
 | `handleSearchPlanSearch` | `(formValues: any) => Promise<void>` | 处理搜索方案搜索 |
 | `handleDefaultPlanLoaded` | `(formValues: any) => Promise<void>` | 处理默认搜索方案加载 |
+| `fetchResourceConfig` | `() => Promise<void>` | 获取资源配置 |
 
 ## 使用示例
+
+### 基本用法
+
+### 树形表格用法
+
+```vue
+<script lang="tsx" setup>
+import { SunnySearchPlan } from "@sunny-base-web/ui"
+import { searchFormSchema, tableColumns, resourceConfig } from './config'
+import type { DataDictionaryVO } from './types'
+import { requestClient, searchPlanApi, useList } from '@sunny-base-web/effects'
+import { Filter } from "lucide-vue-next";
+
+// 树形表格懒加载方法
+const treeLoadMethod = async (row) => {
+  const params = {
+    nParentid: row?.id || 0
+  };
+  const result = await requestClient.post('/core/assDatadictionary/selectForPage', params);
+  return result.result.records;
+};
+
+// 表格查询函数
+const queryFunction = async ({ page, formValues }) => {
+  const queryParams = {
+    pageNo: page.currentPage,
+    pageSize: page.pageSize,
+    assDatadictionary: {
+      cDataname: formValues.cDataname || '',
+      cDatanumb: formValues.cDatanumb || ''
+    }
+  };
+
+  return requestClient.post('/core/assDatadictionary/selectForPage', queryParams);
+};
+
+// 树形配置
+const treeConfig = {
+  lazy: true,
+  rowField: 'id',
+  hasChild: 'hasChildren',
+  expandAll: false
+};
+
+// 使用useList钩子
+const {
+  QueryForm,
+  formApi,
+  Grid,
+  gridApi,
+  submitting,
+  handleGlobalEnter,
+  searchPlanList,
+  currentSearchPlan,
+  resourceId,
+  nResourceid,
+  handleSearchPlanSearch,
+  handleDefaultPlanLoaded
+} = useList<DataDictionaryVO>({
+  searchFormSchema,
+  tableColumns,
+  resourceConfig,
+  queryFunction,
+  treeConfig,
+  loadMethod: treeLoadMethod,
+  lazy: true
+});
+</script>
+
+<template>
+  <div class="data-dictionary-query h-full flex flex-col bg-[var(--color-fill-2)]" @keydown.enter="handleGlobalEnter" tabindex="-1">
+    <!-- Main Container -->
+    <div
+      class="flex-1 bg-[var(--color-bg-2)] flex flex-col shadow-sm border border-[var(--color-border)] overflow-hidden rounded"
+    >
+      <!-- Search Form Area -->
+      <div class="px-4 border-b py-2 pb-3 border-[var(--color-border)]">
+        <QueryForm>
+          <template #expand-before>
+            <SunnySearchPlan
+                :form-config="searchFormSchema"
+                v-model:current-search-plan="currentSearchPlan"
+                v-model:search-plan-list="searchPlanList"
+                :resource-id="resourceId"
+                :n-resourceid="nResourceid"
+                :api="searchPlanApi"
+                @search="handleSearchPlanSearch"
+                @default-plan-loaded="handleDefaultPlanLoaded"
+              >
+              <template #trigger="{ open }">
+                <button
+                  type="button"
+                  class="px-3 py-1.5 border border-[var(--color-border-2)] rounded bg-white text-sm transition-all hover:border-[rgb(var(--primary-6))] hover:text-[rgb(var(--primary-6))] disabled:cursor-not-allowed disabled:opacity-60 mr-2"
+                  @click="open"
+                  title="查询方案"
+                >
+                  <Filter class="w-4 h-4" />
+                </button>
+              </template>
+            </SunnySearchPlan>
+          </template>
+        </QueryForm>
+      </div>
+
+      <!-- Data Grid Area -->
+      <div class="flex-1 px-2 pt-1 overflow-hidden flex flex-col">
+        <Grid class="flex-1" />
+      </div>
+    </div>
+  </div>
+</template>
+```
 
 ### 基本用法
 

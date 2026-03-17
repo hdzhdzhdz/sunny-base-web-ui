@@ -1,0 +1,14 @@
+{
+  "cUsernumb": "用户编号",
+  "cUsername": "用户姓名",
+  "cAdmin": "用户类型",
+  "dLastLoginList": "最近登录时间",
+  "cWork": "关联工号",
+  "dCredate": "创建时间",
+  "cSign": "是否启用",
+  "cEmail": "邮箱",
+  "cDeptname": "所属部门",
+  "nMainAccount": "主账户",
+  "nOuterUser": "外部用户",
+  "dLastLogin": "最近登录时间"
+}

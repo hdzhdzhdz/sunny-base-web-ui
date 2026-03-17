@@ -41,6 +41,14 @@ export function useList<T>(options: {
    */
   gridEvents?: any;
   /**
+   * 树形配置
+   */
+  treeConfig?: any;
+  /**
+   * 树形表格懒加载方法
+   */
+  loadMethod?: (row: any) => Promise<any[]>;
+  /**
    * 对象转值字段列表
    * 用于将 BusinessSearch 等返回的对象数组转换为值字符串
    */
@@ -50,7 +58,7 @@ export function useList<T>(options: {
    */
   lazy?: boolean;
 }) {
-  const { searchFormSchema, tableColumns, dataType, resourceConfig, queryFunction, gridEvents, objectToValueFields, lazy } = options;
+  const { searchFormSchema, tableColumns, dataType, resourceConfig, queryFunction, gridEvents, treeConfig, loadMethod, objectToValueFields, lazy } = options;
 
   // ----------------------------------------------------------------------
   // 1. Query Form Configuration
@@ -85,7 +93,7 @@ export function useList<T>(options: {
     border: true,
     size: 'mini',
     showOverflow: true,
-    stripe: true,
+    stripe: !treeConfig && !lazy,
     height: 'auto',
     align: 'center',
     rowConfig: {
@@ -95,7 +103,7 @@ export function useList<T>(options: {
     },
     checkboxConfig: {
       highlight: true,       // 选中行高亮
-      range: true,           // 支持范围选择（Shift+点击）
+      range: !treeConfig && !lazy,           // 支持范围选择（Shift+点击），树形结构不支持
       reserve: true,         // 跨页保留选中状态
       trigger: 'row',        // 点击行触发选择
       checkStrictly: true    // 父子节点不关联选择
@@ -118,14 +126,20 @@ export function useList<T>(options: {
       mode: 'popup',
       storage: true
     },
-    // 树形配置 - 懒加载模式
-    treeConfig: {
-      lazy: lazy,              // 开启懒加载
-      rowField: 'id',          // 行唯一标识
-      hasChild: 'hasChildren', // 标识是否有子节点的字段
-      expandAll: false,        // 不默认展开
-      loadMethod: undefined    // 懒加载方法由外部提供
-    },
+    // 树形配置
+    ...(treeConfig && {
+      treeConfig: {
+        ...treeConfig,
+        lazy: treeConfig.lazy !== undefined ? treeConfig.lazy : lazy,              // 开启懒加载
+        rowField: treeConfig.rowField || 'id',          // 行唯一标识
+        hasChild: treeConfig.hasChild || 'hasChildren', // 标识是否有子节点的字段
+        expandAll: treeConfig.expandAll || false,        // 不默认展开
+        loadMethod: treeConfig.loadMethod || (loadMethod ? (row: any, resolve: (data: any[]) => void) => {
+          loadMethod(row).then(resolve).catch(() => resolve([]))
+        } : undefined)    // 包装loadMethod以适配vxe-table的回调风格
+      }
+    }),
+
     proxyConfig: {
       seq: true,
       response: {
