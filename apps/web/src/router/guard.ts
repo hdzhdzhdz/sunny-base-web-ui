@@ -17,8 +17,6 @@ import { fetchUserInfo } from '../api/user';
 function setupCommonGuard(router: Router) {
   // 记录已经加载的页面
   const loadedPaths = new Set<string>();
-  // 追踪正在进行的导航数量
-  let pendingNavigations = 0;
   // 防抖定时器
   let stopTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -37,10 +35,10 @@ function setupCommonGuard(router: Router) {
         // 使用 Spinner/Loading
         console.log('[Router Guard] beforeEach - calling startLoading() for:', to.path);
         loadingManager.startLoading();
-        pendingNavigations++;
 
-        // 清除之前的防抖定时器
+        // 清除之前的防抖定时器（如果有新的导航开始）
         if (stopTimer) {
+          console.log('[Router Guard] Clearing previous stop timer');
           clearTimeout(stopTimer);
           stopTimer = null;
         }
@@ -65,20 +63,19 @@ function setupCommonGuard(router: Router) {
         // 关闭 Spinner/Loading
         console.log('[Router Guard] afterEach - calling stopLoading() for:', to.path);
         loadingManager.stopLoading();
-        pendingNavigations--;
 
         // 使用防抖确保所有导航完成后才真正停止加载
+        // 清除之前的定时器
         if (stopTimer) {
           clearTimeout(stopTimer);
         }
 
+        // 设置新的定时器
         stopTimer = setTimeout(() => {
           console.log('[Router Guard] All navigations complete - force stopping loading');
-          console.log('[Router Guard] Pending navigations:', pendingNavigations);
           loadingManager.forceStop();
-          pendingNavigations = 0;
           stopTimer = null;
-        }, 150); // 150ms 防抖延迟
+        }, 50); // 减少到 50ms，更快响应
       }
     }
   });

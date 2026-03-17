@@ -82,7 +82,6 @@ Sunny Form 推荐使用 `rules` 属性进行统一配置，系统会自动根据
 系统内置了多种常用规则，可以直接在 `rules` 中使用。所有 `@sunny-base-web/utils` 中定义的正则模式都会自动注册为验证规则。
 
 > 💡 **相关文档**：
-> - 更多输入组件的详细用法，请参考 [Input 输入框](/components/entry/input.html)
 > - 查看完整的内置正则规则列表，请参考 [Regex 正则表达式](/utilities/regex.html)
 
 | 规则名称 | 说明 | 附加效果 (仅 Input 组件) |
@@ -244,7 +243,7 @@ const [Form] = useSunnyForm({
 
 通过 `useSunnyForm` 返回的 `api` 对象，可以对表单进行精细控制。
 
-<preview path="./demos/form/ApiDemo.vue" title="API 操作示例" description="演示获取值、设置值、重置、验证以及使用 useStore 订阅状态。" />
+<preview path="./demos/form/FormApi.vue" title="API 操作示例" description="演示获取值、设置值、重置、验证以及使用 useStore 订阅状态。" />
 
 | 方法 | 说明 |
 | :--- | :--- |

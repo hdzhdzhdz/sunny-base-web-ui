@@ -22,12 +22,9 @@ const props = defineProps<{
 const type = computed(() => props.type || 'nprogress');
 const minLoadingTime = computed(() => props.minLoadingTime || 50);
 
-// 获取 loading 状态（isLoading 已经是 ComputedRef<boolean>）
-const isLoading = computed(() => {
-  const value = loadingManager.isLoading.value;
-  console.log('[GlobalLoading] isLoading computed:', value);
-  return value;
-});
+// ✅ 直接使用 loadingManager.isLoading，不要嵌套 computed
+// 这样可以保持响应式追踪链完整
+const isLoading = loadingManager.isLoading;
 
 // 是否应该渲染加载组件（用于 v-show）
 const shouldRender = computed(() => {
