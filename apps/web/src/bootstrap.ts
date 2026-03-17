@@ -162,6 +162,7 @@ async function bootstrap(namespace: string) {
 	// 自定义 loadConfig 处理后端返回的 res.result 包装
 	setupBusinessForm({
 		config: {
+			apiPrefix: preferences.app.apiPrefix,
 			businessSearchAdapter: {
 				loadConfig: async (cNum: string) => {
 					const res = await requestClient.post<any>('/core/assDialog/openInit', { cNum });

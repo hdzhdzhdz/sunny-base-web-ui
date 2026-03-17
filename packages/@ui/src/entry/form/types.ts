@@ -553,6 +553,10 @@ export interface FormCommonConfig {
    * CustomizeSelect API 适配器
    */
   customizeSelectAdapter?: CustomizeSelectAdapter;
+  /**
+   * API 前缀
+   */
+  apiPrefix?: string;
 }
 
 /**

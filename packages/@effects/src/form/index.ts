@@ -343,6 +343,7 @@ export function setupBusinessForm(options: SetupBusinessFormOptions = {}) {
       ...defaultFormConfig.customizeSelectAdapter,
       ...(customConfig as any)?.customizeSelectAdapter,
     },
+    apiPrefix: customConfig?.apiPrefix,
   };
 
   setupSunnyForm({

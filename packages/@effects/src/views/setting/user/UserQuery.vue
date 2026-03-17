@@ -1,10 +1,12 @@
 <script lang="tsx" setup>
-import { SunnySearchPlan } from "@sunny-base-web/ui"
+import { ref } from 'vue'
 import { getUserConfig } from './config'
-// import type { OperationLogVO } from './types'
 import { requestClient, searchPlanApi, useList } from '@sunny-base-web/effects'
 import type { VxeGridProps, VxeGridListeners } from 'vxe-table'
 import { Modal, Message } from '@arco-design/web-vue';
+import { useExportModal } from '@sunny-base-web/ui'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
@@ -22,17 +24,17 @@ const queryFunction = async ({ page, formValues }: { page: { currentPage: number
 };
 
 const gridEvents:VxeGridListeners = {
-  toolbarButtonClick (params: any) {
+  async toolbarButtonClick (params: any) {
     console.log(params)
     const selectRecords = [
       ...params.$grid.getCheckboxReserveRecords(), // 保留选中的记录
       ...params.$grid.getCheckboxRecords() // 当前选中的记录
     ]
-    switch (params.button.handle) {
+    switch (params.button.code) {
       case 'userManagement/add':
         Message.info(params.button.name)
         break
-      case 'myDel': {
+      case 'userManagement/delete': {
         if (selectRecords.length === 0) {
           Message.warning('请至少选择一条记录！')
           return
@@ -57,12 +59,24 @@ const gridEvents:VxeGridListeners = {
         }
         Message.info(`${params.button.name}：${JSON.stringify(selectRecords[0])}`)
         break
-      case 'myDetail':
+      case 'userManagement/detail':
         if (selectRecords.length !== 1) {
           Message.warning('请选择一条记录！')
           return
         }
         Message.info(`${params.button.name}：${JSON.stringify(selectRecords[0])}`)
+        break
+      case 'daoru/show':
+        // Message.info(params.button.name)
+        break
+      case 'daochu/show':
+        const formValues = await formApi.getValues()
+        exportModalApi.open({
+          // exportUrl: '/abc',
+          nmodid: router.currentRoute.value.meta.id,
+          nButtonid: params.button.nButtonid,
+          conditionMap: formValues
+        })
         break
     }
   }
@@ -89,6 +103,15 @@ const {
   queryFunction,
   gridEvents,
 });
+
+const [exportModal, exportModalApi] = useExportModal({
+  onExportSuccess: (response: any) => {
+    Message.success('导出成功')
+  },
+  onExportError: (error: any) => {
+    Message.error(error.message || '导出失败')
+  },
+})
 </script>
 
 <template>
@@ -106,6 +129,8 @@ const {
       <div class="flex-1 px-2 pt-1 overflow-hidden flex flex-col">
         <Grid class="flex-1" />
       </div>
+
+      <exportModal />
     </div>
   </div>
 </template>
