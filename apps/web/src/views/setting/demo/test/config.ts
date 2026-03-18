@@ -45,7 +45,7 @@ export const searchFormSchema: FormSchema[] = [
     },
     colProps: { span: 4 }
   },
-  // Select - 下拉选择框
+  // Select - 下拉选择框（多选）
   {
     fieldName: 'nZt',
     label: '是否启用',
@@ -63,6 +63,7 @@ export const searchFormSchema: FormSchema[] = [
       placeholder: '请选择是否启用',
       allowClear: true,
       // ✅ 无需手动配置 options，useSchemaOptionsLoader 会自动注入
+      multiple: true // 启用多选
     },
     colProps: { span: 4 }
   },
@@ -207,6 +208,7 @@ export const tableColumns: VxeGridProps<TestVO>['columns'] = [
     sortable: true  // 启用排序
   },
   {
+    field: 'action',
     title: '操作',
     width: 160,
     fixed: 'right',

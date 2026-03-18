@@ -53,12 +53,49 @@ export function useSunnySearchPlan(
           formValues = values;
         }
       } catch (error) {
-        console.error('handleAdd getValues error:', error);
+
       }
     }
     
+    // 处理表单值，将对象数组转换为简单数组，并将数组中的值转为字符串
+    const processedFormValues: Record<string, any> = { ...formValues };
+    
+    // 处理所有数组类型的值
+    Object.keys(processedFormValues).forEach(key => {
+      const value = processedFormValues[key];
+      if (Array.isArray(value)) {
+        // 检查是否为业务搜索字段
+        const isBusinessSearch = props.formConfig?.some(field => 
+          field.fieldName === key && field.component && 
+          (field.component.name === 'SunnyBusinessSearch' || field.component === 'SunnyBusinessSearch')
+        );
+        
+        if (isBusinessSearch) {
+          // 对于业务搜索字段，保存完整的对象数组为JSON字符串
+          processedFormValues[key] = JSON.stringify(value);
+        } else {
+          // 对于其他数组类型的值，确保数组中的元素都是字符串
+          processedFormValues[key] = value.map(item => {
+            // 如果是对象，提取value字段
+            let itemValue = item;
+            if (typeof item === 'object' && item !== null) {
+              // 尝试从不同的属性中获取值
+              itemValue = item.value !== undefined ? item.value : 
+                         item.ID !== undefined ? item.ID : 
+                         item.id !== undefined ? item.id : item;
+            }
+            // 将值转换为字符串
+            return typeof itemValue === 'string' ? itemValue : String(itemValue);
+          });
+        }
+      }
+    });
+    
     // 检查是否有查询条件
-    const hasSearchConditions = Object.values(formValues).some(value => {
+    const hasSearchConditions = Object.values(processedFormValues).some(value => {
+      if (Array.isArray(value)) {
+        return value.length > 0;
+      }
       return value !== '' && value !== undefined && value !== null;
     });
     
@@ -79,7 +116,7 @@ export function useSunnySearchPlan(
           cSearchplanname: planName,
           ...(props.nResourceid && { nResourceid: props.nResourceid })
         },
-        colMap: formValues
+        colMap: processedFormValues
       });
       
       // 显示成功提示
@@ -99,10 +136,10 @@ export function useSunnySearchPlan(
         }
       }
       
-      emit('add', planName, { ...formValues });
+      emit('add', planName, { ...processedFormValues });
       inputValue.value = '';
     } catch (error) {
-      console.error('handleAdd error:', error);
+
       emit('error', error);
     }
   };
@@ -125,12 +162,49 @@ export function useSunnySearchPlan(
           formValues = values;
         }
       } catch (error) {
-        console.error('handleUpdate getValues error:', error);
+
       }
     }
     
+    // 处理表单值，将对象数组转换为简单数组，并将数组中的值转为字符串
+    const processedFormValues: Record<string, any> = { ...formValues };
+    
+    // 处理所有数组类型的值
+    Object.keys(processedFormValues).forEach(key => {
+      const value = processedFormValues[key];
+      if (Array.isArray(value)) {
+        // 检查是否为业务搜索字段
+        const isBusinessSearch = props.formConfig?.some(field => 
+          field.fieldName === key && field.component && 
+          (field.component.name === 'SunnyBusinessSearch' || field.component === 'SunnyBusinessSearch')
+        );
+        
+        if (isBusinessSearch) {
+          // 对于业务搜索字段，保存完整的对象数组为JSON字符串
+          processedFormValues[key] = JSON.stringify(value);
+        } else {
+          // 对于其他数组类型的值，确保数组中的元素都是字符串
+          processedFormValues[key] = value.map(item => {
+            // 如果是对象，提取value字段
+            let itemValue = item;
+            if (typeof item === 'object' && item !== null) {
+              // 尝试从不同的属性中获取值
+              itemValue = item.value !== undefined ? item.value : 
+                         item.ID !== undefined ? item.ID : 
+                         item.id !== undefined ? item.id : item;
+            }
+            // 将值转换为字符串
+            return typeof itemValue === 'string' ? itemValue : String(itemValue);
+          });
+        }
+      }
+    });
+    
     // 检查是否有查询条件
-    const hasSearchConditions = Object.values(formValues).some(value => {
+    const hasSearchConditions = Object.values(processedFormValues).some(value => {
+      if (Array.isArray(value)) {
+        return value.length > 0;
+      }
       return value !== '' && value !== undefined && value !== null;
     });
     
@@ -146,7 +220,7 @@ export function useSunnySearchPlan(
           ...(props.nResourceid && { nResourceid: props.nResourceid }),
           ...(inputValue.value.trim() && { cSearchplanname: inputValue.value.trim() })
         },
-        colMap: formValues
+        colMap: processedFormValues
       });
       
       // 显示成功提示
@@ -166,10 +240,10 @@ export function useSunnySearchPlan(
         }
       }
       
-      emit('update', props.currentSearchPlan.ID, inputValue.value.trim() || props.currentSearchPlan.CSEARCHPLANNAME, { ...formValues });
+      emit('update', props.currentSearchPlan.ID, inputValue.value.trim() || props.currentSearchPlan.CSEARCHPLANNAME, { ...processedFormValues });
       inputValue.value = '';
     } catch (error) {
-      console.error('handleUpdate error:', error);
+
       emit('error', error);
     }
   };
@@ -199,7 +273,7 @@ export function useSunnySearchPlan(
         emit('update:searchPlanList', plans);
       }
     } catch (error) {
-      console.error('handleDelete error:', error);
+
       emit('error', error);
     }
   };
@@ -220,7 +294,196 @@ export function useSunnySearchPlan(
       const response = await api.findSearchPlanColsByPlanId(params);
       
       // 获取返回结果中的表单值
-      const formValues = response.result || {};
+      let formValues = response.result || {};
+      
+      // 处理表单值，去除数组值中的空格，并将数组元素转换为字符串
+      Object.keys(formValues).forEach(key => {
+        let value = formValues[key];
+        try {
+          // 检查是否为业务搜索字段
+          const isBusinessSearch = props.formConfig?.some(field => 
+            field.fieldName === key && field.component && 
+            (field.component.name === 'SunnyBusinessSearch' || field.component === 'SunnyBusinessSearch')
+          );
+          
+          // 如果是业务搜索字段，特殊处理
+          if (isBusinessSearch) {
+            // 如果是字符串，尝试解析为JSON
+            if (typeof value === 'string') {
+              try {
+                value = JSON.parse(value);
+
+              } catch {
+                // 如果解析失败，保持原值
+              }
+            }
+            // 如果是数组，检查是否是字符串数组（可能是服务器错误解析的JSON）
+            if (Array.isArray(value)) {
+              // 检查是否所有元素都是字符串，并且看起来像是JSON的一部分
+              const isStringArray = value.every(item => typeof item === 'string');
+              if (isStringArray && value.length > 0) {
+                // 尝试将字符串数组合并为完整的JSON字符串并解析
+                try {
+                  const combinedString = value.join('');
+                  
+                  // 尝试识别多个JSON对象
+                  const objects: any[] = [];
+                  let currentObject = '';
+                  let braceCount = 0;
+                  
+                  for (let i = 0; i < combinedString.length; i++) {
+                    const char = combinedString[i];
+                    currentObject += char;
+                    
+                    if (char === '{') {
+                      braceCount++;
+                    } else if (char === '}') {
+                      braceCount--;
+                      if (braceCount === 0) {
+                        // 找到一个完整的JSON对象
+                        try {
+                          objects.push(JSON.parse(currentObject));
+                        } catch {
+                          // 解析失败，忽略该对象
+                        }
+                        currentObject = '';
+                      }
+                    }
+                  }
+                  
+                  if (objects.length > 0) {
+                    value = objects;
+                  } else {
+                    // 尝试解析为单个对象
+                    value = JSON.parse(combinedString);
+                  }
+                } catch {
+                  // 如果解析失败，尝试手动构建多个对象
+                  try {
+                    const combinedString = value.join('');
+                    const objects: any[] = [];
+                    
+                    // 分割字符串为多个对象
+                    const objectStrings = combinedString.split('}{').map((str, index) => {
+                      if (index === 0) return str + '}';
+                      if (index === combinedString.split('}{').length - 1) return '{' + str;
+                      return '{' + str + '}';
+                    });
+                    
+                    // 处理每个对象字符串
+                    objectStrings.forEach(objStr => {
+                      if (objStr.trim()) {
+                        // 提取键值对
+                        const keyValuePairs = objStr.match(/"([^"]+)"\s*:\s*("[^"]*"|\d+)/g) || [];
+                        const obj: any = {};
+                        keyValuePairs.forEach(pair => {
+                          const [key, val] = pair.split(/\s*:\s*/);
+                          const cleanKey = key.replace(/"/g, '');
+                          let cleanValue = val;
+                          if (cleanValue.startsWith('"') && cleanValue.endsWith('"')) {
+                            cleanValue = cleanValue.substring(1, cleanValue.length - 1);
+                          } else if (!isNaN(Number(cleanValue))) {
+                            cleanValue = Number(cleanValue);
+                          }
+                          obj[cleanKey] = cleanValue;
+                        });
+                        if (Object.keys(obj).length > 0) {
+                          objects.push(obj);
+                        }
+                      }
+                    });
+                    
+                    if (objects.length > 0) {
+                      value = objects;
+                    }
+                  } catch {
+                    // 如果所有方法都失败，保持原值
+                  }
+                }
+              }
+            }
+          } else {
+            // 非业务搜索字段的处理
+            // 如果是JSON字符串，尝试解析
+            if (typeof value === 'string' && (value.startsWith('[') || value.includes(','))) {
+              // 尝试JSON解析
+              try {
+                value = JSON.parse(value);
+              } catch {
+                // 如果JSON解析失败，尝试按逗号分割
+                if (value.includes(',')) {
+                  value = value.split(',').map((v: string) => v.trim());
+                }
+              }
+            }
+            // 如果是数组，去除每个元素的空格，并转换为字符串
+            if (Array.isArray(value)) {
+              value = value.map(item => {
+                // 先去除空格，再转换为字符串
+                const trimmedItem = typeof item === 'string' ? item.trim() : item;
+                return String(trimmedItem);
+              });
+            }
+          }
+          formValues[key] = value;
+        } catch (error) {
+
+        }
+      });
+      
+      // 处理业务搜索字段，将字符串数组或JSON字符串转换为对象数组
+      props.formConfig?.forEach(field => {
+        const fieldName = field.fieldName;
+        let fieldValue = formValues[fieldName];
+        
+        // 检查是否为业务搜索字段
+        if (fieldValue !== undefined && fieldValue !== null) {
+          // 检查是否为BusinessSearch组件
+          if (field.component && (field.component.name === 'SunnyBusinessSearch' || field.component === 'SunnyBusinessSearch')) {
+            // 如果是字符串，尝试解析为JSON
+            if (typeof fieldValue === 'string') {
+              try {
+                fieldValue = JSON.parse(fieldValue);
+              } catch {
+                // 如果解析失败，保持原值
+              }
+            }
+            // 如果是数组，检查是否是字符串数组（可能是服务器错误解析的JSON）
+            if (Array.isArray(fieldValue)) {
+              // 检查是否所有元素都是字符串，并且看起来像是JSON的一部分
+              const isStringArray = fieldValue.every(item => typeof item === 'string');
+              if (isStringArray && fieldValue.length > 0) {
+                // 尝试将字符串数组合并为完整的JSON字符串并解析
+                try {
+                  const combinedString = fieldValue.join('');
+                  fieldValue = JSON.parse(combinedString);
+                } catch {
+                  // 如果解析失败，继续处理
+                }
+              }
+              // 确保值是对象数组
+              if (Array.isArray(fieldValue)) {
+                // 如果是数组，确保每个元素都是对象
+                formValues[fieldName] = fieldValue.map(value => {
+                  // 如果已经是对象，直接返回
+                  if (typeof value === 'object' && value !== null) {
+                    return value;
+                  }
+                  // 否则创建对象，包含value属性
+                  return { value: value };
+                });
+              } else if (typeof fieldValue === 'object' && fieldValue !== null) {
+                // 如果是单个对象，包装为数组
+                formValues[fieldName] = [fieldValue];
+              } else {
+                // 其他情况，保持原值
+                formValues[fieldName] = fieldValue;
+              }
+
+            }
+          }
+        }
+      });
       
       // 更新本地模型
       if (localModel) {
@@ -232,13 +495,13 @@ export function useSunnySearchPlan(
         try {
           await formApi.setValues(formValues);
         } catch (error) {
-          console.error('handleSelect setValues error:', error);
+
         }
       }
       
       emit('select', plan);
     } catch (error) {
-      console.error('handleSelect error:', error);
+
       emit('error', error);
     }
   };
@@ -256,7 +519,7 @@ export function useSunnySearchPlan(
       const searchplanList = response.result?.searchplanList || [];
       return searchplanList;
     } catch (error) {
-      console.error('loadSearchPlans error:', error);
+
       emit('error', error);
       return [];
     }
@@ -280,6 +543,204 @@ export function useSunnySearchPlan(
             formValues[item.C_COLNAME] = item.C_COLVALUE;
           }
         });
+        
+        // 处理表单值，去除数组值中的空格，并将数组元素转换为字符串
+        Object.keys(formValues).forEach(key => {
+          let value = formValues[key];
+          try {
+            // 检查是否为业务搜索字段
+            const isBusinessSearch = props.formConfig?.some(field => 
+              field.fieldName === key && field.component && 
+              (field.component.name === 'SunnyBusinessSearch' || field.component === 'SunnyBusinessSearch')
+            );
+            
+            // 如果是业务搜索字段，特殊处理
+            if (isBusinessSearch) {
+              // 如果是字符串，尝试解析为JSON
+              if (typeof value === 'string') {
+                try {
+                  value = JSON.parse(value);
+                } catch (error) {
+
+                  // 如果解析失败，保持原值
+                }
+              }
+              // 如果是数组，检查是否是字符串数组（可能是服务器错误解析的JSON）
+              if (Array.isArray(value)) {
+                // 检查是否所有元素都是字符串，并且看起来像是JSON的一部分
+                const isStringArray = value.every(item => typeof item === 'string');
+                if (isStringArray && value.length > 0) {
+                  // 尝试将字符串数组合并为完整的JSON字符串并解析
+                  try {
+                    const combinedString = value.join('');
+                    value = JSON.parse(combinedString);
+                  } catch (error) {
+
+                    // 如果解析失败，保持原值
+                  }
+                }
+              }
+            } else {
+              // 非业务搜索字段的处理
+              // 如果是JSON字符串，尝试解析
+              if (typeof value === 'string' && (value.startsWith('[') || value.includes(','))) {
+                // 尝试JSON解析
+                try {
+                  value = JSON.parse(value);
+                } catch {
+                  // 如果JSON解析失败，尝试按逗号分割
+                  if (value.includes(',')) {
+                    value = value.split(',').map((v: string) => v.trim());
+                  }
+                }
+              }
+              // 如果是数组，去除每个元素的空格，并转换为字符串
+              if (Array.isArray(value)) {
+                value = value.map(item => {
+                  // 先去除空格，再转换为字符串
+                  const trimmedItem = typeof item === 'string' ? item.trim() : item;
+                  return String(trimmedItem);
+                });
+              }
+            }
+            formValues[key] = value;
+          } catch (error) {
+  
+          }
+        });
+        
+        // 处理业务搜索字段，将字符串数组或JSON字符串转换为对象数组
+        props.formConfig?.forEach(field => {
+          const fieldName = field.fieldName;
+          let fieldValue = formValues[fieldName];
+          
+          // 检查是否为业务搜索字段
+          if (fieldValue !== undefined && fieldValue !== null) {
+            // 检查是否为BusinessSearch组件
+            if (field.component && (field.component.name === 'SunnyBusinessSearch' || field.component === 'SunnyBusinessSearch')) {
+
+              
+              // 如果是字符串，尝试解析为JSON
+              if (typeof fieldValue === 'string') {
+                try {
+                  fieldValue = JSON.parse(fieldValue);
+
+                } catch (error) {
+
+                  // 如果解析失败，保持原值
+                }
+              }
+              // 如果是数组，检查是否是字符串数组（可能是服务器错误解析的JSON）
+              if (Array.isArray(fieldValue)) {
+
+                // 检查是否所有元素都是字符串，并且看起来像是JSON的一部分
+                const isStringArray = fieldValue.every(item => typeof item === 'string');
+                if (isStringArray && fieldValue.length > 0) {
+
+                  // 尝试将字符串数组合并为完整的JSON字符串并解析
+                  try {
+                    const combinedString = fieldValue.join('');
+
+                    
+                    // 尝试识别多个JSON对象
+                    const objects: any[] = [];
+                    let currentObject = '';
+                    let braceCount = 0;
+                    
+                    for (let i = 0; i < combinedString.length; i++) {
+                      const char = combinedString[i];
+                      currentObject += char;
+                      
+                      if (char === '{') {
+                        braceCount++;
+                      } else if (char === '}') {
+                        braceCount--;
+                        if (braceCount === 0) {
+                          // 找到一个完整的JSON对象
+                          try {
+                            objects.push(JSON.parse(currentObject));
+                          } catch {
+                            // 解析失败，忽略该对象
+                          }
+                          currentObject = '';
+                        }
+                      }
+                    }
+                    
+                    if (objects.length > 0) {
+                      fieldValue = objects;
+                    } else {
+                      // 尝试解析为单个对象
+                      fieldValue = JSON.parse(combinedString);
+                    }
+                  } catch {
+                    // 如果解析失败，尝试手动构建多个对象
+                    try {
+                      const combinedString = fieldValue.join('');
+                      const objects: any[] = [];
+                      
+                      // 分割字符串为多个对象
+                      const objectStrings = combinedString.split('}{').map((str, index) => {
+                        if (index === 0) return str + '}';
+                        if (index === combinedString.split('}{').length - 1) return '{' + str;
+                        return '{' + str + '}';
+                      });
+                      
+                      // 处理每个对象字符串
+                      objectStrings.forEach(objStr => {
+                        if (objStr.trim()) {
+                          // 提取键值对
+                          const keyValuePairs = objStr.match(/"([^"]+)"\s*:\s*("[^"]*"|\d+)/g) || [];
+                          const obj: any = {};
+                          keyValuePairs.forEach(pair => {
+                            const [key, val] = pair.split(/\s*:\s*/);
+                            const cleanKey = key.replace(/"/g, '');
+                            let cleanValue = val;
+                            if (cleanValue.startsWith('"') && cleanValue.endsWith('"')) {
+                              cleanValue = cleanValue.substring(1, cleanValue.length - 1);
+                            } else if (!isNaN(Number(cleanValue))) {
+                              cleanValue = Number(cleanValue);
+                            }
+                            obj[cleanKey] = cleanValue;
+                          });
+                          if (Object.keys(obj).length > 0) {
+                            objects.push(obj);
+                          }
+                        }
+                      });
+                      
+                      if (objects.length > 0) {
+                        fieldValue = objects;
+                      }
+                    } catch {
+                      // 如果所有方法都失败，保持原值
+                    }
+                  }
+                }
+                // 确保值是对象数组
+                if (Array.isArray(fieldValue)) {
+                  // 如果是数组，确保每个元素都是对象
+                  formValues[fieldName] = fieldValue.map(value => {
+                    // 如果已经是对象，直接返回
+                    if (typeof value === 'object' && value !== null) {
+                      return value;
+                    }
+                    // 否则创建对象，包含value属性
+                    return { value: value };
+                  });
+                } else if (typeof fieldValue === 'object' && fieldValue !== null) {
+                  // 如果是单个对象，包装为数组
+                  formValues[fieldName] = [fieldValue];
+                } else {
+                  // 其他情况，保持原值
+                  formValues[fieldName] = fieldValue;
+                }
+  
+              }
+            }
+          }
+        });
+        
         // 更新本地模型
         if (localModel) {
           localModel.value = { ...formValues };
@@ -290,7 +751,7 @@ export function useSunnySearchPlan(
           try {
             await formApi.setValues(formValues);
           } catch (error) {
-            console.error('loadDefaultSearchPlan setValues error:', error);
+
           }
         }
         
@@ -299,7 +760,7 @@ export function useSunnySearchPlan(
         return formValues;
       }
     } catch (error) {
-      console.error('loadDefaultSearchPlan error:', error);
+
       emit('error', error);
     }
     return {};
@@ -314,7 +775,7 @@ export function useSunnySearchPlan(
         // 使用formApi重置表单值
         await formApi.resetForm();
       } catch (error) {
-        console.error('handleReset resetForm error:', error);
+
       }
     }
     if (localModel) {
@@ -341,7 +802,7 @@ export function useSunnySearchPlan(
           formValues = values;
         }
       } catch (error) {
-        console.error('handleSearch getValues error:', error);
+
       }
     }
     // 转换为普通对象，避免Proxy包装
@@ -378,7 +839,7 @@ export function useSunnySearchPlan(
       try {
         await formApi.resetForm();
       } catch (error) {
-        console.error('handleOpen resetForm error:', error);
+
       }
     }
     
@@ -401,7 +862,204 @@ export function useSunnySearchPlan(
           const response = await api.findSearchPlanColsByPlanId(params);
           
           // 获取返回结果中的表单值
-          const formValues = response.result || {};
+          let formValues = response.result || {};
+          
+          // 处理表单值，去除数组值中的空格，并将数组元素转换为字符串
+          Object.keys(formValues).forEach(key => {
+            let value = formValues[key];
+            try {
+              // 检查是否为业务搜索字段
+              const isBusinessSearch = props.formConfig?.some(field => 
+                field.fieldName === key && field.component && 
+                (field.component.name === 'SunnyBusinessSearch' || field.component === 'SunnyBusinessSearch')
+              );
+              
+              // 如果是业务搜索字段，特殊处理
+              if (isBusinessSearch) {
+                // 如果是字符串，尝试解析为JSON
+                if (typeof value === 'string') {
+                  try {
+                    value = JSON.parse(value);
+                  } catch (error) {
+  
+                    // 如果解析失败，保持原值
+                  }
+                }
+                // 如果是数组，检查是否是字符串数组（可能是服务器错误解析的JSON）
+                if (Array.isArray(value)) {
+                  // 检查是否所有元素都是字符串，并且看起来像是JSON的一部分
+                  const isStringArray = value.every(item => typeof item === 'string');
+                  if (isStringArray && value.length > 0) {
+                    // 尝试将字符串数组合并为完整的JSON字符串并解析
+                    try {
+                      const combinedString = value.join('');
+                      value = JSON.parse(combinedString);
+                    } catch (error) {
+  
+                      // 如果解析失败，保持原值
+                    }
+                  }
+                }
+              } else {
+                // 非业务搜索字段的处理
+                // 如果是JSON字符串，尝试解析
+                if (typeof value === 'string' && (value.startsWith('[') || value.includes(','))) {
+                  // 尝试JSON解析
+                  try {
+                    value = JSON.parse(value);
+                  } catch {
+                    // 如果JSON解析失败，尝试按逗号分割
+                    if (value.includes(',')) {
+                      value = value.split(',').map((v: string) => v.trim());
+                    }
+                  }
+                }
+                // 如果是数组，去除每个元素的空格，并转换为字符串
+                if (Array.isArray(value)) {
+                  value = value.map(item => {
+                    // 先去除空格，再转换为字符串
+                    const trimmedItem = typeof item === 'string' ? item.trim() : item;
+                    return String(trimmedItem);
+                  });
+                }
+              }
+              formValues[key] = value;
+            } catch (error) {
+    
+            }
+          });
+          
+          // 处理业务搜索字段，将字符串数组或JSON字符串转换为对象数组
+          props.formConfig?.forEach(field => {
+            const fieldName = field.fieldName;
+            let fieldValue = formValues[fieldName];
+            
+            // 检查是否为业务搜索字段
+            if (fieldValue !== undefined && fieldValue !== null) {
+              // 检查是否为BusinessSearch组件
+              if (field.component && (field.component.name === 'SunnyBusinessSearch' || field.component === 'SunnyBusinessSearch')) {
+
+                
+                // 如果是字符串，尝试解析为JSON
+                if (typeof fieldValue === 'string') {
+                  try {
+                    fieldValue = JSON.parse(fieldValue);
+  
+                  } catch (error) {
+  
+                    // 如果解析失败，保持原值
+                  }
+                }
+                // 如果是数组，检查是否是字符串数组（可能是服务器错误解析的JSON）
+                if (Array.isArray(fieldValue)) {
+
+                  // 检查是否所有元素都是字符串，并且看起来像是JSON的一部分
+                  const isStringArray = fieldValue.every(item => typeof item === 'string');
+                  if (isStringArray && fieldValue.length > 0) {
+
+                    // 尝试将字符串数组合并为完整的JSON字符串并解析
+                    try {
+                      const combinedString = fieldValue.join('');
+
+                      
+                      // 尝试识别多个JSON对象
+                      const objects: any[] = [];
+                      let currentObject = '';
+                      let braceCount = 0;
+                      
+                      for (let i = 0; i < combinedString.length; i++) {
+                        const char = combinedString[i];
+                        currentObject += char;
+                        
+                        if (char === '{') {
+                          braceCount++;
+                        } else if (char === '}') {
+                          braceCount--;
+                          if (braceCount === 0) {
+                            // 找到一个完整的JSON对象
+                            try {
+                            objects.push(JSON.parse(currentObject));
+                          } catch {
+                            // 解析失败，忽略该对象
+                          }
+                            currentObject = '';
+                          }
+                        }
+                      }
+                      
+                      if (objects.length > 0) {
+                        fieldValue = objects;
+                      } else {
+                        // 尝试解析为单个对象
+                        fieldValue = JSON.parse(combinedString);
+                      }
+                    } catch {
+                      // 如果解析失败，尝试手动构建多个对象
+                      try {
+                        const combinedString = fieldValue.join('');
+                        const objects: any[] = [];
+                        
+                        // 分割字符串为多个对象
+                        const objectStrings = combinedString.split('}{').map((str, index) => {
+                          if (index === 0) return str + '}';
+                          if (index === combinedString.split('}{').length - 1) return '{' + str;
+                          return '{' + str + '}';
+                        });
+                        
+                        // 处理每个对象字符串
+                        objectStrings.forEach(objStr => {
+                          if (objStr.trim()) {
+                            // 提取键值对
+                            const keyValuePairs = objStr.match(/"([^"]+)"\s*:\s*("[^"]*"|\d+)/g) || [];
+                            const obj: any = {};
+                            keyValuePairs.forEach(pair => {
+                              const [key, val] = pair.split(/\s*:\s*/);
+                              const cleanKey = key.replace(/"/g, '');
+                              let cleanValue = val;
+                              if (cleanValue.startsWith('"') && cleanValue.endsWith('"')) {
+                                cleanValue = cleanValue.substring(1, cleanValue.length - 1);
+                              } else if (!isNaN(Number(cleanValue))) {
+                                cleanValue = Number(cleanValue);
+                              }
+                              obj[cleanKey] = cleanValue;
+                            });
+                            if (Object.keys(obj).length > 0) {
+                              objects.push(obj);
+                            }
+                          }
+                        });
+                        
+                        if (objects.length > 0) {
+                          fieldValue = objects;
+                        }
+                      } catch {
+                        // 如果所有方法都失败，保持原值
+                      }
+                    }
+                  }
+                  // 确保值是对象数组
+                  if (Array.isArray(fieldValue)) {
+                    // 如果是数组，确保每个元素都是对象
+                    formValues[fieldName] = fieldValue.map(value => {
+                      // 如果已经是对象，直接返回
+                      if (typeof value === 'object' && value !== null) {
+                        return value;
+                      }
+                      // 否则创建对象，包含value属性
+                      return { value: value };
+                    });
+                  } else if (typeof fieldValue === 'object' && fieldValue !== null) {
+                    // 如果是单个对象，包装为数组
+                    formValues[fieldName] = [fieldValue];
+                  } else {
+                    // 其他情况，保持原值
+                    formValues[fieldName] = fieldValue;
+                  }
+
+                }
+              }
+            }
+          });
           
           // 更新本地模型
           if (localModel) {
@@ -413,14 +1071,14 @@ export function useSunnySearchPlan(
             try {
               await formApi.setValues(formValues);
             } catch (error) {
-              console.error('handleOpen setValues error:', error);
+
             }
           }
           
           emit('select', plans[0]);
         }
       } catch (error) {
-        console.error('handleOpen loadSearchPlans error:', error);
+
       }
     }
   };
