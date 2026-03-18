@@ -10,8 +10,8 @@ interface Props {
   title?: string
   width?: string | number
   exportUrl?: string | null
-  nmodid: number
-  nButtonid: number
+  nmodid?: number
+  nButtonid?: number
   conditionMap?: Record<string, any>
 }
 

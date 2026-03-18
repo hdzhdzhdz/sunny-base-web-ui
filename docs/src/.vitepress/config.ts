@@ -42,7 +42,8 @@ export default defineConfig({
             { text: 'BusinessSearch 业务搜索', link: '/business/business-search' },
             { text: 'SearchPlan 查询方案', link: '/business/search-plan' },
             { text: 'CustomizeSelect 自定义下拉框', link: '/business/customize-select' },
-            { text: 'ExportModal 公共导出弹窗', link: '/business/export-modal' }
+            { text: 'ExportModal 公共导出弹窗', link: '/business/export-modal' },
+            { text: 'ImportModal 公共导入弹窗', link: '/business/import-modal' }
           ]
         }
       ],

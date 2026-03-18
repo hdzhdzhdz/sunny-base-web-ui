@@ -63,3 +63,4 @@ export * from "./composite/customize-select";
 export * from './data/resource-tree/types';
 export * from './data/resource-tree/use-sunny-resource-tree';
 export * from './feedback/export-modal';
+export * from './feedback/import-modal';

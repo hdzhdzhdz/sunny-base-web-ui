@@ -4,7 +4,7 @@ import { getUserConfig } from './config'
 import { requestClient, searchPlanApi, useList } from '@sunny-base-web/effects'
 import type { VxeGridProps, VxeGridListeners } from 'vxe-table'
 import { Modal, Message } from '@arco-design/web-vue';
-import { useExportModal } from '@sunny-base-web/ui'
+import { useExportModal, useImportModal } from '@sunny-base-web/ui'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
@@ -67,12 +67,14 @@ const gridEvents:VxeGridListeners = {
         Message.info(`${params.button.name}：${JSON.stringify(selectRecords[0])}`)
         break
       case 'daoru/show':
-        // Message.info(params.button.name)
+        importModalApi.open({
+          nModid: router.currentRoute.value.meta.id,
+          nButtonid: params.button.nButtonid,
+        })
         break
       case 'daochu/show':
         const formValues = await formApi.getValues()
         exportModalApi.open({
-          // exportUrl: '/abc',
           nmodid: router.currentRoute.value.meta.id,
           nButtonid: params.button.nButtonid,
           conditionMap: formValues
@@ -104,14 +106,8 @@ const {
   gridEvents,
 });
 
-const [exportModal, exportModalApi] = useExportModal({
-  onExportSuccess: (response: any) => {
-    Message.success('导出成功')
-  },
-  onExportError: (error: any) => {
-    Message.error(error.message || '导出失败')
-  },
-})
+const [exportModal, exportModalApi] = useExportModal({})
+const [importModal, importModalApi] = useImportModal({})
 </script>
 
 <template>
@@ -131,6 +127,7 @@ const [exportModal, exportModalApi] = useExportModal({
       </div>
 
       <exportModal />
+      <importModal />
     </div>
   </div>
 </template>
