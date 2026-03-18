@@ -4,7 +4,7 @@ import { getUserConfig } from './config'
 import { requestClient, searchPlanApi, useList } from '@sunny-base-web/effects'
 import type { VxeGridProps, VxeGridListeners } from 'vxe-table'
 import { Modal, Message } from '@arco-design/web-vue';
-import { useExportModal, useImportModal } from '@sunny-base-web/ui'
+import { useExportModal } from '@sunny-base-web/ui'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
