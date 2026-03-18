@@ -19,6 +19,7 @@ export * from './form';
 export * from './utils/utils';
 export * from './utils/formatter';
 export * from './utils/error-report';
+export * from './utils/use-schema-options-loader';
 export * from './hooks/useList';
 export * from './composables';
 export * from './loading';

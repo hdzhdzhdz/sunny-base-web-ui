@@ -132,7 +132,7 @@
     </div>
 
     <!-- 右侧操作栏 -->
-    <div class="flex items-center gap-1 shrink-0 h-full border-l border-[var(--color-border)] pl-2 bg-[var(--color-bg-2)]">
+    <div class="flex items-center gap-1 shrink-0 h-full border-l border-r border-[var(--color-border)] px-2 bg-[var(--color-bg-2)]">
       <!-- 下拉菜单 -->
       <a-dropdown trigger="click" @select="handleMenuSelect">
         <div class="flex items-center justify-center w-8 h-8 rounded-sm cursor-pointer transition-colors text-[var(--color-text-2)] hover:bg-[rgba(var(--primary-6),0.1)] hover:text-[rgb(var(--primary-6))]">

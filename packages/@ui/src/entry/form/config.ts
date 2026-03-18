@@ -110,6 +110,7 @@ export function setupSunnyForm(options: SunnyFormAdapterOptions) {
     emptyStateValue = undefined,
     businessSearchAdapter,
     customizeSelectAdapter,
+    selectOptionsAdapter,  // ✅ 提取 selectOptionsAdapter
     apiPrefix
   } = (config || {}) as FormCommonConfig;
 
@@ -121,6 +122,7 @@ export function setupSunnyForm(options: SunnyFormAdapterOptions) {
     emptyStateValue,
     businessSearchAdapter,
     customizeSelectAdapter,
+    selectOptionsAdapter,  // ✅ 添加 selectOptionsAdapter 到全局配置
     apiPrefix,
   });
 

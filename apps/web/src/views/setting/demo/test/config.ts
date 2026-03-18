@@ -2,6 +2,7 @@ import type { VxeGridProps } from 'vxe-table';
 import type { FormSchema } from '@sunny-base-web/ui';
 import { markRaw } from 'vue';
 import { SunnyBusinessSearch, SunnyCustomizeSelect } from '@sunny-base-web/ui';
+import { useSelectOptions } from '@sunny-base-web/effects';
 import type { TestVO } from './types';
 
 // 使用 markRaw 标记组件，避免 Vue 将组件转为响应式对象
@@ -47,15 +48,21 @@ export const searchFormSchema: FormSchema[] = [
   // Select - 下拉选择框
   {
     fieldName: 'nZt',
-    label: '状态',
+    label: '是否启用',
     component: 'Select',
+    // ✅ 声明式配置：声明需要加载的字典选项
+    // ✅ Declarative config: declare dictionary options to load
+    selectOptions: {
+      dictCode: 'SFQY',  // 字典编码
+      fieldMapping: {
+        label: 'cName',   // 后端字段名 - label
+        value: 'cXuhao',  // 后端字段名 - value
+      }
+    },
     componentProps: {
-      placeholder: '请选择状态',
+      placeholder: '请选择是否启用',
       allowClear: true,
-      options: [
-        { label: '启用', value: 1 },
-        { label: '禁用', value: 0 }
-      ]
+      // ✅ 无需手动配置 options，useSchemaOptionsLoader 会自动注入
     },
     colProps: { span: 4 }
   },

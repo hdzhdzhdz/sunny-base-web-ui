@@ -4,7 +4,7 @@
  * 只包含基础查询、分页、搜索、查询方案功能
  */
 import { SunnySearchPlan, SunnyIcon } from "@sunny-base-web/ui"
-import { searchPlanApi, useList } from '@sunny-base-web/effects';
+import { searchPlanApi, useList, useSchemaOptionsLoader } from '@sunny-base-web/effects';
 import { selectForPage } from '#/api/setting/demo/test';
 import { searchFormSchema, tableColumns, resourceConfig } from './config';
 import type { TestVO, TestQueryParams } from './types';
@@ -12,6 +12,18 @@ import type { TestVO, TestQueryParams } from './types';
 defineOptions({
   name: 'TestQuery'
 })
+
+// ----------------------------------------------------------------------
+// Select 选项自动加载（方案 2：Schema 声明式）
+// ----------------------------------------------------------------------
+
+/**
+ * 自动收集 Schema 中的字典声明并批量加载
+ * Auto-collect dictionary declarations in Schema and batch load
+ * ✅ 完全自动化，组件零代码
+ * ✅ Fully automatic, zero component code
+ */
+const { enhancedSchema } = useSchemaOptionsLoader(searchFormSchema);
 
 // ----------------------------------------------------------------------
 // 类型定义
@@ -42,7 +54,7 @@ interface QueryFunctionParams {
 }
 
 // ----------------------------------------------------------------------
-// 查询逻辑
+// 列表页 Hook
 // ----------------------------------------------------------------------
 
 /**
@@ -93,7 +105,7 @@ const {
   handleDefaultPlanLoaded,
   handleGlobalEnter
 } = useList<TestVO>({
-  searchFormSchema,
+  searchFormSchema: enhancedSchema,  // ✅ 使用增强后的 Schema（自动注入 options）
   tableColumns: tableColumns || [],  // 提供默认空数组，避免 undefined
   resourceConfig,
   queryFunction,
@@ -110,7 +122,7 @@ const {
       <div class="px-4 border-b py-2 pb-3 border-[var(--color-border)]">
         <QueryForm>
           <template #expand-before>
-            <SunnySearchPlan :form-config="searchFormSchema" v-model:current-search-plan="currentSearchPlan"
+            <SunnySearchPlan :form-config="enhancedSchema" v-model:current-search-plan="currentSearchPlan"
               v-model:search-plan-list="searchPlanList" :resource-id="resourceId" :n-resourceid="nResourceid"
               :api="searchPlanApi" @search="handleSearchPlanSearch" @default-plan-loaded="handleDefaultPlanLoaded">
               <template #trigger="{ open }">

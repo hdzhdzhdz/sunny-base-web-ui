@@ -196,6 +196,25 @@ export interface FormSchema {
    * Whether to hide the field (static hiding, not involved in dependencies)
    */
   hidden?: boolean;
+
+  /**
+   * Select 选项声明配置（声明式加载字典选项）
+   * Select options declaration config (declarative loading of dictionary options)
+   * @description 在 FormSchema 中声明式配置字典选项，useList 会自动收集并批量加载
+   * @description Declarative configuration of dictionary options in FormSchema, useList will auto-collect and batch load
+   * @example
+   * ```typescript
+   * {
+   *   fieldName: 'nZt',
+   *   component: 'Select',
+   *   selectOptions: {
+   *     dictCode: 'SFQY',
+   *     fieldMapping: { label: 'cName', value: 'cXuhao' }
+   *   }
+   * }
+   * ```
+   */
+  selectOptions?: SelectOptionsDeclaration;
 }
 
 export interface SunnyFormProps {
@@ -523,6 +542,97 @@ export interface CustomizeSelectAdapter {
 }
 
 /**
+ * Select 选项数据格式
+ * Select option data format
+ */
+export interface SelectOption {
+  /**
+   * 显示文本
+   * Display text
+   */
+  label: string;
+  /**
+   * 选项值
+   * Option value
+   */
+  value: string | number;
+  /**
+   * 是否禁用
+   * Whether disabled
+   */
+  disabled?: boolean;
+  /**
+   * 保留原始字段
+   * Preserve original fields
+   */
+  [key: string]: any;
+}
+
+/**
+ * Select 字段映射配置
+ * Select field mapping configuration
+ */
+export interface SelectFieldMapping {
+  /**
+   * label 字段名
+   * Label field name
+   * @default 'cName'
+   */
+  label?: string;
+  /**
+   * value 字段名
+   * Value field name
+   * @default 'cXuhao'
+   */
+  value?: string;
+}
+
+/**
+ * Select 选项声明配置（Schema 声明式）
+ * Select options declaration config (Schema declarative)
+ * @description 用于在 FormSchema 中声明式配置字典选项，useList 会自动收集并批量加载
+ * @description Used for declarative configuration of dictionary options in FormSchema, useList will auto-collect and batch load
+ */
+export interface SelectOptionsDeclaration {
+  /**
+   * 字典编码
+   * Dictionary code
+   */
+  dictCode: string | number;
+
+  /**
+   * 字段映射配置
+   * Field mapping configuration
+   */
+  fieldMapping?: SelectFieldMapping;
+
+  /**
+   * 是否强制刷新
+   * Whether to force reload
+   * @default false
+   */
+  forceReload?: boolean;
+}
+
+/**
+ * Select 选项加载适配器
+ * Select options loader adapter
+ */
+export interface SelectOptionsAdapter {
+  /**
+   * 批量加载多个字典选项
+   * Batch load multiple dictionary options
+   * @param numbList - 字典编码列表
+   * @param fieldMapping - 字段映射配置
+   * @returns 选项映射表 { dictCode: options }
+   */
+  loadOptions: (
+    numbList: (string | number)[],
+    fieldMapping?: SelectFieldMapping
+  ) => Promise<Record<string, SelectOption[]>>;
+}
+
+/**
  * 表单通用配置
  * Form common configuration
  */
@@ -553,6 +663,13 @@ export interface FormCommonConfig {
    * CustomizeSelect API 适配器
    */
   customizeSelectAdapter?: CustomizeSelectAdapter;
+  /**
+   * Select 选项加载适配器
+   * Select options loader adapter
+   * 用于批量加载字典选项
+   * Used for batch loading dictionary options
+   */
+  selectOptionsAdapter?: SelectOptionsAdapter;
   /**
    * API 前缀
    */

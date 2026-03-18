@@ -38,7 +38,6 @@ async function bootstrap(namespace: string) {
 	// 在 Vue 应用挂载前显示加载动画，避免白屏
 	if (preferences.transition.loading.enableRouteLoading &&
 	    preferences.transition.loading.type !== 'nprogress') {
-		console.log('[Bootstrap] Showing initial loading animation');
 		loadingManager.startLoading();
 	}
 
@@ -195,6 +194,34 @@ async function bootstrap(namespace: string) {
 						config: data?.assSelect || undefined,
 					};
 				}
+			},
+			// ✅ Select 选项加载适配器
+			// 用于批量加载字典选项，替代硬编码的本地 options 配置
+			selectOptionsAdapter: {
+				loadOptions: async (numbList, fieldMapping) => {
+					const { label = 'cName', value = 'cXuhao' } = fieldMapping || {};
+
+					// 调用后端接口批量加载字典选项
+					const response = await requestClient.post<Record<string, any[]>>(
+						'/core/contact/findAuthDictList',
+						{ numbList }
+					);
+
+					const result = (response as any)?.result || response;
+					const optionsMap: Record<string, any[]> = {};
+
+					// 转换每个字典的选项
+					Object.keys(result).forEach((dictCode) => {
+						const dataList = result[dictCode] || [];
+						optionsMap[dictCode] = dataList.map((item: any) => ({
+							label: String(item[label] || ''),
+							value: item[value],
+							...item,  // 保留原始字段（id, cConnkey 等）
+						}));
+					});
+
+					return optionsMap;
+				},
 			},
 		}
 	})

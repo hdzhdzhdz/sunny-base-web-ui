@@ -4,6 +4,7 @@ import { Message } from '@arco-design/web-vue'
 import { Plus, Trash2 } from '@sunny-base-web/icons'
 import { useSunnyForm, Modal, useSunnyEditGrid } from '@sunny-base-web/ui'
 import { requestClient } from '../../../api/request'
+import { useSchemaOptionsLoader } from '../../../utils/use-schema-options-loader'
 import { addFormSchema, metaGridColumns, metaGridEditRules } from './config'
 import type { DataDictionaryFormVO, MetaItem } from './types'
 
@@ -30,6 +31,9 @@ const emit = defineEmits<{
 
 const loading = ref(false)
 
+// ✅ 使用方案2：Schema 声明式加载选项
+const { enhancedSchema } = useSchemaOptionsLoader(addFormSchema)
+
 // 表单配置
 const [Form, formApi] = useSunnyForm({
   layout: 'horizontal',
@@ -42,7 +46,7 @@ const [Form, formApi] = useSunnyForm({
   },
   showDefaultActions: false,
   scrollToFirstError: true,
-  schema: addFormSchema
+  schema: enhancedSchema  // ✅ 使用增强后的 Schema
 })
 
 // 额外属性表格配置

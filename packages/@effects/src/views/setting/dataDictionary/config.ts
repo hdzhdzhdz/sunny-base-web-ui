@@ -2,7 +2,14 @@ import type { FormSchema } from '@sunny-base-web/ui';
 import { EditRender } from '@sunny-base-web/ui';
 import type { VxeGridProps } from 'vxe-table';
 import type { DataDictionaryVO, DataDictionaryFormVO, MetaItem } from './types';
-import selectOptions from '../../../utils/select-options';
+
+/**
+ * 是否启用选项（用于表格显示）
+ */
+const signOptions = [
+  { label: "启用", value: "10001" },
+  { label: "禁用", value: "10002" }
+];
 
 /**
  * 搜索表单配置
@@ -32,10 +39,17 @@ export const searchFormSchema: FormSchema[] = [
     fieldName: 'cSign',
     label: '是否启用',
     component: 'Select',
+    // ✅ 方案2：声明式配置
+    selectOptions: {
+      dictCode: 'SFQY',  // 是否启用字典编码
+      fieldMapping: {
+        label: 'cName',
+        value: 'cXuhao'
+      }
+    },
     componentProps: {
       placeholder: '请选择是否启用',
       allowClear: true,
-      options: selectOptions.sjzdSignOpts
     },
     colProps: { span: 6 }
   }
@@ -79,9 +93,16 @@ export const addFormSchema: FormSchema[] = [
     label: '是否启用',
     component: 'Select',
     rules: 'required',
+    // ✅ 方案2：声明式配置
+    selectOptions: {
+      dictCode: 'SFQY',  // 是否启用字典编码
+      fieldMapping: {
+        label: 'cName',
+        value: 'cXuhao'
+      }
+    },
     componentProps: {
-      placeholder: '请选择是否启用',
-      options: selectOptions.sjzdSignOpts
+      placeholder: '请选择是否启用'
     }
   },
   {
@@ -110,7 +131,7 @@ export const tableColumns: VxeGridProps<DataDictionaryVO>['columns'] = [
     title: '是否启用',
     width: 100,
     formatter: ({ cellValue }) => {
-      const option = selectOptions.sjzdSignOpts.find(opt => opt.value === cellValue);
+      const option = signOptions.find(opt => opt.value === cellValue);
       return option?.label || cellValue;
     }
   },

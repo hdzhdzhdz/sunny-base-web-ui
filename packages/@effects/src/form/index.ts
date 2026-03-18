@@ -343,6 +343,11 @@ export function setupBusinessForm(options: SetupBusinessFormOptions = {}) {
       ...defaultFormConfig.customizeSelectAdapter,
       ...(customConfig as any)?.customizeSelectAdapter,
     },
+    // 特殊处理 selectOptionsAdapter，支持部分覆盖
+    selectOptionsAdapter: {
+      ...defaultFormConfig.selectOptionsAdapter,
+      ...(customConfig as any)?.selectOptionsAdapter,
+    },
     apiPrefix: customConfig?.apiPrefix,
   };
 
@@ -354,3 +359,12 @@ export function setupBusinessForm(options: SetupBusinessFormOptions = {}) {
 
 // 导出默认配置，供需要完全自定义的场景使用
 export { defaultFormConfig };
+
+// 导出 Select 选项相关功能
+export { useSelectOptions } from './use-select-options';
+export { selectOptionsManager } from './select-options-manager';
+export { defaultSelectOptionsAdapter } from './select-options-adapter';
+export type {
+  UseSelectOptionsParams,
+  UseSelectOptionsReturn,
+} from './use-select-options';
