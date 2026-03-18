@@ -48,6 +48,7 @@
     "reka-ui": "catalog:",
     "vee-validate": "^4.15.1",
     "vue": "catalog:",
+    "vue-i18n": "catalog:",
     "vxe-pc-ui": "catalog:",
     "vxe-table": "catalog:",
     "zod": "^4.3.5"

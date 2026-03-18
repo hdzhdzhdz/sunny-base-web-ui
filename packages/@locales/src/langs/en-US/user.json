@@ -1,0 +1,14 @@
+{
+  "cUsernumb": "User ID",
+  "cUsername": "User Name",
+  "cAdmin": "User Type",
+  "dLastLoginList": "Last Login Time",
+  "cWork": "Related Employee ID",
+  "dCredate": "Creation Time",
+  "cSign": "Status",
+  "cEmail": "Email",
+  "cDeptname": "Department",
+  "nMainAccount": "Main Account",
+  "nOuterUser": "External User",
+  "dLastLogin": "Last Login Time"
+}

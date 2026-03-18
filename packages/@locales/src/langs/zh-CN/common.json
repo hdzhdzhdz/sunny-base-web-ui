@@ -116,5 +116,31 @@
     "details": "错误详情",
     "errorMessage": "错误消息",
     "errorStack": "错误堆栈"
+  },
+  "exportModal": {
+    "title": "导出数据",
+    "showSheetRowNum": "页签最大行",
+    "showMaxExportNumber": "Excel最大导出行",
+    "nSfExport": "是否导出",
+    "colName": "列名",
+    "colWidth": "宽度",
+    "colDataType": "数据类型",
+    "drag": "拖拽",
+    "default": "默认",
+    "varchar": "字符串",
+    "number": "数字",
+    "date": "日期"
+  },
+  "importModal": {
+    "title": "模板导入",
+    "downloadTemplate": "下载模板",
+    "selectFile": "选择文件",
+    "upload": "开始上传",
+    "isdecode": "是否加密",
+    "uploadSuccess": "上传成功",
+    "uploadError": "上传失败",
+    "maxUploadLimit": "最多只能上传{limit}个文件",
+    "onlySupport": "仅支持{accept}格式的文件",
+    "maxSize": "文件大小不能超过{maxSize}MB"
   }
 }

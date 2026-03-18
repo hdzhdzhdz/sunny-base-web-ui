@@ -4,9 +4,10 @@ import { Modal, Upload, Button, Switch, Message } from '@arco-design/web-vue'
 import axios from 'axios'
 import { DEFAULT_FORM_COMMON_CONFIG } from '../../entry/form/config'
 
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+
 interface Props {
-  title?: string
-  width?: string | number
   templateUrl?: string
   uploadUrl?: string
   accept?: string
@@ -18,8 +19,6 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  title: '模板导入',
-  width: '500px',
   accept: '.xlsx,.xls',
   maxSize: 10,
   limit: 1,
@@ -43,17 +42,17 @@ const uploadRef = ref();
 
 const beforeUpload = (file: File) => {
   if (fileList.value.length >= props.limit) {
-    Message.error(`最多只能上传 ${props.limit} 个文件`)
+    Message.error(t('common.importModal.maxUploadLimit', {limit:props.limit}))
     return false
   }
   const isValidType = props.accept.split(',').some(type => file.name.endsWith(type.replace('.', '')))
   if (!isValidType) {
-    Message.error(`只支持 ${props.accept} 格式的文件`)
+    Message.error(t('common.importModal.onlySupport', {accept:props.accept}))
     return false
   }
   const isValidSize = file.size / 1024 / 1024 < props.maxSize
   if (!isValidSize) {
-    Message.error(`文件大小不能超过 ${props.maxSize}MB`)
+    Message.error(t('common.importModal.maxSize', {maxSize:props.maxSize}))
     return false
   }
   return true
@@ -88,19 +87,19 @@ const customRequest = async(option: any) => {
     
     if (response.data.code === 200) {
       Message.success({
-        content: response.data.message || '上传成功',
+        content: response.data.message || t('common.importModal.uploadSuccess'),
         duration: 5000
       })
       onSuccess(response.data)
       emit('upload-success', response.data)
       close()
     } else {
-      Message.error(response.data.message || '上传失败')
+      Message.error(response.data.message || t('common.importModal.uploadError'))
       onError(response.data)
       emit('upload-error', response.data)
     }
   } catch (error: any) {
-    Message.error(error.message || '上传失败')
+    Message.error(error.message || t('common.importModal.uploadError'))
     onError(error)
     emit('upload-error', error)
   } finally {
@@ -161,8 +160,8 @@ const handleCancel = () => {
 <template>
   <Modal
     v-model:visible="visible"
-    :title="title"
-    :width="width"
+    :title="t('common.importModal.title')"
+    :width="550"
     :mask-closable="false"
     :footer="false"
     @cancel="handleCancel"
@@ -184,12 +183,14 @@ const handleCancel = () => {
               :disabled="uploading"
               @click.stop="handleDownloadTemplate"
             >
-              模板下载
+              {{ t('common.importModal.downloadTemplate') }}
             </Button>
-            <Button>选择文件</Button>
-            <Button type="primary" :disabled="uploading" @click.stop="handleUpload">开始上传</Button>
+            <Button>{{ t('common.importModal.selectFile') }}</Button>
+            <Button type="primary" :disabled="uploading" @click.stop="handleUpload">
+              {{ t('common.importModal.upload') }}
+            </Button>
             <div @click.stop>
-              <span class="option-label">是否加密：</span>
+              <span class="option-label">{{ t('common.importModal.isdecode') }}：</span>
               <Switch v-model="decode" @click.stop />
             </div>
           </a-space>
