@@ -1,3 +1,7 @@
 .arco-picker {
   width: 100% !important;
 }
+
+.arco-layout-sider-trigger {
+  border-right: 1px solid #e5e7eb !important;
+}
