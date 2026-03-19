@@ -1,10 +1,19 @@
 <script lang="tsx" setup>
 import { ref } from 'vue'
-import { getUserConfig } from './config'
-import { requestClient, searchPlanApi, useList } from '@sunny-base-web/effects'
 import type { VxeGridProps, VxeGridListeners } from 'vxe-table'
 import { Modal, Message } from '@arco-design/web-vue';
+
 import { useExportModal, useImportModal } from '@sunny-base-web/ui'
+import { requestClient, searchPlanApi, useList } from '@sunny-base-web/effects'
+import { getUserConfig } from './config'
+
+import UserAdd from './UserAdd.vue';
+const UserAddRef = ref()
+import UserAuth from './UserAuth.vue'
+const UserAuthRef = ref()
+import UserBindMac from './UserBindMac.vue'
+const UserBindMacRef = ref()
+
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
@@ -32,39 +41,137 @@ const gridEvents:VxeGridListeners = {
     ]
     switch (params.button.code) {
       case 'userManagement/add':
-        Message.info(params.button.name)
+        UserAddRef.value.addInit()
         break
-      case 'userManagement/delete': {
-        if (selectRecords.length === 0) {
-          Message.warning('请至少选择一条记录！')
+      case 'userManagement/update':
+        if (selectRecords.length !== 1) {
+          Message.warning(t('common.selectOne'))
+          return
+        }
+        UserAddRef.value.editInit(selectRecords[0])
+        break
+      case 'userManagement/delete':
+        if (selectRecords.length !== 1) {
+          Message.warning(t('common.selectOne'))
           return
         }
         Modal.confirm({
-          title: '提示',
+          title: t('common.prompt'),
           content: `确定删除选中 ${selectRecords.length} 项吗？`,
           onBeforeOk: async () => {
             // 调用删除接口
-            await new Promise(resolve => setTimeout(resolve, 3000));
-            // 刷新表格数据
-            params.$grid.commitProxy('query', {})
-            return true;
+            const res = await requestClient.post('/core/authUser/delete', {
+              id: selectRecords[0].id
+            });
+            if (res.code === 200) {
+              Message.success(res.message)
+              // 刷新表格数据
+              params.$grid.commitProxy('query', {})
+              return true;
+            } else {
+              Message.error(res.message)
+              return false;
+            }
           }
         });
         break
-      }
-      case 'userManagement/update':
-        if (selectRecords.length !== 1) {
-          Message.warning('请选择一条记录！')
-          return
-        }
-        Message.info(`${params.button.name}：${JSON.stringify(selectRecords[0])}`)
-        break
       case 'userManagement/detail':
         if (selectRecords.length !== 1) {
-          Message.warning('请选择一条记录！')
+          Message.warning(t('common.selectOne'))
           return
         }
-        Message.info(`${params.button.name}：${JSON.stringify(selectRecords[0])}`)
+        UserAddRef.value.detailInit(selectRecords[0])
+        break
+      case 'userManagement/resetPassword':
+        if (selectRecords.length !== 1) {
+          Message.warning(t('common.selectOne'))
+          return
+        }
+        Modal.confirm({
+          title: t('common.prompt'),
+          content: t('user.resetPasswordTips', { username: selectRecords[0].cUsername }),
+          onBeforeOk: async () => {
+            // 调用重置密码接口
+            const res = await requestClient.post('/core/authUser/resetPwd', {
+              id: selectRecords[0].id
+            });
+            if (res.code === 200) {
+              Message.success(res.message)
+              // 刷新表格数据
+              params.$grid.commitProxy('query', {})
+              return true;
+            } else {
+              Message.error(res.message)
+              return false;
+            }
+          }
+        });
+        break
+      case 'userManagement/enable':
+        if (selectRecords.length !== 1) {
+          Message.warning(t('common.selectOne'))
+          return
+        }
+        Modal.confirm({
+          title: t('common.prompt'),
+          content: t('user.enableTips', { username: selectRecords[0].cUsername }),
+          onBeforeOk: async () => {
+            // 调用启用接口
+            const res = await requestClient.post('/core/authUser/updateSign', {
+              id: selectRecords[0].id,
+              cSign: '0'
+            });
+            if (res.code === 200) {
+              Message.success(res.message)
+              // 刷新表格数据
+              params.$grid.commitProxy('query', {})
+              return true;
+            } else {
+              Message.error(res.message)
+              return false;
+            }
+          }
+        });
+        break
+      case 'userManagement/disable':
+        if (selectRecords.length !== 1) {
+          Message.warning(t('common.selectOne'))
+          return
+        }
+        Modal.confirm({
+          title: t('common.prompt'),
+          content: t('user.disableTips', { username: selectRecords[0].cUsername }),
+          onBeforeOk: async () => {
+            // 调用禁用接口
+            const res = await requestClient.post('/core/authUser/updateSign', {
+              id: selectRecords[0].id,
+              cSign: '1'
+            });
+            if (res.code === 200) {
+              Message.success(res.message)
+              // 刷新表格数据
+              params.$grid.commitProxy('query', {})
+              return true;
+            } else {
+              Message.error(res.message)
+              return false;
+            }
+          }
+        });
+        break
+      case 'userManagement/auth':
+        if (selectRecords.length !== 1) {
+          Message.warning(t('common.selectOne'))
+          return
+        }
+        UserAuthRef.value.openInit(selectRecords[0])
+        break
+      case 'userManagement/macBind':
+        if (selectRecords.length !== 1) {
+          Message.warning(t('common.selectOne'))
+          return
+        }
+        UserBindMacRef.value.openInit(selectRecords[0])
         break
       case 'daoru/show':
         importModalApi.open({
@@ -128,6 +235,9 @@ const [importModal, importModalApi] = useImportModal({})
 
       <exportModal />
       <importModal />
+      <UserAdd ref="UserAddRef" @success="() => gridApi.commitProxy('query')" />
+      <UserAuth ref="UserAuthRef" @success="() => gridApi.commitProxy('query')" />
+      <UserBindMac ref="UserBindMacRef" @success="() => gridApi.commitProxy('query')" />
     </div>
   </div>
 </template>

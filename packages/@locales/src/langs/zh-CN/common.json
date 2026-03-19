@@ -16,6 +16,7 @@
   "disabled": "已禁用",
   "edit": "修改",
   "delete": "删除",
+  "deleteSelected": "删除选中项",
   "create": "新增",
   "yes": "是",
   "no": "否",
@@ -24,6 +25,7 @@
   "selected": "已选择",
   "clear": "清空",
   "upload": "上传文件",
+  "selectOne": "请选择一条记录",
   "dashboard": {
     "greeting": {
       "morning": "早上好",

@@ -16,6 +16,7 @@
   "disabled": "Disabled",
   "edit": "Edit",
   "delete": "Delete",
+  "deleteSelected": "Delete Selected Items",
   "create": "Create",
   "yes": "Yes",
   "no": "No",
@@ -24,6 +25,7 @@
   "selected": "Selected",
   "clear": "Clear",
   "upload": "Upload File",
+  "selectOne": "Please select one record",
   "dashboard": {
     "greeting": {
       "morning": "Good Morning",
