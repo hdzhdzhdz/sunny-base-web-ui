@@ -104,8 +104,8 @@ const handleDelete = () => {
     <Grid>
       <template #toolbar>
         <a-space class="mb-2">
-          <a-button type="primary" @click="handleAdd">新增</a-button>
-          <a-button type="primary" @click="handleDelete">删除选中</a-button>
+          <a-button type="primary" @click="handleAdd">{{ t('common.create') }}</a-button>
+          <a-button type="primary" @click="handleDelete">{{ t('common.deleteSelected') }}</a-button>
         </a-space>
       </template>
     </Grid>

@@ -28,5 +28,11 @@
   "cMacdesc": "MAC地址描述",
   "cCreateusername": "创建人",
   "dDate": "创建时间",
-  "cMacMessage": "请输入MAC地址"
+  "cMacMessage": "请输入MAC地址",
+  "otherAuth": {
+    "title": "其他权限授权",
+    "tab": "页签",
+    "tabDesc": "默认全选",
+    "option": "选项"
+  }
 }
