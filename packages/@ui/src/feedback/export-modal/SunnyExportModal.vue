@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { Modal, Form, FormItem, Select, Option, InputNumber, Button, Message } from '@arco-design/web-vue'
-import { VxeTable, VxeColumn } from 'vxe-table'
 import axios from 'axios'
 import type { ExportColumnConfig, ExportUserWebConfig } from './types'
 import { DEFAULT_FORM_COMMON_CONFIG } from '../../entry/form/config'
 
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+
 interface Props {
-  title?: string
-  width?: string | number
   exportUrl?: string | null
   nmodid?: number
   nButtonid?: number
@@ -16,8 +16,6 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  title: '导出选项',
-  width: '700px',
   exportUrl: ''
 })
 
@@ -35,10 +33,10 @@ const loading = ref(false)
 const buttonLoading = ref(false)
 
 const colDataTypeList = [
-  { label: '默认', value: 'default' },
-  { label: '字符串', value: 'varchar' },
-  { label: '数字', value: 'number' },
-  { label: '日期', value: 'date' }
+  { label: t('common.exportModal.default'), value: 'default' },
+  { label: t('common.exportModal.varchar'), value: 'varchar' },
+  { label: t('common.exportModal.number'), value: 'number' },
+  { label: t('common.exportModal.date'), value: 'date' }
 ]
 
 const sheetRowNumOpts = [
@@ -60,10 +58,10 @@ const initExportConfig = async () => {
       exportUserWebConfig.value = response.data.result.exportUserWebConfig
       visible.value = true
     } else {
-      Message.error(response.data.message || '初始化失败')
+      Message.error(response.data.message)
     }
   } catch (error: any) {
-    Message.error(error.message || '初始化失败')
+    Message.error(error.message)
   } finally {
     loading.value = false
   }
@@ -127,7 +125,7 @@ const handleExport = async () => {
     }
     fileReader.readAsText(response.data)
   } catch (error: any) {
-    Message.error(error.message || '导出失败')
+    Message.error(error.message)
     emit('export-error', error)
   } finally {
     buttonLoading.value = false
@@ -142,23 +140,23 @@ const handleCancel = () => {
 <template>
   <Modal
     v-model:visible="visible"
-    :title="title"
-    :width="width"
+    :title="t('common.exportModal.title')"
+    :width="700"
     :mask-closable="false"
     @cancel="handleCancel"
   >
     <Form :model="exportUserWebConfig" layout="inline">
-      <FormItem v-if="exportUserWebConfig.showSheetRowNum" label="页签最大行">
+      <FormItem v-if="exportUserWebConfig.showSheetRowNum" :label="t('common.exportModal.showSheetRowNum')">
         <Select v-model="exportUserWebConfig.nSheetRowNum" :placeholder="exportUserWebConfig.hintSheetRowNum" allow-clear>
           <Option v-for="item in sheetRowNumOpts" :key="item.value" :label="item.label" :value="item.value" />
         </Select>
       </FormItem>
-      <FormItem v-if="exportUserWebConfig.showMaxExportNumber" label="Excel最大导出行">
+      <FormItem v-if="exportUserWebConfig.showMaxExportNumber" :label="t('common.exportModal.showMaxExportNumber')">
         <InputNumber v-model="exportUserWebConfig.maxExportNumber" :placeholder="exportUserWebConfig.hintMaxExportNumber" />
       </FormItem>
     </Form>
 
-    <VxeTable
+    <vxe-table
       size="mini"
       :data="tableData"
       border
@@ -169,30 +167,30 @@ const handleCancel = () => {
       }"
       @row-drag-end="handleRowDragEnd"
     >
-      <VxeColumn title="是否导出" width="70" align="center">
+      <vxe-column :title="t('common.exportModal.nSfExport')" width="70" align="center">
         <template #default="{ row }">
           <vxe-checkbox v-model="row.nSfExport" size="small" :checked-value="1" :unchecked-value="0" />
         </template>
-      </VxeColumn>
-      <VxeColumn field="colName" title="列名" align="center" />
-      <VxeColumn title="宽度" width="100" align="center">
+      </vxe-column>
+      <vxe-column field="colName" :title="t('common.exportModal.colName')" align="center" />
+      <vxe-column :title="t('common.exportModal.colWidth')" width="100" align="center">
         <template #default="{ row }">
           <InputNumber v-model="row.colWidth" size="small" />
         </template>
-      </VxeColumn>
-      <VxeColumn title="数据类型" width="120" align="center">
+      </vxe-column>
+      <vxe-column :title="t('common.exportModal.colDataType')" width="120" align="center">
         <template #default="{ row }">
           <Select v-model="row.colDataType" size="small">
             <Option v-for="item in colDataTypeList" :key="item.value" :label="item.label" :value="item.value" />
           </Select>
         </template>
-      </VxeColumn>
-      <VxeColumn title="拖拽" width="50" align="center" fixed="right" :dragSort="true" />
-    </VxeTable>
+      </vxe-column>
+      <vxe-column :title="t('common.exportModal.drag')" width="50" align="center" fixed="right" :dragSort="true" />
+    </vxe-table>
 
     <template #footer>
-      <Button @click="handleCancel">取消</Button>
-      <Button type="primary" :loading="buttonLoading" @click="handleExport">确定</Button>
+      <Button @click="handleCancel">{{ t('common.modal.cancel') }}</Button>
+      <Button type="primary" :loading="buttonLoading" @click="handleExport">{{ t('common.modal.confirm') }}</Button>
     </template>
   </Modal>
 </template>

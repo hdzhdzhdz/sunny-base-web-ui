@@ -16,6 +16,7 @@
   "disabled": "Disabled",
   "edit": "Edit",
   "delete": "Delete",
+  "deleteSelected": "Delete Selected Items",
   "create": "Create",
   "yes": "Yes",
   "no": "No",
@@ -24,6 +25,7 @@
   "selected": "Selected",
   "clear": "Clear",
   "upload": "Upload File",
+  "selectOne": "Please select one record",
   "dashboard": {
     "greeting": {
       "morning": "Good Morning",
@@ -116,5 +118,31 @@
     "details": "Error Details",
     "errorMessage": "Error Message",
     "errorStack": "Error Stack"
+  },
+  "exportModal": {
+    "title": "Export Data",
+    "showSheetRowNum": "Max Rows Per Sheet",
+    "showMaxExportNumber": "Max Excel Export Rows",
+    "nSfExport": "Export",
+    "colName": "Column Name",
+    "colWidth": "Column Width",
+    "colDataType": "Data Type",
+    "drag": "Drag",
+    "default": "default",
+    "varchar": "varchar",
+    "number": "number",
+    "date": "date"
+  },
+  "importModal": {
+    "title": "Import Template",
+    "downloadTemplate": "Download Template",
+    "selectFile": "Select File",
+    "upload": "Start Upload",
+    "isdecode": "Encrypted",
+    "uploadSuccess": "Upload Successful",
+    "uploadError": "Upload Failed",
+    "maxUploadLimit": "You can upload up to {limit} files",
+    "onlySupport": "Only {accept} files are supported",
+    "maxSize": "File size cannot exceed {maxSize} MB"
   }
 }

@@ -229,13 +229,14 @@ export function useList<T>(options: {
       const res = await getResourceByParIdOrModnumb({ modnumb: cModnumb });
       if (res.code === 200 && res.result) {
         const { resButtonList } = initResourceConstructor(res.result);
-        // 更新资源按钮列表 - 获取searchTable下所有按钮
-        resourceButtons.value = resButtonList?.searchTable || []
-        // 更新表格按钮配置
-        if (resourceButtons.value.length > 0) {
+        // 更新资源按钮列表 - 获取searchTable下所有按钮，不过滤cSubArea
+        resourceButtons.value = resButtonList?.searchTable || [];
+        // 更新表格按钮配置 - 只使用cSubArea为空的按钮
+        const toolbarButtons = resourceButtons.value.filter(button => !button.cSubArea);
+        if (toolbarButtons.length > 0) {
           gridOptions.toolbarConfig = {
             ...gridOptions.toolbarConfig,
-            buttons: resourceButtons.value
+            buttons: toolbarButtons
           };
         }
       }
