@@ -2,7 +2,6 @@ import type { VxeGridProps } from 'vxe-table';
 import type { FormSchema } from '@sunny-base-web/ui';
 import { markRaw } from 'vue';
 import { SunnyBusinessSearch, SunnyCustomizeSelect } from '@sunny-base-web/ui';
-import { useSelectOptions } from '@sunny-base-web/effects';
 import type { TestVO } from './types';
 
 // 使用 markRaw 标记组件，避免 Vue 将组件转为响应式对象
