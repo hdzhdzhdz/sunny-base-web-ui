@@ -38,7 +38,7 @@ const gridEvents:VxeGridListeners = {
   async toolbarButtonClick (params: any) {
     console.log(params)
     const selectRecords = [
-      ...params.$grid.getCheckboxReserveRecords(), // 保留选中的记录
+      // ...params.$grid.getCheckboxReserveRecords(), // 保留选中的记录
       ...params.$grid.getCheckboxRecords() // 当前选中的记录
     ]
     switch (params.button.code) {
