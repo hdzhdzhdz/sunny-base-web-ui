@@ -380,6 +380,56 @@ export interface SunnyFormProps {
    * 会自动从组件配置的 fieldNames 中读取 value 字段进行提取
    */
   objectToValueFields?: string[];
+  /**
+   * 查询方案配置
+   * Search plan configuration
+   */
+  searchPlanConfig?: {
+    /**
+     * 是否启用查询方案
+     */
+    enable?: boolean;
+    /**
+     * 表单配置
+     */
+    formConfig?: any[];
+    /**
+     * 当前选中的查询方案
+     */
+    currentSearchPlan?: any;
+    /**
+     * 查询方案列表
+     */
+    searchPlanList?: any[];
+    /**
+     * 资源ID
+     */
+    resourceId?: string;
+    /**
+     * 资源编号
+     */
+    nResourceid?: number;
+    /**
+     * 查询方案API
+     */
+    api?: any;
+    /**
+     * 搜索回调
+     */
+    onSearch?: (values: any) => void;
+    /**
+     * 默认查询方案加载完成回调
+     */
+    onDefaultPlanLoaded?: (values: any) => void;
+    /**
+     * 更新当前查询方案回调
+     */
+    onUpdateCurrentSearchPlan?: (value: any) => void;
+    /**
+     * 更新查询方案列表回调
+     */
+    onUpdateSearchPlanList?: (value: any[]) => void;
+  };
 
 }
 

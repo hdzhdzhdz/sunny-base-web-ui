@@ -4,6 +4,7 @@ import { Button } from '@arco-design/web-vue';
 import { useFormContext as useVeeFormContext } from 'vee-validate';
 import { useFormContext } from '../form-render/context';
 import type { FormApi } from '../form-api';
+import { SunnySearchPlan, SunnyIcon } from '@sunny-base-web/ui';
 
 /**
  * 组件 Props 定义
@@ -19,6 +20,47 @@ const props = defineProps<{
    * 用于调用表单方法 (验证、重置、获取值等)
    */
   formApi?: FormApi;
+  /**
+   * 查询方案相关配置
+   */
+  searchPlanConfig?: {
+    /**
+     * 是否启用查询方案
+     */
+    enable?: boolean;
+    /**
+     * 表单配置
+     */
+    formConfig?: any[];
+    /**
+     * 当前选中的查询方案
+     */
+    currentSearchPlan?: any;
+    /**
+     * 查询方案列表
+     */
+    searchPlanList?: any[];
+    /**
+     * 资源ID
+     */
+    resourceId?: string;
+    /**
+     * 资源编号
+     */
+    nResourceid?: number;
+    /**
+     * 查询方案API
+     */
+    api?: any;
+    /**
+     * 搜索回调
+     */
+    onSearch?: (values: any) => void;
+    /**
+     * 默认查询方案加载完成回调
+     */
+    onDefaultPlanLoaded?: (values: any) => void;
+  };
 }>();
 
 /**
@@ -236,6 +278,34 @@ defineExpose({
 
     <!-- 展开按钮前插槽 -->
     <slot name="expand-before"></slot>
+    
+    <!-- 查询方案组件 -->
+    <slot name="search-plan">
+      <SunnySearchPlan
+        v-if="props.searchPlanConfig?.enable"
+        :form-config="props.searchPlanConfig.formConfig"
+        :current-search-plan="props.searchPlanConfig.currentSearchPlan"
+        :search-plan-list="props.searchPlanConfig.searchPlanList"
+        :resource-id="props.searchPlanConfig.resourceId"
+        :n-resourceid="props.searchPlanConfig.nResourceid"
+        :api="props.searchPlanConfig.api"
+        @search="props.searchPlanConfig.onSearch"
+        @default-plan-loaded="props.searchPlanConfig.onDefaultPlanLoaded"
+        @update:currentSearchPlan="props.searchPlanConfig?.onUpdateCurrentSearchPlan && props.searchPlanConfig.onUpdateCurrentSearchPlan($event)"
+        @update:searchPlanList="props.searchPlanConfig?.onUpdateSearchPlanList && props.searchPlanConfig.onUpdateSearchPlanList($event)"
+      >
+        <template #trigger="{ open }">
+          <button
+            type="button"
+            class="px-3 py-1.5 border border-[var(--color-border-2)] rounded bg-white text-sm transition-all hover:border-[rgb(var(--primary-6))] hover:text-[rgb(var(--primary-6))] disabled:cursor-not-allowed disabled:opacity-60 mr-2"
+            @click="open"
+            title="查询方案"
+          >
+            <SunnyIcon icon="lucide:filter" class="w-4 h-4" />
+          </button>
+        </template>
+      </SunnySearchPlan>
+    </slot>
 
     <!-- 展开/收起切换按钮 -->
     <div

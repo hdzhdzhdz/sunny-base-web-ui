@@ -277,6 +277,7 @@ const computedGap = computed(() => {
             :model-value="renderPropsState.collapsed"
             @update:model-value="handleCollapsedUpdate"
             :form-api="props.formApi"
+            :search-plan-config="renderPropsState.searchPlanConfig"
           >
             <!-- 透传 slots 给 FormActions -->
             <template v-if="slots['submit-before']" #submit-before>

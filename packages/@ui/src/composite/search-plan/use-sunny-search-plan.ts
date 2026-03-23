@@ -240,7 +240,7 @@ export function useSunnySearchPlan(
         }
       }
       
-      emit('update', props.currentSearchPlan.ID, inputValue.value.trim() || props.currentSearchPlan.CSEARCHPLANNAME, { ...processedFormValues });
+      emit('update', props.currentSearchPlan?.ID, inputValue.value.trim() || props.currentSearchPlan?.CSEARCHPLANNAME, { ...processedFormValues });
       inputValue.value = '';
     } catch (error) {
 
@@ -759,11 +759,16 @@ export function useSunnySearchPlan(
         emit('default-plan-loaded', formValues);
         return formValues;
       }
+      // 没有默认查询方案时，发射空对象
+      emit('default-plan-loaded', {});
+      return {};
     } catch (error) {
 
       emit('error', error);
+      // 发生错误时，也发射事件
+      emit('default-plan-loaded', {});
+      return {};
     }
-    return {};
   };
 
   /**

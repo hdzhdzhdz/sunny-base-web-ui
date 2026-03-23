@@ -67,31 +67,7 @@ const toggleToolbarClick = (button: any, row: JobGroupVO) => {
     >
       <!-- Search Form Area -->
       <div class="px-4 border-b py-2 pb-3 border-[var(--color-border)]">
-        <QueryForm>
-          <template #expand-before>
-            <SunnySearchPlan
-                :form-config="searchFormSchema"
-                v-model:current-search-plan="currentSearchPlan"
-                v-model:search-plan-list="searchPlanList"
-                :resource-id="resourceId"
-                :n-resourceid="nResourceid"
-                :api="searchPlanApi"
-                @search="handleSearchPlanSearch"
-                @default-plan-loaded="handleDefaultPlanLoaded"
-              >
-              <template #trigger="{ open }">
-                <button
-                  type="button"
-                  class="px-3 py-1.5 border border-[var(--color-border-2)] rounded bg-white text-sm transition-all hover:border-[rgb(var(--primary-6))] hover:text-[rgb(var(--primary-6))] disabled:cursor-not-allowed disabled:opacity-60 mr-2"
-                  @click="open"
-                  title="查询方案"
-                >
-                  <SunnyIcon icon="lucide:filter" class="w-4 h-4" />
-                </button>
-              </template>
-            </SunnySearchPlan>
-          </template>
-        </QueryForm>
+        <QueryForm />
       </div>
 
       <!-- Data Grid Area -->
