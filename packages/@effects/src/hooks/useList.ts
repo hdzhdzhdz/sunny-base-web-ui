@@ -147,9 +147,9 @@ export function useList<T>(options: {
         total: 'result.total'
       },
       ajax: {
-        query: async ({ page }) => {
+        query: async ({ page }, filterValues) => {
           const formValues = await formApi.getValues();
-          return queryFunction({ page, formValues });
+          return queryFunction({ page, formValues, filterValues });
         }
       }
     },
