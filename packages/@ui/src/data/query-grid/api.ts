@@ -68,6 +68,16 @@ export class VxeGridApi {
   }
 
   /**
+   * 清除选中状态
+   */
+  clearSelection() {
+    const $grid = this.grid;
+    if ($grid) {
+      $grid.clearCheckboxRow();
+    }
+  }
+
+  /**
    * 提交代理
    */
   commitProxy(code: string | { code: string; target?: string | undefined; force?: boolean | undefined }, ...args: any[]) {

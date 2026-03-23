@@ -28,5 +28,11 @@
   "cMacdesc": "MAC Description",
   "cCreateusername": "Created By",
   "dDate": "Created Time",
-  "cMacMessage": "Please enter MAC address"
+  "cMacMessage": "Please enter MAC address",
+  "otherAuth": {
+    "title": "Other Permissions",
+    "tab": "Tab",
+    "tabDesc": "Select all by default",
+    "option": "Option"
+  }
 }

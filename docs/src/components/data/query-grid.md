@@ -77,6 +77,24 @@ if (selectedRows.length > 0) {
 gridApi.deleteSelection();
 ```
 
+#### `clearSelection()`
+
+清除表格中所有行的选中状态。
+
+```typescript
+// 清除选中状态
+gridApi.clearSelection();
+```
+
+#### `commitProxy(code, ...args)`
+
+触发 VxeTable 的代理请求（如分页、排序等）。
+
+```typescript
+// 刷新表格数据
+gridApi.commitProxy('query');
+```
+
 ## 表头吸顶 (Sticky Header)
 
 可以通过设置 `sticky` 属性来开启表头吸顶功能。它会监听滚动位置，当表格滚动出视野时，将表头固定在屏幕顶部。

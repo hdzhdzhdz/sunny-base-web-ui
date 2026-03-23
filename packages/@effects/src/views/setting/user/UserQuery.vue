@@ -13,6 +13,8 @@ import UserAuth from './UserAuth.vue'
 const UserAuthRef = ref()
 import UserBindMac from './UserBindMac.vue'
 const UserBindMacRef = ref()
+import UserOtherAuth from './UserOtherAuth.vue'
+const UserOtherAuthRef = ref()
 
 import { useRouter } from 'vue-router'
 const router = useRouter()
@@ -36,7 +38,7 @@ const gridEvents:VxeGridListeners = {
   async toolbarButtonClick (params: any) {
     console.log(params)
     const selectRecords = [
-      ...params.$grid.getCheckboxReserveRecords(), // 保留选中的记录
+      // ...params.$grid.getCheckboxReserveRecords(), // 保留选中的记录
       ...params.$grid.getCheckboxRecords() // 当前选中的记录
     ]
     switch (params.button.code) {
@@ -173,6 +175,13 @@ const gridEvents:VxeGridListeners = {
         }
         UserBindMacRef.value.openInit(selectRecords[0])
         break
+      case 'userManagement/otherAuth':
+        if (selectRecords.length !== 1) {
+          Message.warning(t('common.selectOne'))
+          return
+        }
+        UserOtherAuthRef.value.openInit(selectRecords[0])
+        break
       case 'daoru/show':
         importModalApi.open({
           nModid: router.currentRoute.value.meta.id,
@@ -238,6 +247,7 @@ const [importModal, importModalApi] = useImportModal({})
       <UserAdd ref="UserAddRef" @success="() => gridApi.commitProxy('query')" />
       <UserAuth ref="UserAuthRef" @success="() => gridApi.commitProxy('query')" />
       <UserBindMac ref="UserBindMacRef" @success="() => gridApi.commitProxy('query')" />
+      <UserOtherAuth ref="UserOtherAuthRef" @success="() => gridApi.commitProxy('query')" />
     </div>
   </div>
 </template>
