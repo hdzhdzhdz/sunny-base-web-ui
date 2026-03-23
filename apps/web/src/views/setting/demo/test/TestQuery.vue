@@ -105,7 +105,7 @@ const {
   handleDefaultPlanLoaded,
   handleGlobalEnter
 } = useList<TestVO>({
-  searchFormSchema: enhancedSchema,  // ✅ 使用增强后的 Schema（自动注入 options）
+  searchFormSchema: enhancedSchema.value,  // ✅ 使用增强后的 Schema（自动注入 options）
   tableColumns: tableColumns || [],  // 提供默认空数组，避免 undefined
   resourceConfig,
   queryFunction,
