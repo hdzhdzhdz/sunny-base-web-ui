@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, toRaw, unref, watch } from 'vue';
 import { Button } from '@arco-design/web-vue';
+import { IconSearch, IconRefresh } from '@arco-design/web-vue/es/icon';
 import { useFormContext as useVeeFormContext } from 'vee-validate';
 import { useFormContext } from '../form-render/context';
 import type { FormApi } from '../form-api';
@@ -245,6 +246,9 @@ defineExpose({
         @click="handleSubmit"
         v-bind="(submitButtonOptions as any)"
       >
+        <template #icon>
+          <IconSearch />
+        </template>
         {{ submitButtonOptions.content }}
       </Button>
     </template>
@@ -258,6 +262,9 @@ defineExpose({
       @click="handleReset"
       v-bind="(resetButtonOptions as any)"
     >
+      <template #icon>
+        <IconRefresh />
+      </template>
       {{ resetButtonOptions.content }}
     </Button>
 
@@ -272,6 +279,9 @@ defineExpose({
         @click="handleSubmit"
         v-bind="(submitButtonOptions as any)"
       >
+        <template #icon>
+          <IconSearch />
+        </template>
         {{ submitButtonOptions.content }}
       </Button>
     </template>
