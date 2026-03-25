@@ -688,6 +688,13 @@ export interface SelectOptionsAdapter {
  */
 export interface FormCommonConfig {
   /**
+   * 全局禁用状态
+   * Global disabled state
+   * @description 应用级别的表单禁用控制，作为所有表单的默认禁用状态
+   * @default false
+   */
+  disabled?: boolean;
+  /**
    * 是否禁用 change 事件监听
    * Whether to disable change listener
    */

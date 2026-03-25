@@ -161,7 +161,38 @@ async function bootstrap(namespace: string) {
 	// 自定义 loadConfig 处理后端返回的 res.result 包装
 	setupBusinessForm({
 		config: {
+			/**
+			 * ✅ 全局禁用配置（应用级）
+			 * Global disabled configuration (Application-level)
+			 *
+			 * @description
+			 * 控制整个应用中所有表单的默认禁用状态
+			 * Control the default disabled state for all forms in the application
+			 *
+			 * @default false
+			 *
+			 * @example
+			 * // 根据权限动态控制
+			 * disabled: authStore.isReadOnly,
+			 *
+			 * @priority
+			 * 全局级（最低）→ 表单级 → 字段级 → 依赖级（最高）
+			 * Global (Lowest) → Form-level → Field-level → Dependencies (Highest)
+			 */
+			disabled: false,  // 默认不禁用，可根据需要动态设置
+
+			/**
+			 * API 前缀配置
+			 * API prefix configuration
+			 */
 			apiPrefix: preferences.app.apiPrefix,
+
+			/**
+			 * BusinessSearch 适配器配置
+			 * BusinessSearch adapter configuration
+			 * 用于加载业务搜索组件的配置
+			 * Used to load business search component configuration
+			 */
 			businessSearchAdapter: {
 				loadConfig: async (cNum: string) => {
 					const res = await requestClient.post<any>('/core/assDialog/openInit', { cNum });

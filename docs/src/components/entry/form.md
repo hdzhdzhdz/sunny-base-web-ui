@@ -587,6 +587,437 @@ arrayToStringFields: [
 ]
 ```
 
+## 全局 Disabled 配置
+
+SunnyForm 提供了**五层优先级**的表单禁用控制机制，支持从应用级到字段级的灵活控制。
+
+### 五层优先级（从高到低）
+
+```
+1. dependencies.disabled     (最高优先级 - 动态联动)
+   ↓
+2. schema.disabled           (字段级配置)
+   ↓
+3. componentProps.disabled   (组件属性配置)
+   ↓
+4. commonConfig.disabled     (表单级配置 - 新增)
+   ↓
+5. FormCommonConfig.disabled (全局级配置 - 新增，最低优先级)
+```
+
+**优先级规则：** 范围越小，优先级越高
+
+### 使用场景
+
+#### 1. 全局禁用（应用级）
+
+在应用启动时配置全局默认禁用状态，适用于权限控制、系统维护等场景：
+
+```typescript
+// apps/web/src/bootstrap.ts
+import { setupBusinessForm } from '@sunny-base-web/effects';
+
+async function bootstrap() {
+  setupBusinessForm({
+    config: {
+      disabled: false,  // 默认不禁用
+      // disabled: authStore.isReadOnly,  // 根据权限动态控制
+    }
+  });
+}
+```
+
+**适用场景：**
+- ✅ 审批流程（根据权限动态控制）
+- ✅ 系统维护模式（全局只读）
+- ✅ 特定用户角色（访客只读）
+
+#### 2. 表单级禁用
+
+在单个表单中统一控制所有字段，适用于详情页、审批页等：
+
+**组件模式：**
+
+```vue
+<template>
+  <SunnyForm
+    :schema="schema"
+    :common-config="{ disabled: true }"
+  />
+</template>
+```
+
+**Hook 模式：**
+
+```vue
+<script setup lang="ts">
+import { useSunnyForm } from '@sunny-base-web/ui';
+
+// ✅ 在 useSunnyForm 中配置表单级禁用
+const [Form, formApi] = useSunnyForm({
+  schema: [
+    { fieldName: 'name', label: '姓名', component: 'Input' },
+    { fieldName: 'status', label: '状态', component: 'Select' },
+  ],
+  commonConfig: {
+    disabled: true,  // ✅ 表单级禁用：所有字段不可编辑
+  },
+});
+</script>
+
+<template>
+  <Form />
+</template>
+```
+
+**动态控制：**
+
+```vue
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+import { useSunnyForm } from '@sunny-base-web/ui';
+
+const isDetailPage = ref(true);
+
+const [Form, formApi] = useSunnyForm({
+  schema: [...],
+  commonConfig: computed(() => ({
+    disabled: isDetailPage.value,  // ✅ 响应式控制
+  })),
+});
+
+// 动态切换编辑/只读模式
+const toggleEditMode = () => {
+  isDetailPage.value = !isDetailPage.value;
+};
+</script>
+```
+
+**适用场景：**
+- ✅ 详情页面（只读查看）
+- ✅ 审批页面（禁止编辑）
+- ✅ 历史记录（不可修改）
+
+#### 3. 部分字段可编辑
+
+在表单级禁用的基础上，允许特定字段编辑：
+
+```typescript
+const schema = [
+  {
+    fieldName: 'name',
+    label: '姓名',
+    disabled: false,  // ✅ 覆盖表单级禁用，允许编辑
+  },
+  {
+    fieldName: 'status',
+    label: '状态',
+    // 继承表单级禁用，不可编辑
+  },
+];
+```
+
+**适用场景：**
+- ✅ 审批表单（部分字段可修改）
+- ✅ 订单详情（可修改备注，其他不可编辑）
+- ✅ 配置页面（核心配置只读，其他可编辑）
+
+#### 4. 动态联动禁用（最高优先级）
+
+根据其他字段的值动态控制禁用状态：
+
+```typescript
+const schema = [
+  {
+    fieldName: 'type',
+    label: '类型',
+  },
+  {
+    fieldName: 'reason',
+    label: '原因',
+    dependencies: {
+      // ✅ dependencies 优先级最高，覆盖所有层级
+      disabled: (values) => values.type !== 'other',
+    }
+  },
+];
+```
+
+**适用场景：**
+- ✅ 条件性字段（选择"其他"时才可填写原因）
+- ✅ 联动控制（选择特定选项后启用相关字段）
+- ✅ 复杂业务逻辑（根据表单状态动态控制）
+
+### 完整示例
+
+#### 场景：审批表单
+
+**组件模式：**
+
+```vue
+<template>
+  <div class="approval-form">
+    <h2>采购审批单</h2>
+
+    <!-- ✅ 表单级禁用：审批人只能修改审批意见 -->
+    <SunnyForm
+      :schema="schema"
+      :common-config="commonConfig"
+      @submit="handleSubmit"
+    />
+  </div>
+</template>
+
+<script setup lang="ts">
+import { computed } from 'vue';
+import { useAuthStore } from '@sunny-base-web/stores';
+
+const authStore = useAuthStore();
+
+// Schema 配置
+const schema = [
+  {
+    fieldName: 'purchaseNo',
+    label: '采购单号',
+    component: 'Input',
+    // 继承表单级禁用：不可编辑
+  },
+  {
+    fieldName: 'applicant',
+    label: '申请人',
+    component: 'Input',
+    // 继承表单级禁用：不可编辑
+  },
+  {
+    fieldName: 'amount',
+    label: '金额',
+    component: 'InputNumber',
+    // 继承表单级禁用：不可编辑
+  },
+  {
+    fieldName: 'approvalComment',
+    label: '审批意见',
+    component: 'Textarea',
+    disabled: false,  // ✅ 覆盖表单级禁用：审批人可编辑
+  },
+  {
+    fieldName: 'rejectionReason',
+    label: '拒绝原因',
+    component: 'Textarea',
+    dependencies: {
+      // ✅ 动态联动：只有选择"拒绝"时才启用
+      disabled: (values) => values.approvalStatus !== 'rejected',
+    }
+  },
+];
+
+// 根据角色动态配置
+const commonConfig = computed(() => {
+  return {
+    disabled: !authStore.canApprove,  // 非审批人：所有字段禁用
+  };
+});
+
+const handleSubmit = (values: any) => {
+  console.log('提交审批：', values);
+};
+</script>
+```
+
+**Hook 模式（推荐）：**
+
+```vue
+<template>
+  <div class="approval-form">
+    <h2>采购审批单</h2>
+
+    <!-- ✅ 表单级禁用：审批人只能修改审批意见 -->
+    <Form />
+  </div>
+</template>
+
+<script setup lang="ts">
+import { computed } from 'vue';
+import { useSunnyForm } from '@sunny-base-web/ui';
+import { useAuthStore } from '@sunny-base-web/stores';
+
+const authStore = useAuthStore();
+
+// ✅ 使用 Hook 创建表单
+const [Form, formApi] = useSunnyForm({
+  schema: [
+    {
+      fieldName: 'purchaseNo',
+      label: '采购单号',
+      component: 'Input',
+      // 继承表单级禁用：不可编辑
+    },
+    {
+      fieldName: 'applicant',
+      label: '申请人',
+      component: 'Input',
+      // 继承表单级禁用：不可编辑
+    },
+    {
+      fieldName: 'amount',
+      label: '金额',
+      component: 'InputNumber',
+      // 继承表单级禁用：不可编辑
+    },
+    {
+      fieldName: 'approvalComment',
+      label: '审批意见',
+      component: 'Textarea',
+      disabled: false,  // ✅ 覆盖表单级禁用：审批人可编辑
+    },
+    {
+      fieldName: 'rejectionReason',
+      label: '拒绝原因',
+      component: 'Textarea',
+      dependencies: {
+        // ✅ 动态联动：只有选择"拒绝"时才启用
+        disabled: (values) => values.approvalStatus !== 'rejected',
+      }
+    },
+  ],
+  // ✅ 根据角色动态配置
+  commonConfig: computed(() => ({
+    disabled: !authStore.canApprove,  // 非审批人：所有字段禁用
+  })),
+  handleSubmit: (values) => {
+    console.log('提交审批：', values);
+  },
+});
+</script>
+```
+
+**动态控制禁用状态：**
+
+```vue
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+import { useSunnyForm } from '@sunny-base-web/ui';
+
+const editMode = ref(false);
+
+const [Form, formApi] = useSunnyForm({
+  schema: [...],
+  commonConfig: computed(() => ({
+    disabled: !editMode.value,  // ✅ 根据编辑模式动态切换
+  })),
+});
+
+// 切换编辑模式
+const toggleEditMode = () => {
+  editMode.value = !editMode.value;
+};
+</script>
+
+<template>
+  <div>
+    <a-button @click="toggleEditMode">
+      {{ editMode ? '取消编辑' : '编辑' }}
+    </a-button>
+    <Form />
+  </div>
+</template>
+```
+
+### 最佳实践
+
+#### ✅ 推荐用法
+
+```typescript
+// ✅ 推荐：使用全局禁用控制应用级权限
+// apps/web/src/bootstrap.ts
+setupBusinessForm({
+  config: {
+    disabled: authStore.isReadOnly,
+  }
+});
+
+// ✅ 推荐：使用表单级禁用控制页面状态（组件模式）
+<SunnyForm :common-config="{ disabled: isDetailPage }" />
+
+// ✅ 推荐：使用表单级禁用控制页面状态（Hook 模式）
+const [Form] = useSunnyForm({
+  schema: [...],
+  commonConfig: computed(() => ({
+    disabled: isDetailPage.value,
+  })),
+});
+
+// ✅ 推荐：使用 Schema 禁用控制特定字段
+{
+  fieldName: 'createdAt',
+  disabled: true,  // 创建时间永远不可编辑
+}
+
+// ✅ 推荐：使用 dependencies 实现动态联动
+{
+  fieldName: 'endDate',
+  dependencies: {
+    disabled: (values) => !values.startDate,
+  }
+}
+
+// ✅ 推荐：结合 formApi 动态更新禁用状态
+const [Form, formApi] = useSunnyForm({
+  schema: [...],
+  commonConfig: { disabled: true },
+});
+
+// 切换到编辑模式
+const enableEditMode = () => {
+  formApi.setState({
+    commonConfig: { disabled: false },
+  });
+};
+```
+<SunnyForm :common-config="{ disabled: isDetailPage }" />
+
+// ✅ 推荐：使用 Schema 禁用控制特定字段
+{
+  fieldName: 'createdAt',
+  disabled: true,  // 创建时间永远不可编辑
+}
+
+// ✅ 推荐：使用 dependencies 实现动态联动
+{
+  fieldName: 'endDate',
+  dependencies: {
+    disabled: (values) => !values.startDate,
+  }
+}
+```
+
+#### ❌ 避免用法
+
+```typescript
+// ❌ 避免：同时配置多个层级导致混淆
+{
+  disabled: true,  // Schema 禁用
+  componentProps: {
+    disabled: false,  // Props 禁用
+  },
+  dependencies: {
+    disabled: () => false,  // 依赖禁用
+  }
+}
+```
+
+### 向后兼容性
+
+- ✅ **完全兼容**：所有现有代码无需修改
+- ✅ **默认行为不变**：`disabled` 默认为 `false`
+- ✅ **字段级配置依然有效**：现有的 `schema.disabled` 继续工作
+
+### 性能考虑
+
+- ✅ 使用 `computed` 缓存计算结果
+- ✅ 短路求值优化（遇到 `true` 立即返回）
+- ✅ 不影响现有表单性能
+
 ## API 参考
 
 #### 基础配置 (Basic)

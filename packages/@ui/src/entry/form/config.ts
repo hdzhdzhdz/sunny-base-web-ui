@@ -99,6 +99,9 @@ export function setupSunnyForm(options: SunnyFormAdapterOptions) {
   // 提取通用配置，并设置默认值
   // Extract common config and set default values
   const {
+    // 全局禁用状态，默认不禁用
+    // Global disabled state, default to not disabled
+    disabled = false,
     // 默认禁用 change 事件监听 (Arco 组件通常不需要手动监听 change)
     // Default disable change listener (Arco components usually don't need manual change listener)
     disabledOnChangeListener = true,
@@ -117,6 +120,7 @@ export function setupSunnyForm(options: SunnyFormAdapterOptions) {
   // 将配置应用到全局默认配置对象中，供其他组件使用
   // Apply config to global default config object for other components to use
   Object.assign(DEFAULT_FORM_COMMON_CONFIG, {
+    disabled,  // ✅ 新增：全局禁用配置
     disabledOnChangeListener,
     disabledOnInputListener,
     emptyStateValue,

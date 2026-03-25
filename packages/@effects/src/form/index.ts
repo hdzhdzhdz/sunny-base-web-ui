@@ -20,6 +20,7 @@ import {
 } from '@sunny-base-web/ui';
 import { requestClient } from '../api/request';
 import type { VxeGridPropTypes } from 'vxe-table';
+import { defaultSelectOptionsAdapter } from './select-options-adapter';
 
 // =============================================================================
 // 类型定义
@@ -261,11 +262,14 @@ const defaultCustomizeSelectAdapter: CustomizeSelectAdapter = {
  * 默认表单配置
  */
 const defaultFormConfig: FormCommonConfig = {
-  disabledOnChangeListener: true,
-  disabledOnInputListener: true,
-  emptyStateValue: undefined,
+  disabled: false,                    // ✅ 新增：默认不禁用
+  disabledOnChangeListener: true,     // 默认禁用 change 事件监听
+  disabledOnInputListener: true,      // 默认禁用 input 事件监听
+  emptyStateValue: undefined,         // 空状态值
   businessSearchAdapter: defaultBusinessSearchAdapter,
   customizeSelectAdapter: defaultCustomizeSelectAdapter,
+  selectOptionsAdapter: defaultSelectOptionsAdapter,  // ✅ 已有：字典选项适配器
+  apiPrefix: undefined,
 };
 
 // =============================================================================

@@ -80,11 +80,12 @@ const computedSchema = computed(() => {
   } = renderPropsState;
   
   // 1. 配置解构与分离
-  // 从 commonConfig 中提取出组件通用属性 (componentProps) 和表单项通用属性 (formFieldProps)
+  // 从 commonConfig 中提取出组件通用属性 (componentProps)、表单项通用属性 (formFieldProps) 和表单级禁用状态 (formDisabled)
   // 剩余的属性 (restConfig) 将作为所有表单项的基础配置
   const {
     componentProps: commonComponentProps = {},
     formFieldProps: commonFormFieldProps = {},
+    disabled: formDisabled,  // ✅ 新增：提取表单级 disabled
     ...restConfig
   } = commonConfig;
 
@@ -102,11 +103,14 @@ const computedSchema = computed(() => {
       ...globalConfig,
       ...item,
 
+      // ✅ 注入表单级禁用状态 (form-level disabled)
+      formDisabled,
+
       // 显隐逻辑：只处理 Item 自身配置的 hide 属性
       // (v-if/v-show 的动态逻辑由 dependencies.ts 处理)
       hidden: item.hide,
 
-      // 注入通用组件属性 
+      // 注入通用组件属性
       // 注意：这里只是透传，最终合并逻辑在 FormField 组件内部进行
       commonComponentProps,
 

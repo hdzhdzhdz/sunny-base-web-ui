@@ -11,6 +11,8 @@ import type { ZodType } from 'zod';
 import { isFunction, isString } from '@sunny-base-web/utils';
 // 引入组件映射表
 import { COMPONENT_MAP } from '../config';
+// ✅ 引入全局表单配置对象
+import { DEFAULT_FORM_COMMON_CONFIG } from '../config';
 // 引入表单 Schema 类型定义
 import type { FormSchema } from '../types';
 // 引入表单上下文注入函数
@@ -27,6 +29,10 @@ const props = defineProps<{
 const values = useFormValues();
 // 注入渲染属性
 const formRenderProps = injectRenderFormProps();
+// ✅ 从全局配置读取 disabled
+const globalDisabled = computed(() => {
+  return DEFAULT_FORM_COMMON_CONFIG.disabled ?? false;
+});
 // 获取表单上下文 (如布局方向)
 const { isVertical } = useFormContext();
 // 获取 FormApi 实例
@@ -276,8 +282,14 @@ watch(
 
 // 计算禁用状态
 const shouldDisabled = computed(() => {
-  // 依赖禁用 || Schema 禁用 || Props 禁用
-  return isDisabled.value || props.schema.disabled || computedProps.value?.disabled;
+  // ✅ 五层优先级：依赖 > Schema > Props > 表单级 > 全局
+  return (
+    isDisabled.value ||                      // 1. 依赖禁用（最高优先级）
+    props.schema.disabled ||                 // 2. Schema 禁用
+    computedProps.value?.disabled ||         // 3. Props 禁用
+    props.schema.formDisabled ||             // 4. 表单级禁用（来自 commonConfig.disabled）
+    globalDisabled.value                     // 5. 全局禁用（来自 FormCommonConfig.disabled）
+  );
 });
 
 // 计算 Wrapper (控件容器) 的布局属性
