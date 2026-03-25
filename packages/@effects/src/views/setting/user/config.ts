@@ -33,7 +33,6 @@ export const getUserConfig = ({ t, formApi }: UserConfig) => {
       componentProps: {
         allowClear: true
       },
-      colProps: { span: 4 }
     },
     {
       fieldName: 'cUsername',
@@ -42,7 +41,6 @@ export const getUserConfig = ({ t, formApi }: UserConfig) => {
       componentProps: {
         allowClear: true
       },
-      colProps: { span: 4 }
     },
     {
       fieldName: 'cAdmin',
@@ -52,7 +50,6 @@ export const getUserConfig = ({ t, formApi }: UserConfig) => {
         allowClear: true,
         options: userYhlxOpts
       },
-      colProps: { span: 4 }
     },
     {
       fieldName: 'dLastLoginList',
@@ -61,7 +58,6 @@ export const getUserConfig = ({ t, formApi }: UserConfig) => {
       componentProps: {
         allowClear: true
       },
-      colProps: { span: 6 }
     },
   ];
 

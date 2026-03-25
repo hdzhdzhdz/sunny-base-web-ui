@@ -114,11 +114,18 @@ export function useList<T>(options: {
       collapsed: true,
       collapsedRows: 1
     },
+    // 查询表单响应式栅格配置
+    // xs/sm/md (< 992px): 单列布局 - 每行 1 个字段 (span: 24)
+    // lg (>= 992px): 四列布局 - 每行 4 个字段 (span: 6)
+    // xl/xxl (>= 1200px): 六列布局 - 每行 6 个字段 (span: 4)
+    commonConfig: {
+      colProps: { span: 24, lg: 6, xl: 4 },
+    },
     showCollapseButton: true,
     showDefaultActions: true,
     submitOnEnter: true,
     submitButtonOptions: { loading: submitting },
-    actionColProps: { span: 4 },
+    actionColProps: { span: 24, lg: 6, xl: 4 },
     schema: searchFormSchema,
     objectToValueFields
   });

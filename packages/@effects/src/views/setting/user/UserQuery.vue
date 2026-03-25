@@ -251,3 +251,12 @@ const [importModal, importModalApi] = useImportModal({})
     </div>
   </div>
 </template>
+<style scoped>
+:deep(.arco-form-item) {
+  margin-bottom: 0;
+}
+
+.data-dictionary-query {
+  outline: none;
+}
+</style>

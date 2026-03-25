@@ -10,14 +10,16 @@
   },
   "dependencies": {
     "@arco-design/web-vue": "catalog:",
-    "@sunny-base-web/ui": "workspace:*",
     "@sunny-base-web/effects": "workspace:*",
+    "@sunny-base-web/ui": "workspace:*",
     "@vee-validate/rules": "^4.15.1",
     "@vxe-ui/plugin-render-arco": "catalog:",
+    "axios": "^1.13.2",
     "medium-zoom": "^1.1.0",
+    "vue": "catalog:",
     "vxe-pc-ui": "catalog:",
     "vxe-table": "catalog:",
-    "vue": "catalog:"
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@sunny-base-web/tailwind-config": "workspace:*",
