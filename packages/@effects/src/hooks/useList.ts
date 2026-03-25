@@ -1,9 +1,29 @@
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, onMounted, watch } from 'vue';
 import { useSunnyForm, useSunnyQueryGrid } from '@sunny-base-web/ui';
 import type { VxeGridProps, VxeGridListeners } from 'vxe-table';
 import { requestClient } from '../api/request';
 import { getResourceByParIdOrModnumb } from '../api/resource';
 import { initResourceConstructor } from '../utils/utils';
+
+/**
+ * 查询方案 API 实现
+ * 所有模块通用的查询方案 API 配置
+ */
+export const useSearchPlanApi = () => {
+  return {
+    findAllByResourceid: (data: any) => requestClient.post('/core/assSearchplan/findAllByResourceid', data),
+    findSearchPlanColsByPlanId: (data: any) => requestClient.post('/core/assSearchplan/findSearchPlanColsByPlanId', data),
+    insert: (data: any) => requestClient.post('/core/assSearchplan/insert', data),
+    update: (data: any) => requestClient.post('/core/assSearchplan/update', data),
+    del: (data: any) => requestClient.post('/core/assSearchplan/delete', data),
+    findDefSearchPlan: (data: any) => requestClient.post('/core/assSearchplan/findDefSearchPlan', data)
+  };
+};
+
+/**
+ * 导出查询方案 API 实例
+ */
+export const searchPlanApi = useSearchPlanApi();
 /**
  * 列表页通用配置
  * @param options 配置选项
@@ -57,15 +77,34 @@ export function useList<T>(options: {
    * 是否开启懒加载
    */
   lazy?: boolean;
+  /**
+   * 是否自动加载数据
+   */
+  autoLoad?: boolean;
+
 }) {
-  const { searchFormSchema, tableColumns, dataType, resourceConfig, queryFunction, gridEvents, treeConfig, loadMethod, objectToValueFields, lazy } = options;
+  const { searchFormSchema, tableColumns, dataType, resourceConfig, queryFunction, gridEvents, treeConfig, loadMethod, objectToValueFields, lazy, autoLoad = true } = options;
 
   // ----------------------------------------------------------------------
-  // 1. Query Form Configuration
+  // 1. Basic Configuration
+  // ----------------------------------------------------------------------
+
+  // 从配置中获取资源信息
+  const { resourceId, nResourceid, cModnumb } = resourceConfig;
+
+  // 搜索方案列表
+  const searchPlanList = ref([]);
+
+  // 当前选中的搜索方案
+  const currentSearchPlan = ref(undefined);
+
+  // ----------------------------------------------------------------------
+  // 2. Query Form Configuration
   // ----------------------------------------------------------------------
 
   const submitting = ref(false);
 
+  // 创建表单，不包含searchPlanConfig
   const [QueryForm, formApi] = useSunnyForm({
     layout: 'vertical',
     size: 'small',
@@ -85,7 +124,7 @@ export function useList<T>(options: {
   });
 
   // ----------------------------------------------------------------------
-  // 2. Grid Configuration
+  // 3. Grid Configuration
   // ----------------------------------------------------------------------
 
   const gridOptions = reactive<VxeGridProps<T>>({
@@ -142,8 +181,10 @@ export function useList<T>(options: {
     filterConfig: {
       remote: true // 使用服务端筛选,不对数据进行处理
     },
+    columns: tableColumns,
     proxyConfig: {
       seq: true,
+      autoLoad: false,
       response: {
         result: 'result.records',
         total: 'result.total'
@@ -154,14 +195,70 @@ export function useList<T>(options: {
           return queryFunction({ page, formValues, filterValues });
         }
       }
-    },
-    columns: tableColumns
+    }
   });
 
   const [Grid, gridApi] = useSunnyQueryGrid({ gridOptions, gridEvents: gridEvents || {} });
 
   // ----------------------------------------------------------------------
-  // 3. Form Submit Handler
+  // 5. Search Plan Configuration
+  // ----------------------------------------------------------------------
+
+  // 处理查询方案搜索
+  const handleSearchPlanSearch = async (formValues: any) => {
+    // 设置表单值
+    await formApi.setValues(formValues);
+    // 触发表格查询
+    await gridApi.commitProxy('query');
+  };
+
+  // 处理默认查询方案加载完成
+  const handleDefaultPlanLoaded = async (formValues: any) => {
+    // 设置表单值
+    await formApi.setValues(formValues);
+    // 根据autoLoad参数决定是否触发表格查询
+    if (autoLoad) {
+      await gridApi.commitProxy('query');
+    }
+  };
+
+  // 设置查询方案配置（通过searchPlanConfig.enable控制是否启用）
+  // 使用setTimeout确保formApi和gridApi都已初始化
+  setTimeout(() => {
+    formApi.setState({
+      searchPlanConfig: {
+        enable: true,
+        formConfig: searchFormSchema,
+        currentSearchPlan: currentSearchPlan.value,
+        searchPlanList: searchPlanList.value,
+        resourceId,
+        nResourceid,
+        api: searchPlanApi,
+        onSearch: handleSearchPlanSearch,
+        onDefaultPlanLoaded: handleDefaultPlanLoaded,
+        onUpdateCurrentSearchPlan: (value) => {
+          currentSearchPlan.value = value;
+        },
+        onUpdateSearchPlanList: (value) => {
+          searchPlanList.value = value;
+        }
+      }
+    });
+  }, 0);
+
+  // 监听searchPlanList和currentSearchPlan的变化，更新searchPlanConfig
+  watch([searchPlanList, currentSearchPlan], ([newSearchPlanList, newCurrentSearchPlan]) => {
+    formApi.setState({
+      searchPlanConfig: {
+        ...formApi.getState().searchPlanConfig,
+        searchPlanList: newSearchPlanList,
+        currentSearchPlan: newCurrentSearchPlan
+      }
+    });
+  }, { deep: true });
+
+  // ----------------------------------------------------------------------
+  // 5. Form Submit Handler
   // ----------------------------------------------------------------------
 
   // 设置表单提交回调，触发表格查询
@@ -190,35 +287,8 @@ export function useList<T>(options: {
     formApi.submitForm();
   }
 
-  // ----------------------------------------------------------------------
-  // 4. Search Plan Configuration
-  // ----------------------------------------------------------------------
-
-  // 从配置中获取资源信息
-  const { resourceId, nResourceid, cModnumb } = resourceConfig;
-
-  // 搜索方案列表
-  const searchPlanList = ref([]);
-
-  // 当前选中的搜索方案
-  const currentSearchPlan = ref(undefined);
-
   // 资源按钮列表
   const resourceButtons = ref<any[]>([]);
-
-  // 处理查询方案搜索
-  const handleSearchPlanSearch = async (formValues) => {
-    // 设置表单值
-    await formApi.setValues(formValues);
-    // 触发表格查询
-    await gridApi.commitProxy('query');
-  };
-
-  // 处理默认查询方案加载完成
-  const handleDefaultPlanLoaded = async (formValues) => {
-    // 设置表单值
-    await formApi.setValues(formValues);
-  };
 
   // 获取资源配置
   const fetchResourceConfig = async () => {
@@ -274,23 +344,3 @@ export function useList<T>(options: {
  * 导出 useList 钩子
  */
 export default useList;
-
-/**
- * 查询方案 API 实现
- * 所有模块通用的查询方案 API 配置
- */
-export const useSearchPlanApi = () => {
-  return {
-    findAllByResourceid: (data: any) => requestClient.post('/core/assSearchplan/findAllByResourceid', data),
-    findSearchPlanColsByPlanId: (data: any) => requestClient.post('/core/assSearchplan/findSearchPlanColsByPlanId', data),
-    insert: (data: any) => requestClient.post('/core/assSearchplan/insert', data),
-    update: (data: any) => requestClient.post('/core/assSearchplan/update', data),
-    del: (data: any) => requestClient.post('/core/assSearchplan/delete', data),
-    findDefSearchPlan: (data: any) => requestClient.post('/core/assSearchplan/findDefSearchPlan', data)
-  };
-};
-
-/**
- * 导出查询方案 API 实例
- */
-export const searchPlanApi = useSearchPlanApi();

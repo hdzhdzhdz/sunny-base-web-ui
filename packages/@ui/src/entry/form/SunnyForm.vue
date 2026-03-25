@@ -87,6 +87,7 @@ defineExpose({
           :model-value="props.collapsed"
           @update:model-value="handleCollapsedChange"
           @reset="onReset"
+          :search-plan-config="props.searchPlanConfig"
         >
           <template #reset-before>
             <slot name="reset-before"></slot>
