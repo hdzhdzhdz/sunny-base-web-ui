@@ -139,7 +139,9 @@ export function useList<T>(options: {
         } : undefined)    // 包装loadMethod以适配vxe-table的回调风格
       }
     }),
-
+    filterConfig: {
+      remote: true // 使用服务端筛选,不对数据进行处理
+    },
     proxyConfig: {
       seq: true,
       response: {
