@@ -1,9 +1,12 @@
 <script lang="tsx" setup>
 import { SunnySearchPlan, SunnyIcon } from "@sunny-base-web/ui"
-import { searchFormSchema, tableColumns, resourceConfig } from './config'
+import { getJobLogConfig, resourceConfig } from './config'
 import type { JobLogVO } from './types'
-import { requestClient } from '../../../../api/request'
-import { searchPlanApi, useList } from '../../../../hooks/useList'
+import { requestClient, useList } from '@sunny-base-web/effects'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+
+const { searchFormSchema, tableColumns } = getJobLogConfig({ t })
 
 // ----------------------------------------------------------------------
 // 1. List Configuration
@@ -14,12 +17,7 @@ const queryFunction = async ({ page, formValues }) => {
   const queryParams = {
     pageNo: page.currentPage,
     pageSize: page.pageSize,
-    xxlJobLog: {
-      jobDesc: formValues.jobDesc || '',
-      triggerStatus: formValues.triggerStatus || '',
-      startTime: formValues.startTime || '',
-      endTime: formValues.endTime || ''
-    }
+    xxlJobLog: formValues
   };
   return requestClient.post('/schedule/joblog/selectForPage', queryParams);
 };
@@ -86,7 +84,7 @@ const seeZxrz = (row: JobLogVO) => {
               class="text-[rgb(var(--primary-6))] hover:text-[rgb(var(--primary-5))]"
               @click="seeDdbz(row)"
             >
-              查看
+              {{ t('joblog.view') }}
             </button>
           </template>
           
@@ -98,7 +96,7 @@ const seeZxrz = (row: JobLogVO) => {
               class="text-[rgb(var(--primary-6))] hover:text-[rgb(var(--primary-5))]"
               @click="seeMsg(row.handleMsg)"
             >
-              查看
+              {{ t('joblog.view') }}
             </button>
           </template>
           
@@ -110,7 +108,7 @@ const seeZxrz = (row: JobLogVO) => {
               class="text-[rgb(var(--primary-6))] hover:text-[rgb(var(--primary-5))]"
               @click="seeZxrz(row)"
             >
-              查看
+              {{ t('joblog.view') }}
             </button>
           </template>
         </Grid>

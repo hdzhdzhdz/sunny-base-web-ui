@@ -18,6 +18,7 @@ export * from './views/setting/dsrw/jobgroup';
 export * from './views/setting/systemSetting';
 export * from './views/setting/dataDictionary';
 export * from './views/setting/user';
+export * from './views/setting/role';
 export * from './form';
 export * from './utils/utils';
 export * from './utils/formatter';

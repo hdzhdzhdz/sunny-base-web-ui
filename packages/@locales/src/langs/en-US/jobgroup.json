@@ -1,0 +1,13 @@
+{
+  "appname": "App Name",
+  "title": "Title",
+  "online": "Online",
+  "offline": "Offline",
+  "autoRegister": "Auto Register",
+  "manualEntry": "Manual Entry",
+  "registerType": "Register Type",
+  "onlineAddressList": "Online Address List",
+  "action": "Action",
+  "inputAppname": "Please enter app name",
+  "inputTitle": "Please enter title"
+}

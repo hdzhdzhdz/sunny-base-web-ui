@@ -62,6 +62,10 @@ export function useList<T>(options: {
    * 是否开启懒加载
    */
   lazy?: boolean;
+  /**
+   * 是否自动加载数据
+   */
+  autoLoad?: boolean;
 })
 ```
 
@@ -79,6 +83,7 @@ export function useList<T>(options: {
 | `loadMethod` | `(row: any) => Promise<any[]>` | 树形表格懒加载方法（可选） |
 | `objectToValueFields` | `string[]` | 对象转值字段列表，用于将 BusinessSearch 等返回的对象数组转换为值字符串（可选） |
 | `lazy` | `boolean` | 是否开启懒加载（可选） |
+| `autoLoad` | `boolean` | 是否自动加载数据（可选，默认 true），为 true 时默认查询方案加载完成后自动触发查询 |
 
 ## 返回值
 
@@ -258,7 +263,8 @@ const {
   searchFormSchema,
   tableColumns,
   resourceConfig,
-  queryFunction
+  queryFunction,
+  autoLoad: false // 设置为false时，默认查询方案加载完成后不触发查询
 });
 </script>
 

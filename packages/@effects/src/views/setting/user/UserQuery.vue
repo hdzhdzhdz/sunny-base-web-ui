@@ -28,7 +28,7 @@ const queryFunction = async ({ page, formValues }: { page: { currentPage: number
   const queryParams = {
     pageNo: page.currentPage,
     pageSize: page.pageSize,
-    assUserOperationLog: formValues
+    authUser: formValues
   };
 
   return requestClient.post('/core/authUser/selectForPage', queryParams);

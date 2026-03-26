@@ -2,75 +2,89 @@ import type { FormSchema } from '@sunny-base-web/ui';
 import type { VxeGridProps } from 'vxe-pc-ui';
 import type { JobInfoVO } from './types';
 
-/**
- * 是否启用选项（用于表格显示）
- */
-const scheduleTypeOptions = [
-  { cKeyname: '无', cKeynumb: 'NONE' },
-  { cKeyname: 'CRON', cKeynumb: 'CRON' },
-  { cKeyname: '固定速度', cKeynumb: 'FIX_RATE' }
-];
-const glueTypeOptions = [
-  { cKeyname: 'BEAN', cKeynumb: 'BEAN' },
-  { cKeyname: 'GLUE(Java)', cKeynumb: 'GLUE_GROOVY' },
-  { cKeyname: 'GLUE(Shell)', cKeynumb: 'GLUE_SHELL' },
-  { cKeyname: 'GLUE(Python)', cKeynumb: 'GLUE_PYTHON' },
-  { cKeyname: 'GLUE(PHP)', cKeynumb: 'GLUE_PHP' },
-  { cKeyname: 'GLUE(Nodejs)', cKeynumb: 'GLUE_NODEJS' },
-  { cKeyname: 'GLUE(PowerShell)', cKeynumb: 'GLUE_POWERSHELL' }
-];
-const triggerStatusOptions = [
-  { cKeyname: '停止', cKeynumb: '0' },
-  { cKeyname: '运行', cKeynumb: '1' }
-];
+interface JobInfoConfig {
+  t: (key: string) => string
+}
 
-/**
- * 搜索表单配置
- */
-export const searchFormSchema: FormSchema[] = [
-  {
-    fieldName: 'jobDesc',
-    label: '任务描述',
-    component: 'Input',
-    componentProps: {
-      placeholder: '请输入任务描述',
-      allowClear: true
-    },
-    colProps: { span: 4 }
-  }
-];
+export const getJobInfoConfig = ({ t }: JobInfoConfig) => {
+  /**
+   * 是否启用选项（用于表格显示）
+   */
+  const scheduleTypeOptions = [
+    { cKeyname: t('jobinfo.none'), cKeynumb: 'NONE' },
+    { cKeyname: t('jobinfo.cron'), cKeynumb: 'CRON' },
+    { cKeyname: t('jobinfo.fixedRate'), cKeynumb: 'FIX_RATE' }
+  ];
+  const glueTypeOptions = [
+    { cKeyname: t('jobinfo.bean'), cKeynumb: 'BEAN' },
+    { cKeyname: t('jobinfo.glueJava'), cKeynumb: 'GLUE_GROOVY' },
+    { cKeyname: t('jobinfo.glueShell'), cKeynumb: 'GLUE_SHELL' },
+    { cKeyname: t('jobinfo.gluePython'), cKeynumb: 'GLUE_PYTHON' },
+    { cKeyname: t('jobinfo.gluePhp'), cKeynumb: 'GLUE_PHP' },
+    { cKeyname: t('jobinfo.glueNodejs'), cKeynumb: 'GLUE_NODEJS' },
+    { cKeyname: t('jobinfo.gluePowershell'), cKeynumb: 'GLUE_POWERSHELL' }
+  ];
+  const triggerStatusOptions = [
+    { cKeyname: t('jobinfo.stop'), cKeynumb: '0' },
+    { cKeyname: t('jobinfo.running'), cKeynumb: '1' }
+  ];
 
-/**
- * 表格列配置
- */
-export const tableColumns: VxeGridProps<JobInfoVO>['columns'] = [
-  { field: 'id', title: '任务id' },
-  { field: 'jobDesc', title: '任务描述' },
-  { field: 'jobGroupTitle', title: '执行器' },
-  { field: 'scheduleType', title: '调度类型',
-    formatter: ({ cellValue }) => {
-      const option = scheduleTypeOptions.find(opt => opt.cKeynumb === cellValue);
-      return option?.cKeyname || cellValue;
-    } },
-  { field: 'glueType', title: '运行模式',
-    formatter: ({ cellValue }) => {
-      const option = glueTypeOptions.find(opt => opt.cKeynumb === cellValue);
-      return option?.cKeyname || cellValue;
-    } },
-  { field: 'author', title: '负责人' },
-  { field: 'triggerStatus', title: '状态' ,
-    formatter: ({ cellValue }) => {
-      const option = triggerStatusOptions.find(opt => opt.cKeynumb === cellValue);
-      return option?.cKeyname || cellValue;
-    }},
-  {
-    field: 'action',
-    title: '操作',
-    fixed: 'right',
-    width: 400,
-    slots: { default: 'actionSlot' }
-  }
-];
+  /**
+   * 搜索表单配置
+   */
+  const searchFormSchema: FormSchema[] = [
+    {
+      fieldName: 'jobDesc',
+      label: t('jobinfo.jobDesc'),
+      component: 'Input',
+      componentProps: {
+        placeholder: t('jobinfo.inputJobDesc'),
+        allowClear: true
+      },
+      colProps: { span: 4 }
+    }
+  ];
+
+  /**
+   * 表格列配置
+   */
+  const tableColumns: VxeGridProps<JobInfoVO>['columns'] = [
+    { field: 'id', title: t('jobinfo.jobId') },
+    { field: 'jobDesc', title: t('jobinfo.jobDesc') },
+    { field: 'jobGroupTitle', title: t('jobinfo.executor') },
+    { field: 'scheduleType', title: t('jobinfo.scheduleType'),
+      formatter: ({ cellValue }) => {
+        const option = scheduleTypeOptions.find(opt => opt.cKeynumb === cellValue);
+        return option?.cKeyname || cellValue;
+      } },
+    { field: 'glueType', title: t('jobinfo.glueType'),
+      formatter: ({ cellValue }) => {
+        const option = glueTypeOptions.find(opt => opt.cKeynumb === cellValue);
+        return option?.cKeyname || cellValue;
+      } },
+    { field: 'author', title: t('jobinfo.author') },
+    { field: 'triggerStatus', title: t('jobinfo.status') ,
+      formatter: ({ cellValue }) => {
+        const option = triggerStatusOptions.find(opt => opt.cKeynumb === cellValue);
+        return option?.cKeyname || cellValue;
+      }},
+    {
+      field: 'action',
+      title: t('jobinfo.action'),
+      fixed: 'right',
+      width: 400,
+      slots: { default: 'actionSlot' }
+    }
+  ];
+
+  return {
+    searchFormSchema,
+    tableColumns,
+    scheduleTypeOptions,
+    glueTypeOptions,
+    triggerStatusOptions
+  };
+};
 
 /**
  * 资源配置

@@ -1,11 +1,9 @@
 <script lang="tsx" setup>
 import { ref } from 'vue'
 import { Message, Modal } from '@arco-design/web-vue'
-import { SunnySearchPlan, SunnyIcon } from '@sunny-base-web/ui'
-import { searchPlanApi, useList } from '../../../hooks/useList'
 import { searchFormSchema, tableColumns, resourceConfig } from './config'
 import type { DataDictionaryVO } from './types'
-import { requestClient } from '../../../api/request'
+import { requestClient, useList } from '@sunny-base-web/effects'
 import DataDictionaryAdd from './DataDictionaryAdd.vue'
 
 // ----------------------------------------------------------------------
@@ -49,9 +47,7 @@ async function loadChildren({ row }: { row: DataDictionaryVO & { hasChildren?: b
     pageNo: 1,
     pageSize: 9999,
     authDict: {
-      cSign: formValues.cSign || '',
-      cXuhao: formValues.cXuhao || '',
-      cName: formValues.cName || '',
+      ...formValues,
       nParent: row.id  // 查询该节点的子节点
     }
   }

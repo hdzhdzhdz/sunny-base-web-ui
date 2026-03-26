@@ -1,0 +1,13 @@
+{
+  "appname": "应用名称",
+  "title": "名称",
+  "online": "在线",
+  "offline": "离线",
+  "autoRegister": "自动注册",
+  "manualEntry": "手动录入",
+  "registerType": "注册方式",
+  "onlineAddressList": "OnLine地址列表",
+  "action": "操作",
+  "inputAppname": "请输入应用名称",
+  "inputTitle": "请输入名称"
+}

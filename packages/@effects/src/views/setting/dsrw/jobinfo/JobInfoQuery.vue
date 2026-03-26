@@ -1,9 +1,12 @@
 <script lang="tsx" setup>
 import { SunnySearchPlan, SunnyIcon } from "@sunny-base-web/ui"
-import { searchFormSchema, tableColumns, resourceConfig } from './config'
+import { getJobInfoConfig, resourceConfig } from './config'
 import type { JobInfoVO } from './types'
-import { requestClient } from '../../../../api/request'
-import { searchPlanApi, useList } from '../../../../hooks/useList'
+import { requestClient, useList } from '@sunny-base-web/effects'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+
+const { searchFormSchema, tableColumns } = getJobInfoConfig({ t })
 
 // ----------------------------------------------------------------------
 // 1. List Configuration
@@ -14,9 +17,7 @@ const queryFunction = async ({ page, formValues }) => {
   const queryParams = {
     pageNo: page.currentPage,
     pageSize: page.pageSize,
-    xxlJobInfo: {
-      jobDesc: formValues.jobDesc || ''
-    }
+    xxlJobInfo: formValues
   };
   return requestClient.post('/schedule/jobinfo/selectForPage', queryParams);
 };

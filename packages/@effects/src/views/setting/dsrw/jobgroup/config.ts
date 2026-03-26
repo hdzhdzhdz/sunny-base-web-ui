@@ -2,68 +2,81 @@ import type { FormSchema } from '@sunny-base-web/ui';
 import type { VxeGridProps } from 'vxe-pc-ui';
 import type { JobGroupVO } from './types';
 
-/**
- * 状态选项（用于表格显示）
- */
-const statusOptions = [
-  { cKeyname: '在线', cKeynumb: '1' },
-  { cKeyname: '离线', cKeynumb: '0' }
-];
+interface JobGroupConfig {
+  t: (key: string) => string
+}
 
-/**
- * 注册方式选项（用于表格显示）
- */
-const zcfsOpts = [
-  { cKeyname: '自动注册', cKeynumb: '0' },
-  { cKeyname: '手动录入', cKeynumb: '1' }
-];
+export const getJobGroupConfig = ({ t }: JobGroupConfig) => {
+  /**
+   * 状态选项（用于表格显示）
+   */
+  const statusOptions = [
+    { cKeyname: t('jobgroup.online'), cKeynumb: '1' },
+    { cKeyname: t('jobgroup.offline'), cKeynumb: '0' }
+  ];
 
-/**
- * 搜索表单配置
- */
-export const searchFormSchema: FormSchema[] = [
-  {
-    fieldName: 'appname',
-    label: 'Appname',
-    component: 'Input',
-    componentProps: {
-      placeholder: '请输入Appname',
-      allowClear: true
+  /**
+   * 注册方式选项（用于表格显示）
+   */
+  const zcfsOpts = [
+    { cKeyname: t('jobgroup.autoRegister'), cKeynumb: '0' },
+    { cKeyname: t('jobgroup.manualEntry'), cKeynumb: '1' }
+  ];
+
+  /**
+   * 搜索表单配置
+   */
+  const searchFormSchema: FormSchema[] = [
+    {
+      fieldName: 'appname',
+      label: t('jobgroup.appname'),
+      component: 'Input',
+      componentProps: {
+        placeholder: t('jobgroup.inputAppname'),
+        allowClear: true
+      },
+      colProps: { span: 4 }
     },
-    colProps: { span: 4 }
-  },
-  {
-    fieldName: 'title',
-    label: '名称',
-    component: 'Input',
-    componentProps: {
-      placeholder: '请输入名称',
-      allowClear: true
-    },
-    colProps: { span: 4 }
-  }
-];
+    {
+      fieldName: 'title',
+      label: t('jobgroup.title'),
+      component: 'Input',
+      componentProps: {
+        placeholder: t('jobgroup.inputTitle'),
+        allowClear: true
+      },
+      colProps: { span: 4 }
+    }
+  ];
 
-/**
- * 表格列配置
- */
-export const tableColumns: VxeGridProps<JobGroupVO>['columns'] = [
-  { field: 'appname', title: 'Appname' },
-  { field: 'title', title: '名称' },
-  { field: 'addressType', title: '注册方式',
-    formatter: ({ cellValue }) => {
-      const option = zcfsOpts.find(opt => opt.cKeynumb === cellValue);
-      return option?.cKeyname || cellValue;
-    } },
-  { field: 'addressList', title: 'OnLine地址列表' },
-  {
-    field: 'action',
-    title: '操作',
-    fixed: 'right',
-    width: 400,
-    slots: { default: 'actionSlot' }
-  }
-];
+  /**
+   * 表格列配置
+   */
+  const tableColumns: VxeGridProps<JobGroupVO>['columns'] = [
+    { field: 'appname', title: t('jobgroup.appname') },
+    { field: 'title', title: t('jobgroup.title') },
+    { field: 'addressType', title: t('jobgroup.registerType'),
+      formatter: ({ cellValue }) => {
+        const option = zcfsOpts.find(opt => opt.cKeynumb === cellValue);
+        return option?.cKeyname || cellValue;
+      } },
+    { field: 'addressList', title: t('jobgroup.onlineAddressList') },
+    {
+      field: 'action',
+      title: t('jobgroup.action'),
+      fixed: 'right',
+      width: 400,
+      slots: { default: 'actionSlot' }
+    }
+  ];
+
+  return {
+    searchFormSchema,
+    tableColumns,
+    statusOptions,
+    zcfsOpts
+  };
+};
 
 /**
  * 资源配置

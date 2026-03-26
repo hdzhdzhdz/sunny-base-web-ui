@@ -139,6 +139,9 @@ const handleClose = async () => {
       if (res === false) return;
     }
 
+    // 重置最大化状态
+    isMaximized.value = false;
+    
     visible.value = false;
     emit("close");
   };
@@ -156,6 +159,8 @@ const handleClose = async () => {
         const res = await onBeforeOk();
         // 如果返回 false，则阻止关闭
         if (res !== false) {
+          // 重置最大化状态
+          isMaximized.value = false;
           emit("ok");
           visible.value = false;
         }
@@ -166,10 +171,17 @@ const handleClose = async () => {
       }
     } else {
       // 默认行为：触发 ok 事件并关闭弹窗
+      // 重置最大化状态
+      isMaximized.value = false;
       emit("ok");
       visible.value = false;
     }
   };
+
+// 暴露方法给父组件
+defineExpose({
+  toggleMaximize
+});
 </script>
 
 <style>

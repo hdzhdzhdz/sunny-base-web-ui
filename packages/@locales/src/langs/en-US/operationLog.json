@@ -1,0 +1,20 @@
+{
+  "moduleName": "Module Name",
+  "system": "System",
+  "billNo": "Bill No.",
+  "userWork": "User ID",
+  "operationDate": "Operation Date",
+  "startDate": "Start Date",
+  "endDate": "End Date",
+  "sequence": "No.",
+  "userName": "User Name",
+  "description": "Description",
+  "interfaceUrl": "Interface URL",
+  "interfaceMethod": "Interface Method",
+  "executionTime": "Execution Time(seconds)",
+  "operationTime": "Operation Time",
+  "inputModuleName": "Please enter module name",
+  "inputSystem": "Please enter system",
+  "inputBillNo": "Please enter bill number",
+  "inputUserWork": "Please enter user ID"
+}

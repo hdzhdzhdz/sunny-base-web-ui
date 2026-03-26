@@ -1,0 +1,23 @@
+{
+  "jobDesc": "任务描述",
+  "jobId": "任务id",
+  "executor": "执行器",
+  "scheduleType": "调度类型",
+  "glueType": "运行模式",
+  "author": "负责人",
+  "status": "状态",
+  "action": "操作",
+  "none": "无",
+  "cron": "CRON",
+  "fixedRate": "固定速度",
+  "bean": "BEAN",
+  "glueJava": "GLUE(Java)",
+  "glueShell": "GLUE(Shell)",
+  "gluePython": "GLUE(Python)",
+  "gluePhp": "GLUE(PHP)",
+  "glueNodejs": "GLUE(Nodejs)",
+  "gluePowershell": "GLUE(PowerShell)",
+  "stop": "停止",
+  "running": "运行",
+  "inputJobDesc": "请输入任务描述"
+}

@@ -1,0 +1,20 @@
+{
+  "moduleName": "模块名称",
+  "system": "所属系统",
+  "billNo": "单据号",
+  "userWork": "用户工号",
+  "operationDate": "操作日期",
+  "startDate": "开始日期",
+  "endDate": "结束日期",
+  "sequence": "序号",
+  "userName": "用户名称",
+  "description": "描述",
+  "interfaceUrl": "接口地址",
+  "interfaceMethod": "接口服务方法",
+  "executionTime": "执行时间(秒)",
+  "operationTime": "操作时间",
+  "inputModuleName": "请输入模块名称",
+  "inputSystem": "请输入所属系统",
+  "inputBillNo": "请输入单据号",
+  "inputUserWork": "请输入用户工号"
+}

@@ -1,0 +1,23 @@
+{
+  "jobDesc": "Job Description",
+  "jobId": "Job ID",
+  "executor": "Executor",
+  "scheduleType": "Schedule Type",
+  "glueType": "Run Mode",
+  "author": "Author",
+  "status": "Status",
+  "action": "Action",
+  "none": "None",
+  "cron": "CRON",
+  "fixedRate": "Fixed Rate",
+  "bean": "BEAN",
+  "glueJava": "GLUE(Java)",
+  "glueShell": "GLUE(Shell)",
+  "gluePython": "GLUE(Python)",
+  "gluePhp": "GLUE(PHP)",
+  "glueNodejs": "GLUE(Nodejs)",
+  "gluePowershell": "GLUE(PowerShell)",
+  "stop": "Stop",
+  "running": "Running",
+  "inputJobDesc": "Please enter job description"
+}
