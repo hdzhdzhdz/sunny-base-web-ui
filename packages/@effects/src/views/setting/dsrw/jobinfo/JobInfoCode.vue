@@ -70,7 +70,7 @@ const getVersions = async () => {
     }
   } catch (error) {
     console.error('获取版本列表失败:', error)
-    Message.error('获取版本列表失败')
+    Message.error(t('jobinfo.getVersionsFailed'))
   } finally {
     loading.value = false
   }
@@ -95,13 +95,13 @@ const saveCode = async () => {
       glueRemark: codeForm.glueRemark
     })
     if (response.success) {
-      Message.success('保存成功')
-      emit('success')
-      getVersions() // 重新获取版本列表
-    }
-  } catch (error) {
-    console.error('保存失败:', error)
-    Message.error('保存失败')
+        Message.success(t('jobinfo.saveSuccess'))
+        emit('success')
+        getVersions() // 重新获取版本列表
+      }
+    } catch (error) {
+      console.error('保存失败:', error)
+      Message.error(t('jobinfo.saveFailed'))
   } finally {
     saving.value = false
   }
@@ -152,7 +152,7 @@ defineExpose({
 
 <template>
   <a-modal
-    title="GLUE IDE"
+    :title="t('jobinfo.glueIde')"
     :visible="visible"
     @update:visible="emit('update:visible', $event)"
     :mask-closable="false"
@@ -162,11 +162,11 @@ defineExpose({
   >
     <div class="space-y-4">
       <div class="flex items-center gap-4">
-        <span class="text-gray-500">任务描述:</span>
+        <span class="text-gray-500">{{ t('jobinfo.jobDesc') }}:</span>
         <span class="flex-1">{{ codeForm.jobDesc }}</span>
         <a-select
           v-model="codeForm.version"
-          placeholder="选择版本"
+          :placeholder="t('jobinfo.selectVersion')"
           :loading="loading"
           @change="handleVersionChange"
         >
@@ -179,27 +179,27 @@ defineExpose({
       </div>
 
       <div>
-        <label class="block text-gray-500 mb-2">代码内容:</label>
+        <label class="block text-gray-500 mb-2">{{ t('jobinfo.codeContent') }}:</label>
         <a-textarea
           v-model="codeForm.glueSource"
           :rows="20"
-          placeholder="请输入代码内容"
+          :placeholder="t('jobinfo.inputCodeContent')"
         />
       </div>
 
       <div>
-        <label class="block text-gray-500 mb-2">备注:</label>
+        <label class="block text-gray-500 mb-2">{{ t('jobinfo.remark') }}:</label>
         <a-textarea
           v-model="codeForm.glueRemark"
           :rows="4"
-          placeholder="请输入备注"
+          :placeholder="t('jobinfo.inputRemark')"
         />
       </div>
     </div>
     
     <div class="flex justify-end gap-2 mt-4">
-      <a-button type="primary" :loading="saving" @click="saveCode">保存</a-button>
-      <a-button @click="quit">取消</a-button>
+      <a-button type="primary" :loading="saving" @click="saveCode">{{ t('jobinfo.save') }}</a-button>
+      <a-button @click="quit">{{ t('jobinfo.cancel') }}</a-button>
     </div>
   </a-modal>
 </template>

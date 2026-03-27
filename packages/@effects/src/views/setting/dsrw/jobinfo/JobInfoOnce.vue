@@ -56,13 +56,13 @@ const executeOnce = async () => {
       })
       
       if (response.success) {
-        Message.success('执行成功')
+        Message.success(t('jobinfo.executeSuccess'))
         emit('success')
         quit()
       }
     } catch (error) {
       console.error('执行失败:', error)
-      Message.error('执行失败')
+      Message.error(t('jobinfo.executeFailed'))
     } finally {
       loading.value = false
     }
@@ -107,7 +107,7 @@ defineExpose({
 
 <template>
   <a-modal
-    title="执行一次"
+    :title="t('jobinfo.executeOnce')"
     :visible="visible"
     @update:visible="emit('update:visible', $event)"
     :mask-closable="false"
@@ -120,22 +120,22 @@ defineExpose({
       :model="onceForm"
       :label-width="100"
     >
-      <a-form-item label="任务描述">
+      <a-form-item :label="t('jobinfo.jobDesc')">
         <a-input v-model="onceForm.jobDesc" disabled />
       </a-form-item>
 
-      <a-form-item label="执行参数">
+      <a-form-item :label="t('jobinfo.executorParam')">
         <a-textarea
           v-model="onceForm.executorParam"
           :rows="4"
-          placeholder="请输入执行参数（可选）"
+          :placeholder="t('jobinfo.inputExecutorParam')"
         />
       </a-form-item>
     </a-form>
     
     <div class="flex justify-end gap-2 mt-4">
-      <a-button type="primary" :loading="loading" @click="executeOnce">执行</a-button>
-      <a-button @click="quit">取消</a-button>
+      <a-button type="primary" :loading="loading" @click="executeOnce">{{ t('jobinfo.execute') }}</a-button>
+      <a-button @click="quit">{{ t('jobinfo.cancel') }}</a-button>
     </div>
   </a-modal>
 </template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive, watch, onMounted } from 'vue'
-import { Modal, Form, Input, Radio, Button, Select, Message } from '@arco-design/web-vue'
+import { Modal, Form, Input, Radio, Button, Select, Message, Divider } from '@arco-design/web-vue'
 import { requestClient } from '@sunny-base-web/effects'
 import { useI18n } from 'vue-i18n'
 
@@ -89,13 +89,13 @@ const save = async () => {
       }
       
       if (response.success) {
-        Message.success(addForm.id ? '编辑成功' : '新增成功')
+        Message.success(addForm.id ? t('jobinfo.editSuccess') : t('jobinfo.addSuccess'))
         emit('success')
         quit()
       }
     } catch (error) {
       console.error('保存失败:', error)
-      Message.error('保存失败')
+      Message.error(t('jobinfo.saveFailed'))
     } finally {
       loading.value = false
     }
@@ -156,7 +156,7 @@ defineExpose({
 
 <template>
   <a-modal
-    :title="addForm.id ? '编辑定时任务' : '新增定时任务'"
+    :title="addForm.id ? t('jobinfo.editTitle') : t('jobinfo.addTitle')"
     :visible="visible"
     @update:visible="emit('update:visible', $event)"
     :mask-closable="false"
@@ -169,8 +169,11 @@ defineExpose({
       :model="addForm"
       :label-width="130"
     >
-      <a-form-item label="执行器" field="jobGroup" :rules="[{ required: true, message: '请选择执行器' }]">
-        <a-select v-model="addForm.jobGroup" placeholder="请选择执行器">
+      <!-- 基础配置 -->
+      <a-divider :content-position="left">{{ t('jobinfo.basicConfig') }}</a-divider>
+
+      <a-form-item :label="t('jobinfo.executor')" field="jobGroup" :rules="[{ required: true, message: t('jobinfo.selectExecutor') }]">
+        <a-select v-model="addForm.jobGroup" :placeholder="t('jobinfo.selectExecutor')">
           <a-option
             v-for="option in jobGroupOptions"
             :key="option.value"
@@ -179,63 +182,69 @@ defineExpose({
         </a-select>
       </a-form-item>
 
-      <a-form-item label="任务描述" field="jobDesc" :rules="[{ required: true, message: '请输入任务描述' }]">
-        <a-input v-model="addForm.jobDesc" placeholder="请输入任务描述" />
+      <a-form-item :label="t('jobinfo.jobDesc')" field="jobDesc" :rules="[{ required: true, message: t('jobinfo.inputJobDesc') }]">
+        <a-input v-model="addForm.jobDesc" :placeholder="t('jobinfo.inputJobDesc')" />
       </a-form-item>
 
-      <a-form-item label="负责人" field="author" :rules="[{ required: true, message: '请输入负责人' }]">
-        <a-input v-model="addForm.author" placeholder="请输入负责人" />
+      <a-form-item :label="t('jobinfo.author')" field="author" :rules="[{ required: true, message: t('jobinfo.inputAuthor') }]">
+        <a-input v-model="addForm.author" :placeholder="t('jobinfo.inputAuthor')" />
       </a-form-item>
 
-      <a-form-item label="报警邮箱" field="alarmEmail">
-        <a-input v-model="addForm.alarmEmail" placeholder="请输入报警邮箱" />
+      <a-form-item :label="t('jobinfo.alarmEmail')" field="alarmEmail">
+        <a-input v-model="addForm.alarmEmail" :placeholder="t('jobinfo.inputAlarmEmail')" />
       </a-form-item>
 
-      <a-form-item label="调度类型" field="scheduleType" :rules="[{ required: true, message: '请选择调度类型' }]">
+      <!-- 调度配置 -->
+      <a-divider :content-position="left">{{ t('jobinfo.scheduleConfig') }}</a-divider>
+
+      <a-form-item :label="t('jobinfo.scheduleType')" field="scheduleType" :rules="[{ required: true, message: t('jobinfo.selectScheduleType') }]">
         <a-radio-group v-model="addForm.scheduleType">
-          <a-radio value="CRON">CRON</a-radio>
-          <a-radio value="FIX_RATE">FIX_RATE</a-radio>
+          <a-radio value="CRON">{{ t('jobinfo.cron') }}</a-radio>
+          <a-radio value="FIX_RATE">{{ t('jobinfo.fixedRate') }}</a-radio>
         </a-radio-group>
       </a-form-item>
 
-      <a-form-item label="CRON表达式" field="jobCron" :rules="[{ required: addForm.scheduleType === 'CRON', message: '请输入CRON表达式' }]">
-        <a-input v-model="addForm.jobCron" placeholder="请输入CRON表达式" :disabled="addForm.scheduleType !== 'CRON'" />
+      <a-form-item :label="t('jobinfo.cronExpression')" field="jobCron" :rules="[{ required: addForm.scheduleType === 'CRON', message: t('jobinfo.inputCronExpression') }]">
+        <a-input v-model="addForm.jobCron" :placeholder="t('jobinfo.inputCronExpression')" :disabled="addForm.scheduleType !== 'CRON'" />
       </a-form-item>
 
-      <a-form-item label="调度配置" field="scheduleConf" :rules="[{ required: addForm.scheduleType === 'FIX_RATE', message: '请输入调度配置' }]">
-        <a-input v-model="addForm.scheduleConf" placeholder="请输入调度配置" :disabled="addForm.scheduleType !== 'FIX_RATE'" />
+      <a-form-item :label="t('jobinfo.scheduleConf')" field="scheduleConf" :rules="[{ required: addForm.scheduleType === 'FIX_RATE', message: t('jobinfo.inputScheduleConf') }]">
+        <a-input v-model="addForm.scheduleConf" :placeholder="t('jobinfo.inputScheduleConf')" :disabled="addForm.scheduleType !== 'FIX_RATE'" />
       </a-form-item>
 
-      <a-form-item label="运行模式" field="glueType" :rules="[{ required: true, message: '请选择运行模式' }]">
+      <!-- 任务配置 -->
+      <a-divider :content-position="left">{{ t('jobinfo.jobConfig') }}</a-divider>
+
+      <a-form-item :label="t('jobinfo.glueType')" field="glueType" :rules="[{ required: true, message: t('jobinfo.selectGlueType') }]">
         <a-radio-group v-model="addForm.glueType">
-          <a-radio value="BEAN">BEAN</a-radio>
-          <a-radio value="GLUE_GROOVY">GLUE_GROOVY</a-radio>
+          <a-radio value="BEAN">{{ t('jobinfo.bean') }}</a-radio>
+          <a-radio value="GLUE_GROOVY">{{ t('jobinfo.glueJava') }}</a-radio>
         </a-radio-group>
       </a-form-item>
 
-      <a-form-item label="JobHandler" field="glueSource" :rules="[{ required: true, message: '请输入JobHandler' }]">
-        <a-input v-model="addForm.glueSource" placeholder="请输入JobHandler" />
+      <a-form-item :label="t('jobinfo.jobHandler')" field="glueSource" :rules="[{ required: true, message: t('jobinfo.inputJobHandler') }]">
+        <a-input v-model="addForm.glueSource" :placeholder="t('jobinfo.inputJobHandler')" />
       </a-form-item>
 
-      <a-form-item label="备注" field="glueRemark">
-        <a-textarea v-model="addForm.glueRemark" :rows="4" placeholder="请输入备注" />
+      <a-form-item :label="t('jobinfo.remark')" field="glueRemark">
+        <a-textarea v-model="addForm.glueRemark" :rows="4" :placeholder="t('jobinfo.inputRemark')" />
       </a-form-item>
 
-      <a-form-item label="子任务ID" field="childJobId">
-        <a-input v-model="addForm.childJobId" placeholder="请输入子任务ID，多个用逗号分隔" />
+      <a-form-item :label="t('jobinfo.childJobId')" field="childJobId">
+        <a-input v-model="addForm.childJobId" :placeholder="t('jobinfo.inputChildJobId')" />
       </a-form-item>
 
-      <a-form-item label="任务状态" field="jobStatus" :rules="[{ required: true, message: '请选择任务状态' }]">
+      <a-form-item :label="t('jobinfo.jobStatus')" field="jobStatus" :rules="[{ required: true, message: t('jobinfo.selectJobStatus') }]">
         <a-radio-group v-model="addForm.jobStatus">
-          <a-radio value="1">启用</a-radio>
-          <a-radio value="0">禁用</a-radio>
+          <a-radio value="1">{{ t('jobinfo.enable') }}</a-radio>
+          <a-radio value="0">{{ t('jobinfo.disable') }}</a-radio>
         </a-radio-group>
       </a-form-item>
     </a-form>
     
     <div class="flex justify-end gap-2 mt-4">
-      <a-button type="primary" :loading="loading" @click="save">保存</a-button>
-      <a-button @click="quit">取消</a-button>
+      <a-button type="primary" :loading="loading" @click="save">{{ t('jobinfo.save') }}</a-button>
+      <a-button @click="quit">{{ t('jobinfo.cancel') }}</a-button>
     </div>
   </a-modal>
 </template>

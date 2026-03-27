@@ -33,8 +33,8 @@ const addForm = reactive({
 // 注册方式选项
 const options = {
   zcfsOpts: [
-    { cKeyname: '自动注册', cKeynumb: '0' },
-    { cKeyname: '手动录入', cKeynumb: '1' }
+    { cKeyname: t('jobgroup.autoRegister'), cKeynumb: '0' },
+    { cKeyname: t('jobgroup.manualEntry'), cKeynumb: '1' }
   ]
 }
 
@@ -66,13 +66,13 @@ const save = async () => {
       }
       
       if (response.success) {
-        Message.success(addForm.id ? '编辑成功' : '新增成功')
+        Message.success(addForm.id ? t('jobgroup.editSuccess') : t('jobgroup.addSuccess'))
         emit('success')
         quit()
       }
     } catch (error) {
       console.error('保存失败:', error)
-      Message.error('保存失败')
+      Message.error(t('jobgroup.saveFailed'))
     } finally {
       loading.value = false
     }
@@ -117,7 +117,7 @@ defineExpose({
 
 <template>
   <a-modal
-    :title="addForm.id ? '编辑执行器' : '新增执行器'"
+    :title="addForm.id ? t('jobgroup.editTitle') : t('jobgroup.addTitle')"
     :visible="visible"
     @update:visible="emit('update:visible', $event)"
     :mask-closable="false"
@@ -130,15 +130,15 @@ defineExpose({
       :model="addForm"
       :label-width="130"
     >
-      <a-form-item label="AppName" field="appname" :rules="[{ required: true, message: '请输入AppName' }]">
-        <a-input v-model="addForm.appname" placeholder="请输入AppName" />
+      <a-form-item :label="t('jobgroup.appname')" field="appname" :rules="[{ required: true, message: t('jobgroup.inputAppname') }]">
+        <a-input v-model="addForm.appname" :placeholder="t('jobgroup.inputAppname')" />
       </a-form-item>
 
-      <a-form-item label="名称" field="title" :rules="[{ required: true, message: '请输入名称' }]">
-        <a-input v-model="addForm.title" placeholder="请输入名称" />
+      <a-form-item :label="t('jobgroup.title')" field="title" :rules="[{ required: true, message: t('jobgroup.inputTitle') }]">
+        <a-input v-model="addForm.title" :placeholder="t('jobgroup.inputTitle')" />
       </a-form-item>
 
-      <a-form-item label="注册方式" field="addressType" :rules="[{ required: true, message: '请选择注册方式' }]">
+      <a-form-item :label="t('jobgroup.registerType')" field="addressType" :rules="[{ required: true, message: t('jobgroup.selectRegisterType') }]">
         <a-radio-group v-model="addForm.addressType">
           <a-radio
             v-for="opt in options.zcfsOpts"
@@ -149,23 +149,23 @@ defineExpose({
       </a-form-item>
 
       <a-form-item 
-        label="机器地址" 
+        :label="t('jobgroup.machineAddress')" 
         field="addressList" 
-        :rules="[{ required: addForm.addressType === '1', message: '请输入机器地址' }]"
+        :rules="[{ required: addForm.addressType === '1', message: t('jobgroup.inputMachineAddress') }]"
       >
         <a-textarea
           v-model="addForm.addressList"
           :rows="4"
           :max-rows="8"
           :disabled="addForm.addressType === '0'"
-          placeholder="请输入执行器地址列表，多地址逗号分隔"
+          :placeholder="t('jobgroup.inputMachineAddressList')"
         />
       </a-form-item>
     </a-form>
     
     <div class="flex justify-end gap-2 mt-4">
-      <a-button type="primary" :loading="loading" @click="save">保存</a-button>
-      <a-button @click="quit">取消</a-button>
+      <a-button type="primary" :loading="loading" @click="save">{{ t('jobgroup.save') }}</a-button>
+      <a-button @click="quit">{{ t('jobgroup.cancel') }}</a-button>
     </div>
   </a-modal>
 </template>

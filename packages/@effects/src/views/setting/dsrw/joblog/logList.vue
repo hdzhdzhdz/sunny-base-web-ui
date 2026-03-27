@@ -8,6 +8,9 @@ import {
   IconToBottom
 } from '@arco-design/web-vue/es/icon'
 import { requestClient } from '@sunny-base-web/effects'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 // Props
 const props = defineProps<{
@@ -140,6 +143,7 @@ defineExpose({
         status="danger" 
         shape="circle" 
         @click="close"
+        :tooltip="t('joblog.close')"
       >
         <template #icon>
           <icon-close />
@@ -150,6 +154,7 @@ defineExpose({
         status="danger" 
         shape="circle" 
         @click="fullscreen = !fullscreen"
+        :tooltip="t('joblog.fullscreen')"
       >
         <template #icon>
           <icon-fullscreen />
@@ -160,6 +165,7 @@ defineExpose({
         status="danger" 
         shape="circle" 
         @click="top"
+        :tooltip="t('joblog.scrollToTop')"
       >
         <template #icon>
           <icon-to-top />
@@ -171,6 +177,7 @@ defineExpose({
         shape="circle" 
         :loading="loading" 
         @click="bottom"
+        :tooltip="t('joblog.scrollToBottom')"
       >
         <template #icon>
           <icon-to-bottom />

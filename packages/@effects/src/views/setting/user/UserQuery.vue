@@ -1,6 +1,5 @@
 <script lang="tsx" setup>
 import { ref } from 'vue'
-import type { VxeGridProps, VxeGridListeners } from 'vxe-table'
 import { Modal, Message } from '@arco-design/web-vue';
 
 import { useExportModal, useImportModal } from '@sunny-base-web/ui'
@@ -34,13 +33,13 @@ const queryFunction = async ({ page, formValues }: { page: { currentPage: number
   return requestClient.post('/core/authUser/selectForPage', queryParams);
 };
 
-const gridEvents:VxeGridListeners = {
-  async toolbarButtonClick (params: any) {
-    console.log(params)
+// 表格事件
+const gridEvents = {
+  async toolbarButtonClick(params: any) {
     const selectRecords = [
-      // ...params.$grid.getCheckboxReserveRecords(), // 保留选中的记录
-      ...params.$grid.getCheckboxRecords() // 当前选中的记录
+      ...params.$grid.getCheckboxRecords()
     ]
+    
     switch (params.button.code) {
       case 'userManagement/add':
         UserAddRef.value.addInit()

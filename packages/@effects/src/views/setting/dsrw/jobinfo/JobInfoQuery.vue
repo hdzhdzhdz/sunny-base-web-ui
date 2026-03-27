@@ -27,74 +27,28 @@ const codeRef = ref<InstanceType<typeof JobInfoCode> | null>(null)
 
 // 表格查询函数
 const queryFunction = async ({ page, formValues }) => {
-  // 模拟数据
-  const mockData = {
-    success: true,
-    result: {
-      records: [
-        {
-          id: '1001',
-          jobGroup: 'demo-job-group',
-          jobDesc: '测试任务1',
-          author: 'admin',
-          scheduleType: 'CRON',
-          scheduleConf: '0 0/1 * * * ?',
-          jobCron: '0 0/1 * * * ?',
-          alarmEmail: 'admin@example.com',
-          jobStatus: '1',
-          glueType: 'BEAN',
-          glueSource: 'com.example.JobHandler',
-          glueRemark: '测试任务处理器',
-          childJobId: '',
-          triggerStatus: '1',
-          triggerLastTime: '2024-03-26 10:00:00',
-          triggerNextTime: '2024-03-26 10:01:00'
-        },
-        {
-          id: '1002',
-          jobGroup: 'production-job-group',
-          jobDesc: '生产任务1',
-          author: 'user1',
-          scheduleType: 'CRON',
-          scheduleConf: '0 0/5 * * * ?',
-          jobCron: '0 0/5 * * * ?',
-          alarmEmail: 'user1@example.com',
-          jobStatus: '1',
-          glueType: 'BEAN',
-          glueSource: 'com.example.ProductionJob',
-          glueRemark: '生产环境任务',
-          childJobId: '',
-          triggerStatus: '1',
-          triggerLastTime: '2024-03-26 09:55:00',
-          triggerNextTime: '2024-03-26 10:00:00'
-        },
-        {
-          id: '1003',
-          jobGroup: 'test-job-group',
-          jobDesc: '测试任务2',
-          author: 'user2',
-          scheduleType: 'CRON',
-          scheduleConf: '0 0/10 * * * ?',
-          jobCron: '0 0/10 * * * ?',
-          alarmEmail: 'user2@example.com',
-          jobStatus: '0',
-          glueType: 'BEAN',
-          glueSource: 'com.example.TestJob',
-          glueRemark: '测试环境专用任务',
-          childJobId: '',
-          triggerStatus: '0',
-          triggerLastTime: '2024-03-26 09:50:00',
-          triggerNextTime: '2024-03-26 10:00:00'
-        }
-      ],
-      total: 3,
-      size: page.pageSize,
-      current: page.currentPage,
-      pages: Math.ceil(3 / page.pageSize)
-    }
+  const queryParams = {
+    pageNo: page.currentPage,
+    pageSize: page.pageSize,
+    jobInfo: formValues
   };
-  
-  return mockData;
+  return requestClient.post('/schedule/jobinfo/selectForPage', queryParams);
+};
+
+// 表格事件
+const gridEvents = {
+  async toolbarButtonClick(params: any) {
+    switch (params.button.code) {
+      case 'jobinfo/add':
+        // 新增
+        if (formRef.value) {
+          formRef.value.show()
+        }
+        break
+      default:
+        break
+    }
+  }
 };
 
 // 使用useList钩子
@@ -116,7 +70,8 @@ const {
   searchFormSchema,
   tableColumns,
   resourceConfig,
-  queryFunction
+  queryFunction,
+  gridEvents
 });
 
 // 过滤表格操作按钮
@@ -129,12 +84,6 @@ const toggleToolbarClick = async (button: any, row: JobInfoVO) => {
   const { handle } = button;
   
   switch (handle) {
-    case 'jobinfo/add':
-      // 新增
-      if (formRef.value) {
-        formRef.value.show()
-      }
-      break;
     case 'jobinfo/once':
       // 执行一次
       if (onceRef.value) {
@@ -144,19 +93,19 @@ const toggleToolbarClick = async (button: any, row: JobInfoVO) => {
     case 'jobinfo/start':
       // 启动
       Modal.confirm({
-        title: '确认启动',
-        content: `确定启动任务"${row.jobDesc}"吗？`,
+        title: t('jobinfo.confirmStart'),
+        content: t('jobinfo.confirmStartContent', { jobDesc: row.jobDesc }),
         onOk: async () => {
           try {
             const response = await requestClient.post('/schedule/jobinfo/start', { id: row.id })
             if (response.success) {
-              Message.success('启动成功')
+              Message.success(t('jobinfo.startSuccess'))
               // 刷新表格数据
               gridApi.value?.refresh()
             }
           } catch (error) {
             console.error('启动失败:', error)
-            Message.error('启动失败')
+            Message.error(t('jobinfo.startFailed'))
           }
         }
       })
@@ -164,19 +113,19 @@ const toggleToolbarClick = async (button: any, row: JobInfoVO) => {
     case 'jobinfo/stop':
       // 停止
       Modal.confirm({
-        title: '确认停止',
-        content: `确定停止任务"${row.jobDesc}"吗？`,
+        title: t('jobinfo.confirmStop'),
+        content: t('jobinfo.confirmStopContent', { jobDesc: row.jobDesc }),
         onOk: async () => {
           try {
             const response = await requestClient.post('/schedule/jobinfo/stop', { id: row.id })
             if (response.success) {
-              Message.success('停止成功')
+              Message.success(t('jobinfo.stopSuccess'))
               // 刷新表格数据
               gridApi.value?.refresh()
             }
           } catch (error) {
             console.error('停止失败:', error)
-            Message.error('停止失败')
+            Message.error(t('jobinfo.stopFailed'))
           }
         }
       })
@@ -184,19 +133,19 @@ const toggleToolbarClick = async (button: any, row: JobInfoVO) => {
     case 'jobinfo/del':
       // 删除
       Modal.confirm({
-        title: '确认删除',
-        content: `确定删除任务"${row.jobDesc}"吗？`,
+        title: t('jobinfo.confirmDelete'),
+        content: t('jobinfo.confirmDeleteContent', { jobDesc: row.jobDesc }),
         onOk: async () => {
           try {
             const response = await requestClient.post('/schedule/jobinfo/remove', { id: row.id })
             if (response.success) {
-              Message.success('删除成功')
+              Message.success(t('jobinfo.deleteSuccess'))
               // 刷新表格数据
               gridApi.value?.refresh()
             }
           } catch (error) {
             console.error('删除失败:', error)
-            Message.error('删除失败')
+            Message.error(t('jobinfo.deleteFailed'))
           }
         }
       })
@@ -214,7 +163,7 @@ const toggleToolbarClick = async (button: any, row: JobInfoVO) => {
         }
       } catch (error) {
         console.error('复制失败:', error)
-        Message.error('复制失败')
+        Message.error(t('jobinfo.copyFailed'))
       }
       break;
     case 'jobinfo/edit':
@@ -228,7 +177,7 @@ const toggleToolbarClick = async (button: any, row: JobInfoVO) => {
         }
       } catch (error) {
         console.error('编辑失败:', error)
-        Message.error('编辑失败')
+        Message.error(t('jobinfo.editFailed'))
       }
       break;
     case 'jobinfo/ide':
@@ -244,19 +193,19 @@ const toggleToolbarClick = async (button: any, row: JobInfoVO) => {
         if (response.success && response.data) {
           const mine = response.data[0]
           Modal.info({
-            title: '注册节点信息',
+            title: t('jobinfo.registerNodeInfo'),
             content: `<div>
-              <strong>AppName：</strong>${mine.appname}<br/>
-              <strong>名称：</strong>${mine.title}<br/>
-              <strong>注册方式：</strong>${mine.addressType === '0' ? '自动注册' : '手动录入'}<br/>
-              <strong>Online机器地址：</strong>${mine.addressList || ''}<br/>
+              <strong>${t('jobinfo.appName')}：</strong>${mine.appname}<br/>
+              <strong>${t('jobinfo.title')}：</strong>${mine.title}<br/>
+              <strong>${t('jobinfo.registerType')}：</strong>${mine.addressType === '0' ? t('jobinfo.autoRegister') : t('jobinfo.manualEntry')}<br/>
+              <strong>${t('jobinfo.onlineAddress')}：</strong>${mine.addressList || ''}<br/>
             </div>`,
             dangerouslyUseHTMLString: true
           })
         }
       } catch (error) {
         console.error('查询注册节点失败:', error)
-        Message.error('查询失败')
+        Message.error(t('jobinfo.queryFailed'))
       }
       break;
     case 'jobinfo/rizhi':

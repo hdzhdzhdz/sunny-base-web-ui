@@ -23,5 +23,13 @@
   "selectExecutor": "Please select executor status",
   "inputJobDesc": "Please enter job description",
   "selectStatus": "Please select status",
-  "view": "View"
+  "view": "View",
+  "close": "Close",
+  "fullscreen": "Fullscreen",
+  "scrollToTop": "Scroll to Top",
+  "scrollToBottom": "Scroll to Bottom",
+  "loadingMore": "Loading More",
+  "scheduleRemarkTitle": "Schedule Remark",
+  "handleMsgTitle": "Handle Message",
+  "confirm": "Confirm"
 }

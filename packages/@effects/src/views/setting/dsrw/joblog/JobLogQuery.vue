@@ -63,7 +63,7 @@ const seeDdbz = (row: JobLogVO) => {
 // 查看执行备注
 const seeMsg = (msg: string) => {
   Modal.info({
-    title: '执行备注',
+    title: t('joblog.handleMsgTitle'),
     content: msg || '',
     width: 500
   })
@@ -153,7 +153,7 @@ const seeZxrz = (row: JobLogVO) => {
         <div v-html="ddbzContent" />
       </div>
       <div class="flex justify-center mt-4">
-        <a-button type="primary" @click="ddbzVisible = false">{{ t('common.confirm') }}</a-button>
+        <a-button type="primary" @click="ddbzVisible = false">{{ t('joblog.confirm') }}</a-button>
       </div>
     </a-modal>
     

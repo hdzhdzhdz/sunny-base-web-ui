@@ -23,5 +23,13 @@
   "selectExecutor": "请选择执行状态",
   "inputJobDesc": "请输入任务描述",
   "selectStatus": "请选择状态",
-  "view": "查看"
+  "view": "查看",
+  "close": "关闭",
+  "fullscreen": "全屏",
+  "scrollToTop": "滚动到顶部",
+  "scrollToBottom": "滚动到底部",
+  "loadingMore": "加载更多",
+  "scheduleRemarkTitle": "调度备注",
+  "handleMsgTitle": "执行备注",
+  "confirm": "确认"
 }

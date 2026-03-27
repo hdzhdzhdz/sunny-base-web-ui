@@ -1,5 +1,4 @@
 <script lang="tsx" setup>
-import type { VxeGridProps, VxeGridListeners } from 'vxe-table'
 import { SunnySearchPlan, SunnyIcon } from "@sunny-base-web/ui"
 import { getJobGroupConfig, resourceConfig } from './config'
 import type { JobGroupVO } from './types'
@@ -43,51 +42,6 @@ const gridEvents = {
         if (formRef.value) {
           formRef.value.show()
         }
-        break
-      case 'jobgroup/edit':
-        // 编辑
-        if (selectRecords.length !== 1) {
-          Message.warning('请选择一条记录进行编辑')
-          return
-        }
-        try {
-          const response = await requestClient.post('/schedule/jobgroup/get', { id: selectRecords[0].id })
-          if (response.success && response.data) {
-            const data = response.data
-            data.addressType = String(data.addressType)
-            if (formRef.value) {
-              formRef.value.show(data)
-            }
-          }
-        } catch (error) {
-          console.error('查询单个执行器失败:', error)
-          Message.error('查询失败')
-        }
-        break
-      case 'jobgroup/del':
-        // 删除
-        if (selectRecords.length === 0) {
-          Message.warning('请选择要删除的记录')
-          return
-        }
-        Modal.confirm({
-          title: '确认删除',
-          content: `确定要删除选中的${selectRecords.length}个执行器吗？`,
-          onOk: async () => {
-            try {
-              const idList = selectRecords.map((row: any) => row.id)
-              const response = await requestClient.post('/schedule/jobgroup/remove', { idList })
-              if (response.success) {
-                Message.success('删除成功')
-                // 刷新表格数据
-                params.$grid.commitProxy('query', {})
-              }
-            } catch (error) {
-              console.error('删除失败:', error)
-              Message.error('删除失败')
-            }
-          }
-        })
         break
       default:
         break
@@ -141,25 +95,25 @@ const toggleToolbarClick = async (button: any, row: JobGroupVO) => {
         }
       } catch (error) {
         console.error('查询单个执行器失败:', error)
-        Message.error('查询失败')
+        Message.error(t('jobgroup.queryFailed'))
       }
       break;
     case 'jobgroup/del':
       // 删除
       Modal.confirm({
-        title: '确认删除',
-        content: `确定要删除执行器"${row.title}"吗？`,
+        title: t('jobgroup.confirmDelete'),
+        content: t('jobgroup.confirmDeleteSingle', { title: row.title }),
         onOk: async () => {
           try {
             const response = await requestClient.post('/schedule/jobgroup/remove', { id: row.id })
             if (response.success) {
-              Message.success('删除成功')
+              Message.success(t('jobgroup.deleteSuccess'))
               // 刷新表格数据
               gridApi.value?.refresh()
             }
           } catch (error) {
             console.error('删除失败:', error)
-            Message.error('删除失败')
+            Message.error(t('jobgroup.deleteFailed'))
           }
         }
       })

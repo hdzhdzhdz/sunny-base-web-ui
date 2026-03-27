@@ -1,6 +1,5 @@
 import { ref, reactive, onMounted, watch } from 'vue';
 import { useSunnyForm, useSunnyQueryGrid } from '@sunny-base-web/ui';
-import type { VxeGridProps, VxeGridListeners } from 'vxe-table';
 import { requestClient } from '../api/request';
 import { getResourceByParIdOrModnumb } from '../api/resource';
 import { initResourceConstructor } from '../utils/utils';
@@ -36,7 +35,7 @@ export function useList<T>(options: {
   /**
    * 表格列配置
    */
-  tableColumns: VxeGridProps['columns'];
+  tableColumns: any[];
   /**
    * 表格数据类型
    */
@@ -134,7 +133,7 @@ export function useList<T>(options: {
   // 3. Grid Configuration
   // ----------------------------------------------------------------------
 
-  const gridOptions = reactive<VxeGridProps<T>>({
+  const gridOptions = reactive<any>({
     id: 'OperationLogQuery',
     border: true,
     size: 'mini',
