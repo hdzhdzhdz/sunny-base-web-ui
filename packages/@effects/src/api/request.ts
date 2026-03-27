@@ -98,7 +98,9 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
     const redirectPath = currentPath !== loginRoute
       ? `${loginRoute}?redirect=${encodeURIComponent(currentPath)}`
       : loginRoute;
-    window.location.href = redirectPath;
+
+    // ✅ 使用 hash 路由模式，修改 hash 而不是 href
+    window.location.hash = redirectPath;
   }
 
   /**
