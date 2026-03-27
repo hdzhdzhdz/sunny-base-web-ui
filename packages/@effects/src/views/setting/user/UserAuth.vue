@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { Modal as ArcoModal, Message } from '@arco-design/web-vue';
-import { useSunnyForm, Modal, useSunnyEditGrid, EditRender } from '@sunny-base-web/ui'
+import { Modal, useSunnyEditGrid, EditRender } from '@sunny-base-web/ui'
 import { requestClient } from '../../../api/request'
 import { getUserConfig } from './config'
 import { findIndex, filter } from 'lodash-es'
+import { useForm } from '../../../hooks/useForm'
 
 import UserChooseRole from './UserChooseRole.vue'
 const UserChooseRoleRef = ref()
@@ -18,18 +19,7 @@ const emit = defineEmits<{
 }>()
 
 // 表单配置
-const [Form, formApi] = useSunnyForm({
-  layout: 'horizontal',
-  size: 'small',
-  labelWidth: 100,
-  gridProps: {
-    xGap: 0,
-    yGap: 0,
-  },
-  showDefaultActions: false,
-  scrollToFirstError: true,
-  schema: [],
-})
+const [Form, formApi] = useForm({ schema: [] })
 
 const { authFormSchema, authGridColumns } = getUserConfig({ t, formApi })
 

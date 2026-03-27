@@ -1,12 +1,20 @@
 <script lang="tsx" setup>
+import type { VxeGridProps, VxeGridListeners } from 'vxe-table'
 import { SunnySearchPlan, SunnyIcon } from "@sunny-base-web/ui"
 import { getJobGroupConfig, resourceConfig } from './config'
 import type { JobGroupVO } from './types'
 import { requestClient, useList } from '@sunny-base-web/effects'
 import { useI18n } from 'vue-i18n'
+import { ref } from 'vue'
+import { Modal, Message } from '@arco-design/web-vue'
+import JobGroupForm from './JobGroupForm.vue'
 const { t } = useI18n()
 
 const { searchFormSchema, tableColumns } = getJobGroupConfig({ t })
+
+// 表单弹窗状态
+const formVisible = ref(false)
+const formRef = ref<InstanceType<typeof JobGroupForm> | null>(null)
 
 // ----------------------------------------------------------------------
 // 1. List Configuration
@@ -22,6 +30,70 @@ const queryFunction = async ({ page, formValues }) => {
 
   return requestClient.post('/schedule/jobgroup/selectForPage', queryParams);
 };
+// 表格事件
+const gridEvents = {
+  async toolbarButtonClick(params: any) {
+    const selectRecords = [
+      ...params.$grid.getCheckboxRecords()
+    ]
+    
+    switch (params.button.code) {
+      case 'jobgroup/add':
+        // 新增
+        if (formRef.value) {
+          formRef.value.show()
+        }
+        break
+      case 'jobgroup/edit':
+        // 编辑
+        if (selectRecords.length !== 1) {
+          Message.warning('请选择一条记录进行编辑')
+          return
+        }
+        try {
+          const response = await requestClient.post('/schedule/jobgroup/get', { id: selectRecords[0].id })
+          if (response.success && response.data) {
+            const data = response.data
+            data.addressType = String(data.addressType)
+            if (formRef.value) {
+              formRef.value.show(data)
+            }
+          }
+        } catch (error) {
+          console.error('查询单个执行器失败:', error)
+          Message.error('查询失败')
+        }
+        break
+      case 'jobgroup/del':
+        // 删除
+        if (selectRecords.length === 0) {
+          Message.warning('请选择要删除的记录')
+          return
+        }
+        Modal.confirm({
+          title: '确认删除',
+          content: `确定要删除选中的${selectRecords.length}个执行器吗？`,
+          onOk: async () => {
+            try {
+              const idList = selectRecords.map((row: any) => row.id)
+              const response = await requestClient.post('/schedule/jobgroup/remove', { idList })
+              if (response.success) {
+                Message.success('删除成功')
+                // 刷新表格数据
+                params.$grid.commitProxy('query', {})
+              }
+            } catch (error) {
+              console.error('删除失败:', error)
+              Message.error('删除失败')
+            }
+          }
+        })
+        break
+      default:
+        break
+    }
+  }
+}
 
 // 使用useList钩子
 const {
@@ -42,7 +114,8 @@ const {
   searchFormSchema,
   tableColumns,
   resourceConfig,
-  queryFunction
+  queryFunction,
+  gridEvents
 });
 
 // 过滤表格操作按钮
@@ -51,9 +124,55 @@ const filterColumnHandle = (row: JobGroupVO) => {
 };
 
 // 处理按钮点击
-const toggleToolbarClick = (button: any, row: JobGroupVO) => {
-  console.log('按钮点击:', button, row);
-  // 这里可以添加按钮点击的具体逻辑
+const toggleToolbarClick = async (button: any, row: JobGroupVO) => {
+  const { handle } = button;
+  
+  switch (handle) {
+    case 'jobgroup/edit':
+      // 编辑
+      try {
+        const response = await requestClient.post('/schedule/jobgroup/get', { id: row.id })
+        if (response.success && response.data) {
+          const data = response.data
+          data.addressType = String(data.addressType)
+          if (formRef.value) {
+            formRef.value.show(data)
+          }
+        }
+      } catch (error) {
+        console.error('查询单个执行器失败:', error)
+        Message.error('查询失败')
+      }
+      break;
+    case 'jobgroup/del':
+      // 删除
+      Modal.confirm({
+        title: '确认删除',
+        content: `确定要删除执行器"${row.title}"吗？`,
+        onOk: async () => {
+          try {
+            const response = await requestClient.post('/schedule/jobgroup/remove', { id: row.id })
+            if (response.success) {
+              Message.success('删除成功')
+              // 刷新表格数据
+              gridApi.value?.refresh()
+            }
+          } catch (error) {
+            console.error('删除失败:', error)
+            Message.error('删除失败')
+          }
+        }
+      })
+      break;
+    default:
+      break;
+  }
+};
+
+// 表单保存成功回调
+const handleFormSuccess = () => {
+  // 刷新表格数据
+  gridApi.value?.refresh()
 };
 
 </script>
@@ -87,6 +206,13 @@ const toggleToolbarClick = (button: any, row: JobGroupVO) => {
         </Grid>
       </div>
     </div>
+    
+    <!-- 新增编辑表单 -->
+    <JobGroupForm
+      ref="formRef"
+      v-model:visible="formVisible"
+      @success="handleFormSuccess"
+    />
   </div>
 </template>
 

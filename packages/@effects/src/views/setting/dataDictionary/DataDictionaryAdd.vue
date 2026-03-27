@@ -2,9 +2,10 @@
 import { ref, computed, watch, reactive } from 'vue'
 import { Message } from '@arco-design/web-vue'
 import { Plus, Trash2 } from '@sunny-base-web/icons'
-import { useSunnyForm, Modal, useSunnyEditGrid } from '@sunny-base-web/ui'
+import { Modal, useSunnyEditGrid } from '@sunny-base-web/ui'
 import { requestClient } from '../../../api/request'
 import { useSchemaOptionsLoader } from '../../../utils/use-schema-options-loader'
+import { useForm } from '../../../hooks/useForm'
 import { addFormSchema, metaGridColumns, metaGridEditRules } from './config'
 import type { DataDictionaryFormVO, MetaItem } from './types'
 
@@ -35,19 +36,7 @@ const loading = ref(false)
 const { enhancedSchema } = useSchemaOptionsLoader(addFormSchema)
 
 // 表单配置
-const [Form, formApi] = useSunnyForm({
-  layout: 'horizontal',
-  size: 'small',
-  labelWidth: 100,
-  // 栅格容器配置 (a-grid props)
-  gridProps: {
-    xGap: 0,
-    yGap: 0,
-  },
-  showDefaultActions: false,
-  scrollToFirstError: true,
-  schema: enhancedSchema  // ✅ 使用增强后的 Schema
-})
+const [Form, formApi] = useForm({ schema: enhancedSchema })
 
 // 额外属性表格配置
 const metaGridOptions = reactive({

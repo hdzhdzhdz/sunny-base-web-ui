@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { Message } from '@arco-design/web-vue'
-import { useSunnyForm, Modal } from '@sunny-base-web/ui'
+import { Modal } from '@sunny-base-web/ui'
 import { requestClient } from '../../../api/request'
 import { getUserConfig } from './config'
+import { useForm } from '../../../hooks/useForm'
 
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
@@ -15,18 +16,9 @@ const emit = defineEmits<{
 }>()
 
 // 表单配置
-const [Form, formApi] = useSunnyForm({
-  layout: 'horizontal',
-  size: 'small',
-  labelWidth: 100,
-  gridProps: {
-    xGap: 0,
-    yGap: 0,
-  },
-  showDefaultActions: false,
-  scrollToFirstError: true,
+const [Form, formApi] = useForm({ 
   schema: [],
-  objectToValueFields: ['cWork'],
+  objectToValueFields: ['cWork']
 })
 
 const { addEditFormSchema } = getUserConfig({ t, formApi })
