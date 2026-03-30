@@ -22,7 +22,7 @@ before_script:
 build_packages:
   stage: build
   rules:
-    - if: '$CI_COMMIT_BRANCH'
+    - when: manual
   script:
     - pnpm exec turbo run build --filter="./packages/**"
 
@@ -31,9 +31,7 @@ release_npm:
   needs:
     - build_packages
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-      when: manual
-    - when: never
+    - when: manual
   script:
     - |
       cat > .npmrc <<EOF
