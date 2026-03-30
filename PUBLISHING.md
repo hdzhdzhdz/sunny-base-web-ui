@@ -147,13 +147,17 @@ git push
 
 将包含版本变更的提交合并或推送到 `main` 分支。
 
-### 第五步：在 GitLab 手动触发发布
+### 第五步：在 GitLab 手动创建发布流水线
 
 进入 GitLab：
 
-`CI/CD -> Pipelines`
+`CI/CD -> Pipelines -> Run pipeline`
 
-进入对应分支或目标提交的流水线后，手动点击：
+选择要发布的分支后，手动创建一条 pipeline。
+
+由于当前 `.gitlab-ci.yml` 使用的是手动触发模式，这些任务只会出现在通过 GitLab 页面手动创建的 pipeline 中。
+
+创建成功后，在该 pipeline 中手动点击：
 
 - `build_packages`
 - `release_npm`
@@ -177,7 +181,8 @@ pnpm release
 
 当前 `.gitlab-ci.yml` 的行为如下：
 
-- 每次提交不会自动执行任何 job
+- 普通 `git push` 不会自动执行发布相关 job
+- 只有在 GitLab 页面手动创建 pipeline 时，才会出现这些 job
 - `build_packages` 需要手动点击
 - `release_npm` 需要手动点击
 - 发布前建议先手动执行一次 `build_packages`
@@ -273,7 +278,8 @@ pnpm version-packages
 2. `pnpm changeset`
 3. `pnpm version-packages`
 4. 提交版本变更并推送到目标分支
-5. 在 GitLab 手动点击 `build_packages`
-6. 在 GitLab 手动点击 `release_npm`
+5. 在 GitLab 页面手动创建 pipeline
+6. 手动点击 `build_packages`
+7. 手动点击 `release_npm`
 
 这是当前项目推荐的唯一正式发布流程。

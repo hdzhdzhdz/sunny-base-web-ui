@@ -21,17 +21,17 @@ before_script:
 
 build_packages:
   stage: build
-  rules:
-    - when: manual
+  only:
+    - web
+  when: manual
   script:
     - pnpm exec turbo run build --filter="./packages/**"
 
 release_npm:
   stage: release
-  needs:
-    - build_packages
-  rules:
-    - when: manual
+  only:
+    - web
+  when: manual
   script:
     - |
       cat > .npmrc <<EOF
