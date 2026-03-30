@@ -1,6 +1,6 @@
 {
   "name": "@sunny-base-web/stores",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": false,
   "main": "./src/index.ts",
   "module": "./src/index.ts",
@@ -30,8 +30,8 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@sunny-base-web/constants": "workspace:*",
-    "@sunny-base-web/utils": "workspace:*",
+    "@sunny-base-web/constants": "workspace:^",
+    "@sunny-base-web/utils": "workspace:^",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^4.7.1",
     "secure-ls": "^2.0.0",

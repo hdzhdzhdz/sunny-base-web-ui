@@ -1,0 +1,44 @@
+image: node:22.14.0
+
+stages:
+  - build
+  - release
+
+variables:
+  PNPM_VERSION: "9.15.0"
+  PNPM_STORE_DIR: ".pnpm-store"
+
+cache:
+  key: "${CI_COMMIT_REF_SLUG}"
+  paths:
+    - .pnpm-store/
+
+before_script:
+  - corepack enable
+  - corepack prepare pnpm@${PNPM_VERSION} --activate
+  - pnpm config set store-dir ${PNPM_STORE_DIR}
+  - pnpm install --frozen-lockfile
+
+build_packages:
+  stage: build
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+  script:
+    - pnpm exec turbo run build --filter="./packages/**"
+
+release_npm:
+  stage: release
+  needs:
+    - build_packages
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: manual
+    - when: never
+  script:
+    - |
+      cat > .npmrc <<EOF
+      //registry.npmjs.org/:_authToken=${NPM_TOKEN}
+      always-auth=true
+      @sunny-base-web:registry=https://registry.npmjs.org/
+      EOF
+    - pnpm release

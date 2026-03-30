@@ -1,6 +1,6 @@
 {
   "name": "@sunny-base-web/effects",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": false,
   "files": [
     "dist"
@@ -18,11 +18,11 @@
   },
   "dependencies": {
     "@arco-design/web-vue": "catalog:",
-    "@sunny-base-web/icons": "workspace:*",
-    "@sunny-base-web/locales": "workspace:*",
-    "@sunny-base-web/stores": "workspace:*",
-    "@sunny-base-web/ui": "workspace:*",
-    "@sunny-base-web/utils": "workspace:*",
+    "@sunny-base-web/icons": "workspace:^",
+    "@sunny-base-web/locales": "workspace:^",
+    "@sunny-base-web/stores": "workspace:^",
+    "@sunny-base-web/ui": "workspace:^",
+    "@sunny-base-web/utils": "workspace:^",
     "@vueuse/core": "catalog:",
     "@vxe-ui/plugin-render-arco": "catalog:",
     "axios": "^1.13.2",
