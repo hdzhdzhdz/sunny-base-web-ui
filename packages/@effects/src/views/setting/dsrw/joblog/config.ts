@@ -1,5 +1,4 @@
-import type { FormSchema } from '@sunny-base-web/ui';
-import type { VxeGridProps } from 'vxe-pc-ui';
+import type { FormSchema, VxeGridProps } from '@sunny-base-web/ui';
 import type { JobLogVO } from './types';
 
 interface JobLogConfig {

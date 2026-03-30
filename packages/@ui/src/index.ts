@@ -18,6 +18,7 @@ import { useSunnyQueryGrid } from './data/query-grid'
 import { SunnyResourceTree } from './data/resource-tree'
 import { SunnySearchModal } from './feedback/search-modal'
 import { patterns } from "@sunny-base-web/utils";
+import type { VxeGridProps, VxeGridPropTypes } from 'vxe-table';
 
 
 export * from "./navigation/nprogress";
@@ -51,6 +52,11 @@ export {
   SunnySearchModal,
   patterns,
   z
+};
+
+export type {
+  VxeGridProps,
+  VxeGridPropTypes
 };
 
 export * from "./entry/select/types";

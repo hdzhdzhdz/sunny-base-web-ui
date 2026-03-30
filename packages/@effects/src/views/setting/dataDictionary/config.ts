@@ -1,6 +1,5 @@
-import type { FormSchema } from '@sunny-base-web/ui';
+import type { FormSchema, VxeGridProps } from '@sunny-base-web/ui';
 import { EditRender } from '@sunny-base-web/ui';
-import type { VxeGridProps } from 'vxe-table';
 import type { DataDictionaryVO, DataDictionaryFormVO, MetaItem } from './types';
 
 /**

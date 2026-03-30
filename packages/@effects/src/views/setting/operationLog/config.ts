@@ -1,5 +1,4 @@
-import type { VxeGridProps } from 'vxe-table';
-import type { FormSchema } from '@sunny-base-web/ui';
+import type { FormSchema, VxeGridProps } from '@sunny-base-web/ui';
 import type { OperationLogVO } from './types';
 
 interface OperationLogConfig {

@@ -1,8 +1,6 @@
 <script lang="tsx" setup>
 import { ref } from 'vue'
-import type { VxeGridProps, VxeGridListeners } from 'vxe-table'
 import { Modal, Message } from '@arco-design/web-vue';
-
 import { requestClient, useList } from '@sunny-base-web/effects'
 import { getRoleConfig } from './config'
 
@@ -27,7 +25,8 @@ const queryFunction = async ({ page, formValues }) => {
   return requestClient.post('/core/authRole/selectForPage', queryParams);
 };
 
-const gridEvents:VxeGridListeners = {
+// 表格事件
+const gridEvents = {
   async toolbarButtonClick (params: any) {
     const selectRecords = [
       ...params.$grid.getCheckboxRecords()

@@ -17,9 +17,9 @@ import {
   type CustomizeSelectAdapter,
   type CustomizeSelectQueryParams,
   type CustomizeSelectQueryResult,
+  type VxeGridPropTypes,
 } from '@sunny-base-web/ui';
 import { requestClient } from '../api/request';
-import type { VxeGridPropTypes } from 'vxe-table';
 import { defaultSelectOptionsAdapter } from './select-options-adapter';
 
 // =============================================================================
