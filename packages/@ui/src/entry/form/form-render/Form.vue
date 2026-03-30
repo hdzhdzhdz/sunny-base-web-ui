@@ -106,9 +106,8 @@ const computedSchema = computed(() => {
       // ✅ 注入表单级禁用状态 (form-level disabled)
       formDisabled,
 
-      // 显隐逻辑：只处理 Item 自身配置的 hide 属性
-      // (v-if/v-show 的动态逻辑由 dependencies.ts 处理)
-      hidden: item.hide,
+      // 显隐逻辑：优先使用 hidden 属性，回退到 hide 属性
+      hidden: item.hidden ?? item.hide,
 
       // 注入通用组件属性
       // 注意：这里只是透传，最终合并逻辑在 FormField 组件内部进行

@@ -104,7 +104,8 @@ export default defineConfig({
               text: 'Composables 组合式函数',
               items: [
                 { text: 'useNamespace', link: '/utilities/composables/use-namespace' },
-                { text: 'useList', link: '/utilities/composables/use-list' }
+                { text: 'useList', link: '/utilities/composables/use-list' },
+                { text: 'useForm', link: '/utilities/composables/use-form' }
               ]
             },
             {

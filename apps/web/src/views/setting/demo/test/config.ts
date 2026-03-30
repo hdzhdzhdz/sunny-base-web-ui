@@ -134,10 +134,9 @@ export const searchFormSchema: FormSchema[] = [
       placeholder: '请选择',
       allowClear: true,
       cNum: 'UserSearch1', // 业务编码，必填项
-      // 示例配置，实际使用需要根据业务配置
-      fieldConfig: {
-        label: 'name',
-        value: 'id'
+      fieldNames: {
+        label: 'cKeyname',
+        value: 'cKeyname'
       }
     },
     colProps: { span: 4 }

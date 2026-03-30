@@ -17,9 +17,9 @@
     >
       <a-option
         v-for="x in optionlist"
-        :key="x.cKeynumb"
-        :label="x.cKeyname"
-        :value="x.cKeynumb"
+        :key="x[props.fieldNames.value]"
+        :label="x[props.fieldNames.label]"
+        :value="x[props.fieldNames.value]"
       >
         <template v-if="config.cLabelslotcol">
           <div class="flex justify-between items-center w-full">
@@ -59,6 +59,10 @@ interface CustomizeSelectProps {
   defaultQuery?: boolean
   defaultConfig?: CustomizeSelectConfig
   attrParam?: Record<string, any>
+  fieldNames?: {
+    label: string
+    value: string
+  }
 }
 
 interface CustomizeSelectEmits {
@@ -72,7 +76,11 @@ const props = withDefaults(defineProps<CustomizeSelectProps>(), {
   cNum: '',
   defaultQuery: true,
   defaultConfig: () => ({}),
-  attrParam: () => ({})
+  attrParam: () => ({}),
+  fieldNames: () => ({
+    label: 'cKeyname',
+    value: 'cKeynumb'
+  })
 })
 
 const emit = defineEmits<CustomizeSelectEmits>()

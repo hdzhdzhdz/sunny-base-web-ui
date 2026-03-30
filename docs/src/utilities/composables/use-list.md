@@ -71,38 +71,38 @@ export function useList<T>(options: {
 
 ## 参数说明
 
-| 参数 | 类型 | 说明 |
-|------|------|------|
-| `searchFormSchema` | `any[]` | 搜索表单配置，遵循 SunnyForm 的 schema 格式 |
-| `tableColumns` | `any[]` | 表格列配置，遵循 VxeTable 的 columns 格式 |
-| `dataType` | `new () => T` | 表格数据类型（可选） |
-| `resourceConfig` | `object` | 资源配置，包含 `resourceId`、`nResourceid` 和可选的 `cModnumb`（模块编号） |
-| `queryFunction` | `(params: any) => Promise<any>` | 表格查询函数，接收 `page` 和 `formValues` 参数 |
-| `gridEvents` | `any` | 表格事件配置（可选） |
-| `treeConfig` | `any` | 树形配置（可选） |
-| `loadMethod` | `(row: any) => Promise<any[]>` | 树形表格懒加载方法（可选） |
-| `objectToValueFields` | `string[]` | 对象转值字段列表，用于将 BusinessSearch 等返回的对象数组转换为值字符串（可选） |
-| `lazy` | `boolean` | 是否开启懒加载（可选） |
-| `autoLoad` | `boolean` | 是否自动加载数据（可选，默认 true），为 true 时默认查询方案加载完成后自动触发查询 |
+| 参数                    | 类型                              | 说明                                                       |
+| --------------------- | ------------------------------- | -------------------------------------------------------- |
+| `searchFormSchema`    | `any[]`                         | 搜索表单配置，遵循 SunnyForm 的 schema 格式                          |
+| `tableColumns`        | `any[]`                         | 表格列配置，遵循 VxeTable 的 columns 格式                           |
+| `dataType`            | `new () => T`                   | 表格数据类型（可选）                                               |
+| `resourceConfig`      | `object`                        | 资源配置，包含 `resourceId`、`nResourceid` 和可选的 `cModnumb`（模块编号） |
+| `queryFunction`       | `(params: any) => Promise<any>` | 表格查询函数，接收 `page` 和 `formValues` 参数                       |
+| `gridEvents`          | `any`                           | 表格事件配置（可选）                                               |
+| `treeConfig`          | `any`                           | 树形配置（可选）                                                 |
+| `loadMethod`          | `(row: any) => Promise<any[]>`  | 树形表格懒加载方法（可选）                                            |
+| `objectToValueFields` | `string[]`                      | 对象转值字段列表，用于将 BusinessSearch 等返回的对象数组转换为值字符串（可选）          |
+| `lazy`                | `boolean`                       | 是否开启懒加载（可选）                                              |
+| `autoLoad`            | `boolean`                       | 是否自动加载数据（可选，默认 true），为 true 时默认查询方案加载完成后自动触发查询           |
 
 ## 返回值
 
-| 返回值 | 类型 | 说明 |
-|--------|------|------|
-| `QueryForm` | `Component` | 查询表单组件 |
-| `formApi` | `object` | 表单 API，用于操作表单 |
-| `Grid` | `Component` | 表格组件 |
-| `gridApi` | `object` | 表格 API，用于操作表格 |
-| `submitting` | `Ref<boolean>` | 提交状态 |
-| `handleGlobalEnter` | `(e: KeyboardEvent) => void` | 全局回车处理函数 |
-| `searchPlanList` | `Ref<any[]>` | 搜索方案列表 |
-| `currentSearchPlan` | `Ref<any>` | 当前选中的搜索方案 |
-| `resourceId` | `string` | 资源 ID |
-| `nResourceid` | `number` | 数字类型的资源 ID |
-| `resourceButtons` | `Ref<any[]>` | 资源按钮列表 |
-| `handleSearchPlanSearch` | `(formValues: any) => Promise<void>` | 处理搜索方案搜索 |
-| `handleDefaultPlanLoaded` | `(formValues: any) => Promise<void>` | 处理默认搜索方案加载 |
-| `fetchResourceConfig` | `() => Promise<void>` | 获取资源配置 |
+| 返回值                       | 类型                                   | 说明            |
+| ------------------------- | ------------------------------------ | ------------- |
+| `QueryForm`               | `Component`                          | 查询表单组件        |
+| `formApi`                 | `object`                             | 表单 API，用于操作表单 |
+| `Grid`                    | `Component`                          | 表格组件          |
+| `gridApi`                 | `object`                             | 表格 API，用于操作表格 |
+| `submitting`              | `Ref<boolean>`                       | 提交状态          |
+| `handleGlobalEnter`       | `(e: KeyboardEvent) => void`         | 全局回车处理函数      |
+| `searchPlanList`          | `Ref<any[]>`                         | 搜索方案列表        |
+| `currentSearchPlan`       | `Ref<any>`                           | 当前选中的搜索方案     |
+| `resourceId`              | `string`                             | 资源 ID         |
+| `nResourceid`             | `number`                             | 数字类型的资源 ID    |
+| `resourceButtons`         | `Ref<any[]>`                         | 资源按钮列表        |
+| `handleSearchPlanSearch`  | `(formValues: any) => Promise<void>` | 处理搜索方案搜索      |
+| `handleDefaultPlanLoaded` | `(formValues: any) => Promise<void>` | 处理默认搜索方案加载    |
+| `fetchResourceConfig`     | `() => Promise<void>`                | 获取资源配置        |
 
 ## 使用示例
 
@@ -516,14 +516,14 @@ const {
 
 `useList` 钩子集成了搜索方案功能，通过 `searchPlanApi` 提供以下方法：
 
-| 方法 | 说明 |
-|------|------|
-| `findAllByResourceid` | 根据资源 ID 查询所有搜索方案 |
+| 方法                           | 说明                |
+| ---------------------------- | ----------------- |
+| `findAllByResourceid`        | 根据资源 ID 查询所有搜索方案  |
 | `findSearchPlanColsByPlanId` | 根据方案 ID 查询搜索方案列配置 |
-| `insert` | 新增搜索方案 |
-| `update` | 更新搜索方案 |
-| `del` | 删除搜索方案 |
-| `findDefSearchPlan` | 查询默认搜索方案 |
+| `insert`                     | 新增搜索方案            |
+| `update`                     | 更新搜索方案            |
+| `del`                        | 删除搜索方案            |
+| `findDefSearchPlan`          | 查询默认搜索方案          |
 
 ## 最佳实践
 
@@ -538,3 +538,4 @@ const {
 - `useList` 钩子依赖于 `@sunny-base-web/ui` 中的 `useSunnyForm` 和 `useSunnyQueryGrid`
 - 确保 `queryFunction` 返回的数据结构符合 VxeTable 的要求，即包含 `result.records` 和 `result.total`
 - 搜索方案功能需要后端 API 支持，确保后端提供相应的接口
+
