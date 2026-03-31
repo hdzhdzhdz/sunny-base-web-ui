@@ -49,21 +49,21 @@ export const getZdyxlkConfig = ({ t, formApi }: ZdyxlkConfig) => {
    */
   const searchFormSchema: FormSchema[] = [
     {
-      fieldName: 'CNum',
-      label: t('zdyxlk.CNum'),
+      fieldName: 'cNum',
+      label: t('zdyxlk.cNum'),
       component: 'Input',
       componentProps: {
-        placeholder: t('zdyxlk.inputCNum'),
+        placeholder: t('zdyxlk.inputcNum'),
         allowClear: true
       },
       colProps: { span: 4 }
     },
     {
-      fieldName: 'CTitle',
-      label: t('zdyxlk.CTitle'),
+      fieldName: 'cTitle',
+      label: t('zdyxlk.cTitle'),
       component: 'Input',
       componentProps: {
-        placeholder: t('zdyxlk.inputCTitle'),
+        placeholder: t('zdyxlk.inputcTitle'),
         allowClear: true
       },
       colProps: { span: 4 }
@@ -90,14 +90,14 @@ export const getZdyxlkConfig = ({ t, formApi }: ZdyxlkConfig) => {
    */
   const tableColumns: VxeGridProps<AssSelectVO>['columns'] = [
     { type: 'checkbox', width: 40 },
-    { field: 'cNum', title: t('zdyxlk.CNum') },
+    { field: 'cNum', title: t('zdyxlk.cNum') },
     { field: 'nCbtype', title: t('zdyxlk.nCbtype'),
       formatter: ({ cellValue }) => {
         const option = nCbtypeOptions.find(opt => opt.cKeynumb === cellValue);
         return option?.cKeyname || cellValue;
       } },
     { field: 'cCbclass', title: t('zdyxlk.cCbclass') },
-    { field: 'cTitle', title: t('zdyxlk.CTitle') },
+    { field: 'cTitle', title: t('zdyxlk.cTitle') },
     { field: 'cValcol', title: t('zdyxlk.cValcol') },
     { field: 'cLabelcol', title: t('zdyxlk.cLabelcol') },
     { field: 'cLabelslotcol', title: t('zdyxlk.cLabelslotcol') },
@@ -107,7 +107,7 @@ export const getZdyxlkConfig = ({ t, formApi }: ZdyxlkConfig) => {
         return option?.cKeyname || cellValue;
       } },
     { field: 'nSearchinterval', title: t('zdyxlk.nSearchinterval') },
-    { field: 'cStaffname', title: t('zdyxlk.CStaffname') },
+    { field: 'cStaffname', title: t('zdyxlk.cStaffname') },
     { field: 'nLimit', title: t('zdyxlk.nLimit') },
     { field: 'nSfcommon', title: t('zdyxlk.nSfcommon'),
       formatter: ({ cellValue }) => {
@@ -144,10 +144,10 @@ export const getZdyxlkConfig = ({ t, formApi }: ZdyxlkConfig) => {
     },
     {
       fieldName: 'cNum',
-      label: t('zdyxlk.CNum'),
+      label: t('zdyxlk.cNum'),
       component: 'Input',
       componentProps: {
-        placeholder: t('zdyxlk.inputCNum'),
+        placeholder: t('zdyxlk.inputcNum'),
         allowClear: true
       },
       rules: 'required',
@@ -155,10 +155,10 @@ export const getZdyxlkConfig = ({ t, formApi }: ZdyxlkConfig) => {
     },
     {
       fieldName: 'cTitle',
-      label: t('zdyxlk.CTitle'),
+      label: t('zdyxlk.cTitle'),
       component: 'Input',
       componentProps: {
-        placeholder: t('zdyxlk.inputCTitle'),
+        placeholder: t('zdyxlk.inputcTitle'),
         allowClear: true
       },
       rules: 'required',
