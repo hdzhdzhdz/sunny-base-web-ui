@@ -1,7 +1,7 @@
 export interface AssSelectVO {
   id?: string
-  CNum: string
-  CTitle: string
+  cNum: string
+  cTitle: string
   nCbtype: string
   cCbclass: string
   cValcol: string
@@ -9,7 +9,7 @@ export interface AssSelectVO {
   cLabelslotcol: string
   nType: string
   nSearchinterval: number
-  CStaffname: string
+  cStaffname: string
   nLimit: number
   nSfcommon: string
   cWork: string
