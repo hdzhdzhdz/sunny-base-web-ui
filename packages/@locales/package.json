@@ -1,6 +1,6 @@
 {
   "name": "@sunny-base-web/locales",
-  "version": "0.5.0",
+  "version": "0.7.0",
   "license": "MIT",
   "type": "module",
   "sideEffects": [
@@ -20,7 +20,7 @@
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts --clean --shims"
+    "build": "vite build && node ../../node_modules/typescript/bin/tsc -p tsconfig.build.json"
   },
   "publishConfig": {
     "main": "./dist/index.js",
@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@sunny-base-web/tsconfig": "workspace:*",
-    "tsup": "^8.5.1",
+    "typescript": "catalog:",
     "vite": "^7.3.1"
   }
 }
