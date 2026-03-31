@@ -1,285 +1,289 @@
-# Sunny Base Web Framework 发布指南
+# Sunny Base Web Framework 发布说明
 
-本文档说明当前 `sunny-base-web-framework` Monorepo 的正式发布流程。
+本文档记录当前仓库已经验证通过的发布流程，以本次 `0.8.0` 发布实践为准。
 
 当前推荐方案：
 
-- 本地使用 `changesets` 记录变更和生成版本号
-- GitLab CI 统一构建并发布到 npm
-- 不再本地逐个执行 `pnpm publish --access public --no-git-checks`
+- 使用 `changesets` 管理版本号和 changelog
+- 只构建 `packages/**`
+- 使用交互式脚本 `pnpm publish:packages` 选择要发布的包
+- 实际发布时逐个执行 `npm publish --access public`
+- 当前环境下，不再把 `changeset publish` 作为主发布方式
 
----
+## 为什么这样发布
 
-## 当前发布方式
+仓库里的包存在构建前后依赖关系，不适合随意跳过构建。
 
-本项目当前已经配置：
+例如：
 
-- `changeset`：记录本次发布涉及哪些包
-- `version-packages`：统一更新包版本与内部依赖版本
-- `release`：执行整体构建并发布到 npm
-- `.gitlab-ci.yml`：在 GitLab 中手动触发发布任务
+- `@sunny-base-web/constants -> @sunny-base-web/utils -> @sunny-base-web/stores`
+- `@sunny-base-web/icons / @sunny-base-web/locales / @sunny-base-web/utils -> @sunny-base-web/ui`
+- `@sunny-base-web/ui / @sunny-base-web/stores / @sunny-base-web/locales / @sunny-base-web/icons / @sunny-base-web/utils -> @sunny-base-web/effects`
 
-根目录脚本如下：
+同时，当前环境里 `changeset publish` 在发布前检查 token 时会命中 npm 接口兼容问题，所以最终验证通过的方案是：
+
+1. 用 `changesets` 生成版本变更
+2. 用 `changeset version` 落盘版本号
+3. 构建 `packages/**`
+4. 用交互脚本选择包并逐个执行 `npm publish --access public`
+
+## 当前可用脚本
+
+根目录 [package.json](/f:/aGit/sunny-base-web-framework/package.json) 里和发布相关的脚本如下：
 
 ```json
 {
   "scripts": {
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "release": "pnpm build && changeset publish"
+    "build:packages": "turbo run build --filter=\"./packages/**\"",
+    "publish:packages": "node ./scripts/publish-packages.mjs",
+    "release": "pnpm build:packages && changeset publish"
   }
 }
 ```
 
----
+含义：
 
-## 为什么改成这种流程
+- `pnpm changeset`：创建 changeset
+- `pnpm version-packages`：消费 changeset，更新版本号、内部依赖和 changelog
+- `pnpm build:packages`：只构建 `packages/**`
+- `pnpm publish:packages`：交互式选择并发布指定包
+- `pnpm release`：当前保留，但不作为推荐发布命令
 
-之前逐包手工发布有几个问题：
+## npm 认证
 
-- npm 发布时需要二次验证，逐包发布非常繁琐
-- 多个包存在依赖关系，容易漏发上游包
-- 手工发布容易出现版本不同步
+仓库根目录的 [.npmrc](/f:/aGit/sunny-base-web-framework/.npmrc) 使用环境变量读取 token：
 
-本项目中的包并不是完全独立构建的，存在明确依赖链。例如：
-
-- `@sunny-base-web/constants -> @sunny-base-web/utils -> @sunny-base-web/stores`
-- `@sunny-base-web/icons/@sunny-base-web/locales/@sunny-base-web/utils -> @sunny-base-web/ui`
-- `@sunny-base-web/ui/@sunny-base-web/stores/@sunny-base-web/locales/@sunny-base-web/icons/@sunny-base-web/utils -> @sunny-base-web/effects`
-
-`turbo.json` 中也已经配置了：
-
-```json
-{
-  "tasks": {
-    "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**"]
-    }
-  }
-}
+```ini
+//registry.npmjs.org/:_authToken=${NPM_TOKEN}
+always-auth=true
+@sunny-base-web:registry=https://registry.npmjs.org/
 ```
 
-这意味着正式发布时更适合统一构建、统一发布。
+发布前先在当前 PowerShell 会话里注入 token：
 
----
+```powershell
+$env:NPM_TOKEN="your_npm_token"
+```
 
-## 发布前准备
+可先验证身份：
 
-### 1. npm 权限
+```powershell
+npm whoami
+```
 
-确保你拥有 `@sunny-base-web` 作用域下相关包的发布权限。
+注意：
 
-### 2. GitLab CI 变量
+- 不要把明文 token 提交到仓库
+- `.npmrc` 已被忽略，不要移出忽略规则
+- token 需要具备发布权限
 
-GitLab 中需要配置 CI/CD 变量：
+## 标准发布流程
 
-- 变量名：`NPM_TOKEN`
-- 值：npm 上申请的 granular access token
-- 建议勾选：`Masked`
-- 如果只允许主分支发布，建议勾选：`Protected`
-
-说明：
-
-- 该 token 应具备 npm 发布权限
-- 推荐使用支持 bypass 2FA 的 npm token
-- 不要把 token 写入仓库文件
-
-### 3. GitLab CI 配置
-
-仓库根目录已配置：
-
-- [.gitlab-ci.yml](f:/aGit/sunny-base-web-framework/.gitlab-ci.yml)
-
-其中：
-
-- `build_packages`：构建 `packages/**`
-- `release_npm`：手动触发，执行统一发布
-
----
-
-## 正式发布流程
-
-### 第一步：本地开发并提交代码
-
-正常开发代码，完成功能或修复后提交。
-
-### 第二步：生成 changeset
-
-在仓库根目录执行：
+### 1. 创建 changeset
 
 ```powershell
 pnpm changeset
 ```
 
-交互式选择：
+根据提示选择：
 
-1. 选择本次变更涉及的包
-2. 选择版本类型：`patch` / `minor` / `major`
-3. 输入本次发布说明
+1. 哪些包变更了
+2. 版本类型是 `patch` / `minor` / `major`
+3. 本次变更说明
 
-执行后会在 `.changeset/` 下生成一个变更文件。
+执行后会在 `.changeset/` 下生成变更文件。
 
-### 第三步：生成版本号
-
-确认本次要发版后，在本地执行：
+### 2. 更新版本号
 
 ```powershell
 pnpm version-packages
 ```
 
-该命令会：
+这一步会：
 
-- 消耗 `.changeset` 中的记录
-- 更新各包的 `package.json` 版本号
+- 更新包版本
 - 更新内部依赖版本
-- 生成或更新 `CHANGELOG.md`
+- 更新 changelog
+- 消费 `.changeset/*`
 
-然后提交这些版本变更：
+### 3. 检查并提交版本变更
+
+建议先检查变更：
+
+```powershell
+git status
+```
+
+然后提交版本变更：
 
 ```powershell
 git add .
 git commit -m "chore: version packages"
+```
+
+### 4. 只构建 packages
+
+```powershell
+pnpm build:packages
+```
+
+这一步只构建 `packages/**`，不会去构建 `apps/web` 或 `docs`。
+
+### 5. 交互式选择要发布的包
+
+```powershell
+pnpm publish:packages
+```
+
+脚本定义在 [scripts/publish-packages.mjs](/f:/aGit/sunny-base-web-framework/scripts/publish-packages.mjs)，会自动：
+
+- 扫描 `packages/**` 下所有可发布包
+- 列出包名、版本和目录
+- 让你输入要发布的包
+- 在每个选中的包目录里执行 `npm publish --access public`
+
+支持的输入方式：
+
+- 输入序号：`1,8,9`
+- 输入包名：`@sunny-base-web/ui,@sunny-base-web/utils`
+- 输入全部：`all`
+
+确认后脚本会逐个发布。
+
+### 6. 发布完成后推送代码
+
+```powershell
 git push
 ```
 
-### 第四步：推送到 `main`
+如果你希望先 push 再发布，也可以，但当前这套流程是本次已经实际跑通的顺序。
 
-将包含版本变更的提交合并或推送到 `main` 分支。
+## 推荐命令顺序
 
-### 第五步：在 GitLab 手动创建发布流水线
+按下面顺序执行即可：
 
-进入 GitLab：
-
-`CI/CD -> Pipelines -> Run pipeline`
-
-选择要发布的分支后，手动创建一条 pipeline。
-
-由于当前 `.gitlab-ci.yml` 使用的是手动触发模式，这些任务只会出现在通过 GitLab 页面手动创建的 pipeline 中。
-
-创建成功后，在该 pipeline 中手动点击：
-
-- `build_packages`
-- `release_npm`
-
-该任务会执行：
-
-```bash
-pnpm release
+```powershell
+$env:NPM_TOKEN="your_npm_token"
+pnpm changeset
+pnpm version-packages
+git add .
+git commit -m "chore: version packages"
+pnpm build:packages
+pnpm publish:packages
+git push
 ```
 
-也就是：
+如果版本提交已经做好了，可以从 `pnpm build:packages` 开始。
 
-1. `pnpm build`
-2. `changeset publish`
+## 为什么不用 `pnpm release`
 
-最终会一次性发布所有尚未发布的包。
+`pnpm release` 当前执行的是：
 
----
+```powershell
+pnpm build:packages && changeset publish
+```
 
-## 当前 GitLab CI 行为
+这条命令目前不作为推荐方案，原因是：
 
-当前 `.gitlab-ci.yml` 的行为如下：
+- `changeset publish` 在当前环境下会先请求 npm 的 `/-/npm/v1/user`
+- 该检查步骤会返回 `403 Forbidden`
+- 但直接在包目录执行 `npm publish --access public` 已经验证可以成功
 
-- 普通 `git push` 不会自动执行发布相关 job
-- 只有在 GitLab 页面手动创建 pipeline 时，才会出现这些 job
-- `build_packages` 需要手动点击
-- `release_npm` 需要手动点击
-- 发布前建议先手动执行一次 `build_packages`
+所以当前结论是：
 
-因此：
+- `changesets` 继续负责版本管理
+- 实际发布改用 `pnpm publish:packages`
 
-- 日常提交不会自动消耗 CI 资源
-- 构建和发布都由人工确认后手动触发
+## 常用命令
 
----
-
-## 日常命令速查
-
-### 记录变更
+创建 changeset：
 
 ```powershell
 pnpm changeset
 ```
 
-### 生成版本号
+更新版本号：
 
 ```powershell
 pnpm version-packages
 ```
 
-### 本地构建所有包
+只构建 packages：
 
 ```powershell
-pnpm exec turbo run build --filter="./packages/**"
+pnpm build:packages
 ```
 
-### 本地执行完整发布流程
-
-仅用于调试，不作为正式推荐方式：
+交互式发布：
 
 ```powershell
-pnpm release
+pnpm publish:packages
 ```
 
-说明：
-
-- 本地执行 `pnpm release` 仍然依赖本地 npm 登录状态或 2FA
-- 正式环境建议始终使用 GitLab CI 发布
-
----
-
-## 常见问题
-
-### 1. 为什么不能只更新 `ui`，外部项目却不生效？
-
-因为外部项目安装的是 npm 发布后的包，而不是 monorepo 内的源码引用。
-
-例如 `@sunny-base-web/effects` 会依赖 `@sunny-base-web/ui`。如果只发布了 `ui`，但外部项目实际仍在使用旧版 `effects` 锁定的 `ui` 依赖，就可能看起来“没有生效”。
-
-所以在有依赖链时，应该通过 changesets 统一处理版本，而不是只手工发布单个包。
-
-### 2. 是否可以逐包 `pnpm publish`？
-
-可以，但不推荐。
-
-原因：
-
-- npm 二次验证繁琐
-- 容易漏掉依赖链上的包
-- 容易造成版本不同步
-
-### 3. CI 发布失败怎么办？
-
-优先检查：
-
-1. `NPM_TOKEN` 是否已在 GitLab 配置
-2. token 是否有发布权限
-3. 当前版本号是否已经发布过
-4. `main` 分支上的版本变更是否已经提交
-
-### 4. 哪一步最容易漏？
-
-最容易漏的是这一步：
+手动发布单个包：
 
 ```powershell
+cd packages/@ui
+npm publish --access public
+```
+
+单个包 dry-run：
+
+```powershell
+cd packages/@ui
+npm publish --dry-run --access public
+```
+
+## 常见排查
+
+### `npm whoami` 失败
+
+说明当前终端没有可用 token，或者 npm 认证未生效。
+
+检查：
+
+```powershell
+echo $env:NPM_TOKEN
+npm whoami
+```
+
+### `pnpm build:packages` 构建了 web
+
+正常情况下不会。请确认执行的是：
+
+```powershell
+pnpm build:packages
+```
+
+### `pnpm publish:packages` 没列出任何包
+
+检查：
+
+- 目标包是否位于 `packages/**`
+- 对应 `package.json` 是否不是 `private: true`
+
+### 某个包发布失败，但单独发布成功
+
+先用交互脚本只选这一个包重试，确认是否为该包本身的问题。
+
+### npm 提示版本已存在
+
+同一版本不能重复发布。需要重新生成变更并更新版本：
+
+```powershell
+pnpm changeset
 pnpm version-packages
 ```
 
-如果没有先执行它并把版本提交到仓库，即使触发了 GitLab 的 `release_npm`，也不会产生你预期的正式版本发布。
+## 当前正式建议
 
----
+在当前仓库里，正式建议的发布流程是：
 
-## 推荐操作顺序
+1. `pnpm changeset`
+2. `pnpm version-packages`
+3. `pnpm build:packages`
+4. `pnpm publish:packages`
 
-每次正式发版建议严格按下面顺序执行：
-
-1. 开发完成并提交代码
-2. `pnpm changeset`
-3. `pnpm version-packages`
-4. 提交版本变更并推送到目标分支
-5. 在 GitLab 页面手动创建 pipeline
-6. 手动点击 `build_packages`
-7. 手动点击 `release_npm`
-
-这是当前项目推荐的唯一正式发布流程。
+这就是当前已经验证通过、可重复执行的标准发布流程。

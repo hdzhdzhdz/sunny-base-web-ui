@@ -10,15 +10,17 @@
   ],
   "scripts": {
     "build": "turbo run build",
+    "build:packages": "turbo run build --filter=\"./packages/**\"",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "changeset": "changeset",
+    "publish:packages": "node ./scripts/publish-packages.mjs",
     "version-packages": "changeset version",
-    "release": "pnpm build && changeset publish"
+    "release": "pnpm build:packages && changeset publish"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.29.8",
+    "@changesets/cli": "^2.30.0",
     "prettier": "^3.2.5",
     "turbo": "^2.3.3",
     "typescript": "^5.2.2"
