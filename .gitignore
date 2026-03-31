@@ -5,3 +5,5 @@ dist
 coverage
 docs/src/.vitepress/cache
 .npmrc
+.packed
+*.tgz

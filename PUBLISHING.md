@@ -1,18 +1,18 @@
 # Sunny Base Web Framework 发布说明
 
-本文档记录当前仓库已经验证通过的发布流程，以本次 `0.8.0` 发布实践为准。
+本文档记录当前仓库已经验证通过的发布流程。
 
 当前推荐方案：
 
 - 使用 `changesets` 管理版本号和 changelog
 - 只构建 `packages/**`
-- 使用交互式脚本 `pnpm publish:packages` 选择要发布的包
-- 实际发布时逐个执行 `npm publish --access public`
+- 使用 `pnpm publish:packages` 选择要发布的包
+- 实际发布时先 `pnpm pack`，再发布生成的 tarball
 - 当前环境下，不再把 `changeset publish` 作为主发布方式
 
 ## 为什么这样发布
 
-仓库里的包存在构建前后依赖关系，不适合随意跳过构建。
+仓库里的包存在构建依赖关系，不适合跳过构建直接发包。
 
 例如：
 
@@ -20,12 +20,22 @@
 - `@sunny-base-web/icons / @sunny-base-web/locales / @sunny-base-web/utils -> @sunny-base-web/ui`
 - `@sunny-base-web/ui / @sunny-base-web/stores / @sunny-base-web/locales / @sunny-base-web/icons / @sunny-base-web/utils -> @sunny-base-web/effects`
 
-同时，当前环境里 `changeset publish` 在发布前检查 token 时会命中 npm 接口兼容问题，所以最终验证通过的方案是：
+另外，这个仓库使用了 `pnpm` 的 `catalog:` 和 `workspace:` 协议。它们在 monorepo 内开发没有问题，但对外发布到 npm 时，必须先转换成真实版本号。
+
+已经验证出的结论是：
+
+- `pnpm pack` 生成的 tarball 会把 `catalog:` 和 `workspace:` 转换成正常版本
+- 直接在包目录执行 `npm publish`，会把这些协议原样带进最终包清单
+- 外部项目如果用 `npm install` 安装这类包，会报 `EUNSUPPORTEDPROTOCOL`
+
+所以当前正确的发布方式是：
 
 1. 用 `changesets` 生成版本变更
 2. 用 `changeset version` 落盘版本号
 3. 构建 `packages/**`
-4. 用交互脚本选择包并逐个执行 `npm publish --access public`
+4. 用脚本选择包
+5. 先 `pnpm pack`
+6. 再发布生成的 `.tgz`
 
 ## 当前可用脚本
 
@@ -48,7 +58,7 @@
 - `pnpm changeset`：创建 changeset
 - `pnpm version-packages`：消费 changeset，更新版本号、内部依赖和 changelog
 - `pnpm build:packages`：只构建 `packages/**`
-- `pnpm publish:packages`：交互式选择并发布指定包
+- `pnpm publish:packages`：交互式选择包，先打 tarball，再发布 tarball
 - `pnpm release`：当前保留，但不作为推荐发布命令
 
 ## npm 认证
@@ -142,7 +152,9 @@ pnpm publish:packages
 - 扫描 `packages/**` 下所有可发布包
 - 列出包名、版本和目录
 - 让你输入要发布的包
-- 在每个选中的包目录里执行 `npm publish --access public`
+- 在每个选中的包目录里执行 `pnpm pack --pack-destination .packed`
+- 发布生成的 `.packed/*.tgz`
+- 发布后自动清理 `.packed`
 
 支持的输入方式：
 
@@ -157,8 +169,6 @@ pnpm publish:packages
 ```powershell
 git push
 ```
-
-如果你希望先 push 再发布，也可以，但当前这套流程是本次已经实际跑通的顺序。
 
 ## 推荐命令顺序
 
@@ -185,11 +195,10 @@ git push
 pnpm build:packages && changeset publish
 ```
 
-这条命令目前不作为推荐方案，原因是：
+这条命令目前不作为推荐方案，原因有两个：
 
-- `changeset publish` 在当前环境下会先请求 npm 的 `/-/npm/v1/user`
-- 该检查步骤会返回 `403 Forbidden`
-- 但直接在包目录执行 `npm publish --access public` 已经验证可以成功
+- `changeset publish` 在当前环境下会先请求 npm 的 `/-/npm/v1/user`，并返回 `403 Forbidden`
+- 直接对包目录执行 `npm publish` 会把 `catalog:` 和 `workspace:` 原样带进最终发布包
 
 所以当前结论是：
 
@@ -226,14 +235,16 @@ pnpm publish:packages
 
 ```powershell
 cd packages/@ui
-npm publish --access public
+pnpm pack --pack-destination .packed
+npm publish .packed/sunny-base-web-ui-x.y.z.tgz --access public
 ```
 
 单个包 dry-run：
 
 ```powershell
 cd packages/@ui
-npm publish --dry-run --access public
+pnpm pack --pack-destination .packed
+npm publish .packed/sunny-base-web-ui-x.y.z.tgz --dry-run --access public
 ```
 
 ## 常见排查
@@ -264,9 +275,15 @@ pnpm build:packages
 - 目标包是否位于 `packages/**`
 - 对应 `package.json` 是否不是 `private: true`
 
-### 某个包发布失败，但单独发布成功
+### 外部项目 `npm install` 报 `EUNSUPPORTEDPROTOCOL`
 
-先用交互脚本只选这一个包重试，确认是否为该包本身的问题。
+这通常说明发布到 npm 的包里仍带着 `catalog:` 或 `workspace:`。
+
+正确做法是：
+
+- 不要直接对包目录执行 `npm publish`
+- 使用 `pnpm publish:packages`
+- 或手动先 `pnpm pack`，再发布生成的 `.tgz`
 
 ### npm 提示版本已存在
 

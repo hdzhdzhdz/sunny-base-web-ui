@@ -6,6 +6,7 @@ import { stdin as input, stdout as output } from 'node:process';
 
 const repoRoot = path.resolve(import.meta.dirname, '..');
 const packagesRoot = path.join(repoRoot, 'packages');
+const packedDirName = '.packed';
 
 function findPackageJsonFiles(dir) {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
@@ -81,18 +82,56 @@ function parseSelection(inputValue, packages) {
   return selected;
 }
 
-function publishPackage(pkg) {
-  console.log(`\nPublishing ${pkg.name}@${pkg.version}`);
-  console.log(`Directory: ${pkg.relativeDir}`);
-
-  const result = spawnSync('npm', ['publish', '--access', 'public'], {
-    cwd: pkg.dir,
+function runCommand(command, args, options) {
+  const result = spawnSync(command, args, {
     stdio: 'inherit',
     shell: process.platform === 'win32',
+    ...options,
   });
 
   if (result.status !== 0) {
     process.exit(result.status ?? 1);
+  }
+}
+
+function clearPackedDir(packedDir) {
+  fs.rmSync(packedDir, { recursive: true, force: true });
+  fs.mkdirSync(packedDir, { recursive: true });
+}
+
+function getPackedTarball(packedDir) {
+  const tarballs = fs
+    .readdirSync(packedDir)
+    .filter((file) => file.endsWith('.tgz'))
+    .sort();
+
+  if (tarballs.length !== 1) {
+    throw new Error(`Expected exactly one tarball in ${packedDir}, found ${tarballs.length}`);
+  }
+
+  return tarballs[0];
+}
+
+function publishPackage(pkg) {
+  const packedDir = path.join(pkg.dir, packedDirName);
+
+  console.log(`\nPublishing ${pkg.name}@${pkg.version}`);
+  console.log(`Directory: ${pkg.relativeDir}`);
+
+  clearPackedDir(packedDir);
+
+  console.log('Packing with pnpm...');
+  runCommand('pnpm', ['pack', '--pack-destination', packedDirName], { cwd: pkg.dir });
+
+  const tarballName = getPackedTarball(packedDir);
+  const tarballPath = path.join(packedDirName, tarballName);
+
+  console.log(`Publishing tarball: ${tarballPath}`);
+
+  try {
+    runCommand('npm', ['publish', tarballPath, '--access', 'public'], { cwd: pkg.dir });
+  } finally {
+    fs.rmSync(packedDir, { recursive: true, force: true });
   }
 }
 
