@@ -352,4 +352,12 @@ const systemOpts: Record<string, SelectOption[]> = {
 
 const businessOpts: BusinessOpts = {}
 
+export { systemOpts }
 export default { ...systemOpts, ...businessOpts } as SelectOptions
+
+// 导出常用选项
+export const sfggOpts = systemOpts.sfggOpts
+export const cbTypeOpts = systemOpts.cbTypeOpts
+export const userSfqyOpts = systemOpts.userSfqyOpts
+export const nCbtypeOpts = systemOpts.nCbtypeOpts
+export const nLikematchOpts = systemOpts.nLikematchOpts
