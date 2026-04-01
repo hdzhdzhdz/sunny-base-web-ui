@@ -112,7 +112,8 @@ export default defineConfig({
               text: 'Common 常用',
               items: [
                 { text: 'I18n 国际化', link: '/utilities/i18n' },
-                { text: 'Regex 正则表达式', link: '/utilities/regex' }
+                { text: 'Regex 正则表达式', link: '/utilities/regex' },
+                { text: 'AccessControl 权限控制', link: '/utilities/access-control' }
               ]
             }
           ]
