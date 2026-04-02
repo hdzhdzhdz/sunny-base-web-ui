@@ -54,10 +54,14 @@ export const addFormSchema: FormSchema[] = [
   {
     fieldName: 'cOrg',
     label: '所属组织',
-    component: 'Input',
+    component: 'Select',
     componentProps: {
       placeholder: '请输入所属组织',
       allowClear: true
+    },
+    permissionOptions: {
+      code: 'FACTORY',  // 权限选项
+      fieldMapping: { label: 'cExresname', value: 'cExresnum' }
     }
   },
   {

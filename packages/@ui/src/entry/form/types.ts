@@ -215,6 +215,25 @@ export interface FormSchema {
    * ```
    */
   selectOptions?: SelectOptionsDeclaration;
+
+  /**
+   * 权限选项声明配置（声明式加载权限选项）
+   * Permission options declaration config (declarative loading of permission options)
+   * @description 在 FormSchema 中声明式配置权限选项，useForm 会自动收集并批量加载
+   * @description Declarative configuration of permission options in FormSchema, useForm will auto-collect and batch load
+   * @example
+   * ```typescript
+   * {
+   *   fieldName: 'cOrg',
+   *   component: 'Select',
+   *   permissionOptions: {
+   *     code: 'FACTORY',
+   *     fieldMapping: { label: 'cName', value: 'cXuhao' }
+   *   }
+   * }
+   * ```
+   */
+  permissionOptions?: PermissionOptionsDeclaration;
 }
 
 export interface SunnyFormProps {
@@ -662,6 +681,26 @@ export interface SelectOptionsDeclaration {
    * @default false
    */
   forceReload?: boolean;
+}
+
+/**
+ * 权限选项声明配置
+ * Permission options declaration config
+ * @description 用于声明式加载权限选项
+ * @description Used for declarative loading of permission options
+ */
+export interface PermissionOptionsDeclaration {
+  /**
+   * 权限编码
+   * Permission code
+   */
+  code: string | number;
+
+  /**
+   * 字段映射配置
+   * Field mapping configuration
+   */
+  fieldMapping?: SelectFieldMapping;
 }
 
 /**

@@ -39,6 +39,7 @@ export default defineConfig({
         'vue-router',
         '@sunny-base-web/locales',
         '#/preferences',
+        'vxe-table',
        ],
       output: {
         globals: {
@@ -58,6 +59,7 @@ export default defineConfig({
           '@vueuse/core': 'VueUse',
           'reka-ui': 'RekaUI',
           'vue-router': 'vueRouter',
+          'vxe-table': 'VXETable',
         },
       },
     },
