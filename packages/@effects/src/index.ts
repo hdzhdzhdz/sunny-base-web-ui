@@ -30,7 +30,7 @@ export * from './utils/error-report';
 export * from './utils/use-schema-options-loader';
 export * from './utils/use-schema-permission-loader';
 export * from './utils/select-options';
-export * from './hooks/useList';
+export * from './hooks';
 export * from './composables';
 export * from './access';
 export * from './loading';
