@@ -3,6 +3,7 @@ import { useSunnyForm, useSunnyQueryGrid } from '@sunny-base-web/ui';
 import { requestClient } from '../api/request';
 import { getResourceByParIdOrModnumb } from '../api/resource';
 import { initResourceConstructor } from '../utils/utils';
+import { useSchemaOptionsLoader } from '../utils/use-schema-options-loader';
 
 /**
  * 查询方案 API 实现
@@ -103,6 +104,9 @@ export function useList<T>(options: {
 
   const submitting = ref(false);
 
+  // 使用声明式加载选项处理搜索表单
+  const { enhancedSchema } = useSchemaOptionsLoader(searchFormSchema);
+  
   // 创建表单，不包含searchPlanConfig
   const [QueryForm, formApi] = useSunnyForm({
     layout: 'vertical',
@@ -125,7 +129,7 @@ export function useList<T>(options: {
     submitOnEnter: true,
     submitButtonOptions: { loading: submitting },
     actionColProps: { span: 24, lg: 6, xl: 4 },
-    schema: searchFormSchema,
+    schema: enhancedSchema.value,
     objectToValueFields
   });
 

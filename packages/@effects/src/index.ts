@@ -18,6 +18,7 @@ export * from './views/setting/dsrw/jobgroup';
 export * from './views/setting/gnzjgl/zdyxlk';
 export * from './views/setting/gnzjgl/assSendoa';
 export * from './views/setting/gnzjgl/ggcxtc';
+export * from './views/setting/otherPermissions';
 export * from './views/setting/systemSetting';
 export * from './views/setting/dataDictionary';
 export * from './views/setting/user';

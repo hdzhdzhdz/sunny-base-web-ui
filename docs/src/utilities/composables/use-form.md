@@ -8,6 +8,7 @@
 - 提供默认的表单布局和样式配置
 - 支持自定义表单 schema
 - 支持对象转值字段配置
+- 支持声明式下拉选项自动加载
 
 ## 类型定义
 
@@ -140,6 +141,51 @@ const formSchema = [
 const { form: Form, formApi } = useForm({
   schema: formSchema,
   objectToValueFields: ['user']
+})
+</script>
+
+<template>
+  <Form />
+</template>
+```
+
+### 使用声明式下拉选项
+
+```vue
+<script setup lang="ts">
+import { useForm } from '@sunny-base-web/effects'
+
+// 表单配置 - 使用声明式下拉选项
+const formSchema = [
+  {
+    fieldName: 'status',
+    label: '状态',
+    component: 'Select',
+    // 声明式配置下拉选项
+    selectOptions: {
+      dictCode: 'SFQY', // 字典编码
+      fieldMapping: { label: 'cName', value: 'cXuhao' } // 字段映射
+    },
+    componentProps: {
+      placeholder: '请选择状态'
+    }
+  },
+  {
+    fieldName: 'type',
+    label: '类型',
+    component: 'Select',
+    selectOptions: {
+      dictCode: 'LANG'
+    },
+    componentProps: {
+      placeholder: '请选择类型'
+    }
+  }
+]
+
+// 使用 useForm 钩子，自动处理声明式下拉选项
+const { form: Form, formApi } = useForm({
+  schema: formSchema
 })
 </script>
 

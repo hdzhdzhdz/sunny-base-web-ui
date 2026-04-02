@@ -9,6 +9,7 @@
 - 内置搜索方案功能
 - 全局回车触发查询
 - 支持自定义查询函数
+- 支持声明式下拉选项自动加载
 
 ## 类型定义
 
@@ -320,33 +321,58 @@ const {
 // 搜索表单配置
 export const searchFormSchema = [
   {
-    field: 'dCreatelist',
+    fieldName: 'dCreatelist',
     component: 'DatePicker',
     label: '操作时间',
-    props: {
+    componentProps: {
       type: 'daterange',
       format: 'YYYY-MM-DD HH:mm:ss'
     }
   },
   {
-    field: 'cModname',
+    fieldName: 'cModname',
     component: 'Input',
-    label: '操作模块'
+    label: '操作模块',
+    componentProps: {
+      placeholder: '请输入操作模块'
+    }
   },
   {
-    field: 'cSystem',
+    fieldName: 'cSystem',
     component: 'Input',
-    label: '系统标识'
+    label: '系统标识',
+    componentProps: {
+      placeholder: '请输入系统标识'
+    }
   },
   {
-    field: 'cDanju',
+    fieldName: 'cDanju',
     component: 'Input',
-    label: '单据号'
+    label: '单据号',
+    componentProps: {
+      placeholder: '请输入单据号'
+    }
   },
   {
-    field: 'cUser',
+    fieldName: 'cUser',
     component: 'Input',
-    label: '操作人'
+    label: '操作人',
+    componentProps: {
+      placeholder: '请输入操作人'
+    }
+  },
+  {
+    fieldName: 'status',
+    label: '状态',
+    component: 'Select',
+    // 声明式配置下拉选项
+    selectOptions: {
+      dictCode: 'SFQY', // 字典编码
+      fieldMapping: { label: 'cName', value: 'cXuhao' } // 字段映射
+    },
+    componentProps: {
+      placeholder: '请选择状态'
+    }
   }
 ];
 
