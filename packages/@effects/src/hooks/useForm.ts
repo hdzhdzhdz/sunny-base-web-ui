@@ -1,6 +1,6 @@
 import { useSunnyForm } from '@sunny-base-web/ui'
 import { useSchemaOptionsLoader } from '../utils/use-schema-options-loader'
-import { useSchemaPermissionLoader } from '../permission'
+import { useSchemaPermissionLoader } from '../utils/use-schema-permission-loader'
 
 interface UseFormOptions {
   schema?: any[]

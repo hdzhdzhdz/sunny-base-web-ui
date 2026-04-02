@@ -1,27 +1,5 @@
 import { requestClient } from '../api/request';
-import type { SelectOption, SelectFieldMapping } from '@sunny-base-web/ui';
-
-/**
- * 转换原始数据为标准格式
- * Transform raw data to standard format
- * @param data - 原始数据数组
- * @param fieldMapping - 字段映射配置
- * @returns 标准格式的选项数组
- */
-function transformOptions(
-  data: any[],
-  fieldMapping?: SelectFieldMapping
-): SelectOption[] {
-  if (!Array.isArray(data)) return [];
-
-  const { label = 'cName', value = 'cXuhao' } = fieldMapping || {};
-
-  return data.map((item) => ({
-    label: String(item[label] || ''),
-    value: item[value],
-    ...item, // 保留原始字段
-  }));
-}
+import type { SelectOption, PermissionFieldMapping } from '@sunny-base-web/ui';
 
 /**
  * 权限选项适配器
@@ -29,7 +7,7 @@ function transformOptions(
  * @description 调用 /core/contact/findUserExresList 接口批量加载权限选项
  * @description Calls /core/contact/findUserExresList API to batch load permission options
  */
-export const permissionOptionsAdapter = {
+export const defaultPermissionOptionsAdapter = {
   /**
    * 批量加载权限选项
    * Batch load permission options
@@ -39,11 +17,24 @@ export const permissionOptionsAdapter = {
    */
   loadOptions: async (
     numbList: (string | number)[],
-    fieldMapping?: SelectFieldMapping
+    fieldMapping?: PermissionFieldMapping
   ): Promise<Record<string, SelectOption[]>> => {
     if (!numbList || numbList.length === 0) {
       return {};
     }
+
+    const { label = 'cExresname', value = 'cExresnum' } = fieldMapping || {};
+
+    // 获取 label 值
+    const getLabel = (item: any): string => {
+      if (typeof label === 'function') {
+        return label(item);
+      }
+      if (Array.isArray(label)) {
+        return label.map((field) => item[field] ?? '').join('-');
+      }
+      return String(item[label] || '');
+    };
 
     try {
       const response = await requestClient.post<{
@@ -52,13 +43,18 @@ export const permissionOptionsAdapter = {
         numbList,
       });
 
-      const result = response?.result || response;
+      const result = (response as any)?.result || response;
       const optionsMap: Record<string, SelectOption[]> = {};
 
       // 转换每个权限编码的选项
       // Transform each permission code's options
       Object.keys(result).forEach((code: string) => {
-        optionsMap[code] = transformOptions(result[code] as any[], fieldMapping);
+        const dataList = result[code] || [];
+        optionsMap[code] = dataList.map((item: any) => ({
+          label: getLabel(item),
+          value: item[value],
+          ...item, // 保留原始字段
+        }));
       });
 
       return optionsMap;

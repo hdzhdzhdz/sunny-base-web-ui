@@ -114,6 +114,7 @@ export function setupSunnyForm(options: SunnyFormAdapterOptions) {
     businessSearchAdapter,
     customizeSelectAdapter,
     selectOptionsAdapter,  // ✅ 提取 selectOptionsAdapter
+    permissionOptionsAdapter,  // ✅ 提取 permissionOptionsAdapter
     apiPrefix
   } = (config || {}) as FormCommonConfig;
 
@@ -127,6 +128,7 @@ export function setupSunnyForm(options: SunnyFormAdapterOptions) {
     businessSearchAdapter,
     customizeSelectAdapter,
     selectOptionsAdapter,  // ✅ 添加 selectOptionsAdapter 到全局配置
+    permissionOptionsAdapter,  // ✅ 添加 permissionOptionsAdapter 到全局配置
     apiPrefix,
   });
 

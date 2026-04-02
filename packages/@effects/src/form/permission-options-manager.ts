@@ -1,5 +1,5 @@
-import { permissionOptionsAdapter } from './permission-options-adapter';
-import type { SelectOption, SelectFieldMapping } from '@sunny-base-web/ui';
+import { DEFAULT_FORM_COMMON_CONFIG } from '@sunny-base-web/ui';
+import type { SelectOption, PermissionFieldMapping } from '@sunny-base-web/ui';
 
 /**
  * 权限选项缓存管理器
@@ -37,9 +37,16 @@ class PermissionOptionsManager {
    */
   async loadOptions(
     numbList: (string | number)[],
-    fieldMapping?: SelectFieldMapping,
+    fieldMapping?: PermissionFieldMapping,
     forceReload = false
   ): Promise<Record<string, SelectOption[]>> {
+    const adapter = DEFAULT_FORM_COMMON_CONFIG.permissionOptionsAdapter;
+
+    if (!adapter?.loadOptions) {
+      console.warn('[PermissionOptionsManager] Adapter not configured');
+      return {};
+    }
+
     if (!numbList || numbList.length === 0) {
       return {};
     }
@@ -71,7 +78,7 @@ class PermissionOptionsManager {
     if (!loadingPromise) {
       // 发起新的批量请求
       // Initiate new batch request
-      loadingPromise = permissionOptionsAdapter.loadOptions(toLoad, fieldMapping);
+      loadingPromise = adapter.loadOptions(toLoad, fieldMapping);
       this.loadingPromises.set(cacheKey, loadingPromise);
     }
 

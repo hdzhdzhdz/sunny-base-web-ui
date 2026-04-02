@@ -21,6 +21,7 @@ import {
 } from '@sunny-base-web/ui';
 import { requestClient } from '../api/request';
 import { defaultSelectOptionsAdapter } from './select-options-adapter';
+import { defaultPermissionOptionsAdapter } from './permission-options-adapter';
 
 // =============================================================================
 // 类型定义
@@ -269,6 +270,7 @@ const defaultFormConfig: FormCommonConfig = {
   businessSearchAdapter: defaultBusinessSearchAdapter,
   customizeSelectAdapter: defaultCustomizeSelectAdapter,
   selectOptionsAdapter: defaultSelectOptionsAdapter,  // ✅ 已有：字典选项适配器
+  permissionOptionsAdapter: defaultPermissionOptionsAdapter,  // ✅ 新增：权限选项适配器
   apiPrefix: undefined,
 };
 
@@ -372,3 +374,12 @@ export type {
   UseSelectOptionsParams,
   UseSelectOptionsReturn,
 } from './use-select-options';
+
+// 导出 Permission 选项相关功能
+export { usePermissionOptions } from './use-permission-options';
+export { permissionOptionsManager } from './permission-options-manager';
+export { defaultPermissionOptionsAdapter } from './permission-options-adapter';
+export type {
+  UsePermissionOptionsParams,
+  UsePermissionOptionsReturn,
+} from './use-permission-options';

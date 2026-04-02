@@ -657,6 +657,30 @@ export interface SelectFieldMapping {
 }
 
 /**
+ * 权限选项字段映射配置
+ * Permission options field mapping configuration
+ * @description 支持更灵活的 label 配置
+ */
+export interface PermissionFieldMapping {
+  /**
+   * label 字段配置
+   * Label field configuration
+   * @description 支持多种格式：
+   * - string: 单个字段名，如 'cName'
+   * - string[]: 多个字段自动用 '-' 拼接，如 ['cExresnum', 'cExresname']
+   * - function: 自定义函数，如 (item) => `${item.cExresnum}-${item.cExresname}`
+   * @default 'cExresname'
+   */
+  label?: string | string[] | ((item: any) => string);
+  /**
+   * value 字段名
+   * Value field name
+   * @default 'cXuhao'
+   */
+  value?: string;
+}
+
+/**
  * Select 选项声明配置（Schema 声明式）
  * Select options declaration config (Schema declarative)
  * @description 用于在 FormSchema 中声明式配置字典选项，useList 会自动收集并批量加载
@@ -700,7 +724,7 @@ export interface PermissionOptionsDeclaration {
    * 字段映射配置
    * Field mapping configuration
    */
-  fieldMapping?: SelectFieldMapping;
+  fieldMapping?: PermissionFieldMapping;
 }
 
 /**
@@ -718,6 +742,24 @@ export interface SelectOptionsAdapter {
   loadOptions: (
     numbList: (string | number)[],
     fieldMapping?: SelectFieldMapping
+  ) => Promise<Record<string, SelectOption[]>>;
+}
+
+/**
+ * 权限选项加载适配器
+ * Permission options loader adapter
+ */
+export interface PermissionOptionsAdapter {
+  /**
+   * 批量加载多个权限选项
+   * Batch load multiple permission options
+   * @param numbList - 权限编码列表
+   * @param fieldMapping - 字段映射配置
+   * @returns 选项映射表 { code: options }
+   */
+  loadOptions: (
+    numbList: (string | number)[],
+    fieldMapping?: PermissionFieldMapping
   ) => Promise<Record<string, SelectOption[]>>;
 }
 
@@ -766,6 +808,13 @@ export interface FormCommonConfig {
    * Used for batch loading dictionary options
    */
   selectOptionsAdapter?: SelectOptionsAdapter;
+  /**
+   * 权限选项加载适配器
+   * Permission options loader adapter
+   * 用于批量加载权限选项
+   * Used for batch loading permission options
+   */
+  permissionOptionsAdapter?: PermissionOptionsAdapter;
   /**
    * API 前缀
    */

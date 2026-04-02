@@ -254,6 +254,37 @@ async function bootstrap(namespace: string) {
 					return optionsMap;
 				},
 			},
+			// ✅ 权限选项加载适配器
+			// 用于批量加载权限选项，如工厂、公司等
+			permissionOptionsAdapter: {
+				loadOptions: async (numbList, fieldMapping) => {
+					const { label: labelField = 'cExresname', value: valueField = 'cExresnum' } = fieldMapping || {};
+					const labelKey = typeof labelField === 'string' ? labelField : 'cExresname';
+					const valueKey = typeof valueField === 'string' ? valueField : 'cExresnum';
+
+
+					// 调用后端接口批量加载权限选项
+					const response = await requestClient.post<Record<string, any[]>>(
+						'/core/contact/findUserExresList',
+						{ numbList }
+					);
+
+					const result = (response as any)?.result || response;
+					const optionsMap: Record<string, any[]> = {};
+
+					// 转换每个权限的选项
+					Object.keys(result).forEach((code) => {
+						const dataList = result[code] || [];
+						optionsMap[code] = dataList.map((item: any) => ({
+							label: item[valueKey] + '-' + item[labelKey],  // 显示名称格式化为 "权限编号-权限名称"
+							value: item[valueKey],
+							...item,
+						}));
+					});
+
+					return optionsMap;
+				},
+			},
 		}
 	})
 

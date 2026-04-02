@@ -5,27 +5,9 @@
  * @description Provides declarative permission options auto-loading functionality
  */
 
-import { computed, onMounted, ref, type Ref, type ComputedRef } from 'vue';
-import { permissionOptionsManager } from './permission-options-manager';
-import type { FormSchema, SelectFieldMapping, SelectOption } from '@sunny-base-web/ui';
-
-/**
- * 权限选项声明
- * Permission options declaration
- */
-export interface PermissionOptionsDeclaration {
-  /**
-   * 权限编码
-   * Permission code
-   */
-  code: string | number;
-
-  /**
-   * 字段映射配置
-   * Field mapping configuration
-   */
-  fieldMapping?: SelectFieldMapping;
-}
+import { computed, onMounted, isRef, type Ref, type ComputedRef } from 'vue';
+import { usePermissionOptions } from '../form/use-permission-options';
+import type { FormSchema, PermissionOptionsDeclaration, SelectOption } from '@sunny-base-web/ui';
 
 /**
  * Schema 选项加载器返回值
@@ -98,8 +80,7 @@ export function useSchemaPermissionLoader(
    * Collect all permission declarations to load
    */
   const collectDeclarations = computed(() => {
-    const schemaValue =
-      typeof schema === 'object' && 'value' in schema ? schema.value : schema;
+    const schemaValue = isRef(schema) ? schema.value : schema;
     const declarations: Array<PermissionOptionsDeclaration & { fieldName: string }> =
       [];
 
@@ -112,6 +93,7 @@ export function useSchemaPermissionLoader(
       }
     });
 
+    console.log('[useSchemaPermissionLoader] collectDeclarations:', declarations);
     return declarations;
   });
 
@@ -128,47 +110,24 @@ export function useSchemaPermissionLoader(
   });
 
   /**
-   * 选项映射表
-   * Options map
+   * 使用 usePermissionOptions 批量加载
+   * Use usePermissionOptions for batch loading
    */
-  const optionsMap = ref<Record<string, SelectOption[]>>({});
-
-  /**
-   * 加载状态
-   * Loading state
-   */
-  const loading = ref(false);
-  debugger
-  /**
-   * 加载选项
-   * Load options
-   */
-  const load = async () => {
-    if (codes.value.length === 0) {
-      return;
-    }
-
-    loading.value = true;
-    try {
-      const result = await permissionOptionsManager.loadOptions(
-        codes.value,
-        collectDeclarations.value[0]?.fieldMapping // 使用第一个字段的映射作为默认
-      );
-      optionsMap.value = result;
-    } catch (error) {
-      console.error('[useSchemaPermissionLoader] Failed to load options:', error);
-    } finally {
-      loading.value = false;
-    }
-  };
+  const { optionsMap, loading, load } = usePermissionOptions({
+    numbList: codes.value,
+    fieldMapping: collectDeclarations.value[0]?.fieldMapping, // 使用第一个字段的映射作为默认
+    immediate: false,
+  });
 
   /**
    * 增强 Schema：自动注入 options
    * Enhance Schema: auto-inject options
    */
   const enhancedSchema = computed(() => {
-    const schemaValue =
-      typeof schema === 'object' && 'value' in schema ? schema.value : schema;
+    const schemaValue = isRef(schema) ? schema.value : schema;
+
+    console.log('[useSchemaPermissionLoader] schemaValue:', schemaValue);
+    console.log('[useSchemaPermissionLoader] optionsMap.value:', optionsMap.value);
 
     return schemaValue.map((field) => {
       if (field.permissionOptions?.code) {
@@ -199,8 +158,11 @@ export function useSchemaPermissionLoader(
    * 自动加载（immediate 为 true 时）
    * Auto-load (when immediate is true)
    */
+  console.log('[useSchemaPermissionLoader] immediate:', immediate, 'codes.value.length:', codes.value.length);
+
   if (immediate && codes.value.length > 0) {
     onMounted(async () => {
+      console.log('[useSchemaPermissionLoader] onMounted triggered, calling load()');
       await load();
     });
   }

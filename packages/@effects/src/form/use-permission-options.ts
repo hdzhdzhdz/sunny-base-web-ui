@@ -1,6 +1,6 @@
 import { ref, onMounted, getCurrentInstance, type Ref } from 'vue';
 import { permissionOptionsManager } from './permission-options-manager';
-import type { SelectOption, SelectFieldMapping } from '@sunny-base-web/ui';
+import type { SelectOption, PermissionFieldMapping } from '@sunny-base-web/ui';
 
 /**
  * Hook 参数
@@ -21,7 +21,7 @@ export interface UsePermissionOptionsParams {
    * @description 自定义 label 和 value 对应的后端字段名
    * @description Customize backend field names for label and value
    */
-  fieldMapping?: SelectFieldMapping;
+  fieldMapping?: PermissionFieldMapping;
 
   /**
    * 是否立即加载
@@ -119,8 +119,8 @@ export interface UsePermissionOptionsReturn {
  * const { optionsMap } = usePermissionOptions({
  *   numbList: ['FACTORY'],
  *   fieldMapping: {
- *     label: 'cName',
- *     value: 'cXuhao'
+ *     label: ['cExresnum', 'cExresname'], // 数组格式自动拼接
+ *     value: 'cExresnum'
  *   }
  * });
  *
