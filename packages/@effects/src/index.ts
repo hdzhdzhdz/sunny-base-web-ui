@@ -31,4 +31,5 @@ export * from './utils/select-options';
 export * from './hooks/useList';
 export * from './composables';
 export * from './access';
+export * from './permission';
 export * from './loading';
