@@ -38,8 +38,7 @@ export default defineConfig({
         'reka-ui',
         'vue-router',
         '@sunny-base-web/locales',
-        '#/preferences',
-        'vxe-table',
+        '#/preferences'
        ],
       output: {
         globals: {
