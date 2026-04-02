@@ -1,4 +1,5 @@
 import { useSunnyForm } from '@sunny-base-web/ui'
+import { useSchemaOptionsLoader } from '../utils/use-schema-options-loader'
 
 interface UseFormOptions {
   schema?: any[]
@@ -6,6 +7,9 @@ interface UseFormOptions {
 }
 
 export function useForm({ schema = [], objectToValueFields }: UseFormOptions = {}) {
+  // 使用声明式加载选项
+  const { enhancedSchema } = useSchemaOptionsLoader(schema)
+  
   return useSunnyForm({
     layout: 'horizontal',
     size: 'small',
@@ -16,7 +20,7 @@ export function useForm({ schema = [], objectToValueFields }: UseFormOptions = {
     },
     showDefaultActions: false,
     scrollToFirstError: true,
-    schema,
+    schema: enhancedSchema.value,
     ...(objectToValueFields ? { objectToValueFields } : {})
   })
 }

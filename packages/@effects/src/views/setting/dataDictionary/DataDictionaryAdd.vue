@@ -4,7 +4,6 @@ import { Message } from '@arco-design/web-vue'
 import { Plus, Trash2 } from '@sunny-base-web/icons'
 import { Modal, useSunnyEditGrid } from '@sunny-base-web/ui'
 import { requestClient } from '../../../api/request'
-import { useSchemaOptionsLoader } from '../../../utils/use-schema-options-loader'
 import { useForm } from '../../../hooks/useForm'
 import { addFormSchema, metaGridColumns, metaGridEditRules } from './config'
 import type { DataDictionaryFormVO, MetaItem } from './types'
@@ -32,11 +31,8 @@ const emit = defineEmits<{
 
 const loading = ref(false)
 
-// ✅ 使用方案2：Schema 声明式加载选项
-const { enhancedSchema } = useSchemaOptionsLoader(addFormSchema)
-
 // 表单配置
-const [Form, formApi] = useForm({ schema: enhancedSchema })
+const [Form, formApi] = useForm({ schema: addFormSchema })
 
 // 额外属性表格配置
 const metaGridOptions = reactive({

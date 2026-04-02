@@ -1,0 +1,5 @@
+export { default as OtherPermissionsQuery } from './OtherPermissionsQuery.vue'
+export { default as OtherPermissionsAdd } from './OtherPermissionsAdd.vue'
+export { default as OtherPermissionsUpdate } from './OtherPermissionsUpdate.vue'
+export * from './types'
+export * from './config'
