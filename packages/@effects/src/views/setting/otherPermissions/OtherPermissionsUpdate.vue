@@ -4,7 +4,11 @@ import { Message } from '@arco-design/web-vue'
 import { Modal } from '@sunny-base-web/ui'
 import { requestClient } from '../../../api/request'
 import { useForm } from '../../../hooks/useForm'
-import { addFormSchema } from './config'
+import { getOtherPermissionsConfig } from './config'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+const { addFormSchema } = getOtherPermissionsConfig({ t })
 import type { OtherPermissionsFormVO } from './types'
 
 defineOptions({
@@ -47,7 +51,7 @@ watch(() => props.visible, (val) => {
 
 // 弹窗标题
 const modalTitle = computed(() => {
-  return '修改权限'
+  return t('otherPermissions.updateTitle')
 })
 
 // 提交表单
@@ -66,7 +70,7 @@ async function handleSubmit() {
     }
 
     const res = await requestClient.post<{ message?: string }>('/core/authExres/edit', params)
-    Message.success(res.message || '修改成功')
+    Message.success(res.message || t('otherPermissions.updateSuccess'))
     emit('success')
     return true
   } catch (error: any) {

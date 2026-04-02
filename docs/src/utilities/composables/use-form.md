@@ -43,25 +43,32 @@ export function useForm({ schema = [], objectToValueFields }: UseFormOptions = {
 
 ## 参数说明
 
-| 参数 | 类型 | 说明 |
-| --- | --- | --- |
-| `schema` | `any[]` | 表单配置 schema，遵循 SunnyForm 的 schema 格式（可选） |
-| `objectToValueFields` | `string[]` | 对象转值字段列表，用于将 BusinessSearch 等返回的对象数组转换为值字符串（可选） |
+| 参数     | 类型     |
+| ------ | ------ |
+| <br /> | <br /> |
+
+```typescript
+```
+
+| <br />                | objectToValueFields | 说明                                              |
+| :-------------------- | ------------------- | ----------------------------------------------- |
+| `schema`              | `any[]`             | 表单配置 schema，遵循 SunnyForm 的 schema 格式（可选）        |
+| `objectToValueFields` | `string[]`          | 对象转值字段列表，用于将 BusinessSearch 等返回的对象数组转换为值字符串（可选） |
 
 ## 返回值
 
 `useForm` 钩子返回 `useSunnyForm` 的所有返回值，包括：
 
-| 返回值 | 类型 | 说明 |
-| --- | --- | --- |
-| `form` | `Component` | 表单组件 |
-| `formApi` | `object` | 表单 API，用于操作表单 |
-| `schemaRef` | `Ref<any[]>` | 表单 schema 的响应式引用 |
-| `model` | `Ref<any>` | 表单数据模型 |
-| `submitting` | `Ref<boolean>` | 提交状态 |
-| `handleSubmit` | `(values: any) => Promise<void>` | 表单提交处理函数 |
-| `resetFields` | `() => void` | 重置表单字段 |
-| `validate` | `() => Promise<boolean>` | 表单验证函数 |
+| 返回值            | 类型                               | 说明               |
+| -------------- | -------------------------------- | ---------------- |
+| `form`         | `Component`                      | 表单组件             |
+| `formApi`      | `object`                         | 表单 API，用于操作表单    |
+| `schemaRef`    | `Ref<any[]>`                     | 表单 schema 的响应式引用 |
+| `model`        | `Ref<any>`                       | 表单数据模型           |
+| `submitting`   | `Ref<boolean>`                   | 提交状态             |
+| `handleSubmit` | `(values: any) => Promise<void>` | 表单提交处理函数         |
+| `resetFields`  | `() => void`                     | 重置表单字段           |
+| `validate`     | `() => Promise<boolean>`         | 表单验证函数           |
 
 ## 使用示例
 
@@ -198,15 +205,15 @@ const { form: Form, formApi } = useForm({
 
 `useForm` 是对 `useSunnyForm` 的封装，提供了以下默认配置：
 
-| 配置项 | 默认值 | 说明 |
-| --- | --- | --- |
-| `layout` | `'horizontal'` | 表单布局方式 |
-| `size` | `'small'` | 表单组件尺寸 |
-| `labelWidth` | `100` | 标签宽度 |
-| `gridProps.xGap` | `0` | 网格水平间距 |
-| `gridProps.yGap` | `0` | 网格垂直间距 |
-| `showDefaultActions` | `false` | 是否显示默认操作按钮 |
-| `scrollToFirstError` | `true` | 是否滚动到第一个错误字段 |
+| 配置项                  | 默认值            | 说明           |
+| -------------------- | -------------- | ------------ |
+| `layout`             | `'horizontal'` | 表单布局方式       |
+| `size`               | `'small'`      | 表单组件尺寸       |
+| `labelWidth`         | `100`          | 标签宽度         |
+| `gridProps.xGap`     | `0`            | 网格水平间距       |
+| `gridProps.yGap`     | `0`            | 网格垂直间距       |
+| `showDefaultActions` | `false`        | 是否显示默认操作按钮   |
+| `scrollToFirstError` | `true`         | 是否滚动到第一个错误字段 |
 
 ## 最佳实践
 
@@ -221,3 +228,4 @@ const { form: Form, formApi } = useForm({
 - `useForm` 钩子依赖于 `@sunny-base-web/ui` 中的 `useSunnyForm`
 - 确保表单 schema 配置符合 SunnyForm 的要求
 - 对象转值字段功能需要配合 BusinessSearch 等组件使用
+
