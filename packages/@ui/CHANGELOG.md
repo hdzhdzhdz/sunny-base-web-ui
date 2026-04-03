@@ -1,5 +1,15 @@
 # @sunny-base-web/ui
 
+## 0.8.6
+
+### Patch Changes
+
+- chore: version bump to 0.8.6
+- Updated dependencies
+  - @sunny-base-web/icons@0.8.6
+  - @sunny-base-web/locales@0.8.6
+  - @sunny-base-web/utils@0.8.6
+
 ## 0.8.5
 
 ### Patch Changes

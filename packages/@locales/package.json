@@ -1,6 +1,6 @@
 {
   "name": "@sunny-base-web/locales",
-  "version": "0.8.5",
+  "version": "0.8.6",
   "license": "MIT",
   "type": "module",
   "sideEffects": [
