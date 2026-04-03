@@ -4,7 +4,11 @@ import { Message } from '@arco-design/web-vue'
 import { Modal } from '@sunny-base-web/ui'
 import { requestClient } from '../../../api/request'
 import { useForm } from '../../../hooks/useForm'
-import { addFormSchema } from './config'
+import { getOtherPermissionsConfig } from './config'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+const { addFormSchema } = getOtherPermissionsConfig({ t })
 import type { OtherPermissionsFormVO } from './types'
 
 defineOptions({
@@ -54,8 +58,8 @@ watch(() => props.visible, (val) => {
 // 弹窗标题
 const modalTitle = computed(() => {
   return props.parentId && props.parentId !== '0'
-    ? `新增子级权限 - ${props.parentName}`
-    : '新增根级权限'
+    ? `${t('otherPermissions.addTitle')} - ${props.parentName}`
+    : t('otherPermissions.addTitle')
 })
 
 // 提交表单
@@ -69,13 +73,13 @@ async function handleSubmit() {
     const params = {
       authExres: {
         ...values,
-        cSign: 10001,
-        nParent: props.parentId || '0'
+        cExresparnum: props.cExresnum || '',
+        id: props.id || '',
       }
     }
 
     const res = await requestClient.post<{ message?: string }>('/core/authExres/add', params)
-    Message.success(res.message)
+    Message.success(res.message || t('otherPermissions.addSuccess'))
     emit('success')
     return true
   } catch (error: any) {

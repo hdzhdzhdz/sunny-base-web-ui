@@ -4,6 +4,7 @@ import { requestClient } from '../api/request';
 import { getResourceByParIdOrModnumb } from '../api/resource';
 import { initResourceConstructor } from '../utils/utils';
 import { useSchemaOptionsLoader } from '../utils/use-schema-options-loader';
+import { useSchemaPermissionLoader } from '../utils/use-schema-permission-loader';
 
 /**
  * 查询方案 API 实现
@@ -105,7 +106,10 @@ export function useList<T>(options: {
   const submitting = ref(false);
 
   // 使用声明式加载选项处理搜索表单
-  const { enhancedSchema } = useSchemaOptionsLoader(searchFormSchema);
+  const { enhancedSchema: dictEnhancedSchema } = useSchemaOptionsLoader(searchFormSchema);
+  
+  // 使用声明式加载权限选项（在字典增强后的 Schema 上再增强）
+  const { enhancedSchema: permissionEnhancedSchema } = useSchemaPermissionLoader(dictEnhancedSchema);
   
   // 创建表单，不包含searchPlanConfig
   const [QueryForm, formApi] = useSunnyForm({
@@ -129,7 +133,7 @@ export function useList<T>(options: {
     submitOnEnter: true,
     submitButtonOptions: { loading: submitting },
     actionColProps: { span: 24, lg: 6, xl: 4 },
-    schema: enhancedSchema.value,
+    schema: permissionEnhancedSchema.value,
     objectToValueFields
   });
 

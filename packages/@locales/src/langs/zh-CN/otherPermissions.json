@@ -1,0 +1,23 @@
+{
+  "cExresnum": "权限编号",
+  "inputcExresnum": "请输入权限编号",
+  "cExresname": "权限名称",
+  "inputcExresname": "请输入权限名称",
+  "cOrg": "所属组织",
+  "inputcOrg": "请输入所属组织",
+  "nOrder": "排序",
+  "inputnOrder": "请输入排序",
+  "cExresparnum": "父级权限编号",
+  "inputcExresparnum": "请输入父级权限编号",
+  "dCredate": "创建日期",
+  "cCreateName": "创建人",
+  "addTitle": "新增权限",
+  "addSuccess": "新增成功",
+  "updateTitle": "修改权限",
+  "updateSuccess": "修改成功",
+  "saveFailed": "保存失败",
+  "queryFailed": "查询失败",
+  "delConfirm": "确定删除选中数据吗？",
+  "delSuccess": "删除成功",
+  "signSuccess": "操作成功"
+}

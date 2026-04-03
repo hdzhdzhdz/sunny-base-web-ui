@@ -94,11 +94,7 @@ export const addFormSchema: FormSchema[] = [
     rules: 'required',
     // ✅ 方案2：声明式配置
     selectOptions: {
-      dictCode: 'SFQY',  // 是否启用字典编码
-      fieldMapping: {
-        label: 'cName',
-        value: 'cXuhao'
-      }
+      dictCode: 'SFQY'  // 是否启用字典编码
     },
     componentProps: {
       placeholder: '请选择是否启用'

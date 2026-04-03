@@ -1,0 +1,23 @@
+{
+  "cExresnum": "Permission Number",
+  "inputcExresnum": "Please input permission number",
+  "cExresname": "Permission Name",
+  "inputcExresname": "Please input permission name",
+  "cOrg": "Organization",
+  "inputcOrg": "Please input organization",
+  "nOrder": "Order",
+  "inputnOrder": "Please input order",
+  "cExresparnum": "Parent Permission Number",
+  "inputcExresparnum": "Please input parent permission number",
+  "dCredate": "Creation Date",
+  "cCreateName": "Creator",
+  "addTitle": "Add Permission",
+  "addSuccess": "Add success",
+  "updateTitle": "Update Permission",
+  "updateSuccess": "Update success",
+  "saveFailed": "Save failed",
+  "queryFailed": "Query failed",
+  "delConfirm": "Are you sure to delete selected data?",
+  "delSuccess": "Delete success",
+  "signSuccess": "Operation success"
+}

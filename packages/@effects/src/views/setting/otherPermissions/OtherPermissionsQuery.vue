@@ -1,7 +1,11 @@
 <script lang="tsx" setup>
 import { ref } from 'vue'
 import { Message, Modal } from '@arco-design/web-vue'
-import { searchFormSchema, tableColumns, resourceConfig } from './config'
+import { getOtherPermissionsConfig, resourceConfig } from './config'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+const { searchFormSchema, tableColumns } = getOtherPermissionsConfig({ t })
 import type { OtherPermissionsVO } from './types'
 import { requestClient, useList } from '@sunny-base-web/effects'
 import OtherPermissionsAdd from './OtherPermissionsAdd.vue'
@@ -106,7 +110,7 @@ const {
 function handleAdd() {
   const selectedRows = gridApi.getSelection() as OtherPermissionsVO[]
   if (selectedRows.length > 1) {
-    Message.warning('最多只能选择一条数据作为父级')
+    Message.warning(t('common.selectOne'))
     return
   }
 
@@ -114,9 +118,13 @@ function handleAdd() {
     // 将选中行的cExresnum和id传递到表单中
     cExresnum.value = selectedRows[0].cExresnum
     id.value = selectedRows[0].id
+    parentId.value = selectedRows[0].id
+    parentName.value = selectedRows[0].cExresname
   } else {
     cExresnum.value = ''
     id.value = ''
+    parentId.value = '0'
+    parentName.value = ''
   }
 
   formVisible.value = true
@@ -145,12 +153,11 @@ async function handleSign(cSign: string) {
   }
 
   if (selectedRows.length > 1) {
-    Message.warning('一次只能操作一条数据')
+    Message.warning(t('common.selectOne'))
     return
   }
 
   const row = selectedRows[0]
-  const actionText = cSign === '10001' ? '启用' : '禁用'
 
   try {
     const res = await requestClient.post<{ message?: string }>('/core/authExres/sign', {
@@ -159,10 +166,10 @@ async function handleSign(cSign: string) {
         cSign
       }
     })
-    Message.success(res.message || `${actionText}成功`)
+    Message.success(res.message || t('otherPermissions.signSuccess'))
     gridApi.commitProxy('query')
   } catch (error: any) {
-    console.error(`${actionText}失败:`, error)
+    console.error('操作失败:', error)
   }
 }
 
@@ -171,22 +178,22 @@ function handleDelete() {
   const selectedRows = gridApi.getSelection() as OtherPermissionsVO[]
 
   if (selectedRows.length === 0) {
-    Message.warning('请选择要删除的数据')
+    Message.warning(t('common.selectData'))
     return
   }
 
   if (selectedRows.length > 1) {
-    Message.warning('一次只能删除一条数据')
+    Message.warning(t('common.selectOne'))
     return
   }
 
   const row = selectedRows[0]
 
   Modal.confirm({
-    title: '确认删除',
-    content: `确定要删除「${row.cExresname}」吗？`,
-    okText: '确定',
-    cancelText: '取消',
+    title: t('common.confirm'),
+    content: t('otherPermissions.delConfirm'),
+    okText: t('common.confirm'),
+    cancelText: t('common.cancel'),
     onOk: async () => {
       try {
         const res = await requestClient.post<{ message?: string }>('/core/authExres/delete', {
@@ -194,7 +201,7 @@ function handleDelete() {
             id: row.id
           }
         })
-        Message.success(res.message || '删除成功')
+        Message.success(res.message || t('otherPermissions.delSuccess'))
         gridApi.commitProxy('query')
       } catch (error: any) {
         console.error('删除失败:', error)
