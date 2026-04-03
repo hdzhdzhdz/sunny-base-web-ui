@@ -819,6 +819,71 @@ export interface FormCommonConfig {
    * API 前缀
    */
   apiPrefix?: string;
+  /**
+   * Upload 上传配置
+   * Upload configuration
+   * @description 用于配置全局默认的上传和删除接口地址，支持组件级别覆盖
+   * @description Used to configure global default upload and delete API endpoints, supports component-level override
+   */
+  uploadConfig?: {
+    /**
+     * 默认上传接口地址
+     * Default upload API endpoint
+     * @example '/api/upload/file'
+     */
+    action?: string;
+    /**
+     * 默认删除接口地址
+     * Default delete API endpoint
+     * @example '/api/upload/delete'
+     */
+    delAction?: string;
+    /**
+     * 默认文件存储类型
+     * Default file storage type
+     * @default 'amazon'
+     */
+    storeType?: string;
+    /**
+     * 默认是否加密文件
+     * Default whether to encrypt files
+     * @default false
+     */
+    encryptFile?: boolean;
+    /**
+     * 默认 S3 文件目录
+     * Default S3 file directory
+     */
+    s3FileDir?: string;
+    /**
+     * 默认是否需要生成签名 URL
+     * Default whether to generate pre-signed URL
+     * @default false
+     */
+    preSigned?: boolean;
+    /**
+     * 默认签名 URL 过期时间(天)
+     * Default pre-signed URL expiration time (days)
+     * @default 7
+     */
+    preSignedExpire?: number;
+    /**
+     * 默认最大文件大小 (MB)
+     * Default max file size (MB)
+     */
+    maxSize?: number;
+    /**
+     * 默认上传文件数量限制
+     * Default upload file count limit
+     */
+    limit?: number;
+    /**
+     * 默认接受的文件类型
+     * Default accepted file types
+     * @example '.jpg,.jpeg,.png,.pdf,.doc,.docx'
+     */
+    accept?: string;
+  };
 }
 
 /**

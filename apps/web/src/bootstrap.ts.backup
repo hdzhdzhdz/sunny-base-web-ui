@@ -285,76 +285,75 @@ async function bootstrap(namespace: string) {
 					return optionsMap;
 				},
 			},
-
-				/**
-				 * 全局 Upload 配置
-				 * Global Upload configuration
-				 * @description 配置默认的上传和删除接口地址，所有 SunnySimpleUpload 组件都会使用这些配置
-				 * @description Configure default upload and delete API endpoints, all SunnySimpleUpload components will use these configs
-				 */
-				uploadConfig: {
-					/**
-					 * 默认上传接口地址
-					 * Default upload API endpoint
-					 */
-					action: '/core/fileOperate/uploadFile',
-
-					/**
-					 * 默认删除接口地址
-					 * Default delete API endpoint
-					 */
-					delAction: '/core/fileOperate/deleteFile',
-
-					/**
-					 * 默认文件存储类型
-					 * Default file storage type
-					 */
-					storeType: 'amazon',
-
-					/**
-					 * 默认是否加密文件
-					 * Default whether to encrypt files
-					 */
-					encryptFile: false,
-
-					/**
-					 * 默认 S3 文件目录
-					 * Default S3 file directory
-					 */
-					s3FileDir: '',
-
-					/**
-					 * 默认是否需要生成签名 URL
-					 * Default whether to generate pre-signed URL
-					 */
-					preSigned: false,
-
-					/**
-					 * 默认签名 URL 过期时间(天)
-					 * Default pre-signed URL expiration time (days)
-					 */
-					preSignedExpire: 7,
-
-					/**
-					 * 默认最大文件大小 (MB)
-					 * Default max file size (MB)
-					 */
-					maxSize: 10,
-
-					/**
-					 * 默认上传文件数量限制
-					 * Default upload file count limit
-					 */
-					limit: 5,
-
-					/**
-					 * 默认接受的文件类型
-					 * Default accepted file types
-					 */
-					accept: '',
-				},
 		},
 
+		/**
+		 * 全局 Upload 配置
+		 * Global Upload configuration
+		 * @description 配置默认的上传和删除接口地址，所有 SunnySimpleUpload 组件都会使用这些配置
+		 * @description Configure default upload and delete API endpoints, all SunnySimpleUpload components will use these configs
+		 */
+		uploadConfig: {
+			/**
+			 * 默认上传接口地址
+			 * Default upload API endpoint
+			 */
+			action: '/core/fileOperate/uploadFile',
+
+			/**
+			 * 默认删除接口地址
+			 * Default delete API endpoint
+			 */
+			delAction: '/core/fileOperate/deleteFile',
+
+			/**
+			 * 默认文件存储类型
+			 * Default file storage type
+			 */
+			storeType: 'amazon',
+
+			/**
+			 * 默认是否加密文件
+			 * Default whether to encrypt files
+			 */
+			encryptFile: false,
+
+			/**
+			 * 默认 S3 文件目录
+			 * Default S3 file directory
+			 */
+			s3FileDir: '',
+
+			/**
+			 * 默认是否需要生成签名 URL
+			 * Default whether to generate pre-signed URL
+			 */
+			preSigned: false,
+
+			/**
+			 * 默认签名 URL 过期时间(天)
+			 * Default pre-signed URL expiration time (days)
+			 */
+			preSignedExpire: 7,
+
+			/**
+			 * 默认最大文件大小 (MB)
+			 * Default max file size (MB)
+			 */
+			maxSize: 10,
+
+			/**
+			 * 默认上传文件数量限制
+			 * Default upload file count limit
+			 */
+			limit: 5,
+
+			/**
+			 * 默认接受的文件类型
+			 * Default accepted file types
+			 */
+			accept: '',
+		},
 	})
 
 	// 配置路由及路由守卫

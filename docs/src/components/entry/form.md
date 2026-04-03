@@ -85,6 +85,171 @@ const schema = [
 ];
 ```
 
+## 组件属性 (ComponentProps)
+
+`componentProps` 用于配置表单组件的属性，支持**静态配置**和**动态配置**两种方式。
+
+### 静态配置
+
+直接传递对象，适用于固定属性：
+
+```typescript
+const schema = [
+  {
+    fieldName: 'username',
+    label: '用户名',
+    component: 'Input',
+    componentProps: {
+      placeholder: '请输入用户名',
+      maxLength: 20,
+      allowClear: true,
+    },
+  },
+  {
+    fieldName: 'status',
+    label: '状态',
+    component: 'Select',
+    componentProps: {
+      placeholder: '请选择状态',
+      options: [
+        { label: '启用', value: '1' },
+        { label: '禁用', value: '0' },
+      ],
+    },
+  },
+];
+```
+
+### 动态配置（函数形式）
+
+使用函数根据其他字段值动态计算属性，实现字段联动：
+
+```typescript
+const schema = [
+  {
+    fieldName: 'userType',
+    label: '用户类型',
+    component: 'Select',
+    componentProps: {
+      options: [
+        { label: '个人', value: 'personal' },
+        { label: '企业', value: 'enterprise' },
+      ],
+    },
+  },
+  {
+    fieldName: 'companyName',
+    label: '公司名称',
+    component: 'Input',
+    // ✅ 函数形式：根据 userType 动态设置属性
+    componentProps: (values, formApi) => ({
+      placeholder: values.userType === 'enterprise' ? '请输入公司全称' : '请输入姓名',
+      disabled: !values.userType, // 未选择类型时禁用
+      // ✅ 可以使用 formApi 执行更复杂的操作
+      onChange: (value) => {
+        console.log('当前值:', value);
+        // 联动设置其他字段
+        if (values.userType === 'enterprise' && value) {
+          formApi.setFieldValue('needLicense', true);
+        }
+      },
+    }),
+  },
+];
+```
+
+### 函数参数说明
+
+| 参数名 | 类型 | 说明 |
+| --- | --- | --- |
+| `values` | `Record<string, any>` | 当前表单所有字段的值 |
+| `formApi` | `FormApi` | 表单 API 实例，提供 `setFieldValue`、`setValues` 等方法 |
+
+### 常见使用场景
+
+#### 1. 级联下拉框
+
+```typescript
+{
+  fieldName: 'province',
+  label: '省份',
+  component: 'Select',
+  componentProps: {
+    options: provinceOptions,
+  },
+},
+{
+  fieldName: 'city',
+  label: '城市',
+  component: 'Select',
+  componentProps: (values) => ({
+    options: getCityOptions(values.province), // 根据省份动态获取城市列表
+    disabled: !values.province, // 未选择省份时禁用
+    placeholder: values.province ? '请选择城市' : '请先选择省份',
+  }),
+}
+```
+
+#### 2. 条件禁用
+
+```typescript
+{
+  fieldName: 'reason',
+  label: '审批意见',
+  component: 'Textarea',
+  componentProps: (values) => ({
+    disabled: values.status === 'completed', // 已完成时禁用
+    placeholder: values.status === 'completed' ? '已完成，不可修改' : '请输入审批意见',
+  }),
+}
+```
+
+#### 3. 联动设置其他字段
+
+```typescript
+{
+  fieldName: 'userId',
+  label: '用户',
+  component: 'SunnyBusinessSearch',
+  componentProps: (_values, formApi) => ({
+    type: 'user',
+    onChange: (selectedUsers) => {
+      if (selectedUsers.length > 0) {
+        // ✅ 通过 formApi 联动设置其他字段
+        formApi.setFieldValue('userName', selectedUsers[0].name);
+        formApi.setFieldValue('userEmail', selectedUsers[0].email);
+        formApi.setFieldValue('userDept', selectedUsers[0].dept);
+      }
+    },
+  }),
+}
+```
+
+### 与 dependencies.componentProps 的区别
+
+| 特性 | schema.componentProps | dependencies.componentProps |
+| --- | --- | --- |
+| **优先级** | 较低 | 较高（会覆盖 schema.componentProps） |
+| **适用场景** | 基础属性配置 | 联动逻辑更清晰，可配合其他 dependencies 选项 |
+| **执行时机** | 组件初始化时 | 依赖字段变化时重新计算 |
+
+**推荐使用 `dependencies.componentProps`** 处理复杂的联动逻辑，代码更清晰：
+
+```typescript
+{
+  fieldName: 'companyName',
+  label: '公司名称',
+  component: 'Input',
+  dependencies: {
+    show: (values) => values.userType === 'enterprise',
+    required: (values) => values.userType === 'enterprise',
+    componentProps: (values) => ({
+      placeholder: '请输入公司全称',
+    }),
+  },
+}
+```
+
 ## 字段插槽 (Field Slots)
 
 SunnyForm 支持字段级别的插槽，允许你完全自定义某个字段的渲染方式，支持双向绑定。

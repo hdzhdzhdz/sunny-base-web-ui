@@ -26,6 +26,7 @@ import { computed } from 'vue';
 import axios from 'axios';
 import { Message } from '@arco-design/web-vue';
 import type { FileItem } from '@arco-design/web-vue';
+import { DEFAULT_FORM_COMMON_CONFIG } from '../../entry/form/config';  // ✅ 导入全局配置
 
 const props = defineProps({
   modelValue: {
@@ -33,34 +34,34 @@ const props = defineProps({
   },
   action: {
     type: String,
-    required: true
+    required: false,  // ✅ 改为 false，使用全局配置作为默认值
   },
   delAction: {
     type: String,
-    required: true
+    required: false,  // ✅ 改为 false，使用全局配置作为默认值
   },
   accept: {
     type: String,
   },
   encryptFile: {
     type: Boolean,
-    default: false
+    default: undefined  // ✅ 改为 undefined，支持全局配置
   },
   storeType: {
     type: String,
-    default: 'amazon'
+    default: undefined  // ✅ 改为 undefined，支持全局配置
   },
   s3FileDir: {
     type: String,
-    default: ''
+    default: undefined  // ✅ 改为 undefined，支持全局配置
   },
   preSigned: {
     type: Boolean,
-    default: false
+    default: undefined  // ✅ 改为 undefined，支持全局配置
   },
   preSignedExpire: {
     type: Number,
-    default: 7
+    default: undefined  // ✅ 改为 undefined，支持全局配置
   },
   limit: {
     type: Number,
@@ -71,7 +72,50 @@ const props = defineProps({
     default: undefined
   },
 })
- 
+
+/**
+ * 合并全局配置和组件 Props
+ * Merge global config and component props
+ * @description 优先级：组件 Props > 全局配置 > 默认值
+ * @description Priority: Component Props > Global Config > Default Values
+ */
+const mergedConfig = computed(() => {
+  const globalConfig = DEFAULT_FORM_COMMON_CONFIG.uploadConfig || {};
+
+  return {
+    // 合并 action（优先级：props > 全局配置）
+    action: props.action || globalConfig.action,
+
+    // 合并 delAction（优先级：props > 全局配置）
+    delAction: props.delAction || globalConfig.delAction,
+
+    // 合并其他配置（优先级：props > 全局配置 > 默认值）
+    accept: props.accept ?? globalConfig.accept,
+    encryptFile: props.encryptFile ?? globalConfig.encryptFile ?? false,
+    storeType: props.storeType ?? globalConfig.storeType ?? 'amazon',
+    s3FileDir: props.s3FileDir ?? globalConfig.s3FileDir ?? '',
+    preSigned: props.preSigned ?? globalConfig.preSigned ?? false,
+    preSignedExpire: props.preSignedExpire ?? globalConfig.preSignedExpire ?? 7,
+    limit: props.limit ?? globalConfig.limit,
+    maxSize: props.maxSize ?? globalConfig.maxSize,
+  };
+});
+
+// 验证必要配置
+if (!mergedConfig.value.action) {
+  console.warn(
+    '[SunnySimpleUpload] Missing required config: action. ' +
+    'Please provide via props or configure globally using setupBusinessForm().'
+  );
+}
+
+if (!mergedConfig.value.delAction) {
+  console.warn(
+    '[SunnySimpleUpload] Missing required config: delAction. ' +
+    'Please provide via props or configure globally using setupBusinessForm().'
+  );
+}
+
 const fileList = computed(() => {
   return JSON.parse(props.modelValue || '[]')
 })
@@ -80,39 +124,42 @@ const emit = defineEmits(['update:modelValue', 'change'])
 
 /**
  * 自定义上传请求
- * @param option 
- * @returns 
+ * @param option
+ * @returns
  */
 const customRequest = (option: any) => {
   const {onProgress, onError, onSuccess, fileItem, name} = option
 
-  if (props.limit && fileList.value.length >= props.limit) {
-    Message.error(`最多只能上传 ${props.limit} 个文件`)
+  // ✅ 使用合并后的配置
+  const config = mergedConfig.value;
+
+  if (config.limit && fileList.value.length >= config.limit) {
+    Message.error(`最多只能上传 ${config.limit} 个文件`)
     onError()
     return
   }
 
-  if (props.maxSize && fileItem.file.size > props.maxSize * 1024 * 1024) {
-    Message.error(`文件大小不能超过 ${props.maxSize} MB`)
+  if (config.maxSize && fileItem.file.size > config.maxSize * 1024 * 1024) {
+    Message.error(`文件大小不能超过 ${config.maxSize} MB`)
     onError()
     return
   }
 
   var formData = new FormData()
   formData.append('fileName', fileItem.file)
-  formData.append('encryptFile', props.encryptFile === true ? '1' : '0') // 是否加密文件,1:是，0否，默认0
-  formData.append('storeType', props.storeType) // 存储方式 amazon,vestacks3，默认amazon
-  if (props.s3FileDir) {
-    formData.append('s3FileDir', props.s3FileDir) // 文件上传S3目录,如果有指定的话，以这个为主
+  formData.append('encryptFile', config.encryptFile === true ? '1' : '0') // 是否加密文件,1:是，0否，默认0
+  formData.append('storeType', config.storeType) // 存储方式 amazon,vestacks3，默认amazon
+  if (config.s3FileDir) {
+    formData.append('s3FileDir', config.s3FileDir) // 文件上传S3目录,如果有指定的话，以这个为主
   }
-  if (props.preSigned) {
-    formData.append('preSigned', props.preSigned === true ? '1' : '0') // 是否需要生成签名URL，1：是
+  if (config.preSigned) {
+    formData.append('preSigned', config.preSigned === true ? '1' : '0') // 是否需要生成签名URL，1：是
   }
-  if (props.preSignedExpire) {
-    formData.append('preSignedExpire', String(props.preSignedExpire)) // 签名URL过期时间(天),默认7天
+  if (config.preSignedExpire) {
+    formData.append('preSignedExpire', String(config.preSignedExpire)) // 签名URL过期时间(天),默认7天
   }
   axios.post(
-    props.action,
+    config.action,  // ✅ 使用合并后的 action
     formData,
     {
       onUploadProgress: (progress: any) => {
@@ -138,19 +185,22 @@ const customRequest = (option: any) => {
 
 /**
  * 删除文件
- * @param fileItem 
+ * @param fileItem
  */
 const delFile = (fileItem: FileItem) => {
+  // ✅ 使用合并后的配置
+  const config = mergedConfig.value;
+
   axios.post(
-    props.delAction,
+    config.delAction,  // ✅ 使用合并后的 delAction
     {
       filePathList: [fileItem.response.url],
-      storeType: props.storeType
+      storeType: config.storeType  // ✅ 使用合并后的 storeType
     }
   ).then(res => {
     const { data } = res
     Message.success(data.message || '删除成功')
-    
+
     if (data.code === 200) {
       const updatedList = fileList.value.filter((item: FileItem) => item.uid !== fileItem.uid)
       emit('update:modelValue', JSON.stringify(updatedList))

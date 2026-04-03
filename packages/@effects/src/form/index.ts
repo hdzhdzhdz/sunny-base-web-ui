@@ -271,6 +271,7 @@ const defaultFormConfig: FormCommonConfig = {
   customizeSelectAdapter: defaultCustomizeSelectAdapter,
   selectOptionsAdapter: defaultSelectOptionsAdapter,  // ✅ 已有：字典选项适配器
   permissionOptionsAdapter: defaultPermissionOptionsAdapter,  // ✅ 新增：权限选项适配器
+  uploadConfig: undefined,  // ✅ 新增：默认 Upload 配置为 undefined
   apiPrefix: undefined,
 };
 
@@ -353,6 +354,15 @@ export function setupBusinessForm(options: SetupBusinessFormOptions = {}) {
     selectOptionsAdapter: {
       ...defaultFormConfig.selectOptionsAdapter,
       ...(customConfig as any)?.selectOptionsAdapter,
+    },
+    permissionOptionsAdapter: {
+      ...defaultFormConfig.permissionOptionsAdapter,
+      ...(customConfig as any)?.permissionOptionsAdapter,
+    },
+    // ✅ 新增：特殊处理 uploadConfig，支持部分覆盖
+    uploadConfig: {
+      ...defaultFormConfig.uploadConfig,
+      ...customConfig?.uploadConfig,
     },
     apiPrefix: customConfig?.apiPrefix,
   };

@@ -115,6 +115,7 @@ export function setupSunnyForm(options: SunnyFormAdapterOptions) {
     customizeSelectAdapter,
     selectOptionsAdapter,  // ✅ 提取 selectOptionsAdapter
     permissionOptionsAdapter,  // ✅ 提取 permissionOptionsAdapter
+    uploadConfig,  // ✅ 提取 uploadConfig
     apiPrefix
   } = (config || {}) as FormCommonConfig;
 
@@ -129,6 +130,7 @@ export function setupSunnyForm(options: SunnyFormAdapterOptions) {
     customizeSelectAdapter,
     selectOptionsAdapter,  // ✅ 添加 selectOptionsAdapter 到全局配置
     permissionOptionsAdapter,  // ✅ 添加 permissionOptionsAdapter 到全局配置
+    uploadConfig,  // ✅ 添加 uploadConfig 到全局配置
     apiPrefix,
   });
 
