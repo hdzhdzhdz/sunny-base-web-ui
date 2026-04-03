@@ -6,17 +6,18 @@
  */
 
 import { ref, computed, watch } from 'vue';
-import { 
-  Message, 
-  Modal, 
-  Upload as AUpload, 
-  Checkbox as ACheckbox, 
-  Progress as AProgress 
+import {
+  Message,
+  Modal,
+  Upload as AUpload,
+  Checkbox as ACheckbox,
+  Progress as AProgress
 } from '@arco-design/web-vue';
 // import { Paperclip, CloudUpload, Trash2 } from '@sunny-base-web/icons';
 import { IconAttachment, IconUpload, IconDelete } from '@arco-design/web-vue/es/icon';
 import { SunnyIcon } from '../../basic/icon';
 import axios from 'axios';
+import { DEFAULT_FORM_COMMON_CONFIG } from '../../entry/form/config';  // ✅ 导入全局配置
 
 // --- 常量 ---
 
@@ -50,6 +51,8 @@ export interface UploadProps {
   readonly?: boolean;
   /** 显示加密选项 */
   showEncrypt?: boolean;
+  /** 是否加密文件 */
+  encryptFile?: boolean;
 }
 
 interface FileItem {
@@ -69,17 +72,18 @@ interface FileItem {
 
 const props = withDefaults(defineProps<UploadProps>(), {
   modelValue: '',
-  action: '',
-  delAction: '',
-  accept: '.csv,.pdf,.xls,.xlsx',
-  limit: 10,
-  maxSize: 10,
-  storeType: 'amazon',
-  s3FileDir: '',
-  preSigned: '',
-  preSignedExpire: '',
+  action: undefined,  // ✅ 改为 undefined，支持全局配置
+  delAction: undefined,  // ✅ 改为 undefined，支持全局配置
+  accept: undefined,  // ✅ 改为 undefined，支持全局配置
+  limit: undefined,  // ✅ 改为 undefined，支持全局配置
+  maxSize: undefined,  // ✅ 改为 undefined，支持全局配置
+  storeType: undefined,  // ✅ 改为 undefined，支持全局配置
+  s3FileDir: undefined,  // ✅ 改为 undefined，支持全局配置
+  preSigned: undefined,  // ✅ 改为 undefined，支持全局配置
+  preSignedExpire: undefined,  // ✅ 改为 undefined，支持全局配置
   readonly: false,
   showEncrypt: false,
+  encryptFile: undefined,  // ✅ 新增：支持全局配置
 });
 
 const emit = defineEmits<{
@@ -95,6 +99,47 @@ const fileList = ref<FileItem[]>([]);
 const dLoading = ref(false);
 
 // --- 计算属性 ---
+
+/**
+ * 合并全局配置和组件 Props
+ * 优先级：组件 Props > 全局配置 > 默认值
+ */
+const mergedConfig = computed(() => {
+  const globalConfig = DEFAULT_FORM_COMMON_CONFIG.uploadConfig || {};
+
+  return {
+    // 合并 action（优先级：props > 全局配置）
+    action: props.action || globalConfig.action || '',
+
+    // 合并 delAction（优先级：props > 全局配置）
+    delAction: props.delAction || globalConfig.delAction || '',
+
+    // 合并其他配置（优先级：props > 全局配置 > 默认值）
+    accept: props.accept ?? globalConfig.accept ?? '.csv,.pdf,.xls,.xlsx',
+    limit: props.limit ?? globalConfig.limit ?? 10,
+    maxSize: props.maxSize ?? globalConfig.maxSize ?? 10,
+    storeType: props.storeType ?? globalConfig.storeType ?? 'amazon',
+    s3FileDir: props.s3FileDir ?? globalConfig.s3FileDir ?? '',
+    preSigned: props.preSigned ?? globalConfig.preSigned ?? '',
+    preSignedExpire: props.preSignedExpire ?? globalConfig.preSignedExpire ?? '',
+    encryptFile: props.encryptFile ?? globalConfig.encryptFile ?? false,
+  };
+});
+
+// 验证必要配置
+if (!mergedConfig.value.action) {
+  console.warn(
+    '[SunnyUpload] Missing required config: action. ' +
+    'Please provide via props or configure globally using setupBusinessForm().'
+  );
+}
+
+if (!mergedConfig.value.delAction) {
+  console.warn(
+    '[SunnyUpload] Missing required config: delAction. ' +
+    'Please provide via props or configure globally using setupBusinessForm().'
+  );
+}
 
 /**
  * 检查是否应禁用 S3 上传。
@@ -186,18 +231,20 @@ const updateFileList = () => {
  */
 const handleFileChange = (_: any, currentFile: any) => {
   if (currentFile.status !== 'init') return;
-  
-  if (fileList.value.length >= props.limit) {
-    Message.error(`最多上传${props.limit}个文件`);
+
+  const config = mergedConfig.value;  // ✅ 使用合并后的配置
+
+  if (fileList.value.length >= config.limit) {
+    Message.error(`最多上传${config.limit}个文件`);
     return;
   }
 
-  const maxSizeInBytes = props.maxSize * 1024 * 1024;
+  const maxSizeInBytes = config.maxSize * 1024 * 1024;
   if (currentFile.file.size > maxSizeInBytes) {
     Message.error(`文件最大限制${bytesToSize(maxSizeInBytes)}`);
     return;
   }
-  
+
   fileList.value.push({
     uid: currentFile.uid,
     name: currentFile.name,
@@ -215,19 +262,20 @@ const handleFileChange = (_: any, currentFile: any) => {
 const uploadToS3 = async () => {
   if (fileList.value.length === 0) return;
   
+  const config = mergedConfig.value;
   const filesToUpload = fileList.value.filter(fl => !fl.url);
   
   for (const fl of filesToUpload) {
     const formData = new FormData();
     formData.append('fileName', fl.file as Blob);
     formData.append('encryptFile', encryptFile.value ? '1' : '0');
-    if (props.storeType) formData.append('storeType', props.storeType);
-    if (props.s3FileDir) formData.append('s3FileDir', props.s3FileDir);
-    if (props.preSigned) formData.append('preSigned', props.preSigned);
-    if (props.preSignedExpire) formData.append('preSignedExpire', props.preSignedExpire);
+    if (config.storeType) formData.append('storeType', config.storeType);
+    if (config.s3FileDir) formData.append('s3FileDir', config.s3FileDir);
+    if (config.preSigned) formData.append('preSigned', config.preSigned);
+    if (config.preSignedExpire) formData.append('preSignedExpire', config.preSignedExpire);
 
     try {
-      const res = await axios.post(props.action, formData, {
+      const res = await axios.post(config.action, formData, {
         onUploadProgress: (progressEvent) => {
           if (progressEvent.total) {
              const num = Math.floor((progressEvent.loaded / progressEvent.total) * 100);
@@ -261,14 +309,16 @@ const removeFileByUid = (uid: string) => {
  * 删除单个文件。
  */
 const handleRemove = (item: FileItem, index: number) => {
+  const config = mergedConfig.value;
+
   if (item.url) {
     Modal.confirm({
       title: t('提示'),
       content: t('是否删除该文件?'),
       onOk: () => {
-         axios.post(props.delAction, {
+         axios.post(config.delAction, {
            filePathList: [item.url],
-           storeType: props.storeType
+           storeType: config.storeType
          }).then(res => {
            const { data } = res;
            Message[data.success ? 'success' : 'error'](data.message);
@@ -297,6 +347,7 @@ const checkAll = () => {
  * 删除所有选中的文件。
  */
 const checkDel = () => {
+  const config = mergedConfig.value;
   const checkedFiles = fileList.value.filter(f => f.checked);
   if (checkedFiles.length === 0) return;
 
@@ -308,9 +359,9 @@ const checkDel = () => {
       const urls = checkedFiles.map(f => f.url).filter(Boolean) as string[];
       
       if (urls.length > 0) {
-          axios.post(props.delAction, {
+          axios.post(config.delAction, {
             filePathList: urls,
-            storeType: props.storeType
+            storeType: config.storeType
           }).then(res => {
              const { data } = res;
              Message[data.success ? 'success' : 'error'](data.message);
@@ -344,7 +395,7 @@ const checkDel = () => {
         :show-file-list="false"
         :auto-upload="false"
         multiple
-        :accept="accept"
+        :accept="mergedConfig.accept"
         @change="handleFileChange"
       >
         <template #upload-button>
@@ -384,7 +435,7 @@ const checkDel = () => {
 
       <!-- Hint Text -->
       <span class="text-xs text-gray-400">
-        （{{ t('单个文件最大') }}{{ maxSize }}MB，{{ t('最多上传') }}{{ limit }}{{ t('个') }}）
+        （{{ t('单个文件最大') }}{{ mergedConfig.maxSize }}MB，{{ t('最多上传') }}{{ mergedConfig.limit }}{{ t('个') }}）
       </span>
 
       <!-- Collapse Toggle -->
