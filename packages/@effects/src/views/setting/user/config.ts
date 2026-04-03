@@ -160,7 +160,7 @@ export const getUserConfig = ({ t, formApi }: UserConfig) => {
       fieldName: 'cWork',
       label: t('user.cWork'),
       component: 'SunnyBusinessSearch',
-      componentProps: {
+      componentProps:  (_: any, formApi: any) => ({
         allowClear: true,
         cNum: 'INNER_WORK_OPT',
         modalProps: {
@@ -170,7 +170,7 @@ export const getUserConfig = ({ t, formApi }: UserConfig) => {
             label: 'LASTNAME'  // 显示在 Tag 中的文本
           },
         },
-        onChange: (values: any[]) => {
+        onChange: (values: any[],aaa: any) => {
           if (values.length > 0) {
             formApi.setFieldValue('cDeptnum', values[0].DEPTCODE)
             formApi.setFieldValue('cDeptname', values[0].DEPTNAME)
@@ -179,7 +179,28 @@ export const getUserConfig = ({ t, formApi }: UserConfig) => {
             formApi.setFieldValue('cDeptname', '')
           }
         }
-      },
+      }),
+      // componentProps: {
+      //   allowClear: true,
+      //   cNum: 'INNER_WORK_OPT',
+      //   modalProps: {
+      //     multiple: false,
+      //     fieldNames: {
+      //       value: 'WORKCODE',       // 选中值的唯一标识
+      //       label: 'LASTNAME'  // 显示在 Tag 中的文本
+      //     },
+      //   },
+      //   onChange: (values: any[],aaa: any) => {
+      //     debugger
+      //     if (values.length > 0) {
+      //       formApi.setFieldValue('cDeptnum', values[0].DEPTCODE)
+      //       formApi.setFieldValue('cDeptname', values[0].DEPTNAME)
+      //     } else {
+      //       formApi.setFieldValue('cDeptnum', '')
+      //       formApi.setFieldValue('cDeptname', '')
+      //     }
+      //   }
+      // },
       dependencies: {
         show: (values) => values.nOuterUser === '0'
       }

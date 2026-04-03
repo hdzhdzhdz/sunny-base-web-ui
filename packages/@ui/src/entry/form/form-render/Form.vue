@@ -131,12 +131,12 @@ const isInline = computed(() => renderPropsState.layout === 'inline');
 
 /**
  * 初始化 VeeValidate 表单核心
- * 
+ *
  * 模式区分：
  * 1. Hook 模式 (强烈推荐): 外部传入 props.form。状态由 useSunnyForm 管理，跨组件共享更方便。
  * 2. 组件模式: 内部创建 useForm。适用于简单场景。
  */
-const { handleSubmit, resetForm, setValues, values, validate, errors, meta } = props.form || useForm({
+const formInstance = props.form || useForm({
   // 提取默认值构建初始状态
   initialValues: computedSchema.value.reduce((acc, item) => {
     if (item.fieldName) {
@@ -145,6 +145,11 @@ const { handleSubmit, resetForm, setValues, values, validate, errors, meta } = p
     return acc;
   }, {} as Record<string, any>),
 });
+
+const { handleSubmit, resetForm, setValues, values, validate, errors, meta } = formInstance;
+
+// ✅ 将 form 实例注入到 renderPropsState，供子组件 (FormField, dependencies) 使用
+renderPropsState.form = formInstance;
 
 /**
  * 暴露表单方法给父组件
