@@ -105,7 +105,9 @@ export default defineConfig({
               items: [
                 { text: 'useNamespace', link: '/utilities/composables/use-namespace' },
                 { text: 'useList', link: '/utilities/composables/use-list' },
-                { text: 'useForm', link: '/utilities/composables/use-form' }
+                { text: 'useForm', link: '/utilities/composables/use-form' },
+                { text: 'useFormTable', link: '/utilities/composables/use-form-table' },
+                { text: 'useFormTabs', link: '/utilities/composables/use-form-tabs' }
               ]
             },
             {

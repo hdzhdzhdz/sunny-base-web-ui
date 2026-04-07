@@ -6,10 +6,10 @@ import { Modal } from '@sunny-base-web/ui'
 import { requestClient } from '../../../api/request'
 import { useFormTable } from '../../../hooks/useFormTable'
 import { addFormSchema, gridColumns, gridEditRules, tableToolbarButtons } from './config'
-import type { DataDictionaryFormVO, MetaItem } from './types'
+import type { YwsjzdFormVO, MetaItem } from './types'
 
 defineOptions({
-  name: 'DataDictionaryAdd'
+  name: 'YwsjzdAdd'
 })
 
 interface Props {
@@ -78,7 +78,7 @@ async function handleSubmit() {
       return false
     }
 
-    const values = await formApi.getValues() as DataDictionaryFormVO
+    const values = await formApi.getValues() as YwsjzdFormVO
 
     // 将额外属性转换为 JSON 对象
     const metaObj: Record<string, string> = {}
@@ -99,7 +99,7 @@ async function handleSubmit() {
       }
     }
 
-    const res = await requestClient.post<{ message?: string }>('/core/authDict/add', params)
+    const res = await requestClient.post<{ message?: string }>('/core/authDict/addBS', params)
     Message.success(res.message)
     emit('success')
     return true
