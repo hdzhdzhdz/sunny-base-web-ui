@@ -17,6 +17,7 @@ export interface OperationLogQueryParams {
  * 操作日志VO
  */
 export interface OperationLogVO {
+  id: number;
   cModname: string;      // 模块名称
   cDanju: string;        // 单据号
   cDongzuo: string;      // 描述

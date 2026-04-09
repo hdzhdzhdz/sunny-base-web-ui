@@ -75,11 +75,13 @@ export const getOperationLogConfig = ({ t }: OperationLogConfig) => {
     { field: 'cUser', title: t('operationLog.userWork'), width: 100, filters: [{ data: '' }], filterRender: { name: 'MyFilterComplex' } },
     { field: 'cUsername', title: t('operationLog.userName'), minWidth: 120 },
     { field: 'cDongzuo', title: t('operationLog.description'), minWidth: 200, align: 'left' },
-    { field: 'cUrl', title: t('operationLog.interfaceUrl'), minWidth: 200 },
+    { field: 'cUrl', title: t('operationLog.interfaceUrl'), minWidth: 200, slots: { default: 'cUrlSlot' } },
     { field: 'cMethod', title: t('operationLog.interfaceMethod'), minWidth: 150 },
     { field: 'nSecond', title: t('operationLog.executionTime'), width: 120 },
     { field: 'dCreate', title: t('operationLog.operationTime'), width: 180 }
   ];
+
+
 
   return {
     searchFormSchema,

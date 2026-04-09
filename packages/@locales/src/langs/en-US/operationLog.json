@@ -16,5 +16,11 @@
   "inputModuleName": "Please enter module name",
   "inputSystem": "Please enter system",
   "inputBillNo": "Please enter bill number",
-  "inputUserWork": "Please enter user ID"
+  "inputUserWork": "Please enter user ID",
+  "apiDetailTitle": "API Details",
+  "apiDetailConfirm": "Confirm",
+  "apiDetailLoading": "Loading...",
+  "apiDetailError": "Failed to load",
+  "apiDetailNoData": "No data available",
+  "apiParamTitle": "API Parameters"
 }
