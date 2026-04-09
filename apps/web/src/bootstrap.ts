@@ -297,13 +297,13 @@ async function bootstrap(namespace: string) {
 				 * 默认上传接口地址
 				 * Default upload API endpoint
 				 */
-				action: '/core/fileOperate/uploadFile',
+				action: '/base/test/core/upload/commonFileUpload',
 
 				/**
 				 * 默认删除接口地址
 				 * Default delete API endpoint
 				 */
-				delAction: '/core/fileOperate/deleteFile',
+				delAction: '/base/test/core/upload/commonFileDelete',
 
 				/**
 				 * 默认文件存储类型

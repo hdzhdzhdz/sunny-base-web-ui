@@ -58,6 +58,7 @@ const {
   actualFieldNames,
   actualRowKey,
   initDefaultValues,
+  resetFormValues,
   handleSearch,
   handlePageChange,
   handlePageSizeChange,
@@ -77,9 +78,9 @@ defineExpose({
 });
 
 const handleReset = async () => {
-  // 重置时重置分页为第一页，并重新初始化默认值
+  // 重置时重置分页为第一页，并只重置表单字段（保留非表单字段）
   pagination.value.current = 1;
-  initDefaultValues();
+  resetFormValues();
   await nextTick();
   await validateAndSearch();
 };
@@ -197,7 +198,8 @@ watch(
         });
       }
     }
-  }
+  },
+  { immediate: true }
 );
 </script>
 

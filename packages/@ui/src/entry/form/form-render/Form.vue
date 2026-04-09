@@ -137,13 +137,16 @@ const isInline = computed(() => renderPropsState.layout === 'inline');
  * 2. 组件模式: 内部创建 useForm。适用于简单场景。
  */
 const formInstance = props.form || useForm({
-  // 提取默认值构建初始状态
-  initialValues: computedSchema.value.reduce((acc, item) => {
-    if (item.fieldName) {
-      acc[item.fieldName] = item.defaultValue;
-    }
-    return acc;
-  }, {} as Record<string, any>),
+  // 提取默认值构建初始状态，并合并外部传入的 values
+  initialValues: {
+    ...computedSchema.value.reduce((acc, item) => {
+      if (item.fieldName) {
+        acc[item.fieldName] = item.defaultValue;
+      }
+      return acc;
+    }, {} as Record<string, any>),
+    ...(renderPropsState.values || {}),
+  },
 });
 
 const { handleSubmit, resetForm, setValues, values, validate, errors, meta } = formInstance;

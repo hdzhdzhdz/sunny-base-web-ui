@@ -87,6 +87,7 @@ const mergedModalProps = computed(() => {
     ...currentConfig.value,
     multiple: baseMultiple,
     fieldNames: mergedFieldNames.value,
+    defaultModel: props.defaultModel || currentConfig.value.defaultModel,
     ...props.modalProps, // 用户传入的 modalProps 优先级最高
     tableColumns, // 覆盖处理后的 columns
   };

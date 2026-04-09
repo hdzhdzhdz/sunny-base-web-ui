@@ -86,6 +86,11 @@ export interface SunnySearchModalProps {
    * @default false
    */
   clearOnSearch?: boolean;
+  /**
+   * 表单默认值
+   * 打开弹窗时自动填充到搜索表单，优先级高于 FormSchema.defaultValue
+   */
+  defaultModel?: Record<string, any>;
 }
 
 export interface SunnySearchModalEmits {

@@ -54,11 +54,48 @@ export function useSunnySearchModal(
   const getRowKey = (row: any) => get(row, actualRowKey.value);
 
   /**
-   * 初始化表单默认值
+   * 获取 formSchema 中定义的字段名集合
+   */
+  const getSchemaFieldNames = () => {
+    return new Set(
+      (props.formSchema || [])
+        .map((item: any) => item.fieldName)
+        .filter(Boolean),
+    );
+  };
+
+  /**
+   * 初始化表单默认值（打开弹窗时调用）
+   * 优先级: props.defaultModel > FormSchema.defaultValue
    */
   const initDefaultValues = () => {
     const defaults = extractDefaultValues(props.formSchema);
-    searchParams.value = { ...defaults };
+    searchParams.value = { ...defaults, ...props.defaultModel };
+  };
+
+  /**
+   * 重置表单默认值（点击重置按钮时调用）
+   * 只重置 formSchema 中定义的字段，保留其他字段不变
+   */
+  const resetFormValues = () => {
+    const defaults = extractDefaultValues(props.formSchema);
+    const schemaFields = getSchemaFieldNames();
+
+    // 只取 defaultModel 中属于表单字段的部分
+    const defaultModelForSchema: Record<string, any> = {};
+    if (props.defaultModel) {
+      Object.entries(props.defaultModel).forEach(([key, value]) => {
+        if (schemaFields.has(key)) {
+          defaultModelForSchema[key] = value;
+        }
+      });
+    }
+
+    searchParams.value = {
+      ...searchParams.value,
+      ...defaults,
+      ...defaultModelForSchema,
+    };
   };
 
   // Sync modelValue to selectedRows when visible becomes true
@@ -235,6 +272,7 @@ export function useSunnySearchModal(
     actualFieldNames,
     actualRowKey,
     initDefaultValues,
+    resetFormValues,
     handleSearch,
     handlePageChange,
     handlePageSizeChange,

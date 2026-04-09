@@ -47,6 +47,12 @@ export interface BusinessSearchConfig {
    * 是否多选
    */
   multiple?: boolean;
+  /**
+   * 表单默认值
+   * 打开弹窗时自动填充到搜索表单
+   * 优先级高于 FormSchema.defaultValue
+   */
+  defaultModel?: Record<string, any>;
 }
 
 /**
@@ -101,4 +107,10 @@ export interface SunnyBusinessSearchProps {
    * 优先级: props.fieldNames > props.modalProps.fieldNames > currentConfig.fieldNames
    */
   fieldNames?: FieldNames;
+  /**
+   * 表单默认值
+   * 打开弹窗时自动填充到搜索表单
+   * 优先级: props.defaultModel > currentConfig.defaultModel > FormSchema.defaultValue
+   */
+  defaultModel?: Record<string, any>;
 }

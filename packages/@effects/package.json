@@ -41,6 +41,7 @@
   },
   "devDependencies": {
     "@sunny-base-web/constants": "workspace:*",
+    "@sunny-base-web/designer-studio": "workspace:^",
     "@sunny-base-web/tailwind-config": "workspace:*",
     "@sunny-base-web/tsconfig": "workspace:*",
     "@types/lodash-es": "^4.17.12",

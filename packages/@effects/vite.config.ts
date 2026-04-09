@@ -28,6 +28,8 @@ export default defineConfig({
         '@sunny-base-web/stores',
         '@sunny-base-web/icons',
         '@sunny-base-web/constants',
+        '@sunny-base-web/designer-core',
+        '@sunny-base-web/designer-studio',
         'axios',
         'jsencrypt',
         'qs',

@@ -51,6 +51,16 @@ const coreRoutes: RouteRecordRaw[] = [
       },
     ],
   },
+  {
+    name: 'Design',
+    path: '/design',
+    component: () => import('#/views/design/index.vue'),
+    meta: {
+      title: '设计器',
+      hideInMenu: true,
+      hideInTab: true,
+    },
+  },
 ];
 
 export { coreRoutes, fallbackNotFoundRoute };

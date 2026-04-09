@@ -163,6 +163,9 @@ export const getUserConfig = ({ t, formApi }: UserConfig) => {
       componentProps:  (_: any, formApi: any) => ({
         allowClear: true,
         cNum: 'INNER_WORK_OPT',
+        defaultModel: {
+          WORKCODE: '1084870'
+        },
         modalProps: {
           multiple: false,
           fieldNames: {
