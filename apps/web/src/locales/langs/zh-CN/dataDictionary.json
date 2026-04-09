@@ -1,0 +1,44 @@
+{
+  "dataDictionary": {
+    "title": "数据字典",
+    "add": "新增",
+    "update": "修改",
+    "delete": "删除",
+    "search": "查询",
+    "reset": "重置",
+    "code": "字典编号",
+    "name": "字典名称",
+    "status": "是否启用",
+    "creator": "创建人",
+    "createTime": "创建时间",
+    "order": "排序",
+    "parent": "父级字典",
+    "parentName": "父级字典",
+    "noParent": "无",
+    "addRoot": "新增根级字典",
+    "addChild": "新增子级字典",
+    "updateSuccess": "修改成功",
+    "addSuccess": "新增成功",
+    "deleteSuccess": "删除成功",
+    "meta": {
+      "title": "额外属性",
+      "key": "属性键",
+      "value": "属性值",
+      "addAttribute": "添加属性",
+      "removeAttribute": "删除",
+      "keyPlaceholder": "请选择属性键",
+      "valuePlaceholder": "请输入属性值",
+      "keyRequired": "请输入属性键",
+      "keyDuplicate": "属性键不能重复"
+    },
+    "child": {
+      "title": "子级数据字典",
+      "code": "子级数据字典编号",
+      "name": "子级数据字典名称",
+      "order": "子级数据字典排序",
+      "codePlaceholder": "请输入子级数据字典编号",
+      "namePlaceholder": "请输入子级数据字典名称",
+      "orderPlaceholder": "请输入排序"
+    }
+  }
+}

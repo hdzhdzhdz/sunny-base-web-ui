@@ -1,6 +1,6 @@
 import type { FormSchema, VxeGridProps } from '@sunny-base-web/ui';
 import { EditRender } from '@sunny-base-web/ui';
-import type { DataDictionaryVO, DataDictionaryFormVO, MetaItem } from './types';
+import type { YwsjzdVO, YwsjzdFormVO, MetaItem } from './types';
 
 /**
  * 是否启用选项（用于表格显示）
@@ -115,7 +115,7 @@ export const addFormSchema: FormSchema[] = [
 /**
  * 表格列配置
  */
-export const tableColumns: VxeGridProps<DataDictionaryVO>['columns'] = [
+export const tableColumns: VxeGridProps<YwsjzdVO>['columns'] = [
   { type: 'checkbox', width: 50 },
   { field: 'id', title: '数据字典ID', minWidth: 140, treeNode: true },
   { field: 'cXuhao', title: '字典编号', minWidth: 140 },
@@ -249,7 +249,7 @@ export const tabsConfig = [
  * 资源配置
  */
 export const resourceConfig = {
-  resourceId: 'dataDictionary',
-  nResourceid: 62,
-  cModnumb: '40577f0e-1c19-4fa6-bb88-d247fff5e32a'
+  resourceId: 'ywsjzd',
+  nResourceid: 161,
+  cModnumb: 'b2a3c6ba-d6d8-4d51-ad78-887f05b9e56b'
 };

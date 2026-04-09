@@ -21,6 +21,7 @@ export * from './views/setting/gnzjgl/ggcxtc';
 export * from './views/setting/otherPermissions';
 export * from './views/setting/systemSetting';
 export * from './views/setting/dataDictionary';
+export * from './views/setting/ywsjzd';
 export * from './views/setting/user';
 export * from './views/setting/role';
 export * from './views/design';

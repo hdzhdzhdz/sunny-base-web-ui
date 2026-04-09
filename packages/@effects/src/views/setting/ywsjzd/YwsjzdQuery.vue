@@ -2,14 +2,15 @@
 import { ref } from 'vue'
 import { Message, Modal } from '@arco-design/web-vue'
 import { searchFormSchema, tableColumns, resourceConfig } from './config'
-import type { DataDictionaryVO } from './types'
+import type { YwsjzdVO } from './types'
 import { requestClient, useList } from '@sunny-base-web/effects'
-import DataDictionaryAdd from './DataDictionaryAdd.vue'
-import DataDictionaryUpdate from './DataDictionaryUpdate.vue'
+import YwsjzdAdd from './YwsjzdAdd.vue'
+import YwsjzdUpdate from './YwsjzdUpdate.vue'
 
 // ----------------------------------------------------------------------
 // 1. List Configuration
 // ----------------------------------------------------------------------
+
 
 
 
@@ -26,10 +27,10 @@ const queryFunction = async ({ page, formValues }) => {
     }
   }
 
-  const response = await requestClient.post('/core/authDict/selectForPage', queryParams)
+  const response = await requestClient.post('/core/authDict/selectForPageBS', queryParams)
   // 给每条记录添加 hasChildren 标识，让所有节点都可展开
   if (response.result?.records) {
-    response.result.records = response.result.records.map((item: DataDictionaryVO) => ({
+    response.result.records = response.result.records.map((item: YwsjzdVO) => ({
       ...item,
       hasChildren: true
     }))
@@ -41,7 +42,7 @@ const queryFunction = async ({ page, formValues }) => {
  * 加载子节点数据
  * @param row - 父节点行数据
  */
-async function loadChildren({ row }: { row: DataDictionaryVO & { hasChildren?: boolean } }) {
+async function loadChildren({ row }: { row: YwsjzdVO & { hasChildren?: boolean } }) {
   const formValues = await formApi.getValues()
 
   const queryParams = {
@@ -54,7 +55,7 @@ async function loadChildren({ row }: { row: DataDictionaryVO & { hasChildren?: b
   }
 
   try {
-    const response = await requestClient.post<{ result: { records: DataDictionaryVO[] } }>('/core/authDict/selectForPage', queryParams)
+    const response = await requestClient.post<{ result: { records: YwsjzdVO[] } }>('/core/authDict/selectForPageBS', queryParams)
     const records = response.result?.records || []
     // 给每条记录添加 hasChildren 标识，支持继续展开
     return records.map(item => ({
@@ -90,22 +91,22 @@ const {
   nResourceid,
   handleSearchPlanSearch,
   handleDefaultPlanLoaded
-} = useList<DataDictionaryVO>({
+} = useList<YwsjzdVO>({
   searchFormSchema,
   tableColumns,
   resourceConfig,
   queryFunction,
   gridEvents: {
     toolbarButtonClick: ({ code }: { code: string }) => {
-      if (code === 'dataDictionary/add') {
+      if (code === 'ywsjzd/add') {
         handleAdd()
-      } else if (code === 'dataDictionary/update') {
+      } else if (code === 'ywsjzd/update') {
         handleUpdate()
-      } else if (code === 'dataDictionary/enable') {
+      } else if (code === 'ywsjzd/enable') {
         handleSign('10001')
-      } else if (code === 'dataDictionary/disable') {
+      } else if (code === 'ywsjzd/disable') {
         handleSign('10002')
-      } else if (code === 'dataDictionary/del') {
+      } else if (code === 'ywsjzd/del') {
         handleDelete()
       }
     }
@@ -121,12 +122,14 @@ const {
 const formVisible = ref(false)
 const parentId = ref('0')
 const parentName = ref('')
+
+// 修改表单相关
 const updateVisible = ref(false)
-const updateRow = ref<DataDictionaryVO | undefined>(undefined)
+const selectedRow = ref(null)
 
 // 打开新增弹窗
 function handleAdd() {
-  const selectedRows = gridApi.getSelection() as DataDictionaryVO[]
+  const selectedRows = gridApi.getSelection() as YwsjzdVO[]
   if (selectedRows.length > 1) {
     Message.warning('最多只能选择一条数据作为父级')
     return
@@ -145,19 +148,14 @@ function handleAdd() {
 
 // 打开修改弹窗
 function handleUpdate() {
-  const selectedRows = gridApi.getSelection() as DataDictionaryVO[]
-
-  if (selectedRows.length === 0) {
-    Message.warning('请选择要修改的数据')
+  const selectedRows = gridApi.getSelection() as YwsjzdVO[]
+  if (selectedRows.length !== 1) {
+    Message.warning('请选择一条数据进行修改')
     return
   }
 
-  if (selectedRows.length > 1) {
-    Message.warning('一次只能修改一条数据')
-    return
-  }
-
-  updateRow.value = selectedRows[0]
+  const row = selectedRows[0]
+  selectedRow.value = row
   updateVisible.value = true
 }
 
@@ -167,7 +165,7 @@ function handleUpdate() {
 
 // 启用/禁用
 async function handleSign(cSign: string) {
-  const selectedRows = gridApi.getSelection() as DataDictionaryVO[]
+  const selectedRows = gridApi.getSelection() as YwsjzdVO[]
 
   if (selectedRows.length === 0) {
     Message.warning('请选择要操作的数据')
@@ -183,7 +181,7 @@ async function handleSign(cSign: string) {
   const actionText = cSign === '10001' ? '启用' : '禁用'
 
   try {
-    const res = await requestClient.post<{ message?: string }>('/core/authDict/sign', {
+    const res = await requestClient.post<{ message?: string }>('/core/authDict/signBS', {
       authDict: {
         id: row.id,
         cSign
@@ -203,7 +201,7 @@ async function handleSign(cSign: string) {
 
 // 删除选中行
 function handleDelete() {
-  const selectedRows = gridApi.getSelection() as DataDictionaryVO[]
+  const selectedRows = gridApi.getSelection() as YwsjzdVO[]
 
   if (selectedRows.length === 0) {
     Message.warning('请选择要删除的数据')
@@ -224,7 +222,7 @@ function handleDelete() {
     cancelText: '取消',
     onOk: async () => {
       try {
-        const res = await requestClient.post<{ message?: string }>('/core/authDict/delete', {
+        const res = await requestClient.post<{ message?: string }>('/core/authDict/deleteBS', {
           authDict: {
             id: row.id
           }
@@ -251,7 +249,7 @@ function handleFormSuccess() {
 </script>
 
 <template>
-  <div class="data-dictionary-query h-full flex flex-col bg-[var(--color-fill-2)]" @keydown.enter="handleGlobalEnter"
+  <div class="ywsjzd-query h-full flex flex-col bg-[var(--color-fill-2)]" @keydown.enter="handleGlobalEnter"
     tabindex="-1">
     <!-- Main Container -->
     <div
@@ -268,12 +266,11 @@ function handleFormSuccess() {
     </div>
 
     <!-- Add Form Modal -->
-    <DataDictionaryAdd v-model:visible="formVisible" :parent-id="parentId" :parent-name="parentName"
+    <YwsjzdAdd v-model:visible="formVisible" :parent-id="parentId" :parent-name="parentName"
       @success="handleFormSuccess" />
-    
+
     <!-- Update Form Modal -->
-    <DataDictionaryUpdate v-model:visible="updateVisible" :row="updateRow"
-      @success="handleFormSuccess" />
+    <YwsjzdUpdate v-model:visible="updateVisible" :row="selectedRow" @success="handleFormSuccess" />
   </div>
 </template>
 
@@ -282,7 +279,7 @@ function handleFormSuccess() {
   margin-bottom: 0;
 }
 
-.data-dictionary-query {
+.ywsjzd-query {
   outline: none;
 }
 </style>

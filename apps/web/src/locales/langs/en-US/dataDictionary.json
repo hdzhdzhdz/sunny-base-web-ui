@@ -1,0 +1,44 @@
+{
+  "dataDictionary": {
+    "title": "Data Dictionary",
+    "add": "Add",
+    "update": "Update",
+    "delete": "Delete",
+    "search": "Search",
+    "reset": "Reset",
+    "code": "Dictionary Code",
+    "name": "Dictionary Name",
+    "status": "Status",
+    "creator": "Creator",
+    "createTime": "Create Time",
+    "order": "Order",
+    "parent": "Parent",
+    "parentName": "Parent",
+    "noParent": "None",
+    "addRoot": "Add Root",
+    "addChild": "Add Child",
+    "updateSuccess": "Update Success",
+    "addSuccess": "Add Success",
+    "deleteSuccess": "Delete Success",
+    "meta": {
+      "title": "Additional Attributes",
+      "key": "Attribute Key",
+      "value": "Attribute Value",
+      "addAttribute": "Add Attribute",
+      "removeAttribute": "Remove",
+      "keyPlaceholder": "Select Attribute Key",
+      "valuePlaceholder": "Enter Attribute Value",
+      "keyRequired": "Please enter attribute key",
+      "keyDuplicate": "Attribute key cannot be duplicated"
+    },
+    "child": {
+      "title": "Child Dictionaries",
+      "code": "Child Dictionary Code",
+      "name": "Child Dictionary Name",
+      "order": "Child Dictionary Order",
+      "codePlaceholder": "Enter child dictionary code",
+      "namePlaceholder": "Enter child dictionary name",
+      "orderPlaceholder": "Enter order"
+    }
+  }
+}
