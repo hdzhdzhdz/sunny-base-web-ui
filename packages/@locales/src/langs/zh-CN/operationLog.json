@@ -16,5 +16,11 @@
   "inputModuleName": "请输入模块名称",
   "inputSystem": "请输入所属系统",
   "inputBillNo": "请输入单据号",
-  "inputUserWork": "请输入用户工号"
+  "inputUserWork": "请输入用户工号",
+  "apiDetailTitle": "接口详情",
+  "apiDetailConfirm": "确定",
+  "apiDetailLoading": "加载中...",
+  "apiDetailError": "加载失败",
+  "apiDetailNoData": "暂无数据",
+  "apiParamTitle": "接口入参"
 }
