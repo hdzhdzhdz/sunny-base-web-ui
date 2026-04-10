@@ -1,0 +1,702 @@
+# Sunny Base Web Framework - Full Component API Reference
+
+> Auto-generated from TypeScript source code. Do not edit manually.
+> Generated: 2026-04-10
+>
+> This document contains the complete API reference for all @ui components.
+> For a concise index, see [llms.txt](/llms.txt).
+
+---
+
+## Table of Contents
+
+### Basic Components / 基础组件
+- [SunnyIcon](#sunnyicon)
+- [SunnyScrollbar](#sunnyscrollbar)
+
+### Data Display / 数据展示
+- [useSunnyEditGrid](#usesunnyeditgrid)
+- [useSunnyQueryGrid](#usesunnyquerygrid)
+- [SunnyResourceTree](#sunnyresourcetree)
+- [SunnySimpleUpload](#sunnysimpleupload)
+- [SunnyUpload](#sunnyupload)
+
+### Data Entry / 数据录入
+- [SunnyForm](#sunnyform)
+- [SunnySearchInputTag](#sunnysearchinputtag)
+- [SunnyBatchSelect](#sunnybatchselect)
+
+### Feedback / 反馈
+- [SunnyErrorBoundary](#sunnyerrorboundary)
+- [SunnyExportModal](#sunnyexportmodal)
+- [SunnyImportModal](#sunnyimportmodal)
+- [SunnyModal](#sunnymodal)
+- [SunnySearchModal](#sunnysearchmodal)
+- [SunnyLoading](#sunnyloading)
+
+### Composite / 复合组件
+- [SunnyBusinessSearch](#sunnybusinesssearch)
+- [SunnyCustomizeSelect](#sunnycustomizeselect)
+- [SunnySearchPlan](#sunnysearchplan)
+
+---
+
+## SunnyIcon
+
+Icon
+
+**Category:** basic | **Path:** `basic/icon`
+
+### Import
+
+```typescript
+import { SunnyIcon } from '@sunny-base-web/ui';
+```
+
+### Props
+
+| Prop | Type | Default | Required | Description |
+|------|------|---------|----------|-------------|
+| `fallback` | `boolean` | `false` | No | 图标未找到时是否显示默认图标 |
+| `icon` | `Component | Function | string` | - | No | 图标来源 - Component: Vue 组件 - Function: 返回组件的函数 - string: Iconify 图标字符串（如 'lucide:home'）或远程图标 URL（需 http/https 协议） |
+
+---
+
+## SunnyScrollbar
+
+Scrollbar
+
+**Category:** basic | **Path:** `basic/scrollbar`
+
+### Import
+
+```typescript
+import { SunnyScrollbar } from '@sunny-base-web/ui';
+```
+
+---
+
+## useSunnyEditGrid
+
+Edit Grid
+
+**Category:** data | **Path:** `data/edit-grid`
+
+### Import
+
+```typescript
+import { useSunnyEditGrid } from '@sunny-base-web/ui';
+```
+
+### Hooks
+
+#### `useSunnyEditGrid`
+
+```typescript
+useSunnyEditGrid(options: any): 
+```
+
+---
+
+## useSunnyQueryGrid
+
+Query Grid
+
+**Category:** data | **Path:** `data/query-grid`
+
+### Import
+
+```typescript
+import { useSunnyQueryGrid } from '@sunny-base-web/ui';
+```
+
+### Hooks
+
+#### `useSunnyQueryGrid`
+
+```typescript
+useSunnyQueryGrid(options: any): 
+```
+
+### Props
+
+| Prop | Type | Default | Required | Description |
+|------|------|---------|----------|-------------|
+| `size` | `'medium' | 'small' | 'mini'` | - | No |  |
+
+---
+
+## SunnyResourceTree
+
+Resource Tree
+
+**Category:** data | **Path:** `data/resource-tree`
+
+### Import
+
+```typescript
+import { SunnyResourceTree } from '@sunny-base-web/ui';
+// + all types from types.ts
+```
+
+### Hooks
+
+#### `useSunnyResourceTree`
+
+```typescript
+useSunnyResourceTree(options: UseSunnyResourceTreeOptions): 
+```
+
+### Props
+
+| Prop | Type | Default | Required | Description |
+|------|------|---------|----------|-------------|
+| `contextMenuActions` | `ResourceTreeContextMenuAction[]` | - | No |  |
+| `actions` | `ResourceTreeContextMenuAction[]` | - | No | 兼容旧命名，建议使用 contextMenuActions |
+| `enableRootContextMenu` | `boolean` | - | No |  |
+
+### Events
+
+| Event | Parameters | Description |
+|-------|-----------|-------------|
+| `action` | `payload: {
+      key: string;
+      action: ResourceTreeContextMenuAction;
+      node: ResourceTreeNode;
+    }` |  |
+
+### Expose Methods
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `getTree` | `() => any` |  |
+| `toggleCheck` | `(key: string | number, e?: Event) => any` |  |
+| `scrollIntoView` | `(options: any) => any` |  |
+| `getSelectedNodes` | `() => ResourceTreeNode[] | undefined` |  |
+| `getCheckedNodes` | `(options?: any) => ResourceTreeNode[] | undefined` |  |
+| `getHalfCheckedNodes` | `() => ResourceTreeNode[] | undefined` |  |
+| `getExpandedNodes` | `() => ResourceTreeNode[] | undefined` |  |
+| `checkAll` | `(checked?: boolean) => any` |  |
+| `checkNode` | `(
+    key: string | number | Array<string | number>,
+    checked?: boolean,
+    onlyCheckLeaf?: boolean
+  ) => any` |  |
+| `selectAll` | `(selected?: boolean) => any` |  |
+| `selectNode` | `(key: string | number | Array<string | number>, selected?: boolean) => any` |  |
+| `expandAll` | `(expanded?: boolean) => any` |  |
+| `expandNode` | `(key: string | number | Array<string | number>, expanded?: boolean) => any` |  |
+
+---
+
+## SunnySimpleUpload
+
+Simple Upload
+
+**Category:** data | **Path:** `data/simple-upload`
+
+### Import
+
+```typescript
+import { SunnySimpleUpload } from '@sunny-base-web/ui';
+```
+
+---
+
+## SunnyUpload
+
+Upload
+
+**Category:** data | **Path:** `data/upload`
+
+### Import
+
+```typescript
+import { SunnyUpload } from '@sunny-base-web/ui';
+```
+
+---
+
+## SunnyForm
+
+Form
+
+**Category:** entry | **Path:** `entry/form`
+
+### Import
+
+```typescript
+import { FormApi, SunnyForm } from '@sunny-base-web/ui';
+// + all types from types.ts
+```
+
+### Hooks
+
+#### `provideFormProps`
+
+提供表单属性 (Provide Form Props) 在表单根组件 (SunnyForm / SunnyUseForm) 中调用，向下层组件提供配置
+
+```typescript
+provideFormProps(props: ComputedRef<SunnyFormProps>): 
+```
+
+#### `useSunnyForm`
+
+```typescript
+useSunnyForm(options: SunnyFormProps): 
+```
+
+### Props
+
+| Prop | Type | Default | Required | Description |
+|------|------|---------|----------|-------------|
+| `span` | `number` | - | No |  |
+| `offset` | `number` | - | No |  |
+| `push` | `number` | - | No |  |
+| `pull` | `number` | - | No |  |
+| `order` | `number` | - | No |  |
+| `xs` | `number | { [key: string]: any }` | - | No |  |
+| `sm` | `number | { [key: string]: any }` | - | No |  |
+| `md` | `number | { [key: string]: any }` | - | No |  |
+| `lg` | `number | { [key: string]: any }` | - | No |  |
+| `xl` | `number | { [key: string]: any }` | - | No |  |
+| `xxl` | `number | { [key: string]: any }` | - | No |  |
+| `id` | `string` | - | No | 表单唯一标识 Form unique identifier |
+| `layout` | `FormLayout` | - | No | 表单布局 Form layout |
+| `size` | `'mini' | 'small' | 'medium' | 'large'` | `'small'` | No | 表单尺寸 Form size |
+| `schema` | `FormSchema[]` | - | No | 表单 Schema 配置 Form schema configuration |
+| `labelWidth` | `number | string` | - | No | 标签宽度 Label width |
+| `wrapperClass` | `string` | - | No | 外层容器类名 Wrapper class |
+| `gridProps` | `Record<string, any>` | - | No | 栅格容器配置 (传递给 a-grid 组件，如 cols, xGap, yGap) Grid container props (passed to a-grid) |
+| `actionWrapperClass` | `string` | - | No | 操作栏外层类名 Action wrapper class |
+| `commonConfig` | `Record<string, any>` | - | No | 表单项通用配置 (如 colProps, labelWidth, componentProps) Common config for form items |
+| `config` | `Record<string, any>` | - | No | 其他配置 Other configuration |
+| `showDefaultActions` | `boolean` | - | No | 是否显示默认操作按钮 (提交/重置) Show default actions (submit/reset) |
+| `submitButtonOptions` | `Record<string, any>` | - | No | 提交按钮配置 Submit button options |
+| `resetButtonOptions` | `Record<string, any>` | - | No | 重置按钮配置 Reset button options |
+| `submitOnEnter` | `boolean` | - | No | 是否回车提交 Submit on enter |
+| `submitOnChange` | `boolean` | - | No | 是否在值变化时自动提交 Submit on change |
+| `handleValuesChange` | `(values: Record<string, any>, changedFields: string[]) => void` | - | No | 值变化时的回调 Handle values change |
+| `handleCollapsedChange` | `(collapsed: boolean) => void` | - | No | 折叠状态变化时的回调 Handle collapsed change |
+| `handleSubmit` | `(values: Record<string, any>) => Promise<void> | void` | - | No | 提交回调 Handle submit |
+| `scrollToFirstError` | `boolean` | - | No | 滚动到第一个错误字段 Scroll to first error field |
+| `handleReset` | `(values: Record<string, any>) => Promise<void> | void` | - | No | 重置回调 Handle reset |
+| `collapsed` | `boolean` | - | No | 是否折叠 Collapsed state |
+| `showCollapseButton` | `boolean` | - | No | 是否显示折叠按钮 Show collapse button |
+| `collapsedRows` | `number` | - | No | 折叠行数 Collapsed rows |
+| `collapseTriggerResize` | `boolean` | - | No | 折叠是否触发布局调整 Collapse trigger resize |
+| `compact` | `boolean` | - | No | 紧凑模式 Compact mode |
+| `actionLayout` | `'inline' | 'newLine' | 'rowEnd'` | - | No | 操作按钮布局 Action buttons layout |
+| `actionPosition` | `'left' | 'right' | 'center'` | - | No | 操作按钮位置 Action buttons position |
+| `actionColProps` | `ColProps` | - | No | 操作栏栅格配置 (传递给 a-grid-item) Action column props |
+| `values` | `Record<string, any>` | - | No | 表单值 Form values |
+| `fieldMappingTime` | `FieldMappingTime` | - | No | 表单字段映射到时间格式 Field mapping time |
+| `arrayToStringFields` | `ArrayToStringFields` | - | No | 表单字段数组映射字符串配置 默认使用"," Array to string fields |
+| `objectToValueFields` | `string[]` | - | No | 对象数组转值字符串配置 Object array to value string fields 会自动从组件配置的 fieldNames 中读取 value 字段进行提取 |
+| `searchPlanConfig` | `{
+    /**
+     * 是否启用查询方案
+     */
+    enable?: boolean;
+    /**
+     * ...` | - | No | 查询方案配置 Search plan configuration |
+| `form` | `any` | - | No |  |
+
+---
+
+## SunnySearchInputTag
+
+Search Input Tag
+
+**Category:** entry | **Path:** `entry/search-input-tag`
+
+### Import
+
+```typescript
+import { SunnySearchInputTag } from '@sunny-base-web/ui';
+// + all types from types.ts
+```
+
+### Props
+
+| Prop | Type | Default | Required | Description |
+|------|------|---------|----------|-------------|
+| `modelValue` | `any[]` | - | No |  |
+| `fieldNames` | `FieldNames` | - | No |  |
+| `placeholder` | `string` | - | No |  |
+| `disabled` | `boolean` | - | No |  |
+| `maxTagCount` | `number` | - | No |  |
+
+---
+
+## SunnyBatchSelect
+
+Batch Select
+
+**Category:** entry | **Path:** `entry/select`
+
+### Import
+
+```typescript
+import { SunnyBatchSelect, SunnySelect } from '@sunny-base-web/ui';
+// + all types from types.ts
+```
+
+### Props
+
+| Prop | Type | Default | Required | Description |
+|------|------|---------|----------|-------------|
+| `modelValue` | `(string | number)[]` | - | No | 绑定值 |
+| `options` | `SelectOption[]` | - | No | 选项列表 |
+| `matchStrategy` | `MatchStrategy` | `'both'` | No | 粘贴匹配策略 - 'label': 仅匹配标签 - 'value': 仅匹配值 - 'both': 同时匹配标签和值，优先匹配值 |
+| `filterModel` | `Record<string, any>` | - | No | 过滤上下文模型（环境上下文） |
+| `modelValue` | `string | number | boolean | Record<string, any> | (string | number | boolean ...` | - | No | 绑定值 |
+| `options` | `SelectOption[]` | - | No | 选项列表 |
+| `filterModel` | `Record<string, any>` | - | No | 过滤上下文模型（环境上下文） 这是一个对象，包含了当前的上下文信息，例如 { company: 1400, role: 'admin' }。 组件会将选项的 cMeta 与此对象进行比对。 |
+
+---
+
+## SunnyErrorBoundary
+
+Error Boundary
+
+**Category:** feedback | **Path:** `feedback/error-boundary`
+
+### Import
+
+```typescript
+import { ErrorBoundary } from '@sunny-base-web/ui';
+```
+
+### Props
+
+| Prop | Type | Default | Required | Description |
+|------|------|---------|----------|-------------|
+| `showDetails` | `boolean` | `false` | No | 是否显示详细错误信息 |
+| `errorIcon` | `Component` | - | No | 自定义错误图标 |
+| `errorTitle` | `string` | - | No | 自定义错误标题 |
+| `errorMessage` | `string` | - | No | 自定义错误消息 |
+| `showRetry` | `boolean` | `true` | No | 是否显示重试按钮 |
+| `showRefresh` | `boolean` | `true` | No | 是否显示刷新按钮 |
+| `showReport` | `boolean` | `true` | No | 是否显示上报错误按钮 |
+
+### Events
+
+| Event | Parameters | Description |
+|-------|-----------|-------------|
+| `error` | `error: Error, instance: any, info: string` |  |
+| `retry` | `void` |  |
+| `report` | `error: Error` |  |
+
+---
+
+## SunnyExportModal
+
+Export Modal
+
+**Category:** feedback | **Path:** `feedback/export-modal`
+
+### Import
+
+```typescript
+import { SunnyExportModal } from '@sunny-base-web/ui';
+```
+
+### Hooks
+
+#### `useExportModal`
+
+```typescript
+useExportModal(defaultOptions: Partial<ExportModalOptions>): 
+```
+
+---
+
+## SunnyImportModal
+
+Import Modal
+
+**Category:** feedback | **Path:** `feedback/import-modal`
+
+### Import
+
+```typescript
+import { SunnyImportModal } from '@sunny-base-web/ui';
+```
+
+### Hooks
+
+#### `useImportModal`
+
+```typescript
+useImportModal(defaultOptions: Partial<ImportModalOptions>): 
+```
+
+---
+
+## SunnyModal
+
+Modal
+
+**Category:** feedback | **Path:** `feedback/modal`
+
+### Import
+
+```typescript
+import { Modal, useSunnyModal, ModalTypes } from '@sunny-base-web/ui';
+```
+
+### Hooks
+
+#### `useSunnyModal`
+
+```typescript
+useSunnyModal(options: ModalApiOptions): UseModalReturnType
+```
+
+### Props
+
+| Prop | Type | Default | Required | Description |
+|------|------|---------|----------|-------------|
+| `modelValue` | `boolean` | - | No | 是否可见 |
+| `title` | `string` | - | No | 标题 |
+| `width` | `string | number` | - | No | 宽度 |
+| `top` | `string | number` | - | No | 距离顶部距离 |
+| `zIndex` | `number` | - | No | 层级 |
+| `helpMessage` | `string` | - | No | 帮助信息 |
+| `closeOnEsc` | `boolean` | - | No | 是否支持 ESC 关闭 |
+| `fullscreen` | `boolean` | - | No | 是否显示全屏按钮 |
+| `closeOnClickModal` | `boolean` | - | No | 是否支持点击遮罩关闭 |
+| `okText` | `string` | - | No | 确认按钮文字 |
+| `cancelText` | `string` | - | No | 取消按钮文字 |
+| `okLoading` | `boolean` | - | No | 确认按钮 loading |
+| `confirmLoading` | `boolean` | - | No | 确认按钮 loading (兼容) |
+| `hideCancel` | `boolean` | - | No | 是否隐藏取消按钮 |
+| `okButtonProps` | `any` | - | No | 确认按钮 props |
+| `cancelButtonProps` | `any` | - | No | 取消按钮 props |
+| `onVisibleChange` | `(visible: boolean) => void` | - | No | 可见性变化回调 |
+| `onBeforeOk` | `(
+    done?: (closed: boolean) => void
+  ) => void | boolean | Promise<void...` | - | No | 确认前回调 |
+| `onBeforeCancel` | `() => boolean | Promise<boolean>` | - | No | 取消前回调 |
+| `onClose` | `() => void` | - | No | 关闭回调 |
+| `onOk` | `() => void` | - | No | 确认回调 |
+
+---
+
+## SunnySearchModal
+
+Search Modal
+
+**Category:** feedback | **Path:** `feedback/search-modal`
+
+### Import
+
+```typescript
+import { SunnySearchModal } from '@sunny-base-web/ui';
+// + all types from types.ts
+```
+
+### Hooks
+
+#### `useSunnySearchModal`
+
+```typescript
+useSunnySearchModal(props: SunnySearchModalProps, emit: SunnySearchModalEmits): 
+```
+
+### Props
+
+| Prop | Type | Default | Required | Description |
+|------|------|---------|----------|-------------|
+| `visible` | `boolean` | - | Yes | 弹窗显示状态 (v-model) |
+| `formSchema` | `FormSchema[]` | - | No | 搜索表单配置 |
+| `tableColumns` | `VxeGridPropTypes.Columns` | - | Yes | 表格列配置 |
+| `searchApi` | `string | ((params: any) => Promise<any>)` | - | No | 查询接口地址或函数 如果是 string，则发起 POST 请求 如果是 Function，则直接调用，需返回 Promise |
+| `modelValue` | `Record<string, any>[]` | - | No | 默认选中的数据 (回显) 数组中的对象至少包含 rowKey 指定的字段 |
+| `fieldNames` | `{
+    label?: string;
+    value?: string;
+    desc?: string; // 第二行描述文本字段...` | `{ label: 'label', value: 'value', desc: 'desc' }` | No | 字段名映射配置 用于指定回显时显示的文本字段和值字段 |
+| `commonConfig` | `Record<string, any>` | `{ colProps: { xs: 24, sm: 12, md: 8, lg: 8, xl: 8, xxl: 8 } }` | No | 表单通用配置 (如 colProps, labelWidth 等) 用于控制内部搜索表单的布局和属性，与 SunnyForm 的 commonConfig 保持一致 |
+| `helpMessage` | `string` | `"支持跨页多选，翻页保留选中状态；双击表格行可快速确认。"` | No | 帮助提示文本 显示在标题栏问号图标的 Tooltip 中 |
+| `title` | `string` | `"数据查询"` | No | 弹窗标题 |
+| `multiple` | `boolean` | `true (多选)` | No | 单选/多选模式 |
+| `rowKey` | `string` | `'id'` | No | 数据主键字段名 |
+| `width` | `string | number` | `"800px"` | No | 弹窗宽度 |
+| `contentHeight` | `string | number` | `300` | No | 内容区域高度 (表格区域高度) |
+| `resetOnOpen` | `boolean` | `true` | No | 是否在打开弹窗时重新查询表格数据 设为 true 时，每次打开弹窗都会重新执行查询 设为 false 时，保留上次的表格数据，不重新查询 |
+| `clearOnSearch` | `boolean` | `false` | No | 是否在查询时清空已选数据 设为 true 时，点击查询按钮会清空右侧已选列表 设为 false 时，点击查询按钮保留已选数据，可跨页累加选择 |
+| `defaultModel` | `Record<string, any>` | - | No | 表单默认值 打开弹窗时自动填充到搜索表单，优先级高于 FormSchema.defaultValue |
+
+### Events
+
+| Event | Parameters | Description |
+|-------|-----------|-------------|
+| `update:visible` | `visible: boolean` |  |
+| `update:modelValue` | `values: Record<string, any>[]` |  |
+| `confirm` | `values: Record<string, any>[]` |  |
+| `cancel` | `void` |  |
+
+### Slots
+
+| Slot | Description |
+|------|-------------|
+| `'form-prefix'` | 表单前置内容插槽 |
+| `'form-suffix'` | 表单后置内容插槽 |
+| `'submit-before'` | 表单项前置插槽 (显示在查询按钮之前) |
+| `'reset-before'` | 表单项后置插槽 (显示在重置按钮之后) |
+| `[dynamic]` | 自定义表单项插槽 用法: #fieldName (需在 formSchema 中设置 component: 'Slot') |
+
+### Expose Methods
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `reset` | `() => void` | 重置表格数据和已选数据 清空表格数据、已选数据，并重置分页 |
+
+---
+
+## SunnyLoading
+
+Loading
+
+**Category:** feedback | **Path:** `feedback/spinner`
+
+### Import
+
+```typescript
+import { SunnyLoading, SunnySpinner } from '@sunny-base-web/ui';
+// + all types from types.ts
+```
+
+### Hooks
+
+#### `useLoadingState`
+
+加载状态管理 composable
+
+```typescript
+useLoadingState(options: UseLoadingStateOptions): 
+```
+
+### Props
+
+| Prop | Type | Default | Required | Description |
+|------|------|---------|----------|-------------|
+| `class` | `string` | - | No | 自定义类名 |
+| `minLoadingTime` | `number` | `50` | No | 最小加载时间（毫秒） |
+| `spinning` | `boolean` | `false` | No | 加载状态 |
+| `text` | `string` | `''` | No | 加载提示文字 |
+| `class` | `string` | - | No | 自定义类名 |
+| `minLoadingTime` | `number` | `50` | No | 最小加载时间（毫秒） |
+| `spinning` | `boolean` | `false` | No | 加载状态 |
+
+---
+
+## SunnyBusinessSearch
+
+Business Search
+
+**Category:** composite | **Path:** `composite/business-search`
+
+### Import
+
+```typescript
+import {  } from '@sunny-base-web/ui';
+// + all types from types.ts
+```
+
+### Hooks
+
+#### `useSunnyBusinessSearch`
+
+BusinessSearch Hook 组件只负责 UI 组合，所有数据获取和格式转换都由 businessSearchAdapter 负责 The component only handles UI composition, all data fetching and transformation is handled by businessSearchAdapter
+
+```typescript
+useSunnyBusinessSearch(props: SunnyBusinessSearchProps, emit: SetupContext['emit']): UseSunnyBusinessSearchReturn
+```
+
+### Props
+
+| Prop | Type | Default | Required | Description |
+|------|------|---------|----------|-------------|
+| `modelValue` | `any[] | null` | - | No | 双向绑定的选中值 支持传入 null/undefined，组件内部会自动转换为空数组 |
+| `type` | `string` | - | No | 业务类型 (e.g., 'user', 'dept') 用于加载静态预设配置 |
+| `cNum` | `string` | - | No | 动态配置编码 (e.g., 'MACHINE_SBBH') 用于从后端加载配置。当提供时，优先使用动态配置流程。 |
+| `placeholder` | `string` | `"请选择"` | No | 输入框占位符 |
+| `multiple` | `boolean` | `true` | No | 是否多选 |
+| `cSelectionMode` | `string` | - | No | 选择模式 (用于替代 multiple，优先级低于 multiple) 'single' | 'multiple' |
+| `maxTagCount` | `number` | - | No | 输入框最大显示标签数 |
+| `modalProps` | `Partial<SunnySearchModalProps>` | - | No | 透传给 SearchModal 的属性（用于覆盖默认配置） |
+| `disabled` | `boolean` | `false` | No | 是否禁用 |
+| `fieldNames` | `FieldNames` | - | No | 字段名映射 优先级: props.fieldNames > props.modalProps.fieldNames > currentConfig.fieldNames |
+| `defaultModel` | `Record<string, any>` | - | No | 表单默认值 打开弹窗时自动填充到搜索表单 优先级: props.defaultModel > currentConfig.defaultModel > FormSchema.defaultValue |
+
+---
+
+## SunnyCustomizeSelect
+
+Customize Select
+
+**Category:** composite | **Path:** `composite/customize-select`
+
+### Import
+
+```typescript
+import { SunnyCustomizeSelect } from '@sunny-base-web/ui';
+```
+
+---
+
+## SunnySearchPlan
+
+Search Plan
+
+**Category:** composite | **Path:** `composite/search-plan`
+
+### Import
+
+```typescript
+import { SunnySearchPlan, useSunnySearchPlan, type SunnySearchPlanProps, type SunnySearchPlanEmits, type SearchPlanItem } from '@sunny-base-web/ui';
+```
+
+### Hooks
+
+#### `useSunnySearchPlan`
+
+```typescript
+useSunnySearchPlan(props: SunnySearchPlanProps, emit: SetupContext<(keyof SunnySearchPlanEmits)[]>['emit'], localModel: ReturnType<typeof ref<Record<string, any>>>, formApi: FormApi, api: SearchPlanApi): UseSunnySearchPlanReturn
+```
+
+### Props
+
+| Prop | Type | Default | Required | Description |
+|------|------|---------|----------|-------------|
+| `formConfig` | `SunnyFormProps['schema']` | - | Yes | 表单配置 |
+| `model` | `Record<string, any>` | - | No | 表单模型数据 |
+| `modelValue` | `Record<string, any>` | - | No | 双向绑定的表单数据 |
+| `searchPlanList` | `SearchPlanItem[]` | - | Yes | 搜索方案列表 |
+| `currentSearchPlan` | `SearchPlanItem` | - | No | 当前选中的搜索方案 |
+| `resourceId` | `string` | - | Yes | 资源ID |
+| `nResourceid` | `number` | - | No | 资源编号 |
+| `disabled` | `boolean` | - | No | 是否禁用 |
+| `modalProps` | `Partial<ModalProps>` | - | No | 弹窗配置 |
+| `formProps` | `Partial<SunnyFormProps>` | - | No | 表单配置覆盖 |
+| `title` | `string` | - | No | 弹窗标题 |
+| `width` | `string | number` | - | No | 弹窗宽度 |
+| `loading` | `boolean` | - | No | 加载状态 |
+
+### Events
+
+| Event | Parameters | Description |
+|-------|-----------|-------------|
+| `add` | `name: string, model: Record<string, any>` |  |
+| `update` | `id: string | number, name: string, model: Record<string, any>` |  |
+| `delete` | `id: string | number` |  |
+| `select` | `plan: SearchPlanItem` |  |
+| `reset` | `void` |  |
+| `search` | `model: Record<string, any>` |  |
+| `error` | `error: any` |  |
+| `default-plan-loaded` | `model: Record<string, any>` |  |
+
+---

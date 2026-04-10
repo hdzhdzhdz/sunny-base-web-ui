@@ -17,11 +17,13 @@
     "changeset": "changeset",
     "publish:packages": "node ./scripts/publish-packages.mjs",
     "version-packages": "changeset version",
-    "release": "pnpm build:packages && changeset publish"
+    "release": "pnpm build:packages && changeset publish",
+    "generate:llms": "npx tsx scripts/generate-llms-docs.ts"
   },
   "devDependencies": {
     "@changesets/cli": "^2.30.0",
     "prettier": "^3.2.5",
+    "ts-morph": "^27.0.2",
     "turbo": "^2.3.3",
     "typescript": "^5.2.2"
   },

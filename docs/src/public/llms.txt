@@ -1,33 +1,45 @@
-# My Monorepo Docs
-> Documentation for my Vue 3 Monorepo Components
+# Sunny Base Web Framework - Component Library
+> Vue 3 business component library built on Arco Design Vue
+>
+> Auto-generated from source code. Do not edit manually.
+> Generated: 2026-04-10
 
 ## Introduction
-- [AI Resources / AI 资源](https://your-docs-site.com/resources/ai)
+- [AI Resources](/resources/ai)
 
 ## Base Library (Arco Design Vue)
 > Our UI library is based on Arco Design Vue.
 - [Arco LLM Index](/arco-llm.txt)
 - [Arco LLM Full Docs](/arco-llms-full.txt)
 
-## Basic Components
-- [Icon](https://your-docs-site.com/components/basic/icon)
-- [Scrollbar](https://your-docs-site.com/components/basic/scrollbar)
+## Basic Components / 基础组件
+- [SunnyIcon](/components/basic/icon): Icon
+- [SunnyScrollbar](/components/basic/scrollbar): Scrollbar
 
-## Data Components
-- [Upload](https://your-docs-site.com/components/data/upload)
-- [QueryGrid](https://your-docs-site.com/components/data/query-grid)
-- [ResourceTree](https://your-docs-site.com/components/data/resource-tree)
+## Data Display / 数据展示
+- [useSunnyEditGrid](/components/data/use-sunny-edit-grid): Edit Grid
+- [useSunnyQueryGrid](/components/data/use-sunny-query-grid): Query Grid
+- [SunnyResourceTree](/components/data/resource-tree): Resource Tree
+- [SunnySimpleUpload](/components/data/simple-upload): Simple Upload
+- [SunnyUpload](/components/data/upload): Upload
 
-## Entry Components
-- [Form](https://your-docs-site.com/components/entry/form)
-- [Select](https://your-docs-site.com/components/entry/select)
-- [BatchSelect](https://your-docs-site.com/components/entry/batch-select)
-- [SearchInputTag](https://your-docs-site.com/components/entry/search-input-tag)
+## Data Entry / 数据录入
+- [SunnyForm](/components/entry/form): Form
+- [SunnySearchInputTag](/components/entry/search-input-tag): Search Input Tag
+- [SunnyBatchSelect](/components/entry/batch-select): Batch Select
 
-## Feedback Components
-- [Modal](https://your-docs-site.com/components/feedback/modal)
+## Feedback / 反馈
+- [SunnyErrorBoundary](/components/feedback/error-boundary): Error Boundary
+- [SunnyExportModal](/components/feedback/export-modal): Export Modal
+- [SunnyImportModal](/components/feedback/import-modal): Import Modal
+- [SunnyModal](/components/feedback/modal): Modal
+- [SunnySearchModal](/components/feedback/search-modal): Search Modal
+- [SunnyLoading](/components/feedback/loading): Loading
 
-## Utilities
-- [Composables](https://your-docs-site.com/utilities/composables/use-namespace)
-- [I18n](https://your-docs-site.com/utilities/i18n)
-- [Regex](https://your-docs-site.com/utilities/regex)
+## Composite / 复合组件
+- [SunnyBusinessSearch](/components/composite/business-search): Business Search
+- [SunnyCustomizeSelect](/components/composite/customize-select): Customize Select
+- [SunnySearchPlan](/components/composite/search-plan): Search Plan
+
+## Full API Reference
+- [Complete Component API Documentation](/llms-full.txt)
