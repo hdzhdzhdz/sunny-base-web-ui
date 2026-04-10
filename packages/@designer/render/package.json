@@ -1,0 +1,36 @@
+{
+  "name": "@sunny-base-web/designer-render",
+  "version": "0.1.0",
+  "private": false,
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./style.css": "./dist/designer-render.css"
+  },
+  "scripts": {
+    "build": "vite build",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
+  },
+  "dependencies": {
+    "@sunny-base-web/designer-core": "workspace:^",
+    "@sunny-base-web/designer-materials": "workspace:^",
+    "vue": "catalog:"
+  },
+  "devDependencies": {
+    "@sunny-base-web/tsconfig": "workspace:*",
+    "@vitejs/plugin-vue": "^6.0.4",
+    "@vitejs/plugin-vue-jsx": "^5.1.4",
+    "typescript": "catalog:",
+    "vite": "^7.3.1",
+    "vite-plugin-dts": "^4.5.4"
+  }
+}

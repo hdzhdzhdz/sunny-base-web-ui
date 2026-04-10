@@ -7,6 +7,7 @@ const config: Pick<Config, "content" | "presets"> = {
     "./src/**/*.{vue,js,ts,jsx,tsx}",
     "../../packages/@ui/src/**/*.{vue,js,ts,jsx,tsx}",
     "../../packages/@effects/src/**/*.{vue,js,ts,jsx,tsx}",
+    "../../packages/@designer/studio/src/**/*.{vue,js,ts,jsx,tsx}",
   ],
   presets: [sharedConfig],
 };

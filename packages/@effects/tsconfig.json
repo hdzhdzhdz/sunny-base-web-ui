@@ -14,7 +14,11 @@
       "@sunny-base-web/utils": ["../@utils/src/index.ts"],
       "@sunny-base-web/icons": ["../@icons/src/index.ts"],
       "@sunny-base-web/constants": ["../@config/constants/src/index.ts"],
-      "@sunny-base-web/locales": ["../@locales/src/index.ts"]
+      "@sunny-base-web/locales": ["../@locales/src/index.ts"],
+      "@sunny-base-web/designer-core": ["../designer/core/src/index.ts"],
+      "@sunny-base-web/designer-studio": ["../designer/studio/src/index.ts"],
+      "@sunny-base-web/designer-materials": ["../designer/materials/src/index.ts"],
+      "@sunny-base-web/designer-render": ["../designer/render/src/index.ts"]
     }
   },
   "include": [

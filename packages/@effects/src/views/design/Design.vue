@@ -1,78 +1,84 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { SunnyMask } from '@sunny-base-web/designer-studio'
-import type { MaskMenu, MaskTab, MaskAction } from '@sunny-base-web/designer-studio'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+import {
+  SunnyDesignerLayout,
+  WidgetRegistry,
+  createBuiltinWidgets,
+  createBuiltinMaterials,
+  Engine,
+  MaterialStore,
+  type ProjectModelJSON,
+} from '@sunny-base-web/designer-studio'
 
 defineOptions({
   name: 'DesignPage',
 })
 
-const router = useRouter()
+/** Widget 注册表 */
+const registry = new WidgetRegistry()
+registry.registerAll(createBuiltinWidgets())
 
-const collapsed = ref(false)
-const activeTab = ref('design')
+/** 物料存储 */
+const materialStore = new MaterialStore()
+materialStore.registerAll(createBuiltinMaterials())
 
-const menus = ref<MaskMenu[]>([
-  {
-    key: 'design',
-    label: '设计器',
-    path: '/design',
-  },
-  {
-    key: 'preview',
-    label: '预览',
-    path: '/design/preview',
-  },
-])
+/** Engine 实例 */
+const engineRef = ref<Engine | null>(null)
 
-const tabs = ref<MaskTab[]>([
-  { key: 'design', label: '设计器', closable: false },
-])
+onMounted(() => {
+  // 创建 Engine
+  const engine = new Engine({ materialStore })
+  engineRef.value = engine
 
-const actions = ref<MaskAction[]>([
-  {
-    key: 'settings',
-    label: '设置',
-  },
-])
-
-const handleMenuClick = (menu: MaskMenu) => {
-  if (menu.path) {
-    router.push(menu.path)
+  // 加载示例项目
+  const sampleProject: ProjectModelJSON = {
+    id: 'project-1',
+    name: '示例项目',
+    activePageId: 'page-1',
+    dependencies: [],
+    apis: [],
+    pages: [
+      {
+        id: 'page-1',
+        name: '首页',
+        route: '/home',
+        rootNode: {
+          id: 'root-1',
+          name: 'div',
+          props: {},
+          events: {},
+          directives: [],
+          children: [],
+          slots: {},
+        },
+        state: [],
+        computed: [],
+        methods: [],
+        watch: [],
+        css: [],
+        props: [],
+        emits: [],
+        expose: [],
+        slots: [],
+        lifecycleHooks: [],
+        inject: [],
+      },
+    ],
   }
-}
+  engine.loadProject(sampleProject)
+})
 
-const handleTabClick = (tab: MaskTab) => {
-  activeTab.value = tab.key
-}
-
-const handleTabClose = (key: string) => {
-  const index = tabs.value.findIndex((t) => t.key === key)
-  if (index > -1) {
-    tabs.value.splice(index, 1)
-    if (activeTab.value === key && tabs.value.length > 0) {
-      activeTab.value = tabs.value[tabs.value.length - 1].key
-    }
-  }
-}
+onBeforeUnmount(() => {
+  engineRef.value?.destroy()
+  engineRef.value = null
+})
 </script>
 
 <template>
-  <SunnyMask
+  <SunnyDesignerLayout
+    v-if="engineRef"
     title="Sunny Designer"
-    :menus="menus"
-    :tabs="tabs"
-    :actions="actions"
-    v-model:collapsed="collapsed"
-    v-model:active-tab="activeTab"
-    @menu-click="handleMenuClick"
-    @tab-click="handleTabClick"
-    @tab-close="handleTabClose"
-  >
-    <div class="p-4">
-      <h2 class="text-lg font-semibold mb-4">设计器</h2>
-      <p class="text-gray-500">欢迎使用 Sunny Designer 设计器</p>
-    </div>
-  </SunnyMask>
+    :widget-registry="registry"
+    :engine="engineRef"
+  />
 </template>

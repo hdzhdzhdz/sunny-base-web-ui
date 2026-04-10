@@ -15,6 +15,7 @@ export default defineConfig({
       '@sunny-base-web/effects': fileURLToPath(new URL('../../packages/@effects/src', import.meta.url)),
       '@sunny-base-web/locales': fileURLToPath(new URL('../../packages/@locales/src', import.meta.url)),
       '@sunny-base-web/designer-core': fileURLToPath(new URL('../../packages/@designer/core/src', import.meta.url)),
+      '@sunny-base-web/designer-render': fileURLToPath(new URL('../../packages/@designer/render/src', import.meta.url)),
       '@sunny-base-web/designer-studio': fileURLToPath(new URL('../../packages/@designer/studio/src', import.meta.url)),
     }
   },

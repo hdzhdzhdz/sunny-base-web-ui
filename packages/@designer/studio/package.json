@@ -1,6 +1,7 @@
 {
   "name": "@sunny-base-web/designer-studio",
   "version": "0.1.0",
+  "type": "module",
   "private": false,
   "files": [
     "dist"
@@ -22,9 +23,12 @@
   },
   "dependencies": {
     "@sunny-base-web/designer-core": "workspace:^",
+    "@sunny-base-web/designer-materials": "workspace:^",
+    "@sunny-base-web/designer-render": "workspace:^",
     "@sunny-base-web/icons": "workspace:^",
     "@sunny-base-web/locales": "workspace:^",
     "@sunny-base-web/utils": "workspace:^",
+    "@sunny-base-web/ui": "workspace:^",
     "@arco-design/web-vue": "catalog:",
     "vue": "catalog:",
     "vue-router": "^4.6.4"

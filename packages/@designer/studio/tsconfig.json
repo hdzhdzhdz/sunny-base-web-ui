@@ -8,7 +8,13 @@
     "jsxImportSource": "vue",
     "moduleResolution": "bundler",
     "noEmit": true,
-    "strict": true
+    "strict": true,
+    "paths": {
+      "@sunny-base-web/designer-render": ["../render/src/index.ts"],
+      "@sunny-base-web/designer-core": ["../core/src/index.ts"],
+      "@sunny-base-web/designer-materials": ["../materials/src/index.ts"],
+      "@sunny-base-web/ui": ["../@ui/src/index.ts"]
+    }
   },
   "include": ["src"]
 }

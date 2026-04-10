@@ -1,0 +1,31 @@
+{
+  "name": "@sunny-base-web/designer-materials",
+  "version": "0.1.0",
+  "private": false,
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@sunny-base-web/designer-core": "workspace:^",
+    "vue": "catalog:"
+  },
+  "devDependencies": {
+    "@sunny-base-web/tsconfig": "workspace:*",
+    "typescript": "catalog:",
+    "vite": "^7.3.1",
+    "vite-plugin-dts": "^4.5.4"
+  }
+}

@@ -1,4 +1,19 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(ls -d \"e:/workspace-gitlab/vvvvvvvvvvvvvvvvvvvv/sunny-base-web-framework/packages/\"*/)",
+      "Bash(mkdir -p \"e:/workspace-gitlab/vvvvvvvvvvvvvvvvvvvv/sunny-base-web-framework/packages/@designer/core/src/schema\")",
+      "Bash(mkdir -p \"e:/workspace-gitlab/vvvvvvvvvvvvvvvvvvvv/sunny-base-web-framework/packages/@designer/core/src/model\")",
+      "Bash(mkdir -p \"e:/workspace-gitlab/vvvvvvvvvvvvvvvvvvvv/sunny-base-web-framework/packages/@designer/core/src/event\")",
+      "Bash(mkdir -p \"e:/workspace-gitlab/vvvvvvvvvvvvvvvvvvvv/sunny-base-web-framework/packages/@designer/core/src/history\")",
+      "Bash(mkdir -p \"e:/workspace-gitlab/vvvvvvvvvvvvvvvvvvvv/sunny-base-web-framework/packages/@designer/core/src/parser\")",
+      "Bash(npx vite:*)"
+    ],
+    "additionalDirectories": [
+      "e:\\workspace-gitlab\\vvvvvvvvvvvvvvvvvvvv\\sunny-base-web-framework\\packages\\@designer\\render",
+      "e:\\workspace-gitlab\\vvvvvvvvvvvvvvvvvvvv\\sunny-base-web-framework\\packages\\@designer\\render\\src"
+    ]
+  },
   "enabledPlugins": {
     "everything-claude-code@everything-claude-code": true
   }
