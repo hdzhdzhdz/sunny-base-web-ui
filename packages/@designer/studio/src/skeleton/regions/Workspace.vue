@@ -11,7 +11,6 @@ import { DesignerEventType, NodeModel } from '@sunny-base-web/designer-core'
 import type { NodeModelJSON } from '@sunny-base-web/designer-core'
 import type { Engine } from '../../engine'
 import { Simulator } from '../../simulator/simulator'
-import { EventBridge } from '../../simulator/event-bridge'
 import { Designer } from '../../designer/designer'
 
 defineOptions({ name: 'DesignerWorkspace' })
@@ -25,7 +24,6 @@ const engine = inject<Engine>('designer-engine')!
 
 const containerRef = ref<HTMLElement>()
 let simulator: Simulator | null = null
-let bridge: EventBridge | null = null
 let designer: Designer | null = null
 let unsubscribers: (() => void)[] = []
 
@@ -45,19 +43,6 @@ onMounted(() => {
     if (iframe) iframe.style.pointerEvents = ''
   })
 
-  // 创建 EventBridge
-  const doc = simulator.getDocument()
-  if (doc) {
-    bridge = new EventBridge(doc)
-    bridge.on('nodeClick', (e) => {
-      engine.select(e.nodeId)
-      emit('nodeClick', e.nodeId)
-    })
-    bridge.on('nodeHover', (e) => {
-      emit('nodeHover', e.nodeId)
-    })
-  }
-
   // 创建 Designer（画布交互）
   designer = new Designer({
     simulator,
@@ -75,8 +60,10 @@ onMounted(() => {
   })
   designer.activate()
 
-  // 初始渲染当前 Block
-  renderCurrentBlock()
+  // Simulator 就绪后渲染当前 Block
+  simulator.onReady(() => {
+    renderCurrentBlock()
+  })
 
   // 监听 Engine 事件 → 驱动 Simulator
   const unsubProjectLoaded = engine.eventBus.on(DesignerEventType.ProjectLoaded, () => {
@@ -132,11 +119,9 @@ onBeforeUnmount(() => {
   unsubscribers = []
 
   designer?.deactivate()
-  bridge?.teardown()
   simulator?.destroy()
 
   designer = null
-  bridge = null
   simulator = null
 })
 
@@ -161,7 +146,6 @@ function handleDrop(e: DragEvent) {
   const componentName = e.dataTransfer?.getData('component-name')
   if (!componentName) return
 
-  // 从 MaterialStore 获取默认 snippet
   const meta = engine.materialStore.getMeta(componentName)
   if (!meta?.snippets?.length) return
 
@@ -169,13 +153,10 @@ function handleDrop(e: DragEvent) {
   const block = engine.getActiveBlock()
   if (!block?.rootNode) return
 
-  // 从 snippet props 创建 NodeModel
   const node = new NodeModel(engine.eventBus, componentName, {
     props: snippet.props,
   })
   engine.addNode(block.rootNode.id, node)
-
-  // 拖入后自动选中新节点
   engine.select(node.id)
 }
 </script>

@@ -5,8 +5,11 @@
  * - 节点选中（通过 EventBridge 监听 iframe 内点击）
  * - 节点悬浮高亮
  * - 选中后操作按钮（上移/下移/删除）
- * - 拖拽投放（从物料面板拖入画布）
  * - 选中/悬浮 Overlay 定位（在主窗口中，不受 iframe CSS 影响）
+ *
+ * 注意：EventBridge 必须在 Simulator iframe 加载完成后才能 setup()，
+ * 因为 Simulator 的 writeSkeleton() 会调用 doc.open()，清除已注册的事件监听器。
+ * 因此 activate() 中通过 simulator.onReady() 延迟绑定 EventBridge。
  */
 import type { Simulator } from '../simulator/simulator'
 import { EventBridge } from '../simulator/event-bridge'
@@ -80,7 +83,7 @@ export class Designer {
   private readonly actions: DesignerActions
 
   /** 事件桥 */
-  private bridge: EventBridge
+  private bridge: EventBridge | null = null
 
   /** 选中框 Overlay */
   private selectOverlay: HTMLDivElement | null = null
@@ -97,19 +100,26 @@ export class Designer {
   /** 是否激活 */
   private active: boolean = false
 
+  /** 当前悬浮的节点 ID（防闪烁） */
+  private hoveredNodeId: string | null = null
+
+  /** 悬浮隐藏定时器（防子元素间移动闪烁） */
+  private hoverHideTimer: ReturnType<typeof setTimeout> | null = null
+
   constructor(options: DesignerOptions) {
     this.simulator = options.simulator
     this.selection = options.selection
     this.materialStore = options.materialStore
     this.eventBus = options.eventBus
     this.actions = options.actions ?? {}
-    this.bridge = new EventBridge(null)
   }
 
   // ── 生命周期 ──────────────────────────────────────────
 
   /**
    * 激活画布交互
+   *
+   * 创建 Overlay 和工具栏，延迟绑定 EventBridge（等 iframe 就绪）。
    */
   activate(): void {
     if (this.active) return
@@ -125,21 +135,17 @@ export class Designer {
     document.body.appendChild(this.toolbar)
     document.body.appendChild(this.hoverOverlay)
 
-    // 启动 EventBridge
-    this.bridge = new EventBridge(this.simulator.getDocument())
-    this.bridge.setup()
-
-    // 监听交互事件
-    const unsubClick = this.bridge.on('nodeClick', this.handleNodeClick)
-    const unsubHover = this.bridge.on('nodeHover', this.handleNodeHover)
-    const unsubLeave = this.bridge.on('nodeMouseLeave', this.handleNodeMouseLeave)
-
-    // 监听选中变化（拖入、快捷键等非 iframe 点击触发的选中）
+    // 监听选中变化（拖入、快捷键等触发的选中）
     const unsubSelection = this.eventBus.on(DesignerEventType.SelectionChanged, () => {
       this.refreshSelectOverlay()
     })
+    this.unsubscribers.push(unsubSelection)
 
-    this.unsubscribers = [unsubClick, unsubHover, unsubLeave, unsubSelection]
+    // 等 Simulator iframe 就绪后再绑定 EventBridge
+    // （doc.open() 会清除已注册的事件监听器）
+    this.simulator.onReady(() => {
+      this.setupBridge()
+    })
 
     this.active = true
   }
@@ -150,7 +156,12 @@ export class Designer {
   deactivate(): void {
     if (!this.active) return
 
-    this.bridge.teardown()
+    this.teardownBridge()
+
+    if (this.hoverHideTimer) {
+      clearTimeout(this.hoverHideTimer)
+      this.hoverHideTimer = null
+    }
 
     for (const unsub of this.unsubscribers) {
       unsub()
@@ -171,6 +182,33 @@ export class Designer {
     return this.active
   }
 
+  // ── EventBridge ──────────────────────────────────────
+
+  /**
+   * 绑定 EventBridge（在 Simulator iframe 就绪后调用）
+   */
+  private setupBridge(): void {
+    const doc = this.simulator.getDocument()
+    if (!doc) return
+
+    this.bridge = new EventBridge(doc)
+    this.bridge.setup()
+
+    const unsubClick = this.bridge.on('nodeClick', this.handleNodeClick)
+    const unsubHover = this.bridge.on('nodeHover', this.handleNodeHover)
+    const unsubLeave = this.bridge.on('nodeMouseLeave', this.handleNodeMouseLeave)
+
+    this.unsubscribers.push(unsubClick, unsubHover, unsubLeave)
+  }
+
+  /**
+   * 断开 EventBridge
+   */
+  private teardownBridge(): void {
+    this.bridge?.teardown()
+    this.bridge = null
+  }
+
   // ── 选中框更新 ────────────────────────────────────────
 
   /**
@@ -183,7 +221,6 @@ export class Designer {
       this.hideToolbar()
       return
     }
-    // 延迟一帧，等 iframe 内 Vue 渲染完成后再定位
     requestAnimationFrame(() => {
       this.positionOverlay(this.selectOverlay!, selectedId!)
       this.positionToolbar(selectedId!)
@@ -200,16 +237,35 @@ export class Designer {
     // TODO
   }
 
-  // ── 内部 ──────────────────────────────────────────────
+  // ── 事件处理器 ──────────────────────────────────────
 
   /** 处理节点点击 */
   private handleNodeClick: BridgeEventHandler = (payload) => {
+    this.hoveredNodeId = null
+    this.hideOverlay(this.hoverOverlay)
     this.selection.select(payload.nodeId)
     this.refreshSelectOverlay()
   }
 
   /** 处理节点悬浮 */
   private handleNodeHover: BridgeEventHandler = (payload) => {
+    // 取消待执行的隐藏
+    if (this.hoverHideTimer) {
+      clearTimeout(this.hoverHideTimer)
+      this.hoverHideTimer = null
+    }
+
+    // 已选中的节点不显示悬浮框（由 selectOverlay 负责）
+    if (this.selection.getSelectedId() === payload.nodeId) {
+      this.hoveredNodeId = null
+      this.hideOverlay(this.hoverOverlay)
+      return
+    }
+
+    // 同一节点不重复定位
+    if (this.hoveredNodeId === payload.nodeId) return
+
+    this.hoveredNodeId = payload.nodeId
     if (!this.hoverOverlay) return
     this.positionOverlay(this.hoverOverlay, payload.nodeId)
     this.hoverOverlay.style.display = 'block'
@@ -217,8 +273,13 @@ export class Designer {
 
   /** 处理鼠标离开节点 */
   private handleNodeMouseLeave: BridgeEventHandler = () => {
-    this.hideOverlay(this.hoverOverlay)
+    this.hoverHideTimer = setTimeout(() => {
+      this.hoveredNodeId = null
+      this.hideOverlay(this.hoverOverlay)
+    }, 30)
   }
+
+  // ── 内部 ──────────────────────────────────────────────
 
   /** 创建操作工具栏 */
   private createToolbar(): HTMLDivElement {
@@ -238,24 +299,20 @@ export class Designer {
       alignItems: 'center' as const,
     })
 
-    // 上移按钮
     const btnUp = this.createToolbarButton(ICON_ARROW_UP, '上移', () => {
       const id = this.selection.getSelectedId()
       if (id) this.actions.onNodeMoveUp?.(id)
     })
 
-    // 下移按钮
     const btnDown = this.createToolbarButton(ICON_ARROW_DOWN, '下移', () => {
       const id = this.selection.getSelectedId()
       if (id) this.actions.onNodeMoveDown?.(id)
     })
 
-    // 删除按钮
     const btnDelete = this.createToolbarButton(ICON_DELETE, '删除', () => {
       const id = this.selection.getSelectedId()
       if (id) this.actions.onNodeDelete?.(id)
     })
-    // 删除按钮样式稍微突出（红色 hover）
     btnDelete.style.color = '#fff'
     btnDelete.onmouseenter = () => { btnDelete.style.backgroundColor = 'rgba(245,63,63,0.9)' }
     btnDelete.onmouseleave = () => { btnDelete.style.backgroundColor = 'transparent' }
@@ -314,7 +371,6 @@ export class Designer {
     const top = iframeRect.top + elementRect.top
     const left = iframeRect.left + elementRect.left
 
-    // 工具栏放在选中框右上角上方
     this.toolbar.style.top = `${top - 30}px`
     this.toolbar.style.left = `${left + elementRect.width - 82}px`
     this.toolbar.style.display = 'flex'

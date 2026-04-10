@@ -53,6 +53,9 @@ export class Simulator {
   /** 是否已挂载 */
   private mounted: boolean = false
 
+  /** 就绪回调（等待 iframe load 完成后调用） */
+  private readyCallbacks: (() => void)[] = []
+
   constructor(options: SimulatorOptions) {
     this.materialStore = options.materialStore
   }
@@ -169,6 +172,19 @@ export class Simulator {
     return this.mounted
   }
 
+  /**
+   * 注册就绪回调（iframe 加载完成后调用）
+   *
+   * 如果已挂载则立即调用，否则等 iframe load 后调用。
+   */
+  onReady(cb: () => void): void {
+    if (this.mounted) {
+      cb()
+    } else {
+      this.readyCallbacks.push(cb)
+    }
+  }
+
   // ── 内部 ──────────────────────────────────────────────
 
   /** iframe 加载回调 */
@@ -182,6 +198,11 @@ export class Simulator {
     this.observeStyleChanges(doc)
 
     this.mounted = true
+
+    // 通知所有等待就绪的回调
+    const callbacks = this.readyCallbacks
+    this.readyCallbacks = []
+    for (const cb of callbacks) cb()
   }
 
   /** 写入 HTML 骨架 */
