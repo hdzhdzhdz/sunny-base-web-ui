@@ -3,6 +3,8 @@
   "backToHome": "Back To Home",
   "login": "Login",
   "logout": "Logout",
+  "editPassword": "Change Password",
+  "settings": "Settings",
   "prompt": "Prompt",
   "cancel": "Cancel",
   "confirm": "Confirm",

@@ -20,3 +20,7 @@ export function login(data: LoginParams) {
 export function fetchUserInfo(data?: any) {
   return requestClient.post<ResponseResult<any>>('/core/contact/getCurrentUserAndResources', data);
 }
+
+export function logout() {
+  return requestClient.post<ResponseResult<any>>('/base-auth/logout', {});
+}

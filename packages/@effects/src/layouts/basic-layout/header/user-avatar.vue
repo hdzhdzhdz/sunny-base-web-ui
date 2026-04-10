@@ -33,19 +33,19 @@
             <template #icon>
               <SunnyIcon icon="lucide:key-round" :size="16" />
             </template>
-            修改密码
+            {{ $t('common.editPassword') }}
           </a-doption>
           <a-doption @click="handleOpenSettingsModal">
             <template #icon>
               <SunnyIcon icon="lucide:settings" :size="16" />
             </template>
-            设置
+            {{ $t('common.settings') }}
           </a-doption>
-          <a-doption class="!text-[rgb(var(--danger-6))]">
+          <a-doption class="!text-[rgb(var(--danger-6))]" @click="handleLogout">
             <template #icon>
               <SunnyIcon icon="lucide:log-out" :size="16" />
             </template>
-            退出登录
+            {{ $t('common.logout') }}
           </a-doption>
         </div>
       </div>
@@ -60,14 +60,18 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { useUserStore } from '@sunny-base-web/stores';
+import { useRouter } from 'vue-router';
+import { useUserStore, useAccessStore } from '@sunny-base-web/stores';
 import { SunnyIcon } from '@sunny-base-web/ui';
+import { logout } from '../../../api/user';
 import PasswordModal from './password-modal.vue';
 import SettingsModal from './settings-modal.vue';
 
 defineOptions({ name: 'UserAvatar' });
 
+const router = useRouter();
 const userStore = useUserStore();
+const accessStore = useAccessStore();
 const passwordModalRef = ref<InstanceType<typeof PasswordModal> | null>(null);
 const settingsModalRef = ref<InstanceType<typeof SettingsModal> | null>(null);
 
@@ -95,5 +99,35 @@ const handleOpenPasswordModal = () => {
  */
 const handleOpenSettingsModal = () => {
   settingsModalRef.value?.open();
+};
+
+/**
+ * 退出登录
+ */
+const handleLogout = async () => {
+  try {
+    // 调用退出登录接口
+    await logout();
+    
+    // 清除 sessionStorage
+    sessionStorage.clear();
+    
+    // 重置用户状态和访问令牌
+    userStore.$reset();
+    accessStore.resetState();
+    
+    // 获取当前路由的完整路径作为redirect参数
+    const currentPath = router.currentRoute.value.fullPath;
+    
+    // 跳转到登录页面，并携带redirect参数
+    router.push({
+      path: '/auth/login',
+      query: {
+        redirect: currentPath
+      }
+    });
+  } catch (error) {
+    console.error('退出登录失败:', error);
+  }
 };
 </script>
