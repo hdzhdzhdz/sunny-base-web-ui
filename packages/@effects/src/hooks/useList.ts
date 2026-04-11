@@ -75,6 +75,14 @@ export function useList<T>(options: {
    */
   objectToValueFields?: string[];
   /**
+   * 表单字段映射到时间格式
+   */
+  fieldMappingTime?: any[];
+  /**
+   * 表单字段数组映射字符串配置
+   */
+  arrayToStringFields?: any[];
+  /**
    * 是否开启懒加载
    */
   lazy?: boolean;
@@ -84,7 +92,7 @@ export function useList<T>(options: {
   autoLoad?: boolean;
 
 }) {
-  const { searchFormSchema, tableColumns, dataType, resourceConfig, queryFunction, gridEvents, treeConfig, loadMethod, objectToValueFields, lazy, autoLoad = true } = options;
+  const { searchFormSchema, tableColumns, dataType, resourceConfig, queryFunction, gridEvents, treeConfig, loadMethod, objectToValueFields, fieldMappingTime, arrayToStringFields, lazy, autoLoad = true } = options;
 
   // ----------------------------------------------------------------------
   // 1. Basic Configuration
@@ -134,7 +142,9 @@ export function useList<T>(options: {
     submitButtonOptions: { loading: submitting },
     actionColProps: { span: 24, lg: 6, xl: 4 },
     schema: permissionEnhancedSchema.value,
-    objectToValueFields
+    objectToValueFields,
+    fieldMappingTime,
+    arrayToStringFields
   });
 
   // ----------------------------------------------------------------------
