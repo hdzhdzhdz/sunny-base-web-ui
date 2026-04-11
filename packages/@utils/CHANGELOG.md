@@ -1,5 +1,12 @@
 # @sunny-base-web/utils
 
+## 0.8.7
+
+### Patch Changes
+
+- Bump version to 0.8.7
+  - @sunny-base-web/constants@0.8.7
+
 ## 0.8.6
 
 ### Patch Changes
