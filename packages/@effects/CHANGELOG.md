@@ -1,5 +1,16 @@
 # @sunny-base-web/effects
 
+## 0.8.10
+
+### Patch Changes
+
+- fix: remove designer-studio dependency from build output to prevent consumer resolution errors
+  - @sunny-base-web/icons@0.8.10
+  - @sunny-base-web/locales@0.8.10
+  - @sunny-base-web/stores@0.8.10
+  - @sunny-base-web/ui@0.8.10
+  - @sunny-base-web/utils@0.8.10
+
 ## 0.8.9
 
 ### Patch Changes

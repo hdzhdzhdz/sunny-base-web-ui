@@ -1,5 +1,13 @@
 # @sunny-base-web/ui
 
+## 0.8.10
+
+### Patch Changes
+
+- @sunny-base-web/icons@0.8.10
+- @sunny-base-web/locales@0.8.10
+- @sunny-base-web/utils@0.8.10
+
 ## 0.8.9
 
 ### Patch Changes
