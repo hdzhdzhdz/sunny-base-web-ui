@@ -1,1 +1,3 @@
-export { default as Design } from './Design.vue'
+import { defineAsyncComponent } from 'vue';
+
+export const Design = defineAsyncComponent(() => import('./Design.vue'));
