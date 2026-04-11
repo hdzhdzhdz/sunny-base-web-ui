@@ -1,5 +1,12 @@
 # @sunny-base-web/utils
 
+## 0.8.11
+
+### Patch Changes
+
+- version packages 0.8.11
+  - @sunny-base-web/constants@0.8.11
+
 ## 0.8.10
 
 ### Patch Changes
