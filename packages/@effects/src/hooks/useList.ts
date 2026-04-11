@@ -118,7 +118,6 @@ export function useList<T>(options: {
     gridProps: {
       xGap: 8,
       yGap: 8,
-      collapsed: true,
       collapsedRows: 1
     },
     // 查询表单响应式栅格配置
@@ -128,6 +127,7 @@ export function useList<T>(options: {
     commonConfig: {
       colProps: { span: 24, lg: 6, xl: 4 },
     },
+    collapsed: true,
     showCollapseButton: true,
     showDefaultActions: true,
     submitOnEnter: true,
