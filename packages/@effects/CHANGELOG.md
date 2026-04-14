@@ -8,11 +8,11 @@
 
 ### Patch Changes
 
-- @sunny-base-web/icons@0.9.0
-- @sunny-base-web/locales@0.9.0
-- @sunny-base-web/stores@0.9.0
-- @sunny-base-web/ui@0.9.0
-- @sunny-base-web/utils@0.9.0
+- @sunny-base-web/icons@0.8.13
+- @sunny-base-web/locales@0.8.13
+- @sunny-base-web/stores@0.8.13
+- @sunny-base-web/ui@0.8.13
+- @sunny-base-web/utils@0.8.13
 
 ## 0.8.12
 
