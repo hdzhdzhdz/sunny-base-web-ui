@@ -47,12 +47,6 @@ export function useUserResources(cModnumb: string) {
     }
   };
 
-  onMounted(() => {
-    if (cModnumb) {
-      fetchResources();
-    }
-  });
-
   return {
     loading,
     resourceButtons,
