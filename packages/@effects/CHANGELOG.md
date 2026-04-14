@@ -1,5 +1,19 @@
 # @sunny-base-web/effects
 
+## 0.8.13
+
+### Minor Changes
+
+- feat: 新增 useTable hook，支持独立表格初始化（不含表单）
+
+### Patch Changes
+
+- @sunny-base-web/icons@0.9.0
+- @sunny-base-web/locales@0.9.0
+- @sunny-base-web/stores@0.9.0
+- @sunny-base-web/ui@0.9.0
+- @sunny-base-web/utils@0.9.0
+
 ## 0.8.12
 
 ### Patch Changes
