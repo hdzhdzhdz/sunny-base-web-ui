@@ -1,5 +1,17 @@
 # @sunny-base-web/effects
 
+## 0.8.14
+
+### Patch Changes
+
+- chore: version packages 0.8.14
+- Updated dependencies
+  - @sunny-base-web/icons@0.8.14
+  - @sunny-base-web/locales@0.8.14
+  - @sunny-base-web/stores@0.8.14
+  - @sunny-base-web/ui@0.8.14
+  - @sunny-base-web/utils@0.8.14
+
 ## 0.8.13
 
 ### Minor Changes

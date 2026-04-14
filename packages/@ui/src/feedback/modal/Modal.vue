@@ -57,11 +57,11 @@
         <slot name="centerFooter"></slot>
 
         <a-button
+          v-if="!attrs.hideOk"
           type="primary"
           :loading="loading || (attrs.okLoading as boolean) || (attrs.confirmLoading as boolean)"
           v-bind="(attrs.okButtonProps as any)"
           @click="handleOk"
-
         >
           {{ attrs.okText || t('common.modal.confirm') }}
         </a-button>
