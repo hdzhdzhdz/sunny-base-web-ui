@@ -4,6 +4,7 @@
  */
 import { ref, onMounted } from 'vue';
 import { requestClient } from '../api/request';
+import { initResourceConstructor } from '../utils/utils';
 
 interface ResourceResult {
   code: number;
@@ -36,8 +37,8 @@ export function useUserResources(cModnumb: string) {
       });
 
       if (res.code === 200 && res.result) {
-        // 返回完整的按钮列表
-        resourceButtons.value = res.result.resButtonList || {};
+        const { resButtonList } = initResourceConstructor(res.result);
+        resourceButtons.value = resButtonList
       }
     } catch (error) {
       console.error('[useUserResources] 获取资源配置失败:', error);
