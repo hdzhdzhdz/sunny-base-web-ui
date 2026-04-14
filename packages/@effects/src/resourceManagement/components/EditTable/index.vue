@@ -177,13 +177,15 @@ const getTableData = () => {
       data = []
     }
   } else {
-    data = cloneDeep(props.data[props.type])
+    data = cloneDeep(props.data[props.type] || [])
   }
-  data.forEach((item: any) => {
-    if (item.cMeta) {
-      item.cTip = JSON.parse(item.cMeta)?.tip
-    }
-  })
+  if (Array.isArray(data)) {
+    data.forEach((item: any) => {
+      if (item.cMeta) {
+        item.cTip = JSON.parse(item.cMeta)?.tip
+      }
+    })
+  }
   return data
 }
 
