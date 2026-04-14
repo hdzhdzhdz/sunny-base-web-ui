@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { computed, toRaw, unref, watch } from 'vue';
 import { Button } from '@arco-design/web-vue';
-import { IconSearch, IconRefresh } from '@arco-design/web-vue/es/icon';
+import { IconSearch, IconRefresh, IconDown, IconUp } from '@arco-design/web-vue/es/icon';
 import { useFormContext as useVeeFormContext } from 'vee-validate';
 import { useFormContext } from '../form-render/context';
 import type { FormApi } from '../form-api';
 import { SunnySearchPlan, SunnyIcon } from '@sunny-base-web/ui';
-import { ChevronDown, ChevronUp } from '@sunny-base-web/icons';
 
 /**
  * 组件 Props 定义
@@ -324,7 +323,8 @@ defineExpose({
       class="cursor-pointer ml-2 text-[rgb(var(--primary-6))] hover:opacity-80 transition-opacity select-none flex items-center gap-0.5"
       @click="collapsed = !collapsed"
     >
-      <component :is="collapsed ? ChevronDown : ChevronUp" :size="16" />
+      <IconDown v-if="collapsed" :size="16" />
+      <IconUp v-else :size="16" />
     </div>
 
     <!-- 展开按钮后插槽 -->

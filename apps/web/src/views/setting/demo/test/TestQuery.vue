@@ -74,6 +74,7 @@ interface QueryFunctionParams {
  */
 const queryFunction = async ({ page, formValues }: QueryFunctionParams) => {
   try {
+    debugger
     // 构造查询参数
     const queryParams: TestQueryParams = {
       pageNo: page.currentPage,
@@ -82,7 +83,8 @@ const queryFunction = async ({ page, formValues }: QueryFunctionParams) => {
         cName: formValues.cName || '',
         cCrenumb: formValues.cCrenumb || '',
         nZt: formValues.nZt,
-        dCredate: formValues.dCredate || []
+        dCredate: formValues.dCredate || [],
+        businessSearchValue: formValues.businessSearchValue || '',
       }
     };
     // 调用真实 API
