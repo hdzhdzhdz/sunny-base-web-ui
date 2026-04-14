@@ -1,5 +1,11 @@
 # @sunny-base-web/icons
 
+## 0.8.12
+
+### Patch Changes
+
+- version packages 0.8.12
+
 ## 0.8.11
 
 ### Patch Changes

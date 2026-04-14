@@ -1,5 +1,17 @@
 # @sunny-base-web/effects
 
+## 0.8.12
+
+### Patch Changes
+
+- version packages 0.8.12
+- Updated dependencies
+  - @sunny-base-web/icons@0.8.12
+  - @sunny-base-web/locales@0.8.12
+  - @sunny-base-web/stores@0.8.12
+  - @sunny-base-web/ui@0.8.12
+  - @sunny-base-web/utils@0.8.12
+
 ## 0.8.11
 
 ### Patch Changes
