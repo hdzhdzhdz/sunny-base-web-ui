@@ -1,5 +1,11 @@
 # @sunny-base-web/icons
 
+## 0.8.15
+
+### Patch Changes
+
+- chore: version packages 0.8.15
+
 ## 0.8.14
 
 ### Patch Changes
