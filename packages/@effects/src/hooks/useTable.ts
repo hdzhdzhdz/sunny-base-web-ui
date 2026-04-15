@@ -125,12 +125,18 @@ export function useTable({
     gridEvents,
   })
 
-  // 包装 reloadData 方法
+  // 包装 gridApi，增强方法
   const originalReloadData = gridApi.reloadData
-  gridApi.reloadData = (newData: any[]) => {
-    reactiveGridOptions.data = newData
-    return originalReloadData(newData)
+  const enhancedGridApi = {
+    ...gridApi,
+    reloadData: (newData: any[]) => {
+      reactiveGridOptions.data = newData
+      return originalReloadData(newData)
+    },
+    setColumns: (newColumns: any[]) => {
+      reactiveGridOptions.columns = processColumns(newColumns)
+    },
   }
 
-  return [Grid, gridApi] as const
+  return [Grid, enhancedGridApi] as const
 }
