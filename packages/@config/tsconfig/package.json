@@ -1,6 +1,6 @@
 {
   "name": "@sunny-base-web/tsconfig",
-  "version": "0.8.16",
+  "version": "0.8.17",
   "private": false,
   "files": [
     "base.json"

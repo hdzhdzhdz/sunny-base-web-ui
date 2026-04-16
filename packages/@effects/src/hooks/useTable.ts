@@ -84,6 +84,16 @@ export function useTable({
     columns: processColumns(columns),
     data,
     height,
+    size: 'mini',
+    toolbarConfig: {
+      refresh: true,
+      zoom: true,
+      custom: true,
+    },
+    customConfig: {
+      mode: 'popup',
+      storage: true,
+    },
   }
 
   if (editable) {
@@ -97,15 +107,13 @@ export function useTable({
 
   if (toolbarButtons.length > 0) {
     gridOptions.toolbarConfig = {
+      ...gridOptions.toolbarConfig,
       enabled: true,
-      zoom: true,
-      custom: true,
       buttons: toolbarButtons,
     }
     gridOptions.zoomConfig = { enabled: true }
     gridOptions.customConfig = {
-      storage: true,
-      mode: 'popup',
+      ...gridOptions.customConfig,
       visibleMethod: (params: any) => {
         return !(params.column.type === 'checkbox' || params.column.type === 'seq')
       },
