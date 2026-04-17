@@ -1,5 +1,13 @@
 # @sunny-base-web/utils
 
+## 0.8.19
+
+### Patch Changes
+
+- chore: version packages 0.8.19
+- Updated dependencies
+  - @sunny-base-web/constants@0.8.19
+
 ## 0.8.18
 
 ### Patch Changes
