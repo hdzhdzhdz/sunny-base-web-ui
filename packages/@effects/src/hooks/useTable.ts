@@ -86,7 +86,7 @@ export function useTable({
     height,
     size: 'mini',
     toolbarConfig: {
-      refresh: true,
+      refresh: false,
       zoom: true,
       custom: true,
     },

@@ -4,3 +4,4 @@ export * from './useFormTable';
 export * from './useFormTabs';
 export * from './useUserResources';
 export * from './useTable';
+export * from './use-business-search-modal';
