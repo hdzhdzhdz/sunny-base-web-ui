@@ -1,5 +1,11 @@
 # @sunny-base-web/tailwind-config
 
+## 0.8.18
+
+### Patch Changes
+
+- chore: version packages 0.8.18
+
 ## 0.8.15
 
 ## 0.8.14
