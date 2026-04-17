@@ -15,11 +15,11 @@ interface UseFormOptions extends Partial<SunnyFormProps> {
 
 /** useForm 的默认配置，外部可 import 后进行覆盖/合并 */
 export const USE_FORM_DEFAULTS: Partial<SunnyFormProps> = {
-  // layout: 'horizontal',
-  size: 'small',
+  layout: 'vertical',
+  size: 'mini',
   labelWidth: 'auto',
   gridProps: {
-    xGap: 0,
+    xGap: 8,
     yGap: 0,
   },
   commonConfig: {
