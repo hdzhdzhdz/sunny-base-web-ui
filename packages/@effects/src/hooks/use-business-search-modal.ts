@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue';
+import { ref, computed, type ComputedRef } from 'vue';
 import { DEFAULT_FORM_COMMON_CONFIG } from '@sunny-base-web/ui';
 import type { BusinessSearchConfig, BusinessSearchAdapter } from '@sunny-base-web/ui';
 
@@ -9,6 +9,8 @@ export interface UseBusinessSearchModalOptions {
   fieldNames?: { label?: string; value?: string; desc?: string };
   /** 是否多选 */
   multiple?: boolean;
+  /** 表单默认值，打开弹窗时自动填充到搜索表单 */
+  defaultModel?: Record<string, any>;
   /** 确认选择回调 */
   onConfirm?: (rows: any[]) => void;
 }
@@ -16,8 +18,9 @@ export interface UseBusinessSearchModalOptions {
 export interface UseBusinessSearchModalReturn {
   visible: ReturnType<typeof ref<boolean>>;
   loading: ReturnType<typeof ref<boolean>>;
-  modalProps: ReturnType<typeof computed<Record<string, any>>>;
+  modalProps: ComputedRef<Record<string, any>>;
   open: () => Promise<void>;
+  handleConfirm: (rows: any[]) => void;
   selectedValues: ReturnType<typeof computed<any[]>>;
   setSelectedValues: (val: any[]) => void;
 }
@@ -94,7 +97,7 @@ export function useBusinessSearchModal(options: UseBusinessSearchModalOptions): 
     options.onConfirm?.(rows);
   };
 
-  const modalProps = computed(() => {
+  const modalProps = computed<Record<string, any>>(() => {
     const mergedMultiple = options.multiple ?? loadedConfig.value.multiple ?? true;
     const mergedFieldNames = options.fieldNames
       || loadedConfig.value.fieldNames
@@ -117,6 +120,7 @@ export function useBusinessSearchModal(options: UseBusinessSearchModalOptions): 
       ...loadedConfig.value,
       multiple: mergedMultiple,
       fieldNames: mergedFieldNames,
+      defaultModel: options.defaultModel || loadedConfig.value.defaultModel,
       tableColumns,
     };
   });
