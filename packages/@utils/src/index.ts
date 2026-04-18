@@ -7,3 +7,4 @@ export * from "./object";
 export * from "./route";
 export * from "./tree";
 export * from "./nprogress";
+export * from "./download";
