@@ -1,5 +1,11 @@
 # @sunny-base-web/constants
 
+## 0.8.21
+
+### Patch Changes
+
+- chore: version packages 0.8.21
+
 ## 0.8.20
 
 ### Patch Changes
