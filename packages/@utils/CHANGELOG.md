@@ -1,5 +1,13 @@
 # @sunny-base-web/utils
 
+## 0.8.22
+
+### Patch Changes
+
+- chore: version packages 0.8.22
+- Updated dependencies
+  - @sunny-base-web/constants@0.8.22
+
 ## 0.8.21
 
 ### Patch Changes
