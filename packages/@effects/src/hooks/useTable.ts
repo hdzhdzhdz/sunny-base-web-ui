@@ -144,6 +144,16 @@ export function useTable({
     setColumns: (newColumns: any[]) => {
       reactiveGridOptions.columns = processColumns(newColumns)
     },
+    setToolbarButtons: (buttons: Array<{ code: string; name: string }>) => {
+      reactiveGridOptions.toolbarConfig = {
+        ...reactiveGridOptions.toolbarConfig,
+        enabled: true,
+        buttons,
+      }
+      if (!reactiveGridOptions.zoomConfig) {
+        reactiveGridOptions.zoomConfig = { enabled: true }
+      }
+    },
   }
 
   return [Grid, enhancedGridApi] as const
