@@ -134,26 +134,29 @@ export function useTable({
   })
 
   // 包装 gridApi，增强方法
-  const originalReloadData = gridApi.reloadData
-  const enhancedGridApi = {
-    ...gridApi,
-    reloadData: (newData: any[]) => {
-      reactiveGridOptions.data = newData
-      return originalReloadData(newData)
-    },
-    setColumns: (newColumns: any[]) => {
-      reactiveGridOptions.columns = processColumns(newColumns)
-    },
-    setToolbarButtons: (buttons: Array<{ code: string; name: string }>) => {
-      reactiveGridOptions.toolbarConfig = {
-        ...reactiveGridOptions.toolbarConfig,
-        enabled: true,
-        buttons,
-      }
-      if (!reactiveGridOptions.zoomConfig) {
-        reactiveGridOptions.zoomConfig = { enabled: true }
-      }
-    },
+  // 使用 Object.create 继承原型链上的方法（getCheckboxRecords 等），避免展开丢失
+  const originalReloadData = gridApi.reloadData.bind(gridApi)
+  const enhancedGridApi = Object.create(gridApi) as typeof gridApi & {
+    setColumns: (newColumns: any[]) => void
+    setToolbarButtons: (buttons: Array<{ code: string; name: string }>) => void
+  }
+
+  enhancedGridApi.reloadData = (newData: any[]) => {
+    reactiveGridOptions.data = newData
+    return originalReloadData(newData)
+  }
+  enhancedGridApi.setColumns = (newColumns: any[]) => {
+    reactiveGridOptions.columns = processColumns(newColumns)
+  }
+  enhancedGridApi.setToolbarButtons = (buttons: Array<{ code: string; name: string }>) => {
+    reactiveGridOptions.toolbarConfig = {
+      ...reactiveGridOptions.toolbarConfig,
+      enabled: true,
+      buttons,
+    }
+    if (!reactiveGridOptions.zoomConfig) {
+      reactiveGridOptions.zoomConfig = { enabled: true }
+    }
   }
 
   return [Grid, enhancedGridApi] as const
