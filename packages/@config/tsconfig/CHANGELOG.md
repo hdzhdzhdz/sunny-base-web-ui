@@ -1,5 +1,11 @@
 # @sunny-base-web/tsconfig
 
+## 0.8.23
+
+### Patch Changes
+
+- chore: version packages 0.8.23
+
 ## 0.8.22
 
 ### Patch Changes

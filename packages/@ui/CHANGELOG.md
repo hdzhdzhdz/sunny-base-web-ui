@@ -1,5 +1,15 @@
 # @sunny-base-web/ui
 
+## 0.8.23
+
+### Patch Changes
+
+- chore: version packages 0.8.23
+- Updated dependencies
+  - @sunny-base-web/utils@0.8.23
+  - @sunny-base-web/locales@0.8.23
+  - @sunny-base-web/icons@0.8.23
+
 ## 0.8.22
 
 ### Patch Changes
