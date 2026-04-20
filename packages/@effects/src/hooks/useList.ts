@@ -202,6 +202,10 @@ export function useList<T>(options: {
         } : undefined)    // 包装loadMethod以适配vxe-table的回调风格
       }
     }),
+    // 使用服务端排序，排序信息通过 sorts 参数传给 queryFunction
+    sortConfig: {
+      remote: true
+    },
     filterConfig: {
       remote: true // 使用服务端筛选,不对数据进行处理
     },
@@ -214,15 +218,27 @@ export function useList<T>(options: {
         total: 'result.total'
       },
       ajax: {
-        query: async ({ page }, filterValues) => {
+        // sorts: [{ field: string, order: 'asc' | 'desc' }] 列配置需开启 sortable: true
+        query: async ({ page, sorts }, filterValues) => {
           const formValues = await formApi.getValues();
-          return queryFunction({ page, formValues, filterValues });
+          return queryFunction({ page, formValues, filterValues, sorts });
         }
       }
     }
   });
 
-  const [Grid, gridApi] = useSunnyQueryGrid({ gridOptions, gridEvents: gridEvents || {} });
+  // 排序变化时触发服务端查询
+  const handleSortChange = () => {
+    gridApi.commitProxy('query');
+  };
+
+  const [Grid, gridApi] = useSunnyQueryGrid({
+    gridOptions,
+    gridEvents: {
+      sortChange: handleSortChange,
+      ...gridEvents
+    }
+  });
 
   // ----------------------------------------------------------------------
   // 5. Search Plan Configuration
