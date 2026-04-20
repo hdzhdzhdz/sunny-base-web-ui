@@ -70,3 +70,5 @@ export * from './data/resource-tree/types';
 export * from './data/resource-tree/use-sunny-resource-tree';
 export * from './feedback/export-modal';
 export * from './feedback/import-modal';
+export * from './entry/qrcode-reader/types';
+export { SunnyQrcodeReader } from './entry/qrcode-reader';

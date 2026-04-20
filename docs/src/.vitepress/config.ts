@@ -80,6 +80,7 @@ export default defineConfig({
             { text: 'BatchSelect 批量选择器', link: '/components/entry/batch-select' },
             { text: 'ApiSelect API下拉选择器', link: '/components/entry/api-select' },
             { text: 'SearchInputTag 公共查询', link: '/components/entry/search-input-tag' },
+            { text: 'QrcodeReader 二维码识别', link: '/components/entry/qrcode-reader' },
           ]
         },
         {
