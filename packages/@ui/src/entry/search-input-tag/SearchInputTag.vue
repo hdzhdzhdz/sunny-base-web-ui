@@ -8,6 +8,7 @@
     :max-tag-count="maxTagCount"
     :allow-create="false"
     class="w-full group"
+    tag-nowrap="true"
     @remove="handleRemove"
     @clear="handleClear"
     @keydown="handleKeyDown"
