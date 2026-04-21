@@ -400,7 +400,11 @@ export const BusinessSearchRender = {
   editRender: {},
   slots: {
     default: ({ row, column }: { row: any, column: any }) => {
-      return [<span>{row[column.field] ? JSON.stringify(row[column.field]) : ''}</span>]
+      const value = row[column.field]
+      if (!value || !Array.isArray(value)) return [<span />]
+      const labelKey = column.params?.fieldNames?.label || 'label'
+      const labels = value.map((item: any) => item[labelKey]).filter(Boolean)
+      return [<span>{labels.join(', ')}</span>]
     },
     edit: ({ row, column }: { row: any, column: any }) => {
       return [
