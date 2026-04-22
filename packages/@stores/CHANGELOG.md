@@ -1,5 +1,14 @@
 # @sunny-base-web/stores
 
+## 0.8.25
+
+### Patch Changes
+
+- chore: version packages 0.8.25
+- Updated dependencies
+  - @sunny-base-web/utils@0.8.25
+  - @sunny-base-web/constants@0.8.25
+
 ## 0.8.24
 
 ### Patch Changes
