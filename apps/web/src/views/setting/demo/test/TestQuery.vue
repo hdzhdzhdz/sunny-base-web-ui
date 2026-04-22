@@ -51,6 +51,8 @@ interface QueryFunctionParams {
     /** 创建日期范围 */
     dCredate?: string[];
   };
+  /** 排序信息，由 vxe-table 列头点击触发 */
+  sorts?: Array<{ field: string; order: 'asc' | 'desc' }>;
 }
 
 // ----------------------------------------------------------------------
@@ -62,6 +64,7 @@ interface QueryFunctionParams {
  * @param params - 查询参数对象
  * @param params.page - 分页信息，包含当前页码和每页大小
  * @param params.formValues - 表单值，包含查询条件
+ * @param params.sorts - 排序信息
  * @returns Promise 返回查询结果
  * @throws {Error} 当 API 请求失败时抛出错误
  * @example
@@ -72,9 +75,8 @@ interface QueryFunctionParams {
  * });
  * ```
  */
-const queryFunction = async ({ page, formValues }: QueryFunctionParams) => {
+const queryFunction = async ({ page, formValues, sorts }: QueryFunctionParams) => {
   try {
-    debugger
     // 构造查询参数
     const queryParams: TestQueryParams = {
       pageNo: page.currentPage,
@@ -85,7 +87,10 @@ const queryFunction = async ({ page, formValues }: QueryFunctionParams) => {
         nZt: formValues.nZt,
         dCredate: formValues.dCredate || [],
         businessSearchValue: formValues.businessSearchValue || '',
-      }
+      },
+      // 服务端排序参数，sorts 格式: [{ field: 'cName', order: 'asc' }]
+      sortField: sorts?.[0]?.field || '',
+      sortOrder: sorts?.[0]?.order || '',
     };
     // 调用真实 API
     const result = await selectForPage(queryParams);

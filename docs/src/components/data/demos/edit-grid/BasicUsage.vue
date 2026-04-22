@@ -48,16 +48,12 @@ const gridOptions = reactive({
       ...EditRender.BusinessSearchRender,
       params: {
         cNum: 'XTGL_USER_ROLE',
-        multiple: false,
-        fieldNames: { // 弹窗已选项映射关系
+        multiple: true,
+        fieldNames: {
           label: 'C_ROLENAME',
           value: 'ID',
           desc: 'C_ROLENUMB'
         },
-        mapping: { // 弹窗确定时，反写到绑定数据
-          "a": 'b'
-        },
-        arrto: ['publicSearch']
       }
     },
     { field: 'createTime', title: '日期选择器', width: 120, ...EditRender.DatePickerRender },
@@ -215,7 +211,16 @@ const reloadData = async () => {
 }
 
 const handleAdd = () => {
-  gridApi.addEvent({});
+  gridApi.addEvent({
+    name: 'Test',
+    role: '0',
+    enabled: '0',
+    publicSearch: [{
+      C_ROLENAME: '管理员',
+      ID: '0',
+      desc: '管理员角色'
+    }]
+  });
 };
 
 const handleDelete = () => {
