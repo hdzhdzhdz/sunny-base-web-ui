@@ -1,5 +1,7 @@
 # @sunny-base-web/tailwind-config
 
+## 0.8.28
+
 ## 0.8.27
 
 ## 0.8.26
