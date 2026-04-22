@@ -1,5 +1,29 @@
 # @repo/web
 
+## 0.0.9
+
+### Patch Changes
+
+- Updated dependencies
+  - @sunny-base-web/ui@0.8.27
+  - @sunny-base-web/constants@0.8.27
+  - @sunny-base-web/effects@0.8.27
+  - @sunny-base-web/locales@0.8.27
+  - @sunny-base-web/stores@0.8.27
+  - @sunny-base-web/utils@0.8.27
+
+## 0.0.8
+
+### Patch Changes
+
+- Updated dependencies
+  - @sunny-base-web/effects@0.8.26
+  - @sunny-base-web/ui@0.8.26
+  - @sunny-base-web/constants@0.8.26
+  - @sunny-base-web/locales@0.8.26
+  - @sunny-base-web/stores@0.8.26
+  - @sunny-base-web/utils@0.8.26
+
 ## 0.0.7
 
 ### Patch Changes

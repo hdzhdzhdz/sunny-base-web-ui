@@ -1,5 +1,16 @@
 # @sunny-base-web/effects
 
+## 0.8.27
+
+### Patch Changes
+
+- Updated dependencies
+  - @sunny-base-web/ui@0.8.27
+  - @sunny-base-web/icons@0.8.27
+  - @sunny-base-web/locales@0.8.27
+  - @sunny-base-web/stores@0.8.27
+  - @sunny-base-web/utils@0.8.27
+
 ## 0.8.26
 
 ### Patch Changes

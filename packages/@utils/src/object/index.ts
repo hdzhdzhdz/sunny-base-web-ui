@@ -1,4 +1,5 @@
 export * from './merge';
+export * from './field-transform';
 import { isObject } from '../is';
 
 /**

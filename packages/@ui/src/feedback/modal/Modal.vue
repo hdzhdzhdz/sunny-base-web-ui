@@ -11,10 +11,10 @@
     :closable="false"
     v-bind="$attrs"
     class="k-modal-custom"
-    :style="{ '--modal-bg-image': `url(${bgImage})` }"
     @click.stop
     @mousedown.stop
   >
+  <!-- :style="{ '--modal-bg-image': `url(${bgImage})` }" -->
     <slot></slot>
 
     <template #title>
@@ -87,7 +87,7 @@ import {
 } from "@arco-design/web-vue/es/icon";
 import { useI18n } from "@sunny-base-web/locales";
 import type { ModalProps } from "./types";
-import bgImage from './bg.png';
+// import bgImage from './bg.png';
 
 const { t } = useI18n();
 
@@ -187,7 +187,7 @@ defineExpose({
 <style>
 .k-modal-custom .arco-modal-body {
   background-color: transparent;
-  background-image: var(--modal-bg-image);
+  /* background-image: var(--modal-bg-image); */
   background-repeat: no-repeat !important;
   background-size: 80% !important;
   background-position: bottom !important;

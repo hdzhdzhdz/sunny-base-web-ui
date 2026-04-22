@@ -1,6 +1,6 @@
 import { isRef, toRaw, type ComponentPublicInstance } from 'vue';
 import type { FormState, GenericObject, ResetFormOpts, ValidationOptions } from 'vee-validate';
-import { cloneDeep, isFunction, isObject, is } from '@sunny-base-web/utils';
+import { cloneDeep, isFunction, isObject, is, transformToObjectArray, transformToString } from '@sunny-base-web/utils';
 import { set as lodashSet } from 'lodash-es';
 import { Store } from './store';
 import type { FormActions, FormSchema, SunnyFormProps } from './types';
@@ -895,18 +895,16 @@ export class FormApi {
         return;
       }
 
-      // Transform
-      const newValue = value
-        .map((item) => {
-          if (item && typeof item === 'object') {
-            return item[valueKey];
-          }
-          return item;
-        })
-        .filter((v) => v !== undefined && v !== null)
-        .join(',');
+      const labelKey = fieldNames?.label || 'label';
+      const result = transformToString(value, { valueKey, labelKey });
 
-      originValues[field] = newValue;
+      originValues[field] = result.value;
+
+      // 回写 displayField
+      const displayField = componentProps?.displayField;
+      if (displayField) {
+        originValues[displayField] = result.displayValue;
+      }
     });
   };
 
@@ -965,17 +963,13 @@ export class FormApi {
         return;
       }
 
-      // Transform: "1,2,3" -> [{ [valueKey]: '1', [labelKey]: '1' }, ...]
-      const newValue = value
-        .split(',')
-        .map((v) => v.trim())
-        .filter((v) => v !== '')
-        .map((v) => ({
-          [valueKey]: v,
-          [labelKey]: v, // 使用 value 作为 label 的备选值
-        }));
+      // 从 displayField 读取 label 字符串，无则回退为 value
+      const displayField = componentProps?.displayField;
+      const displayValue = displayField && originValues[displayField]
+        ? String(originValues[displayField])
+        : undefined;
 
-      originValues[field] = newValue;
+      originValues[field] = transformToObjectArray(value, { valueKey, labelKey }, displayValue);
     });
   };
 

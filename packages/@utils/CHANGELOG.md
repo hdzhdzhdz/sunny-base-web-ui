@@ -1,5 +1,17 @@
 # @sunny-base-web/utils
 
+## 0.8.27
+
+### Patch Changes
+
+- @sunny-base-web/constants@0.8.27
+
+## 0.8.26
+
+### Patch Changes
+
+- @sunny-base-web/constants@0.8.26
+
 ## 0.8.25
 
 ### Patch Changes
