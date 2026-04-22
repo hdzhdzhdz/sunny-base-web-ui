@@ -85,6 +85,9 @@ export function useTable({
     data,
     height,
     size: 'mini',
+    columnConfig: {
+      resizable: true
+    },
     toolbarConfig: {
       refresh: false,
       zoom: true,
@@ -133,22 +136,21 @@ export function useTable({
     gridEvents,
   })
 
-  // 包装 gridApi，增强方法
-  // 使用 Object.create 继承原型链上的方法（getCheckboxRecords 等），避免展开丢失
+  // 增强 gridApi
   const originalReloadData = gridApi.reloadData.bind(gridApi)
-  const enhancedGridApi = Object.create(gridApi) as typeof gridApi & {
+  const enhancedApi = gridApi as typeof gridApi & {
     setColumns: (newColumns: any[]) => void
     setToolbarButtons: (buttons: Array<{ code: string; name: string }>) => void
   }
 
-  enhancedGridApi.reloadData = (newData: any[]) => {
+  enhancedApi.reloadData = (newData: any[]) => {
     reactiveGridOptions.data = newData
     return originalReloadData(newData)
   }
-  enhancedGridApi.setColumns = (newColumns: any[]) => {
+  enhancedApi.setColumns = (newColumns: any[]) => {
     reactiveGridOptions.columns = processColumns(newColumns)
   }
-  enhancedGridApi.setToolbarButtons = (buttons: Array<{ code: string; name: string }>) => {
+  enhancedApi.setToolbarButtons = (buttons: Array<{ code: string; name: string }>) => {
     reactiveGridOptions.toolbarConfig = {
       ...reactiveGridOptions.toolbarConfig,
       enabled: true,
@@ -159,5 +161,23 @@ export function useTable({
     }
   }
 
-  return [Grid, enhancedGridApi] as const
+  // Proxy 将未定义的方法委托给 VxeGrid 实例
+  const proxyApi = new Proxy(enhancedApi, {
+    get(target, prop) {
+      const value = Reflect.get(target, prop)
+      if (value !== undefined) {
+        return typeof value === 'function' ? value.bind(target) : value
+      }
+      const grid = target.$grid
+      if (grid) {
+        const gridValue = Reflect.get(grid, prop)
+        if (gridValue !== undefined) {
+          return typeof gridValue === 'function' ? gridValue.bind(grid) : gridValue
+        }
+      }
+      return undefined
+    },
+  })
+
+  return [Grid, proxyApi] as const
 }
