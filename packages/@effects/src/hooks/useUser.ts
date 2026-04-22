@@ -1,5 +1,15 @@
-import { computed } from 'vue';
+import { computed, type ComputedRef } from 'vue';
 import { useUserStore } from '@sunny-base-web/stores';
+
+interface UseUserReturn {
+  code: ComputedRef<string>;
+  name: ComputedRef<string>;
+  roles: ComputedRef<string[]>;
+  isSuperAdmin: ComputedRef<boolean>;
+  homePath: ComputedRef<string>;
+  agent: ComputedRef<Record<string, any> | undefined>;
+  userInfo: ComputedRef<any>;
+}
 
 /**
  * 用户信息便捷访问 Hook
@@ -10,24 +20,17 @@ import { useUserStore } from '@sunny-base-web/stores';
  * const { code, name, roles, isSuperAdmin } = useUser()
  * console.log(code.value) // 'EMP001'
  */
-export function useUser() {
+export function useUser(): UseUserReturn {
   const userStore = useUserStore();
-
-  const code = computed(() => userStore.userInfo?.code ?? '');
-  const name = computed(() => userStore.userInfo?.name ?? '');
-  const roles = computed(() => userStore.userInfo?.roles ?? []);
-  const isSuperAdmin = computed(() => userStore.userInfo?.superAdmin ?? false);
-  const homePath = computed(() => userStore.userInfo?.homePath ?? '');
-  const agent = computed(() => userStore.userInfo?.agent);
+  const userInfo = userStore.userInfo;
 
   return {
-    code,
-    name,
-    roles,
-    isSuperAdmin,
-    homePath,
-    agent,
-    /** 完整的 userInfo 对象 */
-    userInfo: computed(() => userStore.userInfo),
+    code: computed(() => userInfo?.code ?? ''),
+    name: computed(() => userInfo?.name ?? ''),
+    roles: computed(() => userInfo?.roles ?? []),
+    isSuperAdmin: computed(() => userInfo?.superAdmin ?? false),
+    homePath: computed(() => userInfo?.homePath ?? ''),
+    agent: computed(() => userInfo?.agent),
+    userInfo: computed(() => userInfo),
   };
 }

@@ -1,6 +1,7 @@
 import { nextTick, type Ref } from 'vue';
 import type { VxeGridInstance } from 'vxe-table';
 import { transformToObjectArray, transformToString } from '@sunny-base-web/utils';
+import { cloneDeep } from 'lodash-es';
 
 export class VxeGridApi {
   private gridRef: Ref<any>;
@@ -111,8 +112,9 @@ export class VxeGridApi {
     const $grid = this.grid;
     if ($grid) {
       const data = await $grid.getFullData();
-      this.transformObjectArrayToString(data);
-      return data;
+      const cloned = cloneDeep(data);
+      this.transformObjectArrayToString(cloned);
+      return cloned;
     }
     return [];
   }
@@ -126,8 +128,9 @@ export class VxeGridApi {
     const $grid = this.grid;
     if ($grid) {
       const records = await $grid.getCheckboxRecords();
-      this.transformObjectArrayToString(records);
-      return records;
+      const cloned = cloneDeep(records);
+      this.transformObjectArrayToString(cloned);
+      return cloned;
     }
     return [];
   }
