@@ -16,6 +16,7 @@ interface Props {
   params?: Record<string, any>
   nModid?: number | string
   nButtonid?: number | string
+  usernumb?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -71,6 +72,7 @@ const customRequest = async(option: any) => {
     formData.append('fileName', fileItem.file)
     formData.append('nModid', String(props.nModid))
     formData.append('nButtonid', String(props.nButtonid))
+    formData.append('usernumb', String(props.usernumb ?? ''))
     if (props.params) {
       formData.append('paramMap', JSON.stringify(props.params))
     }
