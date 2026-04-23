@@ -14,7 +14,7 @@ export default defineConfig({
     vue(),
     vueJsx(),
     dts({
-      tsconfigPath: './tsconfig.json',
+      tsconfigPath: './tsconfig.build.json',
       cleanVueFileName: true,
       rollupTypes: true,
     }),
