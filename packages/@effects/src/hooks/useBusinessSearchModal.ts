@@ -1,4 +1,4 @@
-import { ref, computed, type ComputedRef } from 'vue';
+import { ref, computed, type ComputedRef, type Ref } from 'vue';
 import { DEFAULT_FORM_COMMON_CONFIG } from '@sunny-base-web/ui';
 import type { BusinessSearchConfig, BusinessSearchAdapter } from '@sunny-base-web/ui';
 import { transformToObjectArray, transformToString } from '@sunny-base-web/utils';
@@ -17,8 +17,8 @@ export interface UseBusinessSearchModalOptions {
 }
 
 export interface UseBusinessSearchModalReturn {
-  visible: ReturnType<typeof ref<boolean>>;
-  loading: ReturnType<typeof ref<boolean>>;
+  visible: Ref<boolean>;
+  loading: Ref<boolean>;
   modalProps: ComputedRef<Record<string, any>>;
   open: () => Promise<void>;
   handleConfirm: (rows: any[]) => void;
