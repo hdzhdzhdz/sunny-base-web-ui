@@ -22,11 +22,11 @@ interface MenuRecordRaw {
   [key: string]: any;
 }
 
-interface ExRouteRecordRaw extends RouteRecordRaw {
+type ExRouteRecordRaw = RouteRecordRaw & {
   parents?: string[];
   parent?: string;
   order?: number;
-}
+};
 
 /**
  * 处理单个子菜单提升
@@ -37,7 +37,7 @@ function hoistSingleChild(menus: MenuRecordRaw[]): MenuRecordRaw[] {
     if (menu.children && menu.children.length > 0) {
       menu.children = hoistSingleChild(menu.children);
     }
-    if (menu.children && menu.children.length === 1 && !menu.alwaysShow) {
+    if (menu.children?.length === 1 && !menu.alwaysShow) {
       return menu.children[0];
     }
     return menu;
@@ -80,7 +80,18 @@ function generateMenus(
       link,
       order,
       title = '',
-    } = meta;
+    }: {
+      activeIcon?: string;
+      alwaysShow?: boolean;
+      badge?: string | number;
+      badgeType?: string;
+      badgeVariants?: string;
+      hideChildrenInMenu?: boolean;
+      icon?: string;
+      link?: string;
+      order?: number;
+      title?: string;
+    } = meta as any;
 
     // 确保菜单名称不为空
     const name = (title || routeName || '') as string;
@@ -128,7 +139,7 @@ function generateMenus(
       finalIcon = tempIcons[hash % tempIcons.length];
     }
     return {
-      id: String(meta.id ?? routeName ?? resultPath as string),
+      id: String((meta as any).id ?? routeName ?? resultPath),
       activeIcon,
       alwaysShow,
       badge, 
@@ -199,7 +210,7 @@ export async function generateAccess(params: { roles: string[], resources?: any[
   });
 
   // Re-add root to apply changes
-  if (root && root.name) {
+  if (root?.name) {
     router.removeRoute(root.name);
     router.addRoute(root);
   }

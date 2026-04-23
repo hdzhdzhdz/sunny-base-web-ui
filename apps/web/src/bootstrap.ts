@@ -14,7 +14,7 @@ import { setupI18n } from '#/locales';
 import { initStores, useSettingsStore } from '@sunny-base-web/stores';
 import { preferences } from './preferences';
 
-import VxeUITable, { VXETable } from 'vxe-table'
+import VxeUITable from 'vxe-table'
 import 'vxe-table/es/style.css'
 
 import VxeUIBase, { VxeUI } from 'vxe-pc-ui'
