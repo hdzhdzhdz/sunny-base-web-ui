@@ -320,7 +320,7 @@ defineExpose({
     <!-- 展开/收起切换按钮 -->
     <div
       v-if="unref(rootProps).showCollapseButton"
-      class="cursor-pointer ml-2 text-[rgb(var(--primary-6))] hover:opacity-80 transition-opacity select-none flex items-center gap-0.5"
+      class="cursor-pointer text-[rgb(var(--primary-6))] hover:opacity-80 transition-opacity select-none flex items-center gap-0.5"
       @click="collapsed = !collapsed"
     >
       <IconDown v-if="collapsed" :size="16" />

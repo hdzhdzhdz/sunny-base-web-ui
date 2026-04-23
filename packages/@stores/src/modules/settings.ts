@@ -49,7 +49,7 @@ const DEFAULT_FONT_SIZE = 14;
 // 默认主题色
 const DEFAULT_PRIMARY_COLOR = '#165DFF';
 // 默认表格行高
-const DEFAULT_TABLE_ROW_HEIGHT = 40;
+const DEFAULT_TABLE_ROW_HEIGHT = 32;
 
 /**
  * 应用字体大小到 DOM

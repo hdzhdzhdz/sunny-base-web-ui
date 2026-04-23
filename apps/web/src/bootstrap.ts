@@ -21,6 +21,7 @@ import VxeUIBase, { VxeUI } from 'vxe-pc-ui'
 import 'vxe-pc-ui/es/style.css'
 import VxeUIPluginRenderArco from '@vxe-ui/plugin-render-arco'
 import '@vxe-ui/plugin-render-arco/dist/style.css'
+import './vxe.css'
 VxeUI.use(VxeUIPluginRenderArco)
 
 import { setupApiLoadingInterceptor } from './utils/api-loading-interceptor';

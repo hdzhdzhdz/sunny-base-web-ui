@@ -5,3 +5,45 @@
 .arco-layout-sider-trigger {
   border-right: 1px solid #e5e7eb !important;
 }
+
+/* 表单组件：白色背景 + 边框线 */
+.arco-input-wrapper,
+.arco-textarea-wrapper,
+.arco-input-tag,
+.arco-select-view-single,
+.arco-select-view-multiple,
+.arco-picker {
+  background-color: var(--color-bg-2) !important;
+  border-color: rgba(var(--gray-5), 0.5) !important;
+}
+
+.arco-input-wrapper:hover,
+.arco-textarea-wrapper:hover,
+.arco-input-tag:hover,
+.arco-select-view-single:hover,
+.arco-select-view-multiple:hover,
+.arco-picker:hover {
+  background-color: var(--color-bg-2) !important;
+  border-color: rgba(var(--gray-5), 0.8) !important;
+}
+
+.arco-input-wrapper:focus-within,
+.arco-input-wrapper.arco-input-focus,
+.arco-textarea-wrapper:focus-within,
+.arco-input-tag.arco-input-tag-focus,
+.arco-select-view-single.arco-select-view-focus,
+.arco-select-view-multiple.arco-select-view-focus,
+.arco-picker.arco-picker-focused {
+  background-color: var(--color-bg-2) !important;
+  border-color: rgb(var(--primary-6)) !important;
+}
+
+.arco-input-wrapper.arco-input-disabled,
+.arco-textarea-wrapper.arco-textarea-disabled,
+.arco-input-tag.arco-input-tag-disabled,
+.arco-select-view-single.arco-select-view-disabled,
+.arco-select-view-multiple.arco-select-view-disabled,
+.arco-picker.arco-picker-disabled {
+  background-color: var(--color-fill-1) !important;
+  border-color: var(--color-border-2) !important;
+}

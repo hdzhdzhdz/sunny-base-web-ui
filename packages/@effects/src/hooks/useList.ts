@@ -122,7 +122,7 @@ export function useList<T>(options: {
   // 创建表单，不包含searchPlanConfig
   const [QueryForm, formApi] = useSunnyForm({
     layout: 'vertical',
-    size: 'small',
+    size: 'mini',
     gridProps: {
       xGap: 8,
       yGap: 8,
