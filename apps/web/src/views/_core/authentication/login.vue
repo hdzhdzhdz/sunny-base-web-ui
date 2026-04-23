@@ -9,7 +9,7 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-const handleLogin = (data: any) => {
+const handleLogin = () => {
   Notification.success({
     title: '登录成功',
     content: '欢迎回来',

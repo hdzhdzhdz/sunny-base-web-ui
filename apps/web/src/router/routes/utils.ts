@@ -8,9 +8,9 @@ const viewModules = import.meta.glob('../../views/**/*.vue');
  * Convert flat route list to tree structure
  * @param routes Flat list of routes
  * @param Pid Parent ID to start from
- * @param isSuperAdmin Whether user is super admin
+ * @param _isSuperAdmin Whether user is super admin
  */
-export function getTreeRoutes(routes: any[], Pid: number = 0, isSuperAdmin: boolean = false): RouteRecordRaw[] {
+export function getTreeRoutes(routes: any[], Pid: number = 0, _isSuperAdmin: boolean = false): RouteRecordRaw[] {
   const result: RouteRecordRaw[] = [];
   const itemMap: Record<string, any> = {};
 
@@ -22,7 +22,7 @@ export function getTreeRoutes(routes: any[], Pid: number = 0, isSuperAdmin: bool
   });
 
   for (const item of routes) {
-    const { id, nParkeyid, cIcon, cModname, cModnumb, cUrl, cViewname, cViewpath, cShow, cType } = item;
+    const { id, nParkeyid, cIcon, cModname, cUrl, cViewname, cViewpath, cShow, cType } = item;
 
     const routerItem: any = {
       path: cUrl,
@@ -97,19 +97,19 @@ function resolvePath(parentPath: string, path: string): string {
  * @description 递归扁平化路由，将所有深层嵌套的路由提升为 BasicLayout 的直接子路由（在路由层面拉平，菜单层级保持不变）。这样 BasicLayout 就能直接渲染 DashboardPage ， keep-alive 也能正确匹配到组件名称。
  */
 export function flattenRoutes(routes: RouteRecordRaw[], parentPath = ''): RouteRecordRaw[] {
-  let res: RouteRecordRaw[] = [];
-  
+  const res: RouteRecordRaw[] = [];
+
   routes.forEach(route => {
     const fullPath = resolvePath(parentPath, route.path);
     const { children, ...rest } = route;
-    
+
     // Create a copy of the route with the full path
-    const routeCopy = { ...rest, path: fullPath };
-    
+    const routeCopy = { ...rest, path: fullPath } as RouteRecordRaw;
+
     if (children && children.length > 0) {
       // Add the parent route itself (useful for redirects)
       res.push({ ...routeCopy, children: [] });
-      
+
       // Flatten children
       const flatChildren = flattenRoutes(children, fullPath);
       res.push(...flatChildren);
@@ -117,6 +117,6 @@ export function flattenRoutes(routes: RouteRecordRaw[], parentPath = ''): RouteR
       res.push(routeCopy);
     }
   });
-  
+
   return res;
 }
