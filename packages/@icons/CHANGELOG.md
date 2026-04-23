@@ -1,5 +1,13 @@
 # @sunny-base-web/icons
 
+## 0.8.31
+
+### Patch Changes
+
+- chore: sync version to 0.8.30
+
+## 0.8.30
+
 ## 0.8.29
 
 ### Patch Changes

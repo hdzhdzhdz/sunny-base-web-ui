@@ -1,6 +1,6 @@
 {
   "name": "@sunny-base-web/effects",
-  "version": "0.8.29",
+  "version": "0.8.31",
   "private": false,
   "files": [
     "dist"
