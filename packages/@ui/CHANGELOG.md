@@ -1,5 +1,14 @@
 # @sunny-base-web/ui
 
+## 0.8.30
+
+### Patch Changes
+
+- fix: enable dts generation for type declarations
+  - @sunny-base-web/icons@0.8.30
+  - @sunny-base-web/locales@0.8.30
+  - @sunny-base-web/utils@0.8.30
+
 ## 0.8.29
 
 ### Patch Changes
