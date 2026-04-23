@@ -48,7 +48,7 @@
 
         <a-button
           v-if="!attrs.hideCancel"
-          size="small"
+          size="mini"
           v-bind="(attrs.cancelButtonProps as any)"
           @click="handleCancel"
         >
@@ -60,7 +60,7 @@
         <a-button
           v-if="!attrs.hideOk"
           type="primary"
-          size="small"
+          size="mini"
           :loading="loading || (attrs.okLoading as boolean) || (attrs.confirmLoading as boolean)"
           v-bind="(attrs.okButtonProps as any)"
           @click="handleOk"
