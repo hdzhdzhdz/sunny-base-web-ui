@@ -6,6 +6,7 @@ import { accessRoutes } from './routes';
 import { getTreeRoutes, flattenRoutes } from './routes/utils';
 
 interface MenuRecordRaw {
+  id: string;
   name: string;
   path: string;
   icon?: string;
@@ -68,21 +69,21 @@ function generateMenus(
       redirect, 
       children = [], 
     } = route; 
-    const { 
-      activeIcon, 
+    const {
+      activeIcon,
       alwaysShow,
-      badge, 
-      badgeType, 
-      badgeVariants, 
-      hideChildrenInMenu = false, 
-      icon, 
-      link, 
-      order, 
-      title = '', 
-    } = meta; 
+      badge,
+      badgeType,
+      badgeVariants,
+      hideChildrenInMenu = false,
+      icon,
+      link,
+      order,
+      title = '',
+    } = meta;
 
-    // 确保菜单名称不为空 
-    const name = (title || routeName || '') as string; 
+    // 确保菜单名称不为空
+    const name = (title || routeName || '') as string;
 
     // 处理子菜单 
     const resultChildren = hideChildrenInMenu 
@@ -126,9 +127,9 @@ function generateMenus(
       const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
       finalIcon = tempIcons[hash % tempIcons.length];
     }
-
-    return { 
-      activeIcon, 
+    return {
+      id: String(meta.id ?? routeName ?? resultPath as string),
+      activeIcon,
       alwaysShow,
       badge, 
       badgeType, 

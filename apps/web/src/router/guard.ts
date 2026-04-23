@@ -1,4 +1,4 @@
-import type { Router } from 'vue-router';
+import type { Router, RouteLocationNormalizedGeneric } from 'vue-router';
 
 
 import { preferences } from '../preferences';
@@ -6,37 +6,86 @@ import { useAccessStore, useUserStore, useAuthStore } from '@sunny-base-web/stor
 import { startProgress, stopProgress } from '@sunny-base-web/ui';
 import { loadingManager } from '@sunny-base-web/effects';
 
-import { accessRoutes, coreRouteNames } from './routes';
+import { coreRouteNames } from './routes';
 import { generateAccess } from './access';
 import { fetchUserInfo } from '../api/user';
 
 /**
+ * 构建登录页跳转路由
+ */
+function buildLoginRedirect(to: RouteLocationNormalizedGeneric) {
+  const query = to.fullPath === preferences.app.defaultHomePath
+    ? {}
+    : { redirect: encodeURIComponent(to.fullPath) };
+  return { path: preferences.app.loginPath, query, replace: true };
+}
+
+/**
+ * 获取用户信息并写入 store，失败返回 null
+ */
+async function fetchAndSetUserInfo(userStore: ReturnType<typeof useUserStore>) {
+  const res = await fetchUserInfo({ 'types': [0, 1, 4] });
+  const { user, resource } = res.result || {};
+  const userInfo = {
+    ...user,
+    resources: resource,
+    code: user.cWork,
+    name: user.cUsername,
+    roles: user.roles || [],
+    superAdmin: user.superAdmin ?? false,
+    bWeakPwd: user.bWeakPwd ?? false,
+    agent: user.agent || {},
+  };
+  userStore.setUserInfo(userInfo);
+  return userInfo;
+}
+
+/**
+ * 处理核心路由（登录页等）
+ */
+function resolveCoreRoute(to: RouteLocationNormalizedGeneric) {
+  if (!coreRouteNames.includes(to.name as string)) return undefined;
+  const userStore = useUserStore();
+  const accessStore = useAccessStore();
+
+  if (to.path === preferences.app.loginPath && accessStore.accessToken) {
+    return decodeURIComponent(
+      (to.query?.redirect as string) ||
+      userStore.userInfo?.homePath ||
+      preferences.app.defaultHomePath,
+    );
+  }
+  return true;
+}
+
+/**
+ * 处理无 token 时的路由跳转
+ */
+function resolveNoToken(to: RouteLocationNormalizedGeneric) {
+  if (to.meta.ignoreAccess) return true;
+  if (to.fullPath === preferences.app.loginPath) return to;
+  return buildLoginRedirect(to);
+}
+
+/**
  * 通用守卫配置
- * @param router
  */
 function setupCommonGuard(router: Router) {
-  // 记录已经加载的页面
   const loadedPaths = new Set<string>();
-  // 防抖定时器
   let stopTimer: ReturnType<typeof setTimeout> | null = null;
 
-  router.beforeEach((to, from) => {
+  router.beforeEach((to, _from) => {
     to.meta.loaded = loadedPaths.has(to.path);
 
-    // 页面加载动画
     const { loading } = preferences.transition;
 
-    // 根据配置选择加载方式
     if (!to.meta.loaded && loading.enableRouteLoading) {
       if (loading.type === 'nprogress') {
-        // 使用 NProgress
         startProgress();
       } else {
-        // 使用 Spinner/Loading
         console.log('[Router Guard] beforeEach - calling startLoading() for:', to.path);
         loadingManager.startLoading();
 
-        // 清除之前的防抖定时器（如果有新的导航开始）
         if (stopTimer) {
           console.log('[Router Guard] Clearing previous stop timer');
           clearTimeout(stopTimer);
@@ -48,34 +97,27 @@ function setupCommonGuard(router: Router) {
     return true;
   });
 
-  router.afterEach((to, from) => {
-    // 记录页面是否加载,如果已经加载，后续的页面切换动画等效果不在重复执行
+  router.afterEach((to, _from) => {
     loadedPaths.add(to.path);
 
-    // 关闭页面加载动画
     const { loading } = preferences.transition;
 
     if (loading.enableRouteLoading) {
       if (loading.type === 'nprogress') {
-        // 关闭 NProgress
         stopProgress();
       } else {
-        // 关闭 Spinner/Loading
         console.log('[Router Guard] afterEach - calling stopLoading() for:', to.path);
         loadingManager.stopLoading();
 
-        // 使用防抖确保所有导航完成后才真正停止加载
-        // 清除之前的定时器
         if (stopTimer) {
           clearTimeout(stopTimer);
         }
 
-        // 设置新的定时器
         stopTimer = setTimeout(() => {
           console.log('[Router Guard] All navigations complete - force stopping loading');
           loadingManager.forceStop();
           stopTimer = null;
-        }, 50); // 减少到 50ms，更快响应
+        }, 50);
       }
     }
   });
@@ -83,7 +125,6 @@ function setupCommonGuard(router: Router) {
 
 /**
  * 权限访问守卫配置
- * @param router
  */
 function setupAccessGuard(router: Router) {
   router.beforeEach(async (to, from) => {
@@ -91,89 +132,39 @@ function setupAccessGuard(router: Router) {
     const userStore = useUserStore();
     const authStore = useAuthStore();
 
-    // 基本路由，这些路由不需要进入权限拦截
-    if (coreRouteNames.includes(to.name as string)) {
-      if (to.path === preferences.app.loginPath && accessStore.accessToken) {
-        return decodeURIComponent(
-          (to.query?.redirect as string) ||
-          userStore.userInfo?.homePath ||
-          preferences.app.defaultHomePath,
-        );
-      }
-      return true;
-    }
+    const coreResult = resolveCoreRoute(to);
+    if (coreResult !== undefined) return coreResult;
 
-    // accessToken 检查
-    if (!accessStore.accessToken) {
-      // 明确声明忽略权限访问权限，则可以访问
-      if (to.meta.ignoreAccess) {
-        return true;
-      }
+    if (!accessStore.accessToken) return resolveNoToken(to);
 
-      // 没有访问权限，跳转登录页面
-      if (to.fullPath !== preferences.app.loginPath) {
-        return {
-          path: preferences.app.loginPath,
-          // 如不需要，直接删除 query
-          query:
-            to.fullPath === preferences.app.defaultHomePath
-              ? {}
-              : { redirect: encodeURIComponent(to.fullPath) },
-          // 携带当前跳转的页面，登录后重新跳转该页面
-          replace: true,
-        };
-      }
-      return to;
-    }
+    if (accessStore.isAccessChecked) return true;
 
-    // 是否已经生成过动态路由
-    if (accessStore.isAccessChecked) {
-      return true;
-    }
-
-    // 当前工号不存在，说明是刷新进入或者登录之后进入，需要获取用户信息
-    // 否则，直接使用当前用户信息
-    // 注意：这里获取用户信息和菜单，好像必须得耦合在业务代码中，因为store只能在组件中使用，不能在守卫中使用
-    // effect 组件，也进不到路由守卫中
+    // 获取用户信息
     let userInfo = userStore.userInfo;
     if (!userInfo?.code) {
       console.log('[Router Guard] setupAccessGuard - fetching user info...');
       try {
-        const res = await fetchUserInfo({ 'types': [0, 1, 4] });
-        const { user, resource } = res.result || {};
-        userInfo = { ...user, resources: resource, code: user.cWork, name: user.cUsername };
-        userStore.setUserInfo(userInfo);
+        userInfo = await fetchAndSetUserInfo(userStore);
         console.log('[Router Guard] setupAccessGuard - user info fetched successfully');
       } catch (error) {
         console.error('[Router Guard] setupAccessGuard - fetch user info failed:', error);
-        // 如果获取用户信息失败（比如登录过期），跳转到登录页面
         accessStore.setAccessToken(null);
         authStore.$reset();
-        return {
-          path: preferences.app.loginPath,
-          query: to.fullPath === preferences.app.defaultHomePath
-            ? {}
-            : { redirect: encodeURIComponent(to.fullPath) },
-          replace: true,
-        };
+        return buildLoginRedirect(to);
       }
     }
-    const userRoles = userInfo.roles ?? [];
-    const resources = userInfo.resources || [];
 
     // 生成菜单和路由
     const { accessibleMenus, accessibleRoutes } = await generateAccess({
-      roles: userRoles,
-      resources,
+      roles: userInfo.roles ?? [],
+      resources: userInfo.resources || [],
       router,
-      // 则会在菜单中显示，但是访问会被重定向到403
-      routes: accessRoutes,
     });
 
-    // 保存菜单信息和路由信息
     accessStore.setAccessMenus(accessibleMenus);
     accessStore.setAccessRoutes(accessibleRoutes);
     accessStore.setIsAccessChecked(true);
+
     const redirectPath = (from.query.redirect ??
       (to.path === preferences.app.defaultHomePath
         ? userInfo.homePath || preferences.app.defaultHomePath
@@ -188,16 +179,12 @@ function setupAccessGuard(router: Router) {
 
 /**
  * 项目守卫配置
- * @param router
  */
 function createRouterGuard(router: Router) {
-  /** 通用 */
   setupCommonGuard(router);
-  /** 权限访问 */
   setupAccessGuard(router);
 
-  // 路由错误处理：确保导航失败时也停止加载动画
-  router.onError((error, to) => {
+  router.onError((error, _to) => {
     console.error('[Router Guard] Navigation error:', error);
     const { loading } = preferences.transition;
 
