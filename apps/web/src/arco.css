@@ -2,6 +2,11 @@
   width: 100% !important;
 }
 
+/* 弹窗 */
+.arco-modal {
+  border-radius: 12px !important;
+}
+
 .arco-layout-sider-trigger {
   border-right: 1px solid #e5e7eb !important;
 }

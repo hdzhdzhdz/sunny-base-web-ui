@@ -10,44 +10,45 @@
     :fullscreen="isMaximized"
     :closable="false"
     v-bind="$attrs"
-    class="k-modal-custom"
+    class="sunny-modal"
+    :style="{ '--sunny-modal-bg': `url(${bgImage})` }"
     @click.stop
     @mousedown.stop
   >
-  <!-- :style="{ '--modal-bg-image': `url(${bgImage})` }" -->
     <slot></slot>
 
     <template #title>
-      <div class="flex items-center justify-between w-full" @dblclick="props.fullscreen && toggleMaximize()">
-        <div class="flex-1 font-semibold text-base text-[var(--color-text-1)] overflow-hidden text-ellipsis whitespace-nowrap">
+      <div class="sunny-modal__header" @dblclick="props.fullscreen && toggleMaximize()">
+        <div class="sunny-modal__title-text">
           <slot name="title">{{ title }}</slot>
         </div>
-        <div class="flex items-center gap-3 ml-3">
+        <div class="sunny-modal__header-actions">
           <a-tooltip v-if="displayHelpMessage" :content="displayHelpMessage">
-            <div class="cursor-pointer text-[var(--color-text-2)] flex items-center justify-center transition-colors duration-200 text-base hover:text-[var(--color-text-1)]">
+            <button type="button" class="sunny-modal__action-btn sunny-modal__action-btn--help" @click.stop>
               <icon-question-circle />
-            </div>
+            </button>
           </a-tooltip>
 
-          <div v-if="props.fullscreen" class="cursor-pointer text-[var(--color-text-2)] flex items-center justify-center transition-colors duration-200 text-base hover:text-[var(--color-text-1)]" @click.stop="toggleMaximize">
+          <button v-if="props.fullscreen" type="button" class="sunny-modal__action-btn" @click.stop="toggleMaximize">
             <icon-fullscreen-exit v-if="isMaximized" />
             <icon-fullscreen v-else />
-          </div>
+          </button>
 
-          <div class="cursor-pointer text-[var(--color-text-2)] flex items-center justify-center transition-colors duration-200 text-base hover:text-[rgb(var(--red-6))]" @click.stop="handleClose">
+          <button type="button" class="sunny-modal__action-btn sunny-modal__action-btn--close" @click.stop="handleClose">
             <icon-close />
-          </div>
+          </button>
         </div>
       </div>
     </template>
 
     <template #footer>
       <slot name="footer" v-if="$slots.footer"></slot>
-      <div v-else class="flex items-center justify-end gap-2">
+      <div v-else class="sunny-modal__footer">
         <slot name="insertFooter"></slot>
 
         <a-button
           v-if="!attrs.hideCancel"
+          size="small"
           v-bind="(attrs.cancelButtonProps as any)"
           @click="handleCancel"
         >
@@ -59,6 +60,7 @@
         <a-button
           v-if="!attrs.hideOk"
           type="primary"
+          size="small"
           :loading="loading || (attrs.okLoading as boolean) || (attrs.confirmLoading as boolean)"
           v-bind="(attrs.okButtonProps as any)"
           @click="handleOk"
@@ -86,8 +88,8 @@ import {
   IconQuestionCircle,
 } from "@arco-design/web-vue/es/icon";
 import { useI18n } from "@sunny-base-web/locales";
+import bgImage from "./bg.png";
 import type { ModalProps } from "./types";
-// import bgImage from './bg.png';
 
 const { t } = useI18n();
 
@@ -129,19 +131,15 @@ const toggleMaximize = () => {
   };
 
 const handleClose = async () => {
-    // 获取 onBeforeCancel 回调
     const onBeforeCancel = props.onBeforeCancel;
 
-    // 如果定义了 onBeforeCancel，则执行它
     if (typeof onBeforeCancel === "function") {
       const res = await onBeforeCancel();
-      // 如果返回 false，则阻止关闭
       if (res === false) return;
     }
 
-    // 重置最大化状态
     isMaximized.value = false;
-    
+
     visible.value = false;
     emit("close");
   };
@@ -149,17 +147,13 @@ const handleClose = async () => {
   const handleCancel = handleClose;
 
   const handleOk = async () => {
-    // 获取 onBeforeOk 回调
     const onBeforeOk = props.onBeforeOk;
 
-    // 如果定义了 onBeforeOk，则执行它
     if (typeof onBeforeOk === "function") {
       try {
         loading.value = true;
         const res = await onBeforeOk();
-        // 如果返回 false，则阻止关闭
         if (res !== false) {
-          // 重置最大化状态
           isMaximized.value = false;
           emit("ok");
           visible.value = false;
@@ -170,26 +164,223 @@ const handleClose = async () => {
         loading.value = false;
       }
     } else {
-      // 默认行为：触发 ok 事件并关闭弹窗
-      // 重置最大化状态
       isMaximized.value = false;
       emit("ok");
       visible.value = false;
     }
   };
 
-// 暴露方法给父组件
 defineExpose({
   toggleMaximize
 });
 </script>
 
 <style>
-.k-modal-custom .arco-modal-body {
+/* ===== Sunny Modal — Mini Business + Finesse ===== */
+
+/* ---------- 弹窗外壳 ---------- */
+.sunny-modal.arco-modal {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(var(--primary-6), 0.06),
+    0 8px 24px rgba(0, 0, 0, 0.1),
+    0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+/* ---------- 标题栏 ---------- */
+.sunny-modal .arco-modal-header {
+  position: relative;
+  padding: 10px 16px;
+  border-bottom: none;
+}
+
+/* 底部分隔线：渐变 + 流光动画 */
+.sunny-modal .arco-modal-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 16px;
+  right: 16px;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    var(--color-border-2) 5%,
+    rgba(var(--primary-6), 0.45) 50%,
+    var(--color-border-2) 95%,
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: sunnyModalLine 2.5s ease-in-out infinite;
+}
+
+/* ---------- 内容区 ---------- */
+.sunny-modal .arco-modal-body {
+  padding: 12px 16px;
   background-color: transparent;
-  /* background-image: var(--modal-bg-image); */
-  background-repeat: no-repeat !important;
-  background-size: 80% !important;
-  background-position: bottom !important;
+  background-image: var(--sunny-modal-bg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: right bottom;
+}
+
+/* ---------- 底部 ---------- */
+.sunny-modal .arco-modal-footer {
+  position: relative;
+  padding: 12px 16px;
+  border-top: none;
+}
+
+/* 顶部分隔线：渐变 + 流光动画 */
+.sunny-modal .arco-modal-footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 16px;
+  right: 16px;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    var(--color-border-2) 5%,
+    rgba(var(--primary-6), 0.35) 50%,
+    var(--color-border-2) 95%,
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: sunnyModalLine 2.5s ease-in-out infinite;
+}
+
+@keyframes sunnyModalLine {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+/* ===== Header 内部布局 ===== */
+.sunny-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 22px;
+}
+
+.sunny-modal__title-text {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  color: var(--color-text-1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sunny-modal__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: 12px;
+}
+
+/* ===== 操作按钮 ===== */
+.sunny-modal__action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-text-3);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.sunny-modal__action-btn:hover {
+  background-color: var(--color-fill-2);
+  color: var(--color-text-1);
+  transform: scale(1.1);
+}
+
+.sunny-modal__action-btn:active {
+  transform: scale(0.95);
+}
+
+/* 帮助按钮 hover 主题色 */
+.sunny-modal__action-btn--help:hover {
+  color: rgb(var(--primary-6));
+  background-color: rgba(var(--primary-6), 0.06);
+}
+
+/* 关闭按钮 hover 红色 + 涟漪 */
+.sunny-modal__action-btn--close:hover {
+  background-color: rgba(var(--red-6), 0.08);
+  color: rgb(var(--red-6));
+}
+
+.sunny-modal__action-btn--close:active {
+  background-color: rgba(var(--red-6), 0.16);
+}
+
+/* ===== Footer 按钮 ===== */
+.sunny-modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* 主按钮呼吸光晕 */
+.sunny-modal__footer .arco-btn-primary {
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.sunny-modal__footer .arco-btn-primary::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: rgb(var(--primary-6));
+  opacity: 0;
+  filter: blur(4px);
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.sunny-modal__footer .arco-btn-primary:hover::after {
+  opacity: 0.2;
+}
+
+.sunny-modal__footer .arco-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(var(--primary-6), 0.3);
+}
+
+.sunny-modal__footer .arco-btn-primary:active {
+  transform: translateY(0);
+}
+
+/* ===== 全屏过渡 ===== */
+.sunny-modal.arco-modal-fullscreen {
+  border-radius: 0;
+  animation: none;
+}
+
+/* ===== Loading 态旋转光圈 ===== */
+.sunny-modal__footer .arco-btn-primary.arco-btn-loading {
+  pointer-events: none;
+}
+
+.sunny-modal__footer .arco-btn-primary.arco-btn-loading::after {
+  opacity: 0;
 }
 </style>

@@ -5,6 +5,7 @@ const { TabPane } = Tabs
 import { Modal } from '@sunny-base-web/ui'
 import { requestClient } from '../../../api/request'
 import { useFormTabs } from '../../../hooks/useFormTabs'
+import { useUser } from '../../../hooks/useUser'
 import { addFormSchema, tabsConfig } from './config'
 import type { DataDictionaryFormVO, MetaItem, DataDictionaryVO } from './types'
 

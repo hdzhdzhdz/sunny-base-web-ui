@@ -229,6 +229,7 @@ watch(
           @submit="handleFormSubmit"
           @reset="handleReset"
           layout="vertical"
+          size="mini"
         >
           <!-- 透传字段级别的 slots（如 form-item-fieldName） -->
           <template v-for="(_, name) in externalSlots" :key="name" #[name]="slotProps">
@@ -250,6 +251,7 @@ watch(
               @checkbox-all="handleCheckboxAll"
               @radio-change="handleRadioChange"
               @cell-dblclick="handleCellDblClick"
+              size="mini"
            />
         </div>
 
@@ -304,7 +306,7 @@ watch(
            show-total
            show-page-size
            :page-size-options="[20, 50, 100, 200]"
-           size="small"
+           size="mini"
            @change="handlePageChange"
            @page-size-change="handlePageSizeChange"
          />

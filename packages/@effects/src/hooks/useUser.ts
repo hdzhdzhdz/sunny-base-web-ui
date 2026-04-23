@@ -1,5 +1,5 @@
 import { computed, type ComputedRef } from 'vue';
-import { useUserStore } from '@sunny-base-web/stores';
+import { useUserStore, useAccessStore } from '@sunny-base-web/stores';
 
 interface UseUserReturn {
   code: ComputedRef<string>;
@@ -9,19 +9,22 @@ interface UseUserReturn {
   homePath: ComputedRef<string>;
   agent: ComputedRef<Record<string, any> | undefined>;
   userInfo: ComputedRef<any>;
+  token: ComputedRef<string | null>;
 }
 
 /**
  * 用户信息便捷访问 Hook
  *
- * 封装 userStore，提供常用用户属性的 computed 快捷访问
+ * 封装 userStore + accessStore，提供常用用户属性和 token 的 computed 快捷访问
  *
  * @example
- * const { code, name, roles, isSuperAdmin } = useUser()
+ * const { code, name, token } = useUser()
  * console.log(code.value) // 'EMP001'
+ * console.log(token.value) // 'eyJhbGci...'
  */
 export function useUser(): UseUserReturn {
   const userStore = useUserStore();
+  const accessStore = useAccessStore();
   const userInfo = userStore.userInfo;
 
   return {
@@ -32,5 +35,6 @@ export function useUser(): UseUserReturn {
     homePath: computed(() => userInfo?.homePath ?? ''),
     agent: computed(() => userInfo?.agent),
     userInfo: computed(() => userInfo),
+    token: computed(() => accessStore.accessToken),
   };
 }

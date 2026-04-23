@@ -53,7 +53,7 @@ export function useFormTable({
   // 初始化表单
   const [Form, formApi] = useSunnyForm({
     layout: 'horizontal',
-    size: 'small',
+    size: 'mini',
     labelWidth: 100,
     gridProps: {
       xGap: 0,
@@ -89,6 +89,7 @@ export function useFormTable({
     id: 'meta-grid',
     columns: processColumns(tableColumns),
     data: [] as any[],
+    size: 'mini',
     editRules: tableEditRules,
     editConfig: {
       enabled: true,
