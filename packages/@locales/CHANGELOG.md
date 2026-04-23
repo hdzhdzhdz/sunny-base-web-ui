@@ -1,5 +1,11 @@
 # @sunny-base-web/locales
 
+## 0.8.29
+
+### Patch Changes
+
+- chore: version packages 0.8.29
+
 ## 0.8.28
 
 ## 0.8.27
