@@ -52,6 +52,7 @@
           v-bind="(attrs.cancelButtonProps as any)"
           @click="handleCancel"
         >
+          <template #icon><icon-close /></template>
           {{ attrs.cancelText || t('common.modal.cancel') }}
         </a-button>
 
@@ -65,6 +66,7 @@
           v-bind="(attrs.okButtonProps as any)"
           @click="handleOk"
         >
+          <template #icon><icon-check /></template>
           {{ attrs.okText || t('common.modal.confirm') }}
         </a-button>
 
@@ -86,6 +88,7 @@ import {
   IconFullscreen,
   IconFullscreenExit,
   IconQuestionCircle,
+  IconCheck,
 } from "@arco-design/web-vue/es/icon";
 import { useI18n } from "@sunny-base-web/locales";
 import bgImage from "./bg.png";
@@ -336,6 +339,16 @@ defineExpose({
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
+}
+
+.sunny-modal__footer .arco-btn {
+  display: inline-flex;
+  align-items: center;
+}
+
+.sunny-modal__footer .arco-btn svg {
+  line-height: 1;
+  vertical-align: middle;
 }
 
 /* 主按钮呼吸光晕 */
