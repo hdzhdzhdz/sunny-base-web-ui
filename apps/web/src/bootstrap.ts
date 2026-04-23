@@ -131,9 +131,11 @@ async function bootstrap(namespace: string) {
 	settingsStore.initSettings();
 
 	// 配置 vxe-table 全局行高（必须在 app.use 之前）
-	VXETable.setConfig({
+	VxeUITable.setConfig({
 		table: {
-			rowHeight: settingsStore.tableRowHeight,
+			cellConfig: {
+				height: settingsStore.tableRowHeight,
+			},
 		}
 	});
 
@@ -199,15 +201,31 @@ async function bootstrap(namespace: string) {
 					const res = await requestClient.post<any>('/core/assDialog/openInit', { cNum });
 					// 后端接口返回格式为 { result: { ... } }，需要取 result 里的数据
 					const data = res.result || res;
+
+					const parseWidth = (val: any) => {
+						if (!val) return undefined;
+						return Number.isNaN(Number(val)) ? val : `${val}px`;
+					};
+					const parseHeight = (val: any) => {
+						if (!val) return 300;
+						return Number.isNaN(Number(val)) ? val : Number(val);
+					};
+
+					const mapTypeToComponent = (type: string) => {
+						if (type === 'input') return 'Input';
+						if (type === 'select') return 'Select';
+						return 'Input';
+					};
+
 					return {
 						title: data.cTitle,
-						width: data.cWidth ? isNaN(Number(data.cWidth)) ? data.cWidth : `${data.cWidth}px` : undefined,
-						contentHeight: data.cHeight ? isNaN(Number(data.cHeight)) ? data.cHeight : Number(data.cHeight) : 300,
+						width: parseWidth(data.cWidth),
+						contentHeight: parseHeight(data.cHeight),
 						multiple: data.cSelectionMode !== 'single',
 						formSchema: (data.conditions || []).map((item: any) => ({
 							fieldName: item.prop,
 							label: item.label,
-							component: item.type === 'input' ? 'Input' : item.type === 'select' ? 'Select' : 'Input'
+							component: mapTypeToComponent(item.type)
 						})),
 						tableColumns: (data.tableCols || []).map((item: any) => ({
 							field: item.prop,
@@ -220,7 +238,7 @@ async function bootstrap(namespace: string) {
 			customizeSelectAdapter: {
 				query: async (params: any) => {
 					const res = await requestClient.post('/core/assSelect/commonQuery', params);
-					const data = (res as any)?.result || res;
+					const data = res?.result || res;
 					return {
 						options: data?.optionList || [],
 						config: data?.assSelect || undefined,
@@ -230,7 +248,7 @@ async function bootstrap(namespace: string) {
 			// ✅ Select 选项加载适配器
 			// 用于批量加载字典选项，替代硬编码的本地 options 配置
 			selectOptionsAdapter: {
-				loadOptions: async (numbList, fieldMapping) => {
+				loadOptions: async (numbList: (string | number)[], fieldMapping?: any) => {
 					const { label = 'cName', value = 'cXuhao' } = fieldMapping || {};
 
 					// 调用后端接口批量加载字典选项
@@ -258,7 +276,7 @@ async function bootstrap(namespace: string) {
 			// ✅ 权限选项加载适配器
 			// 用于批量加载权限选项，如工厂、公司等
 			permissionOptionsAdapter: {
-				loadOptions: async (numbList, fieldMapping) => {
+				loadOptions: async (numbList: (string | number)[], fieldMapping?: any) => {
 					const { label: labelField = 'cExresname', value: valueField = 'cExresnum' } = fieldMapping || {};
 					const labelKey = typeof labelField === 'string' ? labelField : 'cExresname';
 					const valueKey = typeof valueField === 'string' ? valueField : 'cExresnum';
