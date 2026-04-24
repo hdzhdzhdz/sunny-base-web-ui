@@ -36,6 +36,7 @@
               :show-default-actions="false"
               :show-message="false"
               :layout="'vertical'"
+              size="mini"
               v-bind="formProps"
               @mounted="onFormMounted"
             />

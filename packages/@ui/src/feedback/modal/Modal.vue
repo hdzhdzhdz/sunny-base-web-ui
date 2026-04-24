@@ -11,7 +11,6 @@
     :closable="false"
     v-bind="$attrs"
     modal-class="sunny-modal"
-    :modal-style="{ '--sunny-modal-bg': `url(${bgImage})` }"
     @click.stop
     @mousedown.stop
   >
@@ -91,7 +90,6 @@ import {
   IconCheck,
 } from "@arco-design/web-vue/es/icon";
 import { useI18n } from "@sunny-base-web/locales";
-import bgImage from "./bg.png";
 import type { ModalProps } from "./types";
 
 const { t } = useI18n();
@@ -188,21 +186,23 @@ defineExpose({
   display: flex !important;
   flex-direction: column;
   overflow: hidden;
-  margin: 0 auto 20px;
   box-shadow:
     0 0 0 1px rgba(var(--primary-6), 0.06),
     0 8px 24px rgba(0, 0, 0, 0.1),
     0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
-/* 覆盖 Arco align-center 的 top: 0（优先级 0,3,0）*/
-.arco-modal-wrapper .sunny-modal.arco-modal {
-  top: 20px !important;
-}
-
-/* 弹窗内部滚动，隐藏外层 wrapper 滚动条 */
+/* 弹窗内部滚动 + flexbox 居中（覆盖 Arco 的 inline-block 居中方案） */
 .arco-modal-wrapper:has(.sunny-modal) {
   overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: normal !important;
+}
+
+.arco-modal-wrapper:has(.sunny-modal)::after {
+  display: none !important;
 }
 
 /* ---------- 标题栏 ---------- */
@@ -236,10 +236,10 @@ defineExpose({
 .sunny-modal .arco-modal-body {
   padding: 12px 16px;
   background-color: transparent;
-  background-image: var(--sunny-modal-bg);
+  background-image: url(./bg.png);
   background-size: contain;
   background-repeat: no-repeat;
-  background-position: right bottom;
+  background-position: right calc(100% - 8px);
   flex: 1;
   min-height: 0;
   overflow-y: auto;
