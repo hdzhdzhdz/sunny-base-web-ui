@@ -2,7 +2,7 @@ import type { Router, RouteLocationNormalizedGeneric } from 'vue-router';
 
 
 import { preferences } from '../preferences';
-import { useAccessStore, useUserStore, useAuthStore } from '@sunny-base-web/stores';
+import { useAccessStore, useUserStore, useAuthStore, useTabbarStore } from '@sunny-base-web/stores';
 import { startProgress, stopProgress } from '@sunny-base-web/ui';
 import { loadingManager } from '@sunny-base-web/effects';
 import { getCookie } from '@sunny-base-web/utils';
@@ -77,6 +77,12 @@ function setupCommonGuard(router: Router) {
 
   router.beforeEach((to, _from) => {
     to.meta.loaded = loadedPaths.has(to.path);
+
+    // URL 参数 ?embed=true → 隐藏侧边栏和头部，只显示内容区
+    if (to.query.embed !== undefined) {
+      const tabbarStore = useTabbarStore();
+      tabbarStore.toggleContentFullScreen(true);
+    }
 
     const { loading } = preferences.transition;
 
