@@ -1,6 +1,6 @@
 {
   "name": "@sunny-base-web/icons",
-  "version": "0.8.33",
+  "version": "0.8.34",
   "private": false,
   "type": "module",
   "main": "./src/index.ts",

@@ -1,6 +1,6 @@
 {
   "name": "@sunny-base-web/ui",
-  "version": "0.8.33",
+  "version": "0.8.34",
   "private": false,
   "main": "./src/index.ts",
   "module": "./src/index.ts",
