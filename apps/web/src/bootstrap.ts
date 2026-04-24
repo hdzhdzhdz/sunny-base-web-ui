@@ -146,12 +146,13 @@ async function bootstrap(namespace: string) {
 		apiPrefix: preferences.app.apiPrefix,
 		ssoUrl: preferences.app.ssoUrl,
 		locale: preferences.app.locale,
-    onLocaleChange: (locale) => {
-      preferences.app.locale = locale;
-      localStorage.setItem('app-locale', locale);
-    },
+		onLocaleChange: (locale) => {
+		preferences.app.locale = locale;
+		localStorage.setItem('app-locale', locale);
+		},
 		enableRefreshToken: preferences.app.enableRefreshToken,
 		publicKey: preferences.app.publicKey,
+		cookieTokenKey: preferences.app.cookieTokenKey,
 		app: {
 			name: preferences.app.name
 		},

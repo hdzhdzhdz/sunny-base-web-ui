@@ -5,6 +5,7 @@ import { preferences } from '../preferences';
 import { useAccessStore, useUserStore, useAuthStore } from '@sunny-base-web/stores';
 import { startProgress, stopProgress } from '@sunny-base-web/ui';
 import { loadingManager } from '@sunny-base-web/effects';
+import { getCookie } from '@sunny-base-web/utils';
 
 import { coreRouteNames } from './routes';
 import { generateAccess } from './access';
@@ -134,6 +135,14 @@ function setupAccessGuard(router: Router) {
 
     const coreResult = resolveCoreRoute(to);
     if (coreResult !== undefined) return coreResult;
+
+    // Store 无 token 时，尝试从 Cookie 恢复
+    if (!accessStore.accessToken && preferences.app.cookieTokenKey) {
+      const cookieToken = getCookie(preferences.app.cookieTokenKey);
+      if (cookieToken) {
+        accessStore.setAccessToken(cookieToken);
+      }
+    }
 
     if (!accessStore.accessToken) return resolveNoToken(to);
 

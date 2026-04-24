@@ -35,6 +35,11 @@ export interface EffectsConfig {
    */
   publicKey?: string
   /**
+   * Cookie 中 Token 的 key 名
+   * 配置后请求拦截器优先从 Cookie 读取 Token，不存在时回退到 Store
+   */
+  cookieTokenKey?: string
+  /**
    * 头部配置
    */
   header?: {

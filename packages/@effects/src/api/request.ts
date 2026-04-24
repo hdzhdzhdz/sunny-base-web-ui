@@ -26,6 +26,9 @@ import { useAccessStore, useAuthStore, useTabbarStore } from '@sunny-base-web/st
 // 引入全局配置，用于获取 API 前缀、语言设置等
 import { globalConfig } from '../config';
 
+// 引入 Cookie 工具，用于从 Cookie 读取 Token
+import { getCookie } from '@sunny-base-web/utils';
+
 // 引入刷新 Token 的 API 接口
 import { refreshTokenApi } from './core';
 
@@ -133,10 +136,16 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   // =========================================================================
   client.addRequestInterceptor({
     fulfilled: async (config) => {
-      const accessStore = useAccessStore();
-
-      // 1. 自动注入 Token 到 Authorization Header
-      config.headers.Authorization = formatToken(accessStore.accessToken);
+      // 1. 优先从 Cookie 获取 Token，否则从 Store 获取
+      let token: string | null = null;
+      if (globalConfig.cookieTokenKey) {
+        token = getCookie(globalConfig.cookieTokenKey);
+      }
+      if (!token) {
+        const accessStore = useAccessStore();
+        token = accessStore.accessToken;
+      }
+      config.headers.Authorization = formatToken(token);
 
       // 2. 注入当前语言环境，用于后端国际化处理
       config.headers['Accept-Language'] = globalConfig.locale;
