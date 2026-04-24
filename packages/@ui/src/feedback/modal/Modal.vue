@@ -10,8 +10,8 @@
     :fullscreen="isMaximized"
     :closable="false"
     v-bind="$attrs"
-    class="sunny-modal"
-    :style="{ '--sunny-modal-bg': `url(${bgImage})` }"
+    modal-class="sunny-modal"
+    :modal-style="{ '--sunny-modal-bg': `url(${bgImage})` }"
     @click.stop
     @mousedown.stop
   >
@@ -181,14 +181,28 @@ defineExpose({
 <style>
 /* ===== Sunny Modal — Mini Business + Finesse ===== */
 
-/* ---------- 弹窗外壳 ---------- */
+/* ---------- 弹窗外壳：flex 布局 + 限高 ---------- */
 .sunny-modal.arco-modal {
   border-radius: 12px;
+  max-height: calc(100vh - 40px);
+  display: flex !important;
+  flex-direction: column;
   overflow: hidden;
+  margin: 0 auto 20px;
   box-shadow:
     0 0 0 1px rgba(var(--primary-6), 0.06),
     0 8px 24px rgba(0, 0, 0, 0.1),
     0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+/* 覆盖 Arco align-center 的 top: 0（优先级 0,3,0）*/
+.arco-modal-wrapper .sunny-modal.arco-modal {
+  top: 20px !important;
+}
+
+/* 弹窗内部滚动，隐藏外层 wrapper 滚动条 */
+.arco-modal-wrapper:has(.sunny-modal) {
+  overflow: hidden !important;
 }
 
 /* ---------- 标题栏 ---------- */
@@ -196,6 +210,7 @@ defineExpose({
   position: relative;
   padding: 10px 16px;
   border-bottom: none;
+  flex-shrink: 0;
 }
 
 /* 底部分隔线：渐变 + 流光动画 */
@@ -217,7 +232,7 @@ defineExpose({
   animation: sunnyModalLine 2.5s ease-in-out infinite;
 }
 
-/* ---------- 内容区 ---------- */
+/* ---------- 内容区：flex 子元素，超出滚动 ---------- */
 .sunny-modal .arco-modal-body {
   padding: 12px 16px;
   background-color: transparent;
@@ -225,6 +240,9 @@ defineExpose({
   background-size: contain;
   background-repeat: no-repeat;
   background-position: right bottom;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 /* ---------- 底部 ---------- */
@@ -232,6 +250,7 @@ defineExpose({
   position: relative;
   padding: 12px 16px;
   border-top: none;
+  flex-shrink: 0;
 }
 
 /* 顶部分隔线：渐变 + 流光动画 */

@@ -66,7 +66,7 @@
       <!-- 内容包装器：包含标签栏和内容区域，用于全屏时仅显示此区域 -->
       <div id="layout-content-wrapper" class="flex flex-col flex-1 overflow-hidden">
         <!-- 标签栏 -->
-        <Tabbar />
+        <Tabbar v-if="!tabbarStore.contentFullScreen" />
 
         <!-- 内容区域 -->
         <a-layout-content class="flex-1 p-2 overflow-auto bg-[var(--color-bg-1)]">
