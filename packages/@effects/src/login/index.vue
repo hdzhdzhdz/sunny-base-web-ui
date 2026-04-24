@@ -138,6 +138,8 @@ import { getLodop } from './utils/LodopFuncs'
 import { getRsaData } from '../utils/encryption'
 import { login } from '../api/user'
 import { useAccessStore } from '@sunny-base-web/stores'
+import { setCookie } from '@sunny-base-web/utils'
+import { globalConfig } from '../config'
 // import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import SlideVerify from 'vue3-slide-verify'
@@ -537,6 +539,9 @@ const loginAction = async () => {
     if (res.code === 0 || res.success) {
        const token = res.result?.token || (res.result as any)
        accessStore.setAccessToken(token)
+      if (globalConfig.cookieTokenKey) {
+        setCookie(globalConfig.cookieTokenKey, token)
+      }
        emit('login', res.result)
     } else {
        // 错误处理通常由拦截器处理，但如果需要特定处理可以写在这里
