@@ -1,5 +1,15 @@
 # @sunny-base-web/ui
 
+## 0.8.38
+
+### Patch Changes
+
+- version packages 0.8.38
+- Updated dependencies
+  - @sunny-base-web/utils@0.8.38
+  - @sunny-base-web/icons@0.8.38
+  - @sunny-base-web/locales@0.8.38
+
 ## 0.8.31
 
 ### Patch Changes
