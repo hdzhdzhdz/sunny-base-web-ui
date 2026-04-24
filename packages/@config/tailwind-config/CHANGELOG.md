@@ -1,5 +1,11 @@
 # @sunny-base-web/tailwind-config
 
+## 0.8.39
+
+### Patch Changes
+
+- feat: query-grid 添加选中行计数指示器和表格说明功能
+
 ## 0.8.38
 
 ### Patch Changes

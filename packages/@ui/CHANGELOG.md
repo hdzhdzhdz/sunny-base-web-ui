@@ -1,5 +1,15 @@
 # @sunny-base-web/ui
 
+## 0.8.39
+
+### Patch Changes
+
+- feat: query-grid 添加选中行计数指示器和表格说明功能
+- Updated dependencies
+  - @sunny-base-web/icons@0.8.39
+  - @sunny-base-web/locales@0.8.39
+  - @sunny-base-web/utils@0.8.39
+
 ## 0.8.38
 
 ### Patch Changes
