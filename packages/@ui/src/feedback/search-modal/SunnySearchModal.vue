@@ -10,7 +10,7 @@ import SunnyQueryGrid from '../../data/query-grid/use-query-grid.vue';
 // @ts-ignore
 import SunnyModal from '../modal/Modal.vue';
 // @ts-ignore
-import { IconClose } from '@arco-design/web-vue/es/icon';
+import { IconClose, IconCheck } from '@arco-design/web-vue/es/icon';
 // @ts-ignore
 import { Tooltip, Pagination, Button } from '@arco-design/web-vue';
 // @ts-ignore
@@ -311,8 +311,14 @@ watch(
            @page-size-change="handlePageSizeChange"
          />
          <div class="space-x-2">
-           <Button @click="handleCancel">{{ $t('common.cancel') }}</Button>
-           <Button type="primary" @click="handleOk">{{ $t('common.confirm') }}</Button>
+           <Button @click="handleCancel">
+             <template #icon><icon-close /></template>
+             {{ $t('common.cancel') }}
+           </Button>
+           <Button type="primary" @click="handleOk">
+             <template #icon><icon-check /></template>
+             {{ $t('common.confirm') }}
+           </Button>
          </div>
       </div>
     </template>
