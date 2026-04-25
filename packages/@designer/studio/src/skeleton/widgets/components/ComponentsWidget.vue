@@ -1,9 +1,23 @@
 <!--
-  ComponentsWidget - 组件库
+  ComponentsWidget - 组件库面板
 
   从 MaterialStore 获取物料分组，按分组折叠展示。
-  每个组件支持 draggable，拖拽到画布创建节点。
-  支持搜索过滤。
+  每个组件支持 draggable，拖拽到画布 Workspace 创建节点。
+
+  ## 功能
+
+  1. 搜索过滤 — 按组件名或标题模糊匹配
+  2. 分组折叠 — 按 ComponentMeta.group 字段分组
+  3. 拖拽创建 — dragstart 设置 component-name，Workspace drop 时创建节点
+
+  ## 数据流
+
+  ```
+  MaterialStore.getGroups() → 分组列表
+  MaterialStore.getByGroup(group) → 每组的组件列表
+  拖拽 → setData('component-name', meta.name)
+       → Workspace.handleDrop → new NodeModel(componentName)
+  ```
 -->
 <script setup lang="ts">
 import { computed, inject, ref } from 'vue'
@@ -11,7 +25,7 @@ import type { MaterialStore, ComponentMeta } from '@sunny-base-web/designer-mate
 
 defineOptions({ name: 'ComponentsWidget' })
 
-// 通过 inject 获取 MaterialStore
+// 通过 inject 获取 MaterialStore（由 SunnyDesignerLayout provide）
 const materialStore = inject<MaterialStore>('designer-material-store')!
 
 /** 搜索关键词 */
@@ -43,6 +57,8 @@ const filteredGroups = computed(() => {
 
 /**
  * 拖拽开始
+ *
+ * 设置 component-name 到 dataTransfer，供 Workspace drop 时读取。
  */
 function handleDragStart(e: DragEvent, meta: ComponentMeta) {
   e.dataTransfer?.setData('component-name', meta.name)

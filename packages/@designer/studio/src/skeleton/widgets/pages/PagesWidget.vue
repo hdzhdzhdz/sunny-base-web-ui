@@ -1,10 +1,20 @@
 <!--
-  PagesWidget - 页面管理
+  PagesWidget - 页面管理面板
 
-  展示项目中的页面目录树，支持：
-  - 点击页面 → 切换当前页面
-  - 新建/删除页面
-  - 设为主页
+  展示项目中的页面列表，支持点击切换当前页面。
+
+  ## 功能
+
+  - 点击页面 → 调用 Engine.switchPage(pageId) 切换当前页面
+  - 当前激活页面高亮显示（主题色背景）
+
+  ## 数据流
+
+  ```
+  Engine.project.pages → 页面列表
+  Engine.project.activePageId → 当前激活页面
+  点击页面 → Engine.switchPage(pageId) → EVENT_PAGE_SWITCH → Workspace 重渲染
+  ```
 -->
 <script setup lang="ts">
 import { computed, inject } from 'vue'
@@ -22,7 +32,9 @@ const pages = computed(() => engine.project.pages ?? [])
 const activePageId = computed(() => engine.project.activePageId ?? '')
 
 /**
- * 点击页面 → 切换
+ * 点击页面 → 切换当前页面
+ *
+ * @param pageId - 目标页面 ID
  */
 function handlePageClick(pageId: string) {
   engine.switchPage(pageId)

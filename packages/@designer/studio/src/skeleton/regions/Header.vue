@@ -1,7 +1,10 @@
 <!--
   Header - 顶栏区域
 
-  Brand(Logo+切换) | Toolbar(工具栏) | Actions(操作)
+  固定 48px 高度的顶部栏，三段式布局：
+  - 左侧：Brand（Logo + 标题）
+  - 中间：Toolbar 插槽（撤销/重做等工具按钮）
+  - 右侧：Actions 插槽（预览/保存/发布等操作按钮）
 -->
 <script setup lang="ts">
 import type { Component } from 'vue'
@@ -9,9 +12,9 @@ import type { Component } from 'vue'
 defineOptions({ name: 'DesignerHeader' })
 
 defineProps<{
-  /** 应用标题 */
+  /** 应用标题（显示在左侧 Brand 区域） */
   title?: string
-  /** Logo */
+  /** Logo 组件（显示在标题左侧） */
   logo?: string | Component
 }>()
 

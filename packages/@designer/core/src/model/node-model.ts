@@ -1,100 +1,157 @@
-import { nanoid } from 'nanoid'
-import type { IEventBus } from '../event/index'
-import { DesignerEventType } from '../event/index'
-import type { DirectiveBinding, NodeModelJSON } from './types'
-
 /**
  * NodeModel - UI 节点模型
  *
- * 对应用户架构中的「UI 节点」层，代表组件树中的一个组件实例。
- * NodeModel 是组件树的最小单元，对应 Vue 模板中的一个组件标签。
+ * 组件树中的最小单元，对应 Vue 模板中的一个组件标签。
+ * 多个 NodeModel 通过 children 形成树形结构，构成页面的组件树。
  *
- * 核心职责：
- * - **props**：管理组件的属性值（如 `<Button type="primary">` 中的 `type`）
- * - **events**：管理组件的事件绑定（如 `@click="handleClick"` 中的处理函数表达式）
- * - **directives**：管理 Vue 指令（如 `v-if`, `v-for`, `v-show`, `v-model` 等）
- * - **children**：管理子节点列表，构成组件树
- * - **isContainer**：标记是否为容器组件（可接收子节点拖入）
+ * ## 核心职责
  *
- * 所有变更操作都会通过 EventBus 发射事件，供 Engine / History / UI 层监听响应。
- * 通常不直接操作 NodeModel，而是通过 {@link BlockModel} 的节点树方法间接管理。
+ * - **Props 管理**：组件属性（如 `type="primary"`、`:value="formData"`）
+ * - **Events 管理**：事件绑定（如 `@click="handleClick"`）
+ * - **Directives 管理**：Vue 指令（如 `v-show="visible"`、`v-for="item in list"`）
+ * - **Children 管理**：默认插槽子节点的增删移
+ * - **Slots 管理**：具名插槽子节点的增删移
+ * - **序列化**：toJSON / fromJSON / clone 支持持久化和深拷贝
+ *
+ * ## 事件通信
+ *
+ * 所有变更操作自动通过全局 emitter 广播 `EVENT_NODE_CHANGE` 事件，
+ * payload.action 区分操作类型（add/remove/move/props/events/directive）。
+ * 订阅方（History、Workspace 等）无需直接引用 NodeModel 即可响应变更。
+ *
+ * ## 数据结构
+ *
+ * ```
+ * NodeModel (SunnyButton)
+ *   ├── props: { type: 'primary', size: 'small' }
+ *   ├── events: { click: 'handleClick' }
+ *   ├── directives: [{ name: 'show', value: 'visible' }]
+ *   ├── children: [NodeModel, NodeModel, ...]  ← 默认插槽
+ *   └── slots: {                                  ← 具名插槽
+ *         header: [NodeModel],
+ *         footer: [NodeModel],
+ *       }
+ * ```
  *
  * @example
  * ```ts
- * // 创建一个按钮节点
- * const button = new NodeModel(eventBus, 'SunnyButton', {
- *   props: { type: 'primary', size: 'medium' },
+ * // 创建节点
+ * const node = new NodeModel('SunnyButton', {
+ *   props: { type: 'primary' },
+ *   events: { click: 'handleClick' },
  * })
  *
- * // 创建一个容器并添加子节点
- * const container = new NodeModel(eventBus, 'div', { isContainer: true })
- * container.addChild(button)
+ * // 修改属性
+ * node.setProp('size', 'large')   // → 自动广播 node:change { action: 'props' }
  *
- * // 修改属性（触发事件）
- * button.setProp('type', 'default')
+ * // 添加子节点
+ * const child = new NodeModel('span')
+ * node.addChild(child)            // → 自动广播 node:change { action: 'add' }
  *
- * // 绑定事件（值为表达式字符串）
- * button.setEvent('click', 'handleButtonClick')
- *
- * // 添加指令
- * button.addDirective({ name: 'show', value: 'visible' })
+ * // 序列化
+ * const json = node.toJSON()
+ * const restored = NodeModel.fromJSON(json)
+ * const cloned = node.clone()
  * ```
  */
+import { nanoid } from 'nanoid'
+import { emitter, EVENT_NODE_CHANGE } from '../emitter'
+import type { DirectiveBinding, NodeModelJSON } from './types'
+
 export class NodeModel {
-  /** 节点唯一标识（自动生成，可用于反序列化指定） */
+  /** 节点唯一标识（自动生成，可通过 options.id 指定） */
   readonly id: string
-  /** 组件名称（如 'SunnyButton', 'a-input', 'div'） */
-  name: string
-  /** 当前属性值（key 为 prop 名，value 为当前值） */
-  props: Record<string, any>
+
   /**
-   * 事件绑定映射（key 为事件名，value 为处理函数表达式字符串）
+   * 组件名称
    *
-   * 表达式字符串会在代码生成阶段转换为 Vue 模板中的事件绑定。
-   * @example `{ click: 'handleButtonClick', change: '(val) => form.name = val' }`
+   * 对应 Vue 模板中的标签名，如 `'SunnyButton'`、`'a-input'`、`'div'`。
+   * 用于在 ComponentRegistry 中查找组件定义和元信息。
+   */
+  name: string
+
+  /**
+   * 组件属性（props）
+   *
+   * 键值对结构，key 为属性名，value 为属性值。
+   * 值可以是静态值（字符串、数字、布尔值）或表达式字符串（运行时求值）。
+   *
+   * @example `{ type: 'primary', size: 'large', disabled: false }`
+   */
+  props: Record<string, any>
+
+  /**
+   * 事件绑定
+   *
+   * 键值对结构，key 为事件名，value 为处理函数名称或表达式字符串。
+   *
+   * @example `{ click: 'handleClick', change: 'onValueChange' }`
    */
   events: Record<string, string>
-  /** Vue 指令绑定列表（如 v-if, v-for, v-show, v-model 等） */
-  directives: DirectiveBinding[]
-  /** 默认插槽的子节点列表（有序） */
-  children: NodeModel[]
+
   /**
-   * 具名插槽（key 为插槽名，value 为子节点列表）
+   * Vue 指令列表
    *
-   * 对应 Vue 模板中的 `<template #slotName>` 包裹的内容。
-   * @example `{ header: [titleNode], footer: [btnNode] }`
+   * 支持常用指令如 v-show、v-if、v-for、v-model 等。
+   */
+  directives: DirectiveBinding[]
+
+  /**
+   * 默认插槽子节点列表
+   *
+   * 对应 Vue 模板中标签内部的子元素。
+   * 只有 isContainer=true 的节点才应该有 children。
+   */
+  children: NodeModel[]
+
+  /**
+   * 具名插槽
+   *
+   * key 为插槽名，value 为该插槽内的子节点列表。
+   *
+   * @example `{ header: [NodeModel], footer: [NodeModel] }`
    */
   slots: Record<string, NodeModel[]>
-  /** 父节点 ID，根节点时为 null */
-  parentId: string | null
+
   /**
-   * 是否为容器组件（可接收子节点拖入）
+   * 父节点 ID
    *
-   * 容器组件允许通过拖拽添加子节点（如 div, SunnyForm, a-table 等），
-   * 非容器组件（如 SunnyButton, a-input）不接受子节点。
+   * 根节点的 parentId 为 null。
+   * 添加到 BlockModel.rootNode 时设置为 null。
+   * 从父节点移除时重置为 null。
+   */
+  parentId: string | null
+
+  /**
+   * 是否为容器节点
+   *
+   * 容器节点可以接受子节点拖入（如 Layout、Card）。
+   * 非容器节点拒绝子节点拖入（如 Button、Input）。
+   * 拖拽投放时通过此字段判断 canDrop。
    */
   isContainer: boolean
 
-  /** 组件来源标识（可选，用于 loader 区分组件查找策略） */
+  /**
+   * 组件来源标识（可选）
+   *
+   * 用于渲染器区分组件查找策略：
+   * - `undefined` / 普通字符串 → 从 ComponentRegistry 查找
+   * - `'schema:<id>'` → 异步加载 BlockSchema 并递归渲染
+   */
   from?: string
-
-  /** 事件总线实例，用于发射节点变更事件 */
-  private readonly eventBus: IEventBus
 
   /**
    * 创建 NodeModel 实例
    *
-   * @param eventBus - 事件总线实例，用于发射 Model 变更事件
-   * @param name - 节点名称，如 'SunnyButton', 'a-input', 'div'
+   * @param name - 组件名称（如 'SunnyButton'、'div'）
    * @param options - 可选配置
    * @param options.id - 指定 ID（用于反序列化），默认自动生成
-   * @param options.props - 初始属性值
+   * @param options.props - 初始属性
    * @param options.events - 初始事件绑定
    * @param options.directives - 初始指令列表
-   * @param options.isContainer - 是否为容器组件，默认 false
+   * @param options.isContainer - 是否为容器节点，默认 false
    */
   constructor(
-    eventBus: IEventBus,
     name: string,
     options?: {
       id?: string
@@ -104,7 +161,6 @@ export class NodeModel {
       isContainer?: boolean
     },
   ) {
-    this.eventBus = eventBus
     this.id = options?.id ?? nanoid()
     this.name = name
     this.props = options?.props ? { ...options.props } : {}
@@ -116,10 +172,10 @@ export class NodeModel {
     this.isContainer = options?.isContainer ?? false
   }
 
-  // ── Props 属性操作 ─────────────────────────────────
+  // ── Props ──────────────────────────────────────────────
 
   /**
-   * 获取指定属性值
+   * 获取单个属性值
    *
    * @param key - 属性名
    * @returns 属性值，不存在时返回 undefined
@@ -131,28 +187,27 @@ export class NodeModel {
   /**
    * 设置单个属性值
    *
-   * 触发 {@link DesignerEventType.NodePropsChanged} 事件，携带 oldValue 和 newValue。
+   * 广播 EVENT_NODE_CHANGE { action: 'props' }
    *
    * @param key - 属性名
-   * @param value - 新的属性值
+   * @param value - 属性值（任意类型）
    */
   setProp(key: string, value: any): void {
-    const oldValue = this.props[key]
     this.props[key] = value
-    this.eventBus.emit(DesignerEventType.NodePropsChanged, {
+    emitter.emit(EVENT_NODE_CHANGE, {
       nodeId: this.id,
-      propName: key,
-      oldValue,
-      newValue: value,
+      action: 'props',
+      parentId: this.parentId,
     })
   }
 
   /**
-   * 批量设置属性值
+   * 批量设置属性
    *
-   * 内部循环调用 {@link setProp}，每个属性变更都会触发独立事件。
+   * 遍历传入的 props 对象，逐个调用 setProp。
+   * 每次调用都会广播一个 props 事件。
    *
-   * @param props - 要设置的属性键值对
+   * @param props - 属性键值对
    */
   setProps(props: Record<string, any>): void {
     for (const [key, value] of Object.entries(props)) {
@@ -161,124 +216,97 @@ export class NodeModel {
   }
 
   /**
-   * 移除指定属性
+   * 移除单个属性
    *
-   * 触发 {@link DesignerEventType.NodePropsChanged} 事件，newValue 为 undefined。
+   * 广播 EVENT_NODE_CHANGE { action: 'props' }
    *
    * @param key - 要移除的属性名
    */
   removeProp(key: string): void {
-    const oldValue = this.props[key]
     delete this.props[key]
-    this.eventBus.emit(DesignerEventType.NodePropsChanged, {
+    emitter.emit(EVENT_NODE_CHANGE, {
       nodeId: this.id,
-      propName: key,
-      oldValue,
-      newValue: undefined,
+      action: 'props',
+      parentId: this.parentId,
     })
   }
 
-  // ── Events 事件绑定操作 ────────────────────────────
+  // ── Events ─────────────────────────────────────────────
 
   /**
    * 设置事件绑定
    *
-   * 将事件名映射到处理函数表达式字符串。表达式在代码生成阶段会转换为
-   * Vue 模板中的事件绑定（如 `@click="handleClick"`）。
-   * 触发 {@link DesignerEventType.NodeEventsChanged} 事件。
+   * 广播 EVENT_NODE_CHANGE { action: 'events' }
    *
-   * @param eventName - 事件名（如 'click', 'change', 'input'）
-   * @param handler - 处理函数表达式字符串（如 'handleClick', '(val) => form.name = val'）
-   *
-   * @example
-   * ```ts
-   * node.setEvent('click', 'handleButtonClick')
-   * node.setEvent('update:modelValue', '(val) => form.name = val')
-   * ```
+   * @param eventName - 事件名（如 'click'、'change'）
+   * @param handler - 处理函数名称或表达式字符串
    */
   setEvent(eventName: string, handler: string): void {
-    const oldValue = this.events[eventName]
     this.events[eventName] = handler
-    this.eventBus.emit(DesignerEventType.NodeEventsChanged, {
+    emitter.emit(EVENT_NODE_CHANGE, {
       nodeId: this.id,
-      eventName,
-      oldValue,
-      newValue: handler,
+      action: 'events',
+      parentId: this.parentId,
     })
   }
 
   /**
    * 移除事件绑定
    *
-   * 触发 {@link DesignerEventType.NodeEventsChanged} 事件。
+   * 广播 EVENT_NODE_CHANGE { action: 'events' }
    *
    * @param eventName - 要移除的事件名
    */
   removeEvent(eventName: string): void {
-    const oldValue = this.events[eventName]
     delete this.events[eventName]
-    this.eventBus.emit(DesignerEventType.NodeEventsChanged, {
+    emitter.emit(EVENT_NODE_CHANGE, {
       nodeId: this.id,
-      eventName,
-      oldValue,
-      newValue: '' as string,
+      action: 'events',
+      parentId: this.parentId,
     })
   }
 
-  // ── Directives 指令操作 ───────────────────────────
+  // ── Directives ─────────────────────────────────────────
 
   /**
-   * 添加 Vue 指令绑定
+   * 添加指令
    *
-   * 对应 Vue 模板中的 `v-if`, `v-for`, `v-show`, `v-model` 等指令。
-   * 触发 {@link DesignerEventType.NodeDirectiveChanged} 事件（action: 'add'）。
+   * 广播 EVENT_NODE_CHANGE { action: 'directive' }
    *
    * @param directive - 指令绑定对象
-   *
-   * @example
-   * ```ts
-   * // v-if 指令
-   * node.addDirective({ name: 'if', value: 'visible' })
-   *
-   * // v-for 指令
-   * node.addDirective({ name: 'for', value: 'item in list' })
-   *
-   * // v-show 指令
-   * node.addDirective({ name: 'show', value: 'isActive' })
-   * ```
    */
   addDirective(directive: DirectiveBinding): void {
     this.directives.push(directive)
-    this.eventBus.emit(DesignerEventType.NodeDirectiveChanged, {
+    emitter.emit(EVENT_NODE_CHANGE, {
       nodeId: this.id,
-      directiveName: directive.name,
-      action: 'add',
+      action: 'directive',
+      parentId: this.parentId,
     })
   }
 
   /**
-   * 移除指定名称的指令
+   * 移除指令
    *
-   * 触发 {@link DesignerEventType.NodeDirectiveChanged} 事件（action: 'remove'）。
+   * 广播 EVENT_NODE_CHANGE { action: 'directive' }
    *
-   * @param name - 指令名（如 'if', 'for', 'show'）
+   * @param name - 指令名（如 'show'、'if'）
    */
   removeDirective(name: string): void {
     const idx = this.directives.findIndex((d) => d.name === name)
-    if (idx > -1) {
+    if (idx !== -1) {
       this.directives.splice(idx, 1)
-      this.eventBus.emit(DesignerEventType.NodeDirectiveChanged, {
+      emitter.emit(EVENT_NODE_CHANGE, {
         nodeId: this.id,
-        directiveName: name,
-        action: 'remove',
+        action: 'directive',
+        parentId: this.parentId,
       })
     }
   }
 
   /**
-   * 更新指定指令的表达式值
+   * 更新指令的表达式值
    *
-   * 触发 {@link DesignerEventType.NodeDirectiveChanged} 事件（action: 'update'）。
+   * 广播 EVENT_NODE_CHANGE { action: 'directive' }
    *
    * @param name - 指令名
    * @param value - 新的表达式字符串
@@ -287,62 +315,63 @@ export class NodeModel {
     const directive = this.directives.find((d) => d.name === name)
     if (directive) {
       directive.value = value
-      this.eventBus.emit(DesignerEventType.NodeDirectiveChanged, {
+      emitter.emit(EVENT_NODE_CHANGE, {
         nodeId: this.id,
-        directiveName: name,
-        action: 'update',
+        action: 'directive',
+        parentId: this.parentId,
       })
     }
   }
 
-  // ── Children 子节点操作 ────────────────────────────
+  // ── Children ───────────────────────────────────────────
 
   /**
-   * 添加子节点
+   * 添加子节点到默认插槽
    *
-   * 将子节点的 parentId 设为当前节点 ID，并插入到指定位置。
-   * 触发 {@link DesignerEventType.NodeAdded} 事件。
+   * 自动设置 child.parentId 为当前节点 ID。
+   * 广播 EVENT_NODE_CHANGE { action: 'add' }
    *
    * @param child - 要添加的子节点
-   * @param index - 插入位置索引，默认追加到末尾
+   * @param index - 插入位置，默认追加到末尾
    */
   addChild(child: NodeModel, index?: number): void {
     child.parentId = this.id
     const idx = index ?? this.children.length
     this.children.splice(idx, 0, child)
-    this.eventBus.emit(DesignerEventType.NodeAdded, {
+    emitter.emit(EVENT_NODE_CHANGE, {
       nodeId: child.id,
+      action: 'add',
       parentId: this.id,
       index: idx,
     })
   }
 
   /**
-   * 移除指定子节点
+   * 移除子节点
    *
-   * 将子节点从 children 中移除，并将其 parentId 置为 null。
-   * 触发 {@link DesignerEventType.NodeRemoved} 事件。
+   * 自动将 child.parentId 重置为 null。
+   * 广播 EVENT_NODE_CHANGE { action: 'remove' }
    *
    * @param childId - 要移除的子节点 ID
-   * @returns 被移除的 NodeModel 实例，不存在时返回 null
+   * @returns 被移除的 NodeModel，不存在时返回 null
    */
   removeChild(childId: string): NodeModel | null {
     const idx = this.children.findIndex((c) => c.id === childId)
     if (idx === -1) return null
     const [removed] = this.children.splice(idx, 1)
     removed.parentId = null
-    this.eventBus.emit(DesignerEventType.NodeRemoved, {
+    emitter.emit(EVENT_NODE_CHANGE, {
       nodeId: childId,
+      action: 'remove',
       parentId: this.id,
     })
     return removed
   }
 
   /**
-   * 在当前节点的子节点列表内移动子节点位置（同级排序）
+   * 移动子节点在 children 中的位置
    *
-   * 触发 {@link DesignerEventType.NodeMoved} 事件。
-   * 注意：此方法仅用于同一父节点内的排序，跨父节点移动请使用 {@link BlockModel.dropTo}。
+   * 广播 EVENT_NODE_CHANGE { action: 'move' }
    *
    * @param childId - 要移动的子节点 ID
    * @param toIndex - 目标位置索引
@@ -352,32 +381,24 @@ export class NodeModel {
     if (fromIndex === -1) return
     const [moved] = this.children.splice(fromIndex, 1)
     this.children.splice(toIndex, 0, moved)
-    this.eventBus.emit(DesignerEventType.NodeMoved, {
+    emitter.emit(EVENT_NODE_CHANGE, {
       nodeId: childId,
-      fromParent: this.id,
-      toParent: this.id,
-      fromIndex,
-      toIndex,
+      action: 'move',
+      parentId: this.id,
     })
   }
 
-  // ── Slots 具名插槽操作 ────────────────────────────
+  // ── Slots ──────────────────────────────────────────────
 
   /**
-   * 添加子节点到指定具名插槽
+   * 添加子节点到具名插槽
    *
-   * 对应 Vue 模板中的 `<template #slotName><ChildNode /></template>`。
-   * 触发 {@link DesignerEventType.NodeAdded} 事件。
+   * 如果插槽不存在，自动创建。
+   * 广播 EVENT_NODE_CHANGE { action: 'add' }
    *
-   * @param slotName - 插槽名（如 'header', 'footer', 'default'）
+   * @param slotName - 插槽名（如 'header'、'footer'）
    * @param child - 要添加的子节点
-   * @param index - 在插槽内的插入位置，默认追加到末尾
-   *
-   * @example
-   * ```ts
-   * const title = new NodeModel(eventBus, 'span', { props: { text: '标题' } })
-   * card.addToSlot('header', title)
-   * ```
+   * @param index - 插入位置，默认追加到末尾
    */
   addToSlot(slotName: string, child: NodeModel, index?: number): void {
     child.parentId = this.id
@@ -386,21 +407,23 @@ export class NodeModel {
     }
     const idx = index ?? this.slots[slotName].length
     this.slots[slotName].splice(idx, 0, child)
-    this.eventBus.emit(DesignerEventType.NodeAdded, {
+    emitter.emit(EVENT_NODE_CHANGE, {
       nodeId: child.id,
+      action: 'add',
       parentId: this.id,
       index: idx,
     })
   }
 
   /**
-   * 从指定具名插槽中移除子节点
+   * 从具名插槽中移除子节点
    *
-   * 触发 {@link DesignerEventType.NodeRemoved} 事件。
+   * 如果插槽变为空，自动删除该插槽键。
+   * 广播 EVENT_NODE_CHANGE { action: 'remove' }
    *
    * @param slotName - 插槽名
    * @param childId - 要移除的子节点 ID
-   * @returns 被移除的 NodeModel 实例，不存在时返回 null
+   * @returns 被移除的 NodeModel，不存在时返回 null
    */
   removeFromSlot(slotName: string, childId: string): NodeModel | null {
     const slotChildren = this.slots[slotName]
@@ -409,33 +432,34 @@ export class NodeModel {
     if (idx === -1) return null
     const [removed] = slotChildren.splice(idx, 1)
     removed.parentId = null
-    // 插槽为空时清理
     if (slotChildren.length === 0) {
       delete this.slots[slotName]
     }
-    this.eventBus.emit(DesignerEventType.NodeRemoved, {
+    emitter.emit(EVENT_NODE_CHANGE, {
       nodeId: childId,
+      action: 'remove',
       parentId: this.id,
     })
     return removed
   }
 
   /**
-   * 获取指定插槽的所有子节点
+   * 获取指定具名插槽的子节点列表
    *
    * @param slotName - 插槽名
-   * @returns 子节点列表，插槽不存在时返回空数组
+   * @returns 子节点数组，插槽不存在时返回空数组
    */
   getSlotChildren(slotName: string): NodeModel[] {
     return this.slots[slotName] ?? []
   }
 
-  // ── 序列化 ─────────────────────────────────────────
+  // ── 序列化 ─────────────────────────────────────────────
 
   /**
-   * 将 NodeModel 序列化为 JSON 对象
+   * 序列化为 JSON 对象
    *
-   * 递归序列化整棵子树。用于持久化存储、项目导出、跨进程传输等场景。
+   * 递归序列化所有子节点和插槽子节点。
+   * 用于持久化存储、跨进程传输、History 快照等。
    *
    * @returns 可 JSON.stringify 的 NodeModelJSON 对象
    */
@@ -458,14 +482,13 @@ export class NodeModel {
   /**
    * 从 JSON 对象反序列化为 NodeModel 实例
    *
-   * 递归还原整棵子树，恢复所有父子关系（parentId）。
+   * 递归还原所有子节点和插槽子节点，自动设置 parentId。
    *
    * @param json - 序列化的 NodeModelJSON 对象
-   * @param eventBus - 事件总线实例，注入到所有创建的节点中
-   * @returns 还原的 NodeModel 实例（含完整子树）
+   * @returns 还原的 NodeModel 实例
    */
-  static fromJSON(json: NodeModelJSON, eventBus: IEventBus): NodeModel {
-    const node = new NodeModel(eventBus, json.name, {
+  static fromJSON(json: NodeModelJSON): NodeModel {
+    const node = new NodeModel(json.name, {
       id: json.id,
       props: json.props,
       events: json.events,
@@ -476,13 +499,13 @@ export class NodeModel {
       node.from = json.from
     }
     for (const childJson of json.children) {
-      const child = NodeModel.fromJSON(childJson, eventBus)
+      const child = NodeModel.fromJSON(childJson)
       node.children.push(child)
       child.parentId = node.id
     }
     for (const [slotName, slotNodes] of Object.entries(json.slots ?? {})) {
       node.slots[slotName] = slotNodes.map((childJson) => {
-        const child = NodeModel.fromJSON(childJson, eventBus)
+        const child = NodeModel.fromJSON(childJson)
         child.parentId = node.id
         return child
       })
@@ -491,14 +514,13 @@ export class NodeModel {
   }
 
   /**
-   * 深克隆当前节点（生成全新 ID）
+   * 深拷贝当前节点
    *
-   * 克隆会递归复制整棵子树，所有节点获得新 ID，父子关系重新建立。
-   * 注意：克隆后的节点与原节点无关联，共享同一个 EventBus 实例。
+   * 通过 toJSON → fromJSON 实现，生成完全独立的副本（新 ID）。
    *
-   * @returns 克隆的新 NodeModel 实例
+   * @returns 深拷贝的 NodeModel 实例
    */
   clone(): NodeModel {
-    return NodeModel.fromJSON(this.toJSON(), this.eventBus)
+    return NodeModel.fromJSON(this.toJSON())
   }
 }

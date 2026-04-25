@@ -1,12 +1,30 @@
 <!--
   SetterPanel - 属性面板
 
-  根据 Selection 变化自动刷新，展示选中节点的属性编辑器。
-  简单实现：按 type 渲染对应输入组件。
+  根据选中节点动态展示属性编辑器和事件编辑器。
+  通过 Engine.onSelectionChange 和 EVENT_NODE_CHANGE 驱动刷新。
+
+  ## 刷新机制
+
+  ```
+  Engine.select(nodeId) → onSelectionChange() → refreshKey++ → computed 重计算
+  NodeModel.setProp()   → EVENT_NODE_CHANGE(action=props) → refreshKey++ → computed 重计算
+  ```
+
+  ## 属性类型映射
+
+  | PropMeta.type | 渲染组件 | 说明 |
+  |---------------|---------|------|
+  | string | a-input | 文本输入 |
+  | number | a-input-number | 数字输入 |
+  | boolean | a-switch | 开关 |
+  | select | a-select | 下拉选择 |
+  | json | a-input (预留) | JSON 编辑器 |
+  | 其他 | a-input | 降级为文本输入 |
 -->
 <script setup lang="ts">
-import { ref, inject, computed, watch } from 'vue'
-import { DesignerEventType } from '@sunny-base-web/designer-core'
+import { ref, inject, computed } from 'vue'
+import { emitter, EVENT_NODE_CHANGE } from '@sunny-base-web/designer-core'
 import type { Engine } from '../../engine'
 import { Setter } from '../../setter/setter'
 
@@ -15,50 +33,53 @@ defineOptions({ name: 'SetterPanel' })
 const engine = inject<Engine>('designer-engine')!
 const setter = new Setter(engine)
 
-/** 响应式刷新标记 */
+/** 响应式刷新标记（变更时递增，驱动 computed 重新计算） */
 const refreshKey = ref(0)
 
-// 监听 Selection 变化 → 刷新面板
-engine.eventBus.on(DesignerEventType.SelectionChanged, () => {
+// 监听选中变更 → 刷新面板
+engine.onSelectionChange = () => {
   refreshKey.value++
-})
+}
 
-// 监听属性变化 → 刷新面板
-engine.eventBus.on(DesignerEventType.NodePropsChanged, () => {
-  refreshKey.value++
-})
+// 监听节点属性变化 → 刷新面板
+const nodeChangeHandler = (payload: { action: string }) => {
+  if (payload.action === 'props' || payload.action === 'events' || payload.action === 'directive') {
+    refreshKey.value++
+  }
+}
+emitter.on(EVENT_NODE_CHANGE, nodeChangeHandler)
 
-/** 当前选中节点名称 */
+/** 当前选中节点的组件名称 */
 const selectedName = computed(() => {
   void refreshKey.value
   return setter.getSelectedNodeName()
 })
 
-/** 属性字段列表 */
+/** 属性字段列表（合并 ComponentMeta schema + 节点实际值） */
 const fields = computed(() => {
   void refreshKey.value
   return setter.getFields()
 })
 
-/** 事件列表 */
+/** 事件列表（来自 ComponentMeta.events） */
 const events = computed(() => {
   void refreshKey.value
   return setter.getEvents()
 })
 
-/** 修改属性值 */
+/** 修改属性值（委托给 Setter → NodeModel.setProp） */
 function handlePropChange(name: string, value: any) {
   setter.setProp(name, value)
 }
 
-/** 当前编辑的事件处理函数 */
+/** 当前节点的事件绑定映射 */
 const eventHandlers = computed(() => {
   void refreshKey.value
   const node = engine.getSelected()
   return node?.events ?? {}
 })
 
-/** 修改事件绑定 */
+/** 修改事件绑定（委托给 Setter → NodeModel.setEvent） */
 function handleEventChange(name: string, handler: string) {
   setter.setEvent(name, handler)
 }

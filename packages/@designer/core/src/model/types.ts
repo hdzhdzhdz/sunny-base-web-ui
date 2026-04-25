@@ -1,5 +1,15 @@
 /**
  * Model 层公共类型定义
+ *
+ * 定义三层模型（Node / Block / Project）序列化所需的全部接口，
+ * 以及节点上的指令、JS 声明、CSS 样式、Vue SFC 编译宏等数据结构。
+ *
+ * 分类：
+ * - 通用：DropPosition、DirectiveBinding
+ * - JS 声明：JsDeclaration、CssBlock
+ * - 接口与依赖：ApiDefinition、DependencyDeclaration
+ * - Vue SFC 编译宏：PropDefinition、EmitDefinition、ExposeDefinition、SlotDefinition、LifecycleHook、InjectDeclaration
+ * - 序列化：NodeModelJSON、BlockModelJSON、ProjectModelJSON
  */
 
 /** 节点投放位置（拖拽时使用） */

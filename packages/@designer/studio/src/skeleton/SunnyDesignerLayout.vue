@@ -1,19 +1,43 @@
 <!--
   SunnyDesignerLayout - 设计器主布局
 
-  ┌──────────────────────────────────────────────────────────────┐
-  │ Header: Brand | Toolbar | Actions                            │
-  ├──────────┬──────────────────────────────────┬────────────────┤
-  │  Apps    │        Workspace                 │    Settings    │
-  │  左侧栏  │          中间画布                 │    右侧面板    │
-  │  48+352  │                                  │    350px       │
-  ├──────────┴──────────────────────────────────┴────────────────┤
-  │ Footer: NodePath | Devtools                                  │
-  └──────────────────────────────────────────────────────────────┘
+  三栏式布局骨架，通过 provide 向子组件注入 Engine 和 MaterialStore。
 
-  通过 provide 向子组件注入 Engine 实例及相关子系统：
-  - designer-engine: Engine
-  - designer-material-store: MaterialStore
+  ## 布局结构
+
+  ```
+  ┌────────────────────────────────────────────────────┐
+  │ Header (48px)                                      │
+  ├──────┬───────────────────────────────┬─────────────┤
+  │ Apps │        Workspace              │  Settings   │
+  ├──────┴───────────────────────────────┴─────────────┤
+  │ Footer (28px)                                      │
+  └────────────────────────────────────────────────────┘
+  ```
+
+  ## 依赖注入
+
+  | key | 值 | 消费者 |
+  |-----|-----|-------|
+  | `designer-engine` | Engine 实例 | PagesWidget, ComponentsWidget, SetterPanel, Workspace |
+  | `designer-material-store` | MaterialStore | ComponentsWidget |
+
+  ## 使用方式
+
+  ```vue
+  <SunnyDesignerLayout
+    :engine="engine"
+    :widget-registry="widgetRegistry"
+    title="低代码设计器"
+  >
+    <template #toolbar>
+       撤销/重做按钮等 
+    </template>
+    <template #actions>
+       预览/保存/发布按钮等 
+    </template>
+  </SunnyDesignerLayout>
+  ```
 -->
 <script setup lang="ts">
 import { provide, type Component } from 'vue'
@@ -31,13 +55,13 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<{
-  /** 应用标题 */
+  /** 应用标题（显示在 Header 左侧） */
   title?: string
-  /** Logo */
+  /** Logo 组件（显示在 Header 标题左侧） */
   logo?: string | Component
-  /** Widget 注册表 */
+  /** Widget 注册表（提供左侧面板的 Widget 列表） */
   widgetRegistry: WidgetRegistry
-  /** Engine 实例（provide 给子组件） */
+  /** Engine 实例（provide 给子组件使用） */
   engine: Engine
 }>(), {
   title: 'Designer',
@@ -62,7 +86,7 @@ provide('designer-material-store', props.engine.materialStore)
 
     <!-- 主体：三栏 -->
     <div class="flex-1 flex min-h-0">
-      <!-- 左侧：Apps -->
+      <!-- 左侧：Apps（图标栏 + 面板内容区） -->
       <Apps :widget-registry="widgetRegistry" />
 
       <!-- 中间：画布 -->

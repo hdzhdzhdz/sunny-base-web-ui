@@ -2,17 +2,29 @@
   Apps - 左侧面板区域
 
   由两部分组成：
-  1. 图标栏（始终可见，48px）
-     - 上部：panel 类型 Widget 图标（点击切换面板展开/折叠）
-     - 分割线
-     - 下部：dialog/link 类型 Widget 图标
-  2. 面板内容区（展开时可见，352px）
-     - KeepAlive 缓存当前激活的 Widget 面板内容
 
-  交互：
-  - 点击已激活的 panel 图标 → 折叠面板
-  - 点击未激活的 panel 图标 → 切换到该面板（展开）
-  - 折叠状态下点击 panel 图标 → 展开并激活该面板
+  ## 结构
+
+  ```
+  ┌─────────────────────────────┐
+  │ 图标栏 (48px)  │ 面板内容区 (352px)  │
+  │                │                      │
+  │ [页面管理图标]  │  面板标题            │
+  │ [组件库图标]    │  ───────            │
+  │                │  KeepAlive 内容      │
+  │ ── 分割线 ──   │                      │
+  │ [其他类型图标]  │                      │
+  └─────────────────────────────┘
+  ```
+
+  ## 交互逻辑
+
+  | 操作 | 行为 |
+  |------|------|
+  | 点击未激活的 panel 图标 | 展开面板并激活该 Widget |
+  | 点击已激活的 panel 图标 | 折叠面板 |
+  | 点击 dialog 类型图标 | 调用 widget.handler() |
+  | 点击 link 类型图标 | window.open(widget.link) |
 -->
 <script setup lang="ts">
 import { ref, computed, type Component } from 'vue'
@@ -32,10 +44,10 @@ const activeWidgetName = ref<string | null>(null)
 /** 面板是否展开 */
 const panelExpanded = ref(false)
 
-/** panel 类型 Widget 列表 */
+/** panel 类型 Widget 列表（在 apps 区域内） */
 const panelWidgets = computed(() => props.widgetRegistry.getPanelWidgets('apps'))
 
-/** 非 panel 类型 Widget 列表 */
+/** 非 panel 类型 Widget 列表（dialog/link，在 apps 区域内） */
 const otherWidgets = computed(() => props.widgetRegistry.getOtherWidgets('apps'))
 
 /** 当前激活的 Widget */
@@ -44,7 +56,7 @@ const activeWidget = computed(() => {
   return props.widgetRegistry.get(activeWidgetName.value)
 })
 
-/** 面板区缓存的组件列表（用于 KeepAlive include） */
+/** 面板区缓存的组件名列表（用于 KeepAlive include） */
 const cachedComponents = computed(() => {
   return panelWidgets.value
     .filter((w) => w.component)
@@ -53,6 +65,8 @@ const cachedComponents = computed(() => {
 
 /**
  * 点击图标
+ *
+ * 根据 Widget 的 openType 分发到不同处理逻辑。
  */
 function handleIconClick(widget: Widget) {
   if (widget.openType === 'panel') {
@@ -66,14 +80,15 @@ function handleIconClick(widget: Widget) {
 
 /**
  * panel 类型点击：切换/折叠
+ *
+ * - 点击已激活 → 折叠面板
+ * - 点击未激活 → 展开并激活该面板
  */
 function handlePanelClick(widget: Widget) {
   if (activeWidgetName.value === widget.name) {
-    // 再次点击已激活的 → 折叠
     panelExpanded.value = false
     activeWidgetName.value = null
   } else {
-    // 切换到新面板
     activeWidgetName.value = widget.name
     panelExpanded.value = true
   }

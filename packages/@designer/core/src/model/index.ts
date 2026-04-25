@@ -1,4 +1,16 @@
-// Model 层公共类型
+/**
+ * Model 模块 - 三层数据模型
+ *
+ * 数据模型层级关系：
+ * ```
+ * ProjectModel            ← 项目（多页面、依赖、API 定义）
+ *   └─ BlockModel[]       ← 页面/组件（节点树 + JS 声明 + CSS）
+ *       └─ NodeModel      ← UI 节点（组件标签，对应模板中的一个元素）
+ *           └─ NodeModel[] ← 子节点（树形递归）
+ * ```
+ *
+ * 所有模型变更通过全局 emitter 广播事件，不依赖构造函数注入。
+ */
 export type {
   DirectiveBinding,
   JsDeclaration,
@@ -11,6 +23,7 @@ export type {
   SlotDefinition,
   LifecycleHook,
   InjectDeclaration,
+  DropPosition,
   NodeModelJSON,
   BlockModelJSON,
   ProjectModelJSON,

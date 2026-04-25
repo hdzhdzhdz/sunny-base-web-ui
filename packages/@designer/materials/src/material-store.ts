@@ -184,7 +184,6 @@ export class MaterialStore {
    * 判断能否将子组件放入目标容器
    */
   canAcceptChild(parentName: string, childName: string): boolean {
-    debugger
     const parent = this.metas.get(parentName)
     if (!parent) return false
 

@@ -1,34 +1,73 @@
 /**
  * History - 快照式撤销/重做
  *
- * 监听所有 Model 变更事件，以 BlockModelJSON 快照形式记录历史。
- * 支持批处理（50ms 窗口内多个事件合并为一个快照）。
+ * 监听全局 emitter 的 NODE_CHANGE / BLOCK_CHANGE 事件，以 BlockModelJSON 快照形式记录历史。
+ * 支持批处理（50ms 窗口内多个事件合并为一个快照），避免频繁操作产生大量冗余快照。
  *
- * 设计选择：快照 vs Command
- * - 快照：BlockModelJSON 序列化已完善，实现简单，零额外开发
- * - Command：需为每种操作定义逆操作，易出错
+ * ## 设计选择：快照 vs Command
+ *
+ * - **快照**：BlockModelJSON 序列化已完善，实现简单，零额外开发
+ * - **Command**：需为每种操作定义逆操作，易出错
  * - 典型页面快照几 KB，50 条 < 500KB，可接受
+ *
+ * ## 快照栈结构
+ *
+ * ```
+ * snapshots: [S0, S1, S2, S3, S4, S5]
+ *                            ↑ cursor=3
+ *
+ * undo → cursor 移到 2，恢复 S2
+ * redo → cursor 移到 4，恢复 S4
+ * 新操作 → 截断 S4~S5，追加新快照
+ * ```
+ *
+ * ## 批处理机制
+ *
+ * ```
+ * 时间线：
+ * ├── setProp:type ──┐
+ * ├── setProp:size    ├─ 50ms 窗口 ──→ 合并为一个快照
+ * ├── addChild       ─┘
+ * ...等待...
+ * ├── removeChild ──── 单独触发 ──→ 单独快照
+ * ```
  *
  * @example
  * ```ts
- * const history = new History(eventBus, () => currentBlock)
+ * const history = new History(() => currentBlock)
  * history.undo()   // 恢复上一个快照
  * history.redo()   // 重做
+ * history.dispose() // 清理资源
  * ```
  */
 import { nanoid } from 'nanoid'
-import type { IEventBus } from '../event/index'
-import { DesignerEventType } from '../event/index'
+import {
+  emitter,
+  EVENT_NODE_CHANGE,
+  EVENT_BLOCK_CHANGE,
+  EVENT_HISTORY_CHANGE,
+  EVENT_HISTORY_RESTORE,
+} from '../emitter'
 import type { BlockModelJSON } from '../model/types'
-import type { BlockModel } from '../model/block-model'
+import { BlockModel } from '../model/block-model'
 
-/** 历史快照 */
+/**
+ * 历史快照
+ *
+ * 存储某一时刻 BlockModel 的完整序列化数据。
+ * 每个快照对应一次用户操作（或批处理合并后的多次操作）。
+ */
 export interface Snapshot {
   /** 快照唯一 ID */
   id: string
-  /** 创建时间戳 */
+  /** 创建时间戳（Date.now()） */
   timestamp: number
-  /** 操作标签（如 'setProp:type', 'addChild:SunnyButton'） */
+  /**
+   * 操作标签
+   *
+   * 标识触发快照的原因，如 'node:change'、'block:change'。
+   * 批处理时保留第一个事件的标签。
+   */
   label: string
   /** 所属 Block ID */
   blockId: string
@@ -36,31 +75,53 @@ export interface Snapshot {
   data: BlockModelJSON
 }
 
-/** History 构造选项 */
+/**
+ * History 构造选项
+ */
 export interface HistoryOptions {
-  /** 最大快照数量，默认 50 */
+  /** 最大快照数量，默认 50。超出时移除最旧的快照。 */
   maxSize?: number
-  /** 批处理窗口（ms），默认 50 */
+  /**
+   * 批处理窗口（毫秒），默认 50。
+   *
+   * 窗口内的多个变更事件合并为一个快照，
+   * 避免一次拖拽操作产生几十个快照。
+   */
   batchWindow?: number
 }
 
 export class History {
-  /** 快照栈 */
+  /**
+   * 快照栈
+   *
+   * 按时间顺序排列的快照数组，cursor 指向当前状态。
+   * undo 后 redo 栈仍然存在，直到新操作截断。
+   */
   private snapshots: Snapshot[] = []
 
-  /** 当前游标（指向当前状态在栈中的位置） */
+  /**
+   * 当前游标
+   *
+   * 指向当前状态在 snapshots 中的索引。
+   * - 初始值 -1（空栈）
+   * - 新增快照后指向最后一个元素
+   * - undo 后向左移动
+   * - redo 后向右移动
+   */
   private cursor: number = -1
 
   /** 最大快照数 */
   private readonly maxSize: number
 
-  /** 批处理窗口 */
+  /** 批处理窗口（ms） */
   private readonly batchWindow: number
 
-  /** 事件总线 */
-  private readonly eventBus: IEventBus
-
-  /** 获取当前活跃 Block 的函数 */
+  /**
+   * 获取当前活跃 Block 的函数
+   *
+   * 由 Engine 注入，返回当前激活页面对应的 BlockModel。
+   * History 不持有 BlockModel 引用，避免循环依赖。
+   */
   private readonly getActiveBlock: () => BlockModel | null
 
   /** 批处理定时器 */
@@ -69,18 +130,27 @@ export class History {
   /** 批处理中积攒的标签 */
   private pendingLabel: string = ''
 
-  /** 是否正在恢复中（恢复期间不录制） */
+  /**
+   * 是否正在恢复中
+   *
+   * 恢复期间设为 true，防止恢复过程中的事件触发新的快照录制。
+   * 恢复完成后重置为 false。
+   */
   private isRestoring: boolean = false
 
   /** 取消订阅函数列表 */
   private unsubscribers: (() => void)[] = []
 
+  /**
+   * 创建 History 实例
+   *
+   * @param getActiveBlock - 获取当前活跃 Block 的函数（由 Engine 注入）
+   * @param options - 构造选项
+   */
   constructor(
-    eventBus: IEventBus,
     getActiveBlock: () => BlockModel | null,
     options?: HistoryOptions,
   ) {
-    this.eventBus = eventBus
     this.getActiveBlock = getActiveBlock
     this.maxSize = options?.maxSize ?? 50
     this.batchWindow = options?.batchWindow ?? 50
@@ -92,7 +162,8 @@ export class History {
   /**
    * 撤销
    *
-   * 恢复到上一个快照，触发 HistoryRestoring/HistoryRestored 事件。
+   * 将游标左移一位，恢复到上一个快照。
+   * 触发 EVENT_HISTORY_RESTORE（恢复开始 + 恢复完成）和 EVENT_HISTORY_CHANGE。
    */
   undo(): void {
     if (!this.canUndo()) return
@@ -102,6 +173,8 @@ export class History {
 
   /**
    * 重做
+   *
+   * 将游标右移一位，恢复到下一个快照。
    */
   redo(): void {
     if (!this.canRedo()) return
@@ -111,6 +184,8 @@ export class History {
 
   /**
    * 是否可以撤销
+   *
+   * cursor > 0 时表示还有更早的快照可恢复。
    */
   canUndo(): boolean {
     return this.cursor > 0
@@ -118,36 +193,40 @@ export class History {
 
   /**
    * 是否可以重做
+   *
+   * cursor < snapshots.length - 1 时表示有更新的快照可恢复。
    */
   canRedo(): boolean {
     return this.cursor < this.snapshots.length - 1
   }
 
-  /**
-   * 当前游标位置
-   */
+  /** 当前游标位置 */
   getCursor(): number {
     return this.cursor
   }
 
-  /**
-   * 快照总数
-   */
+  /** 快照总数 */
   getSnapshotCount(): number {
     return this.snapshots.length
   }
 
   /**
    * 获取所有快照（只读）
+   *
+   * 用于 UI 展示历史记录列表。
    */
   getSnapshots(): ReadonlyArray<Snapshot> {
     return this.snapshots
   }
 
-  // ── 手动快照（Engine 可在关键时刻调用）──────────────
+  // ── 手动快照 ──────────────────────────────────────
 
   /**
    * 立即拍一个快照（不经过批处理）
+   *
+   * Engine 可在关键时刻（如 loadProject 后）主动调用。
+   *
+   * @param label - 操作标签
    */
   takeSnapshot(label: string): void {
     const block = this.getActiveBlock()
@@ -169,34 +248,31 @@ export class History {
   /**
    * 设置事件监听
    *
-   * 监听所有 Model 变更事件，触发批处理快照。
+   * 监听 EVENT_NODE_CHANGE 和 EVENT_BLOCK_CHANGE，
+   * 触发批处理快照。恢复期间（isRestoring=true）不录制。
    */
   private setupListeners(): void {
-    const mutationEvents = [
-      DesignerEventType.NodeAdded,
-      DesignerEventType.NodeRemoved,
-      DesignerEventType.NodeMoved,
-      DesignerEventType.NodePropsChanged,
-      DesignerEventType.NodeEventsChanged,
-      DesignerEventType.NodeDirectiveChanged,
-      DesignerEventType.StateChanged,
-      DesignerEventType.ComputedChanged,
-      DesignerEventType.MethodChanged,
-      DesignerEventType.WatchChanged,
-      DesignerEventType.CssChanged,
-    ]
-
-    for (const eventType of mutationEvents) {
-      const unsub = this.eventBus.on(eventType as any, (payload: any) => {
-        if (this.isRestoring) return
-        this.scheduleSnapshot(eventType as string)
-      })
-      this.unsubscribers.push(unsub)
+    const nodeHandler = () => {
+      if (this.isRestoring) return
+      this.scheduleSnapshot('node:change')
     }
+    emitter.on(EVENT_NODE_CHANGE, nodeHandler)
+    this.unsubscribers.push(() => emitter.off(EVENT_NODE_CHANGE, nodeHandler))
+
+    const blockHandler = () => {
+      if (this.isRestoring) return
+      this.scheduleSnapshot('block:change')
+    }
+    emitter.on(EVENT_BLOCK_CHANGE, blockHandler)
+    this.unsubscribers.push(() => emitter.off(EVENT_BLOCK_CHANGE, blockHandler))
   }
 
   /**
    * 调度快照（批处理）
+   *
+   * 首次调用时记录标签，启动定时器。
+   * 定时器到期前的新调用会重置定时器（延迟拍照）。
+   * 定时器到期后执行一次 takeSnapshot。
    */
   private scheduleSnapshot(label: string): void {
     if (!this.pendingLabel) {
@@ -218,16 +294,16 @@ export class History {
    * 压入快照
    *
    * 截断当前位置之后的所有快照（undo 后的新操作会覆盖 redo 栈）。
+   * 超出上限时移除最旧的快照。
+   * 广播 EVENT_HISTORY_CHANGE。
    */
   private pushSnapshot(snapshot: Snapshot): void {
-    // 截断 redo 栈
     if (this.cursor < this.snapshots.length - 1) {
       this.snapshots = this.snapshots.slice(0, this.cursor + 1)
     }
 
     this.snapshots.push(snapshot)
 
-    // 超出上限，移除最旧的
     if (this.snapshots.length > this.maxSize) {
       this.snapshots.shift()
     }
@@ -238,31 +314,50 @@ export class History {
 
   /**
    * 恢复到指定快照
+   *
+   * 1. 标记 isRestoring（防止恢复事件触发新快照）
+   * 2. 广播 EVENT_HISTORY_RESTORE（恢复开始）
+   * 3. 用快照数据 fromJSON 还原 BlockModel
+   * 4. 将还原的数据逐字段写回当前 Block
+   * 5. 更新游标位置
+   * 6. 广播 EVENT_HISTORY_RESTORE（恢复完成）
+   * 7. 重置 isRestoring
+   *
+   * @param snapshot - 目标快照
    */
   private restore(snapshot: Snapshot): void {
     const block = this.getActiveBlock()
     if (!block) return
 
-    // 标记正在恢复，避免恢复过程中的事件触发新的快照
     this.isRestoring = true
 
-    this.eventBus.emit(DesignerEventType.HistoryRestoring, {
+    // 广播恢复开始
+    emitter.emit(EVENT_HISTORY_RESTORE, {
       snapshotId: snapshot.id,
+      blockId: snapshot.blockId,
     })
 
-    // 用快照数据重建 Block（通过 fromJSON 的内部逻辑恢复所有状态）
-    const restored = (block.constructor as typeof BlockModel).fromJSON(
-      snapshot.data,
-      // @ts-expect-error BlockModel 内部访问 eventBus
-      block.eventBus ?? this.eventBus,
-    )
+    // 用快照数据还原 Block
+    const restored = BlockModel.fromJSON(snapshot.data)
 
-    // 将恢复的数据复制回当前 block
-    // 由于 BlockModel 没有直接的 "replace internals" API，
-    // 我们通过 emit 事件让 Engine/Subscriber 处理替换
+    // 逐字段写回当前 Block（不替换引用，保持 Engine 等上层持有的一致性）
+    block.rootNode = restored.rootNode
+    block.state = restored.state
+    block.computed = restored.computed
+    block.methods = restored.methods
+    block.watch = restored.watch
+    block.css = restored.css
+    block.props = restored.props
+    block.emits = restored.emits
+    block.expose = restored.expose
+    block.slots = restored.slots
+    block.lifecycleHooks = restored.lifecycleHooks
+    block.inject = restored.inject
+
     this.cursor = this.snapshots.indexOf(snapshot)
 
-    this.eventBus.emit(DesignerEventType.HistoryRestored, {
+    // 广播恢复完成
+    emitter.emit(EVENT_HISTORY_RESTORE, {
       snapshotId: snapshot.id,
       blockId: snapshot.blockId,
     })
@@ -272,10 +367,12 @@ export class History {
   }
 
   /**
-   * 发射 HistoryChanged 事件
+   * 广播 EVENT_HISTORY_CHANGE
+   *
+   * 通知 UI 层更新撤销/重做按钮状态。
    */
   private emitChange(): void {
-    this.eventBus.emit(DesignerEventType.HistoryChanged, {
+    emitter.emit(EVENT_HISTORY_CHANGE, {
       cursor: this.cursor,
       total: this.snapshots.length,
       canUndo: this.canUndo(),
@@ -284,7 +381,9 @@ export class History {
   }
 
   /**
-   * 销毁，取消所有监听
+   * 销毁 History，释放所有资源
+   *
+   * 取消事件订阅，清除定时器，清空快照栈。
    */
   dispose(): void {
     for (const unsub of this.unsubscribers) {

@@ -1,12 +1,18 @@
 /**
- * Simulator 渲染模拟器
+ * Simulator 渲染模拟器模块入口
  *
- * 提供 iframe 沙箱渲染环境，隔离设计器 UI 和画布组件样式。
+ * 导出 iframe 沙箱渲染相关的类、类型和 @designer/render 的重导出。
+ *
+ * ## 模块内容
+ *
+ * | 导出 | 说明 |
+ * |------|------|
+ * | `SunnySimulator` | Vue 组件包装（响应式 schema 驱动） |
+ * | `Simulator` | 核心类（iframe 生命周期管理） |
+ * | `createLoader` / `renderNode` / `RenderContext` | 来自 @designer/render |
  */
 export { default as SunnySimulator } from './SunnySimulator.vue'
 export { Simulator } from './simulator'
 export type { SimulatorOptions } from './simulator'
-export { EventBridge } from './event-bridge'
-export type { BridgeEventType, BridgeEventHandler, NodeInteractionEvent } from './event-bridge'
 export { createRenderer, createLoader, renderNode, RenderContext, useRenderer } from '@sunny-base-web/designer-render'
 export type { RendererProps, PlaceholderProps, UseRendererOptions, UseRendererReturn } from '@sunny-base-web/designer-render'

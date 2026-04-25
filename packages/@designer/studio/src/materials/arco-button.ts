@@ -1,10 +1,31 @@
 /**
  * Arco Design Button 物料定义
+ *
+ * 为 Arco Design Vue 的 Button 组件提供设计器所需的元数据，
+ * 包括属性 schema、事件定义、插槽定义和拖拽 snippets。
+ *
+ * ## 属性面板字段
+ *
+ * | 属性 | 类型 | 默认值 | 说明 |
+ * |------|------|--------|------|
+ * | type | select | 'primary' | 按钮类型（primary/secondary/outline/dashed/text） |
+ * | size | select | 'medium' | 尺寸（mini/small/medium/large） |
+ * | status | select | - | 状态（normal/warning/danger/success） |
+ * | disabled | boolean | false | 是否禁用 |
+ * | long | boolean | false | 是否撑满父容器 |
+ *
+ * @example
+ * ```ts
+ * const meta = createArcoButtonMeta()
+ * // meta.name === 'a-button'
+ * // meta.component === Arco Button 组件
+ * ```
  */
 import { markRaw } from 'vue'
 import type { ComponentMeta } from '@sunny-base-web/designer-materials'
 import { Button } from '@arco-design/web-vue'
 
+/** 创建 Arco Button 的 ComponentMeta */
 export function createArcoButtonMeta(): ComponentMeta {
   return {
     name: 'a-button',

@@ -20,6 +20,7 @@
     "lint": "eslint . --ext .ts --fix"
   },
   "dependencies": {
+    "mitt": "^3.0.1",
     "nanoid": "^3.3.11"
   },
   "devDependencies": {

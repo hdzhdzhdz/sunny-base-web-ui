@@ -1,13 +1,23 @@
 <!--
   SunnySimulator - 渲染模拟器（Vue 组件层）
 
-  Simulator 类的 Vue 响应式包装。负责：
-  - 将 Vue props 响应式变化桥接到 Simulator 类的方法调用
-  - 管理 Simulator 实例的创建/销毁生命周期
+  Simulator 类的 Vue 响应式包装，提供声明式使用方式。
 
-  两种使用方式：
-  1. 独立使用（不接入 Engine）：直接传 schema + materialStore props
-  2. Engine 驱动：通过 getSimulator() 获取底层 Simulator 实例
+  ## 职责
+
+  - 将 Vue props 的响应式变化桥接到 Simulator 类的方法调用
+  - 管理 Simulator 实例的创建/销毁生命周期
+  - 通过 defineExpose 暴露 getSimulator() 供外部获取底层实例
+
+  ## 两种使用方式
+
+  1. **独立使用**（不接入 Engine）：直接传 schema + materialStore props
+     ```vue
+     <SunnySimulator :schema="blockRootJSON" :material-store="materialStore" />
+     ```
+
+  2. **Engine 驱动**：Workspace 内部直接使用 Simulator 类，
+     通过 `getSimulator()` 获取底层实例进行精细控制
 -->
 <script setup lang="ts">
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
@@ -16,7 +26,7 @@ import type { MaterialStore } from '@sunny-base-web/designer-materials'
 import { Simulator } from './simulator'
 
 const props = defineProps<{
-  /** 根节点 schema（页面的组件树根节点） */
+  /** 根节点 schema（页面的组件树根节点序列化数据） */
   schema: NodeModelJSON | null
   /** 物料存储 */
   materialStore: MaterialStore
@@ -47,6 +57,9 @@ watch(
 
 /**
  * 初始化模拟器
+ *
+ * 创建 Simulator 实例并挂载到容器。
+ * 如果已有 schema，等 iframe load 后立即渲染。
  */
 function initSimulator() {
   const container = containerRef.value
@@ -58,7 +71,6 @@ function initSimulator() {
   // 如果已有 schema，立即渲染
   if (props.schema) {
     // 等待 iframe load 后再渲染（Simulator mount 是异步的）
-    // 用 nextTick 保证 mounted 完成
     setTimeout(() => {
       simulator?.renderBlock(props.schema)
     }, 0)
@@ -74,7 +86,10 @@ function destroySimulator() {
 }
 
 /**
- * 获取底层 Simulator 实例（供 Engine 使用）
+ * 获取底层 Simulator 实例
+ *
+ * 供外部（如 Workspace）获取 Simulator 实例进行精细控制，
+ * 如绑定 EventBridge、查询 DOM 元素等。
  */
 function getSimulator(): Simulator | null {
   return simulator

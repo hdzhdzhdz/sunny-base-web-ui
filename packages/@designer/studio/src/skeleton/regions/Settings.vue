@@ -1,8 +1,8 @@
 <!--
   Settings - 右侧属性面板区域
 
-  固定 350px 宽度，显示 Setter 属性面板。
-  自动根据 Engine 的 Selection 变化刷新。
+  固定 350px 宽度的右侧面板，包含面板标题和 SetterPanel。
+  SetterPanel 根据 Engine 的选中状态自动展示对应组件的属性编辑器。
 -->
 <script setup lang="ts">
 import SetterPanel from './SetterPanel.vue'

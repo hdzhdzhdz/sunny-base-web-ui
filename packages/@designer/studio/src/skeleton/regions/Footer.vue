@@ -1,7 +1,9 @@
 <!--
   Footer - 底栏区域
 
-  NodePath(左) | Devtools + Hotkeys + Themer(右)
+  固定 28px 高度的底部栏，两端对齐：
+  - 左侧：NodePath 插槽（当前选中节点的路径面包屑）
+  - 右侧：Devtools 插槽（开发者工具、快捷键提示、主题切换等）
 -->
 <script setup lang="ts">
 defineOptions({ name: 'DesignerFooter' })

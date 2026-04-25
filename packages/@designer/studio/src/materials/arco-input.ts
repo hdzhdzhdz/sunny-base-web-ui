@@ -1,10 +1,24 @@
 /**
  * Arco Design Input 物料定义
+ *
+ * 为 Arco Design Vue 的 Input 组件提供设计器所需的元数据。
+ *
+ * ## 属性面板字段
+ *
+ * | 属性 | 类型 | 默认值 | 说明 |
+ * |------|------|--------|------|
+ * | modelValue | string | - | 输入值 |
+ * | placeholder | string | '请输入' | 占位文本 |
+ * | disabled | boolean | false | 是否禁用 |
+ * | allowClear | boolean | false | 允许清除 |
+ * | maxLength | number | - | 最大长度 |
+ * | size | select | 'medium' | 尺寸 |
  */
 import { markRaw } from 'vue'
 import type { ComponentMeta } from '@sunny-base-web/designer-materials'
 import { Input } from '@arco-design/web-vue'
 
+/** 创建 Arco Input 的 ComponentMeta */
 export function createArcoInputMeta(): ComponentMeta {
   return {
     name: 'a-input',

@@ -1,10 +1,24 @@
 /**
  * Arco Design Textarea 物料定义
+ *
+ * 为 Arco Design Vue 的 Textarea 组件提供设计器所需的元数据。
+ *
+ * ## 属性面板字段
+ *
+ * | 属性 | 类型 | 默认值 | 说明 |
+ * |------|------|--------|------|
+ * | modelValue | string | - | 文本值 |
+ * | placeholder | string | '请输入' | 占位文本 |
+ * | disabled | boolean | false | 是否禁用 |
+ * | autoSize | boolean | false | 自适应高度 |
+ * | maxLength | number | - | 最大长度 |
+ * | showWordLimit | boolean | false | 显示字数 |
  */
 import { markRaw } from 'vue'
 import type { ComponentMeta } from '@sunny-base-web/designer-materials'
 import { Textarea } from '@arco-design/web-vue'
 
+/** 创建 Arco Textarea 的 ComponentMeta */
 export function createArcoTextareaMeta(): ComponentMeta {
   return {
     name: 'a-textarea',

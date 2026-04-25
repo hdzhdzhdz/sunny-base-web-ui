@@ -34,4 +34,5 @@ export * from './utils/select-options';
 export * from './hooks';
 export * from './composables';
 export * from './access';
+export * from './views/design';
 export * from './loading';

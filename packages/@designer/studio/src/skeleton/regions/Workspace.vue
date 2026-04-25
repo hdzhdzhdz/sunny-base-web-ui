@@ -1,17 +1,52 @@
 <!--
   Workspace - 中间画布区域
 
-  包裹画布内容，提供 Simulator 的挂载容器。
-  自动监听 Engine 事件，驱动 Simulator 重渲染。
-  处理从组件库拖拽到画布的 drop 事件。
+  设计器最核心的区域，包裹 Simulator iframe 并驱动画布渲染。
+
+  ## 职责
+
+  1. 创建 Simulator 实例并挂载到容器
+  2. 创建 Designer 实例处理画布交互（选中/悬浮/操作按钮）
+  3. 监听全局 emitter 事件驱动 Simulator 重渲染
+  4. 处理从组件库拖拽到画布的 drop 事件
+
+  ## 事件 → 渲染映射
+
+  | 事件 | 渲染策略 | 说明 |
+  |------|---------|------|
+  | EVENT_PROJECT_LOAD | 全量渲染 | 项目加载 |
+  | EVENT_PAGE_SWITCH | 全量渲染 + 清空选中 | 页面切换 |
+  | EVENT_NODE_CHANGE (props/events/directive) | 增量更新 | 属性变更 |
+  | EVENT_NODE_CHANGE (add/remove/move) | 全量渲染 | 结构变更 |
+  | EVENT_BLOCK_CHANGE | 全量渲染 | Block 级别变更 |
+  | EVENT_HISTORY_RESTORE | 全量渲染 | 撤销/重做恢复 |
+
+  ## 拖拽交互
+
+  ```
+  ComponentsWidget (拖拽源)
+    → dragstart: setData('component-name', name)
+    → dragover Workspace: preventDefault + dropEffect='copy'
+    → drop Workspace: getData → MaterialStore.getMeta → new NodeModel → Engine.addNode
+  ```
 -->
 <script setup lang="ts">
-import { ref, inject, onMounted, onBeforeUnmount } from 'vue'
-import { DesignerEventType, NodeModel } from '@sunny-base-web/designer-core'
+import { ref, shallowRef, inject, onMounted, onBeforeUnmount } from 'vue'
+import {
+  emitter,
+  EVENT_NODE_CHANGE,
+  EVENT_BLOCK_CHANGE,
+  EVENT_PAGE_SWITCH,
+  EVENT_PROJECT_LOAD,
+  EVENT_HISTORY_RESTORE,
+} from '@sunny-base-web/designer-core'
 import type { NodeModelJSON } from '@sunny-base-web/designer-core'
+import { NodeModel } from '@sunny-base-web/designer-core'
 import type { Engine } from '../../engine'
 import { Simulator } from '../../simulator/simulator'
 import { Designer } from '../../designer/designer'
+import { useDesigner } from '../../designer/useDesigner'
+import DesignerOverlay from '../../designer/DesignerOverlay.vue'
 
 defineOptions({ name: 'DesignerWorkspace' })
 
@@ -24,8 +59,11 @@ const engine = inject<Engine>('designer-engine')!
 
 const containerRef = ref<HTMLElement>()
 let simulator: Simulator | null = null
-let designer: Designer | null = null
 let unsubscribers: (() => void)[] = []
+
+const designer = shallowRef<Designer>()
+const designerState = shallowRef<ReturnType<typeof useDesigner> | null>(null)
+const isDragging = ref(false)
 
 onMounted(() => {
   if (!containerRef.value) return
@@ -38,17 +76,18 @@ onMounted(() => {
   const iframe = containerRef.value.querySelector('iframe')
   document.addEventListener('dragstart', () => {
     if (iframe) iframe.style.pointerEvents = 'none'
+    isDragging.value = true
   })
   document.addEventListener('dragend', () => {
     if (iframe) iframe.style.pointerEvents = ''
+    isDragging.value = false
   })
 
   // 创建 Designer（画布交互）
-  designer = new Designer({
+  const d = new Designer({
     simulator,
-    selection: engine.selection,
+    engine,
     materialStore: engine.materialStore,
-    eventBus: engine.eventBus,
     actions: {
       onNodeDelete: (nodeId) => {
         engine.select(null)
@@ -58,74 +97,76 @@ onMounted(() => {
       onNodeMoveDown: (nodeId) => engine.moveNodeDown(nodeId),
     },
   })
-  designer.activate()
+  d.activate()
+  designer.value = d
+  designerState.value = useDesigner(d)
 
   // Simulator 就绪后渲染当前 Block
   simulator.onReady(() => {
     renderCurrentBlock()
   })
 
-  // 监听 Engine 事件 → 驱动 Simulator
-  const unsubProjectLoaded = engine.eventBus.on(DesignerEventType.ProjectLoaded, () => {
-    renderCurrentBlock()
-  })
+  // 监听全局 emitter 事件 → 驱动 Simulator
 
-  const unsubPageSwitched = engine.eventBus.on(DesignerEventType.PageSwitched, () => {
+  const projectLoadedHandler = () => {
+    renderCurrentBlock()
+  }
+  emitter.on(EVENT_PROJECT_LOAD, projectLoadedHandler)
+  unsubscribers.push(() => emitter.off(EVENT_PROJECT_LOAD, projectLoadedHandler))
+
+  const pageSwitchHandler = () => {
     engine.select(null)
     renderCurrentBlock()
-  })
+  }
+  emitter.on(EVENT_PAGE_SWITCH, pageSwitchHandler)
+  unsubscribers.push(() => emitter.off(EVENT_PAGE_SWITCH, pageSwitchHandler))
 
-  const unsubNodeAdded = engine.eventBus.on(DesignerEventType.NodeAdded, () => {
-    renderCurrentBlock()
-  })
-
-  const unsubNodeRemoved = engine.eventBus.on(DesignerEventType.NodeRemoved, () => {
-    renderCurrentBlock()
-  })
-
-  const unsubNodeMoved = engine.eventBus.on(DesignerEventType.NodeMoved, () => {
-    renderCurrentBlock()
-  })
-
-  const unsubNodePropsChanged = engine.eventBus.on(DesignerEventType.NodePropsChanged, (payload) => {
-    if (simulator?.isMounted()) {
-      const block = engine.getActiveBlock()
-      if (block) {
-        const node = block.findNode(payload.nodeId)
-        if (node) {
-          simulator.renderNodeUpdate(payload.nodeId, node.toJSON())
+  const nodeChangeHandler = (payload: { action: string; nodeId?: string }) => {
+    if (payload.action === 'props' || payload.action === 'events' || payload.action === 'directive') {
+      // 属性/事件/指令变更 → 增量更新单个节点
+      if (simulator?.isMounted() && payload.nodeId) {
+        const block = engine.getActiveBlock()
+        if (block) {
+          const node = block.findNode(payload.nodeId)
+          if (node) {
+            simulator.renderNodeUpdate(payload.nodeId, node.toJSON())
+          }
         }
       }
+    } else {
+      // 结构变更（add/remove/move）→ 全量重绘
+      renderCurrentBlock()
     }
-  })
+  }
+  emitter.on(EVENT_NODE_CHANGE, nodeChangeHandler)
+  unsubscribers.push(() => emitter.off(EVENT_NODE_CHANGE, nodeChangeHandler))
 
-  const unsubHistoryRestored = engine.eventBus.on(DesignerEventType.HistoryRestored, () => {
+  const blockChangeHandler = () => {
     renderCurrentBlock()
-  })
+  }
+  emitter.on(EVENT_BLOCK_CHANGE, blockChangeHandler)
+  unsubscribers.push(() => emitter.off(EVENT_BLOCK_CHANGE, blockChangeHandler))
 
-  unsubscribers = [
-    unsubProjectLoaded,
-    unsubPageSwitched,
-    unsubNodeAdded,
-    unsubNodeRemoved,
-    unsubNodeMoved,
-    unsubNodePropsChanged,
-    unsubHistoryRestored,
-  ]
+  const historyRestoreHandler = () => {
+    renderCurrentBlock()
+  }
+  emitter.on(EVENT_HISTORY_RESTORE, historyRestoreHandler)
+  unsubscribers.push(() => emitter.off(EVENT_HISTORY_RESTORE, historyRestoreHandler))
 })
 
 onBeforeUnmount(() => {
   for (const unsub of unsubscribers) unsub()
   unsubscribers = []
 
-  designer?.deactivate()
+  designer.value?.deactivate()
   simulator?.destroy()
 
-  designer = null
+  designer.value = undefined
+  designerState.value = null
   simulator = null
 })
 
-/** 渲染当前活跃 Block */
+/** 渲染当前活跃 Block 到 Simulator */
 function renderCurrentBlock() {
   if (!simulator?.isMounted()) return
   const json = engine.getActiveBlockJSON()
@@ -133,7 +174,7 @@ function renderCurrentBlock() {
   simulator.renderBlock(rootJSON as NodeModelJSON | null)
 }
 
-/** 处理从组件库拖拽到画布的 drop */
+/** 处理拖拽悬停（允许 drop） */
 function handleDragOver(e: DragEvent) {
   e.preventDefault()
   if (e.dataTransfer) {
@@ -141,6 +182,7 @@ function handleDragOver(e: DragEvent) {
   }
 }
 
+/** 处理从组件库拖拽到画布的 drop */
 function handleDrop(e: DragEvent) {
   e.preventDefault()
   const componentName = e.dataTransfer?.getData('component-name')
@@ -153,7 +195,7 @@ function handleDrop(e: DragEvent) {
   const block = engine.getActiveBlock()
   if (!block?.rootNode) return
 
-  const node = new NodeModel(engine.eventBus, componentName, {
+  const node = new NodeModel(componentName, {
     props: snippet.props,
   })
   engine.addNode(block.rootNode.id, node)
@@ -167,5 +209,15 @@ function handleDrop(e: DragEvent) {
     class="flex-1 overflow-hidden bg-[var(--color-fill-1)] relative"
     @dragover="handleDragOver"
     @drop="handleDrop"
-  />
+  >
+    <DesignerOverlay
+      v-if="designerState"
+      :hover-style="designerState.hoverStyle.value"
+      :select-style="designerState.selectStyle.value"
+      :toolbar-style="designerState.toolbarStyle.value"
+      :selected-node-name="designerState.selectedNodeName.value"
+      :designer="designerState.designer"
+      :dragging="isDragging"
+    />
+  </div>
 </template>

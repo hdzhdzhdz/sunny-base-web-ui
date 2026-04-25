@@ -3,11 +3,26 @@
  *
  * @ui 包的表单组件，支持 schema 配置驱动。
  * 设计态暴露常用 props，schema 使用 json 类型编辑器。
+ *
+ * ## 属性面板字段
+ *
+ * | 属性 | 类型 | 默认值 | 说明 |
+ * |------|------|--------|------|
+ * | layout | select | 'horizontal' | 布局（horizontal/vertical/inline） |
+ * | size | select | 'small' | 尺寸 |
+ * | showDefaultActions | boolean | false | 显示操作按钮 |
+ * | labelWidth | string | - | 标签宽度 |
+ * | schema | json | - | 表单配置 |
+ *
+ * ## 容器行为
+ *
+ * `isContainer: true` — 表单可接受子节点拖入。
  */
 import { markRaw } from 'vue'
 import type { ComponentMeta } from '@sunny-base-web/designer-materials'
 import { SunnyForm } from '@sunny-base-web/ui'
 
+/** 创建 SunnyForm 的 ComponentMeta */
 export function createSunnyFormMeta(): ComponentMeta {
   return {
     name: 'SunnyForm',
