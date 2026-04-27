@@ -1,6 +1,6 @@
 {
   "name": "@sunny-base-web/constants",
-  "version": "0.8.40",
+  "version": "0.8.42",
   "private": false,
   "main": "./src/index.ts",
   "module": "./src/index.ts",
