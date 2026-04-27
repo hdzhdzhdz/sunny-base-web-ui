@@ -1,5 +1,11 @@
 # @sunny-base-web/locales
 
+## 0.8.40
+
+### Patch Changes
+
+- feat: 添加权限选项 autoSelectFirst 配置
+
 ## 0.8.39
 
 ### Patch Changes

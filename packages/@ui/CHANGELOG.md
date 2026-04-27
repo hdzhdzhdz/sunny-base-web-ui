@@ -1,5 +1,15 @@
 # @sunny-base-web/ui
 
+## 0.8.40
+
+### Patch Changes
+
+- feat: 添加权限选项 autoSelectFirst 配置
+- Updated dependencies
+  - @sunny-base-web/utils@0.8.40
+  - @sunny-base-web/locales@0.8.40
+  - @sunny-base-web/icons@0.8.40
+
 ## 0.8.39
 
 ### Patch Changes
