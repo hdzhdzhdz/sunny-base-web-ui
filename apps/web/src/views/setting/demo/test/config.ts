@@ -66,6 +66,21 @@ export const searchFormSchema: FormSchema[] = [
     },
     colProps: { span: 4 }
   },
+  // PermissionOptions - 权限下拉选择框（自动选中第一个）
+  {
+    fieldName: 'factory',
+    label: '工厂',
+    component: 'Select',
+    permissionOptions: {
+      code: 'FACTORY',
+      autoSelectFirst: true,
+    },
+    componentProps: {
+      placeholder: '请选择工厂',
+      allowClear: true,
+    },
+    colProps: { span: 4 }
+  },
   // SunnyBusinessSearch - 业务搜索（弹窗选择）
   {
     fieldName: 'businessSearchValue',

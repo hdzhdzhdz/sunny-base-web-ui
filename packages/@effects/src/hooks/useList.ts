@@ -5,6 +5,7 @@ import { getResourceByParIdOrModnumb } from '../api/resource';
 import { initResourceConstructor } from '../utils/utils';
 import { useSchemaOptionsLoader } from '../utils/use-schema-options-loader';
 import { useSchemaPermissionLoader } from '../utils/use-schema-permission-loader';
+import { applyAutoSelectDefaults } from '../utils/apply-auto-select-defaults';
 
 /**
  * 查询方案 API 实现
@@ -117,8 +118,11 @@ export function useList<T>(options: {
   const { enhancedSchema: dictEnhancedSchema } = useSchemaOptionsLoader(searchFormSchema);
   
   // 使用声明式加载权限选项（在字典增强后的 Schema 上再增强）
-  const { enhancedSchema: permissionEnhancedSchema } = useSchemaPermissionLoader(dictEnhancedSchema);
-  
+  let _formApi: any;
+  const { enhancedSchema: permissionEnhancedSchema } = useSchemaPermissionLoader(dictEnhancedSchema, {
+    onAutoSelect: (defaults) => applyAutoSelectDefaults(defaults, _formApi),
+  });
+
   // 创建表单，不包含searchPlanConfig
   const [QueryForm, formApi] = useSunnyForm({
     layout: 'vertical',
@@ -146,6 +150,8 @@ export function useList<T>(options: {
     fieldMappingTime,
     arrayToStringFields
   });
+
+  _formApi = formApi;
 
   // ----------------------------------------------------------------------
   // 3. Grid Configuration

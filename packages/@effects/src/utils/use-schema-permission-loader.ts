@@ -37,6 +37,30 @@ export interface SchemaPermissionLoaderReturn {
    * Manual load
    */
   load: () => Promise<void>;
+
+  /**
+   * 自动选中默认值映射（fieldName -> firstOptionValue）
+   * Auto-select defaults map (fieldName -> firstOptionValue)
+   */
+  autoSelectDefaults: ComputedRef<Record<string, any>>;
+}
+
+/**
+ * Schema 权限选项加载器配置
+ */
+export interface SchemaPermissionLoaderOptions {
+  /**
+   * 是否在 onMounted 时自动加载
+   * @default true
+   */
+  immediate?: boolean;
+
+  /**
+   * 权限选项加载完成后的回调，用于自动选中默认值
+   * Callback after permission options are loaded, for auto-selecting defaults
+   * @param defaults - 字段默认值映射 { fieldName: firstOptionValue }
+   */
+  onAutoSelect?: (defaults: Record<string, any>) => Promise<void>;
 }
 
 /**
@@ -44,7 +68,7 @@ export interface SchemaPermissionLoaderReturn {
  * Process declarative Schema permission options loading
  *
  * @param schema - 表单 Schema
- * @param immediate - 是否立即加载
+ * @param options - 配置选项
  * @returns 增强后的 Schema 和加载方法
  *
  * @example
@@ -56,25 +80,22 @@ export interface SchemaPermissionLoaderReturn {
  *     component: 'Select',
  *     permissionOptions: {
  *       code: 'FACTORY',
- *       fieldMapping: { label: 'cName', value: 'cXuhao' }
+ *       autoSelectFirst: true
  *     }
  *   }
  * ]
  *
  * // 在组件中使用
- * const { enhancedSchema } = useSchemaPermissionLoader(searchFormSchema);
- *
- * // 传递给 useList
- * useList({
- *   searchFormSchema: enhancedSchema.value,
- *   ...
- * })
+ * const { enhancedSchema } = useSchemaPermissionLoader(searchFormSchema, {
+ *   onAutoSelect: (defaults) => applyAutoSelectDefaults(defaults, formApi)
+ * });
  * ```
  */
 export function useSchemaPermissionLoader(
   schema: FormSchema[] | Ref<FormSchema[]>,
-  immediate: boolean = true
+  options: SchemaPermissionLoaderOptions = {},
 ): SchemaPermissionLoaderReturn {
+  const { immediate = true, onAutoSelect } = options;
   /**
    * 收集所有需要加载的权限声明
    * Collect all permission declarations to load
@@ -155,6 +176,26 @@ export function useSchemaPermissionLoader(
   });
 
   /**
+   * 自动选中默认值映射
+   * Auto-select defaults map
+   */
+  const autoSelectDefaults: ComputedRef<Record<string, any>> = computed(() => {
+    const defaults: Record<string, any> = {};
+
+    collectDeclarations.value.forEach((decl) => {
+      if (decl.autoSelectFirst) {
+        const permissionCode = String(decl.code);
+        const options = optionsMap.value[permissionCode];
+        if (options && options.length > 0) {
+          defaults[decl.fieldName] = options[0].value;
+        }
+      }
+    });
+
+    return defaults;
+  });
+
+  /**
    * 自动加载（immediate 为 true 时）
    * Auto-load (when immediate is true)
    */
@@ -164,6 +205,11 @@ export function useSchemaPermissionLoader(
     onMounted(async () => {
       console.log('[useSchemaPermissionLoader] onMounted triggered, calling load()');
       await load();
+      // load 完成后，如果有 autoSelectFirst 配置，触发回调
+      const defaults = autoSelectDefaults.value;
+      if (Object.keys(defaults).length > 0 && onAutoSelect) {
+        await onAutoSelect(defaults);
+      }
     });
   }
 
@@ -172,6 +218,7 @@ export function useSchemaPermissionLoader(
     optionsMap,
     loading,
     load,
+    autoSelectDefaults,
   };
 }
 

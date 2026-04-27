@@ -274,6 +274,9 @@ importers:
 
   packages/@designer/core:
     dependencies:
+      mitt:
+        specifier: ^3.0.1
+        version: 3.0.1
       nanoid:
         specifier: ^3.3.11
         version: 3.3.11

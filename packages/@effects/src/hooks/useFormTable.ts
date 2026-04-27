@@ -2,6 +2,7 @@ import { useSunnyForm } from '@sunny-base-web/ui'
 import { useSunnyEditGrid } from '@sunny-base-web/ui'
 import { useSchemaOptionsLoader } from '../utils/use-schema-options-loader'
 import { useSchemaPermissionLoader } from '../utils/use-schema-permission-loader'
+import { applyAutoSelectDefaults } from '../utils/apply-auto-select-defaults'
 import { useSelectOptions } from '../form/use-select-options'
 import { reactive, watch } from 'vue'
 import type { VxeGridProps } from '@sunny-base-web/ui'
@@ -24,8 +25,11 @@ export function useFormTable({
   // 使用声明式加载字典选项
   const { enhancedSchema: dictEnhancedSchema } = useSchemaOptionsLoader(formSchema)
 
+  let _formApi: any;
   // 使用声明式加载权限选项（在字典增强后的 Schema 上再增强）
-  const { enhancedSchema: permissionEnhancedSchema } = useSchemaPermissionLoader(dictEnhancedSchema)
+  const { enhancedSchema: permissionEnhancedSchema } = useSchemaPermissionLoader(dictEnhancedSchema, {
+    onAutoSelect: (defaults) => applyAutoSelectDefaults(defaults, _formApi),
+  })
 
   // 收集表格列中的字典编码
   const collectDictCodes = () => {
@@ -64,6 +68,8 @@ export function useFormTable({
     schema: permissionEnhancedSchema.value,
     ...(objectToValueFields ? { objectToValueFields } : {})
   })
+
+  _formApi = formApi
 
   // 处理表格列，注入字典选项
   const processColumns = (columns: any[]) => {

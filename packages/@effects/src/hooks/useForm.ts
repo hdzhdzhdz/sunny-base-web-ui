@@ -1,6 +1,7 @@
 import { useSunnyForm } from '@sunny-base-web/ui'
 import { useSchemaOptionsLoader } from '../utils/use-schema-options-loader'
 import { useSchemaPermissionLoader } from '../utils/use-schema-permission-loader'
+import { applyAutoSelectDefaults } from '../utils/apply-auto-select-defaults'
 import type { SunnyFormProps } from '@sunny-base-web/ui'
 
 interface UseFormOptions extends Partial<SunnyFormProps> {
@@ -32,14 +33,22 @@ export const USE_FORM_DEFAULTS: Partial<SunnyFormProps> = {
 export function useForm({ schema = [], objectToValueFields, handleValuesChange, ...restProps }: UseFormOptions = {}) {
   // 使用声明式加载字典选项
   const { enhancedSchema: dictEnhancedSchema } = useSchemaOptionsLoader(schema)
-  // 使用声明式加载权限选项（在字典增强后的 Schema 上再增强）
-  const { enhancedSchema: permissionEnhancedSchema } = useSchemaPermissionLoader(dictEnhancedSchema)
 
-  return useSunnyForm({
+  let _formApi: any;
+  // 使用声明式加载权限选项（在字典增强后的 Schema 上再增强）
+  const { enhancedSchema: permissionEnhancedSchema } = useSchemaPermissionLoader(dictEnhancedSchema, {
+    onAutoSelect: (defaults) => applyAutoSelectDefaults(defaults, _formApi),
+  })
+
+  const formResult = useSunnyForm({
     ...USE_FORM_DEFAULTS,
     schema: permissionEnhancedSchema.value,
     ...(objectToValueFields ? { objectToValueFields } : {}),
     ...(handleValuesChange ? { handleValuesChange } : {}),
     ...restProps, // 允许透传其他 SunnyFormProps，优先级最高
   })
+
+  _formApi = formResult[1]
+
+  return formResult
 }

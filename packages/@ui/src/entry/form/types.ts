@@ -725,6 +725,13 @@ export interface PermissionOptionsDeclaration {
    * Field mapping configuration
    */
   fieldMapping?: PermissionFieldMapping;
+
+  /**
+   * 是否自动选中第一个选项
+   * Whether to auto-select the first option after loading
+   * @default false
+   */
+  autoSelectFirst?: boolean;
 }
 
 /**
