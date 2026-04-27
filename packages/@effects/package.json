@@ -1,9 +1,10 @@
 {
   "name": "@sunny-base-web/effects",
-  "version": "0.8.40",
+  "version": "0.8.41",
   "private": false,
   "files": [
-    "dist"
+    "dist",
+    "!dist/Design-*.mjs"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
