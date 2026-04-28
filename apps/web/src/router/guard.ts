@@ -142,11 +142,13 @@ function setupAccessGuard(router: Router) {
     const coreResult = resolveCoreRoute(to);
     if (coreResult !== undefined) return coreResult;
 
-    // Store 无 token 时，尝试从 Cookie 恢复
-    if (!accessStore.accessToken && preferences.app.cookieTokenKey) {
+    // Cookie 为准（iframe 场景下父系统控制 token 生命周期）
+    if (preferences.app.cookieTokenKey) {
       const cookieToken = getCookie(preferences.app.cookieTokenKey);
       if (cookieToken) {
         accessStore.setAccessToken(cookieToken);
+      } else {
+        accessStore.setAccessToken(null);
       }
     }
 
