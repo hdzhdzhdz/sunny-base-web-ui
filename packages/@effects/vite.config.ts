@@ -5,11 +5,6 @@ import dts from 'vite-plugin-dts'
 import { resolve } from 'path'
 
 export default defineConfig({
-  resolve: {
-    alias: {
-      '@sunny-base-web/designer-studio': resolve(__dirname, '../designer/studio/src/index.ts'),
-    },
-  },
   plugins: [
     vue(),
     vueJsx(),
@@ -33,10 +28,6 @@ export default defineConfig({
         '@sunny-base-web/stores',
         '@sunny-base-web/icons',
         '@sunny-base-web/constants',
-        '@sunny-base-web/designer-core',
-        '@sunny-base-web/designer-studio',
-        '@sunny-base-web/designer-materials',
-        '@sunny-base-web/designer-render',
         'axios',
         'jsencrypt',
         'qs',
@@ -68,10 +59,6 @@ export default defineConfig({
           'reka-ui': 'RekaUI',
           'vue-router': 'vueRouter',
           'vxe-table': 'VXETable',
-          '@sunny-base-web/designer-studio': 'SunnyDesignerStudio',
-          '@sunny-base-web/designer-core': 'SunnyDesignerCore',
-          '@sunny-base-web/designer-materials': 'SunnyDesignerMaterials',
-          '@sunny-base-web/designer-render': 'SunnyDesignerRender',
         },
       },
     },
