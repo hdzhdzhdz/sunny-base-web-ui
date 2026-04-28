@@ -6,7 +6,8 @@
     "apps/*",
     "docs",
     "packages/*",
-    "packages/@config/*"
+    "packages/@config/*",
+    "packages/@designer/*"
   ],
   "scripts": {
     "build": "turbo run build",

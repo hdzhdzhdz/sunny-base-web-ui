@@ -1,5 +1,17 @@
 # @sunny-base-web/effects
 
+## 0.8.44
+
+### Patch Changes
+
+- Bump packages to 0.8.44
+- Updated dependencies
+  - @sunny-base-web/icons@0.8.44
+  - @sunny-base-web/locales@0.8.44
+  - @sunny-base-web/stores@0.8.44
+  - @sunny-base-web/ui@0.8.44
+  - @sunny-base-web/utils@0.8.44
+
 ## 0.8.40
 
 ### Patch Changes

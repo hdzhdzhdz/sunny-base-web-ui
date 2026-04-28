@@ -1,5 +1,13 @@
 # @sunny-base-web/utils
 
+## 0.8.44
+
+### Patch Changes
+
+- Bump packages to 0.8.44
+- Updated dependencies
+  - @sunny-base-web/constants@0.8.44
+
 ## 0.8.40
 
 ### Patch Changes
