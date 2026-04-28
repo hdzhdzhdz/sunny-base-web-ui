@@ -88,11 +88,23 @@ export function useDesigner(designer: Designer) {
     return node?.name ?? null
   })
 
+  // ── 悬浮节点名称（hover 标签显示用） ──
+
+  const hoveredNodeName = computed(() => {
+    const nodeId = designer.hoveredNodeId.value
+    if (!nodeId) return null
+    const block = designer.engine.getActiveBlock()
+    if (!block) return null
+    const node = block.findNode(nodeId)
+    return node?.name ?? null
+  })
+
   return {
     hoverStyle,
     selectStyle,
     toolbarStyle,
     selectedNodeName,
+    hoveredNodeName,
     designer,
     refresh,
   }

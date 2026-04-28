@@ -13,7 +13,7 @@
  * - **ref**：DOM 引用绑定（设计态用）
  * - **markElement**：给 DOM 打标记（设计态选中/拖拽用）
  */
-import { reactive, type ComponentInternalInstance } from 'vue'
+import { reactive, nextTick, type ComponentInternalInstance } from 'vue'
 
 /**
  * 解析初始值字符串为实际值
@@ -160,11 +160,33 @@ export class RenderContext {
    */
   ref(nodeId: string): (el: any) => void {
     return (el: any) => {
-      if (el) {
-        const domEl = el instanceof HTMLElement ? el : el.$el
+      if (!el) return
+
+      const resolveDomEl = (): HTMLElement | null => {
+        if (el instanceof HTMLElement) return el
+        // 组件实例：优先 $el，Fragment 根组件的 $el 为 null，
+        // 此时从子节点中找到第一个真实 DOM 元素
+        if (el.$el instanceof HTMLElement) return el.$el
+        if (el.$?.subTree?.el instanceof HTMLElement) return el.$.subTree.el
+        // 遍历 subTree 的 dynamicChildren / children
+        const subtree = el.$?.subTree
+        if (subtree) {
+          const firstEl = findFirstHtmlElement(subtree)
+          if (firstEl) return firstEl
+        }
+        return null
+      }
+
+      const tryMark = (): boolean => {
+        const domEl = resolveDomEl()
+        if (!domEl) return false
         this.refs[nodeId] = domEl
-        // 设计态：给 DOM 打标记（供 EventBridge 定位、Designer overlay 查询）
         this.markElement(domEl, nodeId)
+        return true
+      }
+
+      if (!tryMark()) {
+        nextTick(() => tryMark())
       }
     }
   }
@@ -194,6 +216,29 @@ export class RenderContext {
   dispose(): void {
     this.refs = {}
   }
+}
+
+/**
+ * 从 VNode 树中找到第一个真实 HTMLElement
+ *
+ * Fragment 根组件（如 Arco Trigger）的 $el 为 null，
+ * 需要遍历 subTree 的 children 找到第一个 DOM 节点。
+ */
+function findFirstHtmlElement(vnode: any): HTMLElement | null {
+  if (!vnode) return null
+  if (vnode.el instanceof HTMLElement) return vnode.el
+  const children = vnode.children ?? vnode.dynamicChildren
+  if (Array.isArray(children)) {
+    for (const child of children) {
+      const el = findFirstHtmlElement(child)
+      if (el) return el
+    }
+  }
+  // component vnode: 递归进入其 subTree
+  if (vnode.component?.subTree) {
+    return findFirstHtmlElement(vnode.component.subTree)
+  }
+  return null
 }
 
 /**

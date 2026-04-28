@@ -216,6 +216,7 @@ function handleDrop(e: DragEvent) {
       :select-style="designerState.selectStyle.value"
       :toolbar-style="designerState.toolbarStyle.value"
       :selected-node-name="designerState.selectedNodeName.value"
+      :hovered-node-name="designerState.hoveredNodeName.value"
       :designer="designerState.designer"
       :dragging="isDragging"
     />

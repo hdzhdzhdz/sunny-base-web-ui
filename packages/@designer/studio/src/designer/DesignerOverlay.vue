@@ -31,6 +31,8 @@ const props = defineProps<{
   toolbarStyle: OverlayStyle | null
   /** 选中节点组件名称 */
   selectedNodeName: string | null
+  /** 悬浮节点组件名称 */
+  hoveredNodeName: string | null
   /** Designer 实例（用于调用 actions） */
   designer: Designer
   /** 是否正在拖拽（拖拽时禁用所有 pointer-events，避免拦截 drop 事件） */
@@ -54,12 +56,22 @@ function handleDelete() {
 </script>
 
 <template>
-  <!-- Hover overlay -->
+  <!-- Hover overlay + 名称标签 -->
   <div
     v-if="hoverStyle"
-    class="fixed pointer-events-none z-[999] border-[2px] border-dashed border-[rgba(var(--primary-6),0.6)] bg-[rgba(var(--primary-6),0.04)]"
+    class="fixed pointer-events-none z-[999]"
     :style="hoverStyle"
-  />
+  >
+    <!-- 名称标签 -->
+    <span
+      v-if="hoveredNodeName"
+      class="absolute left-0 -top-5 px-1.5 text-[10px] leading-4 text-white bg-[rgb(var(--primary-6))] rounded-sm whitespace-nowrap"
+    >
+      {{ hoveredNodeName }}
+    </span>
+    <!-- 虚线框 -->
+    <div class="w-full h-full border-[2px] border-dashed border-[rgba(var(--primary-6),0.6)] bg-[rgba(var(--primary-6),0.04)]" />
+  </div>
 
   <!-- Select overlay -->
   <div

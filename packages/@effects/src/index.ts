@@ -35,5 +35,5 @@ export * from './hooks';
 export * from './composables';
 export * from './access';
 // design 模块依赖 @sunny-base-web/designer-studio，不导出以避免下游解析报错
-// export * from './views/design';
+export * from './views/design';
 export * from './loading';

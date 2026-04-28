@@ -376,18 +376,28 @@ export class Simulator {
       setup() {
         return () => {
           if (!simulator.schemaRef.value) return null
-          return renderNode(
-            simulator.schemaRef.value,
-            simulator.renderCtx!,
-            simulator.loader!,
-            'design',
-          )
+          try {
+            return renderNode(
+              simulator.schemaRef.value,
+              simulator.renderCtx!,
+              simulator.loader!,
+              'design',
+            )
+          } catch (err) {
+            console.warn('[Simulator] render error:', err)
+            return null
+          }
         }
       },
     }
 
     // 创建并挂载
     this.innerApp = createApp(RootComponent)
+
+    // 全局错误处理：防止单个组件渲染错误拖垮整个 Vue 应用
+    this.innerApp.config.errorHandler = (err) => {
+      console.warn('[Simulator] component error:', err)
+    }
 
     // 注册物料组件（跳过原生 HTML 元素，它们用标签名字符串，不需要全局注册）
     for (const [name, component] of this.materialStore.getAllComponents()) {
