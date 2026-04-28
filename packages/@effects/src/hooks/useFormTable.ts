@@ -132,7 +132,7 @@ export function useFormTable({
   })
 
   // 包装reloadData方法，确保数据更新
-  const originalReloadData = gridApi.reloadData
+  const originalReloadData = gridApi.reloadData.bind(gridApi)
   gridApi.reloadData = (data: any[]) => {
     gridOptions.data = data
     return originalReloadData(data)
