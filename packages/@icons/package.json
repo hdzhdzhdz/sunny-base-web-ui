@@ -1,6 +1,6 @@
 {
   "name": "@sunny-base-web/icons",
-  "version": "0.8.44",
+  "version": "0.8.47",
   "private": false,
   "type": "module",
   "main": "./src/index.ts",
@@ -27,7 +27,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts --clean --splitting false",
+    "build": "node build.mjs",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {

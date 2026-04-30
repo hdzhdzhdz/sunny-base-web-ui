@@ -1,5 +1,11 @@
 # @sunny-base-web/constants
 
+## 0.8.47
+
+### Patch Changes
+
+- Bump packages to 0.8.47
+
 ## 0.8.44
 
 ### Patch Changes

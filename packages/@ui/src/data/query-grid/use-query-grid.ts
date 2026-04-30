@@ -25,7 +25,13 @@ export function useSunnyQueryGrid(options: any) {
   const clearSelection = () => {
     const $grid = gridRef.value?.getGrid?.() || gridRef.value;
     if ($grid) {
+      // 清当前页选中
       $grid.clearCheckboxRow();
+      // 清跨页保留的选中（reserve）
+      const reserved = $grid.getCheckboxReserveRecords?.() || [];
+      reserved.forEach((row: any) => {
+        $grid.setCheckboxRow(row, false);
+      });
       selectionCount.value = 0;
     }
   };
