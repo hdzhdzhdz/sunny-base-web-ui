@@ -1,5 +1,17 @@
 # @sunny-base-web/ui
 
+## 0.8.49
+
+### Patch Changes
+
+- feat(ui): 添加 exportAdapter 支持导出请求通过 requestClient 发送
+  - 新增 ExportAdapter 接口和 exportAdapter 配置项到 FormCommonConfig
+  - SunnyExportModalLight 组件使用 exportAdapter 替代原生 axios，支持认证/权限
+  - 无 adapter 时自动降级到动态 import axios
+  - @sunny-base-web/icons@0.8.49
+  - @sunny-base-web/locales@0.8.49
+  - @sunny-base-web/utils@0.8.49
+
 ## 0.8.48
 
 ### Patch Changes

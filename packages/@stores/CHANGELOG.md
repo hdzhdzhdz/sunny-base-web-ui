@@ -1,5 +1,12 @@
 # @sunny-base-web/stores
 
+## 0.8.49
+
+### Patch Changes
+
+- @sunny-base-web/constants@0.8.49
+- @sunny-base-web/utils@0.8.49
+
 ## 0.8.48
 
 ### Patch Changes

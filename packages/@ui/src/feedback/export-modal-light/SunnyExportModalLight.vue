@@ -58,7 +58,7 @@ const [SunnyModal, modalApi] = useSunnyModal({
       }
       const apiPrefix = DEFAULT_FORM_COMMON_CONFIG.apiPrefix
       const exportFullUrl = props.customExportUrl
-        ? `${apiPrefix}${props.customExportUrl}`
+        ? `${props.customExportUrl}`
         : `${apiPrefix}${props.exportUrl}/export/exportExecuteStream`
 
       const adapter = DEFAULT_FORM_COMMON_CONFIG.exportAdapter
