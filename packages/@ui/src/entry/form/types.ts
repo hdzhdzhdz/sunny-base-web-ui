@@ -771,6 +771,22 @@ export interface PermissionOptionsAdapter {
 }
 
 /**
+ * 导出适配器
+ * Export adapter
+ * @description 用于将导出请求通过 requestClient 发送，携带认证/权限信息
+ */
+export interface ExportAdapter {
+  /**
+   * 执行导出请求
+   * Execute export request
+   * @param url - 完整的导出接口地址
+   * @param data - 导出请求数据
+   * @returns 包含 blob 和 headers 的原始响应
+   */
+  export: (url: string, data: any) => Promise<{ data: Blob; headers: Record<string, any> }>;
+}
+
+/**
  * 表单通用配置
  * Form common configuration
  */
@@ -891,6 +907,12 @@ export interface FormCommonConfig {
      */
     accept?: string;
   };
+  /**
+   * 导出适配器
+   * Export adapter
+   * @description 用于将导出请求通过 requestClient 发送，携带认证/权限信息
+   */
+  exportAdapter?: ExportAdapter;
 }
 
 /**

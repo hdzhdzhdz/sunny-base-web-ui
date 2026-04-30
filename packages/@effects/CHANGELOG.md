@@ -1,5 +1,29 @@
 # @sunny-base-web/effects
 
+## 0.8.48
+
+### Patch Changes
+
+- feat: 新增 SunnyExportModalLight 轻量导出组件及 useExport hook
+- Updated dependencies
+  - @sunny-base-web/ui@0.8.48
+  - @sunny-base-web/icons@0.8.48
+  - @sunny-base-web/locales@0.8.48
+  - @sunny-base-web/stores@0.8.48
+  - @sunny-base-web/utils@0.8.48
+
+## 0.0.0-0.8.48-20260430080121
+
+### Patch Changes
+
+- feat: 新增 SunnyExportModalLight 轻量导出组件及 useExport hook
+- Updated dependencies
+  - @sunny-base-web/ui@0.0.0-0.8.48-20260430080121
+  - @sunny-base-web/icons@0.0.0-0.8.48-20260430080121
+  - @sunny-base-web/locales@0.0.0-0.8.48-20260430080121
+  - @sunny-base-web/stores@0.0.0-0.8.48-20260430080121
+  - @sunny-base-web/utils@0.0.0-0.8.48-20260430080121
+
 ## 0.8.47
 
 ### Patch Changes

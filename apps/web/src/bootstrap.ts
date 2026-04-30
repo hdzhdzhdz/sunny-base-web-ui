@@ -373,6 +373,19 @@ async function bootstrap(namespace: string) {
 				 */
 				accept: '',
 			},
+			/**
+			 * 导出适配器
+			 * Export adapter
+			 * 使用 requestClient 发送导出请求，携带认证/权限信息
+			 */
+			exportAdapter: {
+				export: async (url: string, data: any) => {
+					return await requestClient.post(url, data, {
+						responseType: 'blob',
+						responseReturn: 'raw',
+					});
+				},
+			},
 		},
 
 	})

@@ -2,8 +2,8 @@
 import { ref } from 'vue'
 import { Modal, Message } from '@arco-design/web-vue';
 
-import { useExportModal, useImportModal } from '@sunny-base-web/ui'
-import { requestClient, searchPlanApi, useList } from '@sunny-base-web/effects'
+import { useImportModal } from '@sunny-base-web/ui'
+import { requestClient, searchPlanApi, useList, useExport } from '@sunny-base-web/effects'
 import { getUserConfig } from './config'
 
 import UserAdd from './UserAdd.vue';
@@ -189,10 +189,9 @@ const gridEvents = {
         break
       case 'daochu/show':
         const formValues = await formApi.getValues()
-        exportModalApi.open({
-          nmodid: router.currentRoute.value.meta.id,
-          nButtonid: params.button.nButtonid,
-          conditionMap: formValues
+        openExport({
+          conditionMap: formValues,
+          tableColumns,
         })
         break
     }
@@ -221,7 +220,9 @@ const {
   gridEvents,
 });
 
-const [exportModal, exportModalApi] = useExportModal({})
+const { ExportModal: exportLight, open: openExport } = useExport({
+  exportUrl: '/core/authUser',
+})
 const [importModal, importModalApi] = useImportModal({})
 </script>
 
@@ -241,7 +242,7 @@ const [importModal, importModalApi] = useImportModal({})
         <Grid class="flex-1" />
       </div>
 
-      <exportModal />
+      <exportLight />
       <importModal />
       <UserAdd ref="UserAddRef" @success="() => gridApi.commitProxy('query')" />
       <UserAuth ref="UserAuthRef" @success="() => gridApi.commitProxy('query')" />

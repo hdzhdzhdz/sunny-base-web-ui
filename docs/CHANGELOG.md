@@ -1,5 +1,21 @@
 # @repo/docs
 
+## 0.0.0
+
+### Patch Changes
+
+- Updated dependencies
+  - @sunny-base-web/ui@0.8.48
+  - @sunny-base-web/effects@0.8.48
+
+## 0.0.0-0.8.48-20260430080121
+
+### Patch Changes
+
+- Updated dependencies
+  - @sunny-base-web/ui@0.0.0-0.8.48-20260430080121
+  - @sunny-base-web/effects@0.0.0-0.8.48-20260430080121
+
 ## 0.0.18
 
 ### Patch Changes

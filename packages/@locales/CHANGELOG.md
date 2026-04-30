@@ -1,5 +1,9 @@
 # @sunny-base-web/locales
 
+## 0.8.48
+
+## 0.0.0-0.8.48-20260430080121
+
 ## 0.8.47
 
 ### Patch Changes
