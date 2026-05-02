@@ -218,6 +218,7 @@ const {
   resourceConfig,
   queryFunction,
   gridEvents,
+  showCheckbox: true,
 });
 
 const { ExportModal: exportLight, open: openExport } = useExport({

@@ -91,9 +91,14 @@ export function useList<T>(options: {
    * 是否自动加载数据
    */
   autoLoad?: boolean;
+  /**
+   * 是否显示全选 checkbox 列
+   * @default false
+   */
+  showCheckbox?: boolean;
 
 }) {
-  const { searchFormSchema, tableColumns, dataType, resourceConfig, queryFunction, gridEvents, treeConfig, loadMethod, objectToValueFields, fieldMappingTime, arrayToStringFields, lazy, autoLoad = true } = options;
+  const { searchFormSchema, tableColumns, dataType, resourceConfig, queryFunction, gridEvents, treeConfig, loadMethod, objectToValueFields, fieldMappingTime, arrayToStringFields, lazy, autoLoad = true, showCheckbox = false } = options;
 
   // ----------------------------------------------------------------------
   // 1. Basic Configuration
@@ -170,13 +175,15 @@ export function useList<T>(options: {
       isCurrent: true,
       isHover: true
     },
-    checkboxConfig: {
-      highlight: true,       // 选中行高亮
-      range: !treeConfig && !lazy,           // 支持范围选择（Shift+点击），树形结构不支持
-      reserve: true,         // 跨页保留选中状态
-      trigger: 'row',        // 点击行触发选择
-      checkStrictly: true    // 父子节点不关联选择
-    },
+    ...(showCheckbox && {
+      checkboxConfig: {
+        highlight: true,       // 选中行高亮
+        range: !treeConfig && !lazy,           // 支持范围选择（Shift+点击），树形结构不支持
+        reserve: true,         // 跨页保留选中状态
+        trigger: 'row',        // 点击行触发选择
+        checkStrictly: true    // 父子节点不关联选择
+      },
+    }),
     columnConfig: {
       resizable: true
     },
@@ -219,7 +226,9 @@ export function useList<T>(options: {
     filterConfig: {
       remote: true // 使用服务端筛选,不对数据进行处理
     },
-    columns: tableColumns,
+    columns: showCheckbox
+      ? tableColumns
+      : tableColumns.filter((col: any) => col.type !== 'checkbox'),
     proxyConfig: {
       seq: true,
       autoLoad: false,

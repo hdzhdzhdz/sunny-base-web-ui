@@ -96,12 +96,12 @@ export function useSunnyQueryGrid(options: any) {
 
         return h(VxeGrid, {
           ref: gridRef,
-          ...props,
-          ...attrs,
           ...gridOptions,
           ...(toolbarConfig ? { toolbarConfig } : {}),
           ...listeners,
           ...(showSelectionCount ? { onCheckboxChange: updateSelectionCount, onCheckboxAll: updateSelectionCount } : {}),
+          ...props,
+          ...attrs,
         }, slots);
       };
     }

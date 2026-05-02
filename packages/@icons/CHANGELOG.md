@@ -1,5 +1,11 @@
 # @sunny-base-web/icons
 
+## 0.8.53
+
+### Patch Changes
+
+- bump to 0.8.53
+
 ## 0.8.52
 
 ### Patch Changes
