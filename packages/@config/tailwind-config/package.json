@@ -1,6 +1,6 @@
 {
   "name": "@sunny-base-web/tailwind-config",
-  "version": "0.8.51",
+  "version": "0.8.52",
   "private": false,
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

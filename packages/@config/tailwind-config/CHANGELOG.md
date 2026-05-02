@@ -1,5 +1,11 @@
 # @sunny-base-web/tailwind-config
 
+## 0.8.52
+
+### Patch Changes
+
+- bump version to 0.8.52
+
 ## 0.8.51
 
 ### Patch Changes
