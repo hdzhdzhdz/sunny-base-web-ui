@@ -1,9 +1,9 @@
-import { Input, InputNumber, Select, DatePicker, MonthPicker, YearPicker, WeekPicker, RangePicker, Switch, Button, Textarea, Popover } from '@arco-design/web-vue'
+import { Input, InputNumber, Select, DatePicker, MonthPicker, YearPicker, WeekPicker, RangePicker, Switch, Button, Textarea, Popover, Tooltip } from '@arco-design/web-vue'
 import { SunnyBusinessSearch, SunnySimpleUpload } from '@sunny-base-web/ui'
 import { isArray } from 'lodash-es'
 import { ref } from 'vue'
 
-// 文本
+// 文本（支持 showOverflow: 'tooltip' 配置，溢出省略 + Tooltip 显示完整值）
 export const SpanRender = {
   editRender: {},
   slots: {
@@ -11,7 +11,12 @@ export const SpanRender = {
       const value = row[column.field]
       const options = column.params?.options
       const option = options?.find((item: any) => item.value === value)
-      return [<span>{option?.label ?? value}</span>]
+      const displayValue = option?.label ?? value
+      // 内联样式确保在 vxe-table 单元格中正确截断，Tooltip 鼠标移入显示完整值
+      if (column.showOverflow === 'tooltip') {
+        return [<Tooltip content={String(displayValue ?? '')}><span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', width: '100%' }}>{displayValue}</span></Tooltip>]
+      }
+      return [<span>{displayValue}</span>]
     }
   }
 }

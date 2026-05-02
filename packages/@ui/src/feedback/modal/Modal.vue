@@ -10,13 +10,14 @@
     :fullscreen="isMaximized"
     :closable="false"
     v-bind="$attrs"
-    modal-class="sunny-modal"
+    :modal-class="modalClass"
+    :modal-style="dragStyle"
     @click.stop
   >
     <slot></slot>
 
     <template #title>
-      <div class="sunny-modal__header" @dblclick="props.fullscreen && toggleMaximize()">
+      <div class="sunny-modal__header" @dblclick="props.fullscreen && toggleMaximize()" @mousedown="handleDragStart">
         <div class="sunny-modal__title-text">
           <slot name="title">{{ title }}</slot>
         </div>
@@ -75,7 +76,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, useAttrs } from "vue";
+import { ref, computed, useAttrs, onBeforeUnmount } from "vue";
 import {
   Modal as AModal,
   Tooltip as ATooltip,
@@ -114,6 +115,47 @@ const emit = defineEmits<{
 const attrs = useAttrs();
 const loading = ref(false);
 
+const modalClass = computed(() => {
+  const cls = ['sunny-modal'];
+  if (props.draggable) cls.push('sunny-modal--draggable');
+  return cls.join(' ');
+});
+
+const dragOffset = ref({ x: 0, y: 0 });
+let dragStartX = 0;
+let dragStartY = 0;
+
+const dragStyle = computed(() => {
+  const { x, y } = dragOffset.value;
+  if (x === 0 && y === 0) return undefined;
+  return { transform: `translate(${x}px, ${y}px)` };
+});
+
+const handleDragStart = (e: MouseEvent) => {
+  if (!props.draggable || isMaximized.value) return;
+  if ((e.target as HTMLElement).closest('.sunny-modal__action-btn, .arco-tooltip')) return;
+
+  dragStartX = e.clientX - dragOffset.value.x;
+  dragStartY = e.clientY - dragOffset.value.y;
+
+  const handleMove = (ev: MouseEvent) => {
+    dragOffset.value = {
+      x: ev.clientX - dragStartX,
+      y: ev.clientY - dragStartY,
+    };
+  };
+  const handleEnd = () => {
+    document.removeEventListener('mousemove', handleMove);
+    document.removeEventListener('mouseup', handleEnd);
+  };
+  document.addEventListener('mousemove', handleMove);
+  document.addEventListener('mouseup', handleEnd);
+};
+
+const resetDrag = () => {
+  dragOffset.value = { x: 0, y: 0 };
+};
+
 const visible = computed({
   get: () => props.modelValue,
   set: (val) => emit("update:modelValue", val),
@@ -127,6 +169,7 @@ const isMaximized = ref(false);
 
 const toggleMaximize = () => {
     isMaximized.value = !isMaximized.value;
+    resetDrag();
     emit("fullscreen-change", isMaximized.value);
   };
 
@@ -139,6 +182,7 @@ const handleClose = async () => {
     }
 
     isMaximized.value = false;
+    resetDrag();
 
     visible.value = false;
     emit("close");
@@ -155,6 +199,7 @@ const handleClose = async () => {
         const res = await onBeforeOk();
         if (res !== false) {
           isMaximized.value = false;
+          resetDrag();
           emit("ok");
           visible.value = false;
         }
@@ -165,6 +210,7 @@ const handleClose = async () => {
       }
     } else {
       isMaximized.value = false;
+      resetDrag();
       emit("ok");
       visible.value = false;
     }
@@ -287,6 +333,10 @@ defineExpose({
   justify-content: space-between;
   width: 100%;
   min-height: 22px;
+}
+
+.sunny-modal--draggable .sunny-modal__header {
+  cursor: move;
 }
 
 .sunny-modal__title-text {

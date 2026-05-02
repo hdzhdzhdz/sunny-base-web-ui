@@ -39,6 +39,8 @@ export interface ModalProps {
   ) => void | boolean | Promise<void | boolean>;
   /** 取消前回调 */
   onBeforeCancel?: () => boolean | Promise<boolean>;
+  /** 是否支持拖拽 */
+  draggable?: boolean;
   /** 关闭回调 */
   onClose?: () => void;
   /** 确认回调 */

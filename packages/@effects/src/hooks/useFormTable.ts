@@ -112,6 +112,9 @@ export function useFormTable({
     zoomConfig: {
       enabled: true
     },
+    columnConfig: {
+      resizable: true
+    },
     customConfig: {
       storage: true,
       mode: 'popup',
