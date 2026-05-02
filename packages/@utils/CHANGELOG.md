@@ -1,5 +1,21 @@
 # @sunny-base-web/utils
 
+## 0.8.51
+
+### Patch Changes
+
+- chore: 版本升级至 0.8.51
+- Updated dependencies
+  - @sunny-base-web/constants@0.8.51
+
+## 0.8.50
+
+### Patch Changes
+
+- chore: 版本升级至 0.8.50
+- Updated dependencies
+  - @sunny-base-web/constants@0.8.50
+
 ## 0.8.49
 
 ### Patch Changes

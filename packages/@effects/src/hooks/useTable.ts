@@ -24,6 +24,8 @@ interface UseTableOptions {
   gridId?: string
   /** 表格事件 */
   gridEvents?: Record<string, (...args: any[]) => any>
+  /** 全局溢出提示，默认 false */
+  showOverflow?: boolean | 'tooltip' | 'ellipsis'
 }
 
 export function useTable({
@@ -37,6 +39,7 @@ export function useTable({
   height = 'auto',
   gridId = 'table-grid',
   gridEvents,
+  showOverflow = 'tooltip',
 }: UseTableOptions = {}) {
   // 收集表格列中的字典编码
   const collectDictCodes = () => {
@@ -85,6 +88,7 @@ export function useTable({
     data,
     height,
     size: 'mini',
+    showOverflow,
     columnConfig: {
       resizable: true
     },

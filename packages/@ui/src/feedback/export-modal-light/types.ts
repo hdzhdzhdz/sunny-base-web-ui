@@ -38,7 +38,7 @@ export function tableColumnsToExportList(columns: TableColumnInfo[]): ExportColu
         colName: String(col.title || col.field!),
         colWidth: col.width ?? col.minWidth,
         colDataType: 'default' as const,
-        colType: 'spanselect',
+        colType: 'span',
         nSfExport: 1 as const,
         ...(selOpts && selOpts.length > 0
           ? { selOpts, selId: '' }

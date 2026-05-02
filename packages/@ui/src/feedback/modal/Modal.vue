@@ -12,7 +12,6 @@
     v-bind="$attrs"
     modal-class="sunny-modal"
     @click.stop
-    @mousedown.stop
   >
     <slot></slot>
 
