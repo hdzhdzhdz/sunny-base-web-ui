@@ -1,5 +1,7 @@
 # @sunny-base-web/tsconfig
 
+## 0.8.54
+
 ## 0.8.53
 
 ## 0.8.52

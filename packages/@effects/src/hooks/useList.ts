@@ -98,7 +98,7 @@ export function useList<T>(options: {
   showCheckbox?: boolean;
 
 }) {
-  const { searchFormSchema, tableColumns, dataType, resourceConfig, queryFunction, gridEvents, treeConfig, loadMethod, objectToValueFields, fieldMappingTime, arrayToStringFields, lazy, autoLoad = true, showCheckbox = false } = options;
+  const { searchFormSchema, tableColumns, dataType, resourceConfig, queryFunction, gridEvents, treeConfig, loadMethod, objectToValueFields, fieldMappingTime, arrayToStringFields, lazy, autoLoad = true, showCheckbox = true } = options;
 
   // ----------------------------------------------------------------------
   // 1. Basic Configuration
@@ -181,7 +181,7 @@ export function useList<T>(options: {
         range: !treeConfig && !lazy,           // 支持范围选择（Shift+点击），树形结构不支持
         reserve: true,         // 跨页保留选中状态
         trigger: 'row',        // 点击行触发选择
-        checkStrictly: true    // 父子节点不关联选择
+        checkStrictly: !!(treeConfig || lazy)    // 仅树形/懒加载时父子不关联，否则会隐藏表头全选框
       },
     }),
     columnConfig: {

@@ -1,5 +1,11 @@
 # @sunny-base-web/locales
 
+## 0.8.54
+
+### Patch Changes
+
+- bump to 0.8.54
+
 ## 0.8.53
 
 ### Patch Changes

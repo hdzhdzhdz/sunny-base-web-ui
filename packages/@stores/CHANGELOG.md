@@ -1,5 +1,14 @@
 # @sunny-base-web/stores
 
+## 0.8.54
+
+### Patch Changes
+
+- bump to 0.8.54
+- Updated dependencies
+  - @sunny-base-web/constants@0.8.54
+  - @sunny-base-web/utils@0.8.54
+
 ## 0.8.53
 
 ### Patch Changes
