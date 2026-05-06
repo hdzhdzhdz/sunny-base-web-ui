@@ -40,6 +40,12 @@ export interface EffectsConfig {
    */
   cookieTokenKey?: string
   /**
+   * 业务错误码自定义处理（不包括 530 登出逻辑，530 由框架内部处理不可覆盖）
+   * 当后端返回 code 非 200 且非 530 时触发
+   * 不配置则默认使用 Message.error 提示
+   */
+  onBusinessError?: (code: number, message: string) => void | Promise<void>
+  /**
    * 头部配置
    */
   header?: {

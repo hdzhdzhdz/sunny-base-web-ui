@@ -1,5 +1,11 @@
 # @sunny-base-web/constants
 
+## 0.8.55
+
+### Patch Changes
+
+- bump to 0.8.55
+
 ## 0.8.54
 
 ### Patch Changes

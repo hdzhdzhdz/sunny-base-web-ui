@@ -67,43 +67,42 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   }
 
   /**
-   * 业务错误码处理（如 530 登录超时）
-   * 当后端返回特定业务码时触发
-   *
-   * 行为：
-   * 1. 显示提示消息
-   * 2. 清空所有相关 Store 数据
-   * 3. 跳转到登录页（携带 redirect 参数）
+   * 业务错误码处理
+   * 530: 框架内置登出逻辑（不可覆盖）
+   * 其他: 调用 globalConfig.onBusinessError，未配置则默认 Message.error
    */
-  async function doLogoutOnBusinessError(code: number, message: string) {
+  async function handleBusinessError(code: number, message: string) {
     console.warn(`Business error code ${code}: ${message}`);
 
-    // 1. 显示提示消息
-    Message.warning(message || '登录已过期，请重新登录');
+    if (code === 530) {
+      // 530: 登录超时 → 框架内置登出逻辑，不可覆盖
+      Message.warning(message || '登录已过期，请重新登录');
 
-    // 2. 清空所有相关 Store
-    const accessStore = useAccessStore();
-    const authStore = useAuthStore();
-    const tabbarStore = useTabbarStore();
+      const accessStore = useAccessStore();
+      const authStore = useAuthStore();
+      const tabbarStore = useTabbarStore();
 
-    // 清空 Token
-    accessStore.setAccessToken(null);
-    // 执行 logout 清理用户信息和权限
-    await authStore.logout();
-    // 清空标签页
-    tabbarStore.tabs = [];
-    tabbarStore.cachedTabs = new Set();
+      accessStore.setAccessToken(null);
+      await authStore.logout();
+      tabbarStore.tabs = [];
+      tabbarStore.cachedTabs = new Set();
 
-    // 3. 跳转到登录页，携带 redirect 参数
-    // 使用 hash 路由获取当前路径（去掉 # 前缀）
-    const currentPath = window.location.hash.slice(1) || '/';
-    const loginRoute = globalConfig.app?.loginPath || '/auth/login';
-    const redirectPath = currentPath !== loginRoute
-      ? `${loginRoute}?redirect=${encodeURIComponent(currentPath)}`
-      : loginRoute;
+      const currentPath = window.location.hash.slice(1) || '/';
+      const loginRoute = globalConfig.app?.loginPath || '/auth/login';
+      const redirectPath = currentPath !== loginRoute
+        ? `${loginRoute}?redirect=${encodeURIComponent(currentPath)}`
+        : loginRoute;
 
-    // ✅ 使用 hash 路由模式，修改 hash 而不是 href
-    window.location.hash = redirectPath;
+      window.location.hash = redirectPath;
+      return;
+    }
+
+    // 其他业务码 → 项目自定义处理，未配置则默认 Message.error
+    if (globalConfig.onBusinessError) {
+      await globalConfig.onBusinessError(code, message);
+    } else {
+      Message.error(message || '操作失败');
+    }
   }
 
   /**
@@ -169,8 +168,8 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   // 必须在 defaultResponseInterceptor 之前注册，以便先处理业务码
   client.addResponseInterceptor(
     businessCodeResponseInterceptor({
-      businessCodes: [530], // 登录超时的业务码
-      onBusinessError: doLogoutOnBusinessError,
+      businessCodes: [500, 530], // 500: 业务异常, 530: 登录超时
+      onBusinessError: handleBusinessError,
     }),
   );
 
