@@ -168,7 +168,7 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   // 必须在 defaultResponseInterceptor 之前注册，以便先处理业务码
   client.addResponseInterceptor(
     businessCodeResponseInterceptor({
-      businessCodes: [500, 530], // 500: 业务异常, 530: 登录超时
+      businessCodes: [530], // 500: 业务异常, 530: 登录超时
       onBusinessError: handleBusinessError,
     }),
   );

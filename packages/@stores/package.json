@@ -1,6 +1,6 @@
 {
   "name": "@sunny-base-web/stores",
-  "version": "0.8.56",
+  "version": "0.8.58",
   "private": false,
   "main": "./src/index.ts",
   "module": "./src/index.ts",
