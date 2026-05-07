@@ -409,18 +409,18 @@ export class FormApi {
   ) {
     const form = await this.getForm();
 
-    // 为所有 schema 字段构造默认值，确保收起（未挂载）的字段也能被正确重置
+    // 为所有 schema 字段构造空值，确保收起（未挂载）的字段也能被正确重置
     const schema = this.state?.schema || [];
-    const defaultValues: Record<string, any> = {};
+    const emptyValues: Record<string, any> = {};
     schema.forEach(item => {
       if (item.fieldName) {
-        defaultValues[item.fieldName] = item.defaultValue ?? undefined;
+        emptyValues[item.fieldName] = undefined;
       }
     });
 
     return form.resetForm({
       ...state,
-      values: { ...defaultValues, ...(state?.values || {}) },
+      values: { ...emptyValues, ...(state?.values || {}) },
     }, opts);
   }
 
