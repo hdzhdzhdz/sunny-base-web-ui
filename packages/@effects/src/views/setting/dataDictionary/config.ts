@@ -155,7 +155,14 @@ export const gridColumns: VxeGridProps<MetaItem>['columns'] = [
         label: 'cName',
         value: 'cXuhao'
       }
-    }
+    },
+    formatter: ({ cellValue, column }) => {
+      const options = column.params?.options || []
+      const opt = options.find((o: any) => o.value === cellValue)
+      return opt?.label || cellValue
+    },
+    filters: [{ data: { checks: [], sVal: '', sMenu: '', fType1: '', fVal1: '', fMode: 'and', fType2: '', fVal2: '' } }],
+    filterRender: { name: 'FilterCombination' }
   },
   {
     field: 'value',
@@ -165,7 +172,9 @@ export const gridColumns: VxeGridProps<MetaItem>['columns'] = [
     params: {
       placeholder: '请输入属性值',
       allowClear: true
-    }
+    },
+    filters: [{ data: { checks: [], sVal: '', sMenu: '', fType1: '', fVal1: '', fMode: 'and', fType2: '', fVal2: '' } }],
+    filterRender: { name: 'FilterCombination' }
   }
 ];
 

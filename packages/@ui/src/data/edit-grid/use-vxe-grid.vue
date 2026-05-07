@@ -12,6 +12,7 @@
 import { ref } from 'vue'
 import { VxeGrid, type VxeGridInstance } from 'vxe-table'
 import 'vxe-table/lib/style.css'
+import './filters-combination'
 
 const gridRef = ref<VxeGridInstance>()
 

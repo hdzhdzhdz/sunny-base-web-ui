@@ -14,7 +14,7 @@ import { setupI18n } from '#/locales';
 import { initStores, useSettingsStore } from '@sunny-base-web/stores';
 import { preferences } from './preferences';
 
-import VxeUITable from 'vxe-table'
+import VxeUITable, { VXETable } from 'vxe-table'
 import 'vxe-table/es/style.css'
 
 import VxeUIBase, { VxeUI } from 'vxe-pc-ui'
@@ -22,6 +22,8 @@ import 'vxe-pc-ui/es/style.css'
 import VxeUIPluginRenderArco from '@vxe-ui/plugin-render-arco'
 import '@vxe-ui/plugin-render-arco/dist/style.css'
 import './vxe.css'
+// import './plugin/vxe/filters-combination/index'
+
 VxeUI.use(VxeUIPluginRenderArco)
 
 import { setupApiLoadingInterceptor } from './utils/api-loading-interceptor';
@@ -138,6 +140,13 @@ async function bootstrap(namespace: string) {
 			},
 		}
 	});
+
+	// 设置授权信息
+	// 方式 setup({ ... }) 和 config({ ... }) 已废弃，（建议统一使用 setConfig({ ... })）
+	VXETable.setup({
+		authId: 'j60smnpdxswqharj' // 获取授权后在官网登录后进入“用户中心”查看
+	})
+
 
 	// 注册 @effects 业务组件包的全局配置
 	// 作用：统一注入 API 前缀和 SSO 地址，使 Login 等组件能自动获取配置，
