@@ -22,6 +22,12 @@ export function useSunnyQueryGrid(options: any) {
     selectionCount.value = records.length + reserved.length;
   };
 
+  const handleProxyQuery = (params: any) => {
+    if (params?.isReload) {
+      selectionCount.value = 0;
+    }
+  };
+
   const clearSelection = () => {
     const $grid = gridRef.value?.getGrid?.() || gridRef.value;
     if ($grid) {
@@ -99,7 +105,7 @@ export function useSunnyQueryGrid(options: any) {
           ...gridOptions,
           ...(toolbarConfig ? { toolbarConfig } : {}),
           ...listeners,
-          ...(showSelectionCount ? { onCheckboxChange: updateSelectionCount, onCheckboxAll: updateSelectionCount } : {}),
+          ...(showSelectionCount ? { onCheckboxChange: updateSelectionCount, onCheckboxAll: updateSelectionCount, onProxyQuery: handleProxyQuery } : {}),
           ...props,
           ...attrs,
         }, slots);
