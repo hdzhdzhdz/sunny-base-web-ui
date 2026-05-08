@@ -18,6 +18,7 @@ import './renderer/extend-cell-area/vxe-table-extend-cell-area.es6.min'
 import './renderer/extend-cell-area/vxe-table-extend-cell-area.min.css'
 import './renderer/extend-pivot-table/vxe-table-extend-pivot-table.es6.min'
 import './renderer/extend-pivot-table/vxe-table-extend-pivot-table.min.css'
+import './renderer/filters-complex-input'
 
 const props = withDefaults(defineProps<{
   size?: 'medium' | 'small' | 'mini'

@@ -46,6 +46,81 @@ const [Grid, gridApi] = useSunnyQueryGrid({ gridOptions })
 |------|------|------|
 | `groupFields` | `string[]` | 按指定字段进行行分组 |
 
+### 列筛选
+
+QueryGrid 内置了多种列筛选渲染器，可以在列头点击筛选图标进行数据过滤。
+
+#### FilterSimpleInput - 简单文本筛选
+
+提供输入框和大小写敏感切换，通过子字符串包含匹配进行筛选。
+
+```typescript
+const tableColumns = [
+  {
+    field: 'cUsernumb',
+    title: '用户编号',
+    minWidth: 120,
+    filters: [{ data: { isSensitive: false, sVal: '' } }],
+    filterRender: { name: 'FilterSimpleInput' },
+  },
+]
+```
+
+#### FilterComplexInput - 高级文本筛选
+
+在简单文本筛选基础上增加匹配类型选择（包含、等于、开头是、结尾是、大于、小于）。
+
+```typescript
+const tableColumns = [
+  {
+    field: 'salary',
+    title: '薪资',
+    minWidth: 100,
+    filters: [{ data: { sType: 'include', isSensitive: false, sVal: '' } }],
+    filterRender: { name: 'FilterComplexInput' },
+  },
+]
+```
+
+#### MyFilterComplex - 自定义筛选
+
+基于 Vue 组件的筛选器，自动检测列是否配置 `params.optionlist` 来切换 select 模式和 input 模式。
+
+```typescript
+const tableColumns = [
+  {
+    field: 'status',
+    title: '状态',
+    minWidth: 120,
+    params: { optionlist: statusOptions },
+    filters: [{ data: '' }],
+    filterRender: { name: 'MyFilterComplex' },
+  },
+]
+```
+
+#### 在 useList 中使用
+
+`useList` 默认使用本地筛选（`filterConfig.remote: false`），列筛选直接在客户端过滤当前页数据：
+
+```typescript
+const { QueryForm, formApi, Grid, gridApi } = useList({
+  searchFormSchema,
+  tableColumns: [
+    {
+      field: 'cUsernumb',
+      title: '用户编号',
+      minWidth: 120,
+      filters: [{ data: { isSensitive: false, sVal: '' } }],
+      filterRender: { name: 'FilterSimpleInput' },
+    },
+    // ...其他列
+  ],
+  resourceConfig,
+  queryFunction,
+})
+```
+
 ### 区域选取
 
 - **鼠标区域选取**：拖拽鼠标可选取单元格区域

@@ -230,7 +230,7 @@ export function useList<T>(options: {
       remote: true
     },
     filterConfig: {
-      remote: true // 使用服务端筛选,不对数据进行处理
+      remote: false
     },
     columns: showCheckbox
       ? tableColumns
