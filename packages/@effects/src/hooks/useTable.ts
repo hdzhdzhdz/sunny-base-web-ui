@@ -26,6 +26,8 @@ interface UseTableOptions {
   gridEvents?: Record<string, (...args: any[]) => any>
   /** 全局溢出提示，默认 false */
   showOverflow?: boolean | 'tooltip' | 'ellipsis'
+  /** 聚合配置（用于行分组等场景） */
+  aggregateConfig?: { groupFields?: string[]; [key: string]: any }
 }
 
 export function useTable({
@@ -40,6 +42,7 @@ export function useTable({
   gridId = 'table-grid',
   gridEvents,
   showOverflow = 'tooltip',
+  aggregateConfig,
 }: UseTableOptions = {}) {
   // 收集表格列中的字典编码
   const collectDictCodes = () => {
@@ -101,6 +104,7 @@ export function useTable({
       mode: 'popup',
       storage: true,
     },
+    ...(aggregateConfig && { aggregateConfig }),
   }
 
   if (editable) {

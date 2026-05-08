@@ -1,3 +1,4 @@
+import { createVNode } from 'vue'
 import { VxeUI } from 'vxe-table'
 import XEUtils from 'xe-utils'
 
@@ -19,7 +20,7 @@ VxeUI.renderer.add('FilterAggregation', {
     ]
   },
   renderFilter (renderOpts, renderParams) {
-    return h(VxeTmplFilterCombination, {
+    return createVNode(VxeTmplFilterCombination, {
       renderParams,
       renderOpts,
       showFixed: true,
@@ -68,7 +69,7 @@ VxeUI.renderer.add('FilterCombination', {
     ]
   },
   renderFilter (renderOpts, renderParams) {
-    return h(VxeTmplFilterCombination, {
+    return createVNode(VxeTmplFilterCombination, {
       renderParams,
       renderOpts,
       showFixed: true,

@@ -13,6 +13,8 @@ interface TabConfig {
     columns: VxeGridProps['columns']
     editRules: any
     toolbarButtons?: Array<{ code: string; name: string }>
+    /** 聚合配置（用于行分组等场景） */
+    aggregateConfig?: { groupFields?: string[]; [key: string]: any }
   }
 }
 
@@ -111,12 +113,13 @@ export function useFormTabs({
           visibleMethod: (params: any) => {
             return !(params.column.type === 'checkbox' || params.column.type === 'seq')
           }
-        }
+        },
+        ...(tab.gridConfig.aggregateConfig && { aggregateConfig: tab.gridConfig.aggregateConfig }),
       })
 
       // 监听optionsMap变化，更新表格列的字典选项
       watch(() => optionsMap.value, (newOptions) => {
-        gridOptions.columns = gridOptions.columns.map(column => {
+        gridOptions.columns = (gridOptions.columns || []).map((column: any) => {
           if (column.selectOptions?.dictCode) {
             const dictCode = String(column.selectOptions.dictCode)
             const options = newOptions[dictCode] || []

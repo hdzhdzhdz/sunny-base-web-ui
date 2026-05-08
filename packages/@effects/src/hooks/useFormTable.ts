@@ -12,6 +12,8 @@ interface UseFormTableOptions {
   tableEditRules?: any
   tableToolbarButtons?: Array<{ code: string; name: string }>
   objectToValueFields?: string[]
+  /** 聚合配置（用于行分组等场景） */
+  aggregateConfig?: { groupFields?: string[]; [key: string]: any }
 }
 
 export function useFormTable({
@@ -19,7 +21,8 @@ export function useFormTable({
   tableColumns = [],
   tableEditRules = {},
   tableToolbarButtons = [],
-  objectToValueFields
+  objectToValueFields,
+  aggregateConfig,
 }: UseFormTableOptions = {}) {
   // 使用声明式加载字典选项
   const { enhancedSchema: dictEnhancedSchema } = useSchemaOptionsLoader(formSchema)
@@ -116,7 +119,8 @@ export function useFormTable({
       visibleMethod: (params: any) => {
         return !(params.column.type === 'checkbox' || params.column.type === 'seq')
       }
-    }
+    },
+    ...(aggregateConfig && { aggregateConfig })
   })
 
   // 监听字典选项变化，更新表格列

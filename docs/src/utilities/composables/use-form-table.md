@@ -31,6 +31,7 @@ const [Form, formApi, Grid, gridApi] = useFormTable({
 | tableEditRules | `any` | 表格编辑规则 |
 | tableToolbarButtons | `Array<{ code: string; name: string }>` | 表格工具栏按钮配置 |
 | objectToValueFields | `string[]` | 对象转值字段 |
+| aggregateConfig | `{ groupFields?: string[]; [key: string]: any }` | 聚合配置，用于行分组等场景（可选） |
 
 ## 返回值
 
@@ -43,6 +44,8 @@ const [Form, formApi, Grid, gridApi] = useFormTable({
 
 ## 示例
 
+### 基本用法
+
 ```vue
 <script setup lang="ts">
 import { useFormTable } from '@sunny-base-web/effects'
@@ -53,6 +56,33 @@ const [Form, formApi, Grid, gridApi] = useFormTable({
   tableColumns: gridColumns,
   tableEditRules: gridEditRules,
   tableToolbarButtons: tableToolbarButtons
+})
+</script>
+
+<template>
+  <Form />
+  <Grid border max-height="300" />
+</template>
+```
+
+### 行分组用法
+
+通过 `aggregateConfig` 配置行分组功能，表格会按指定字段自动进行行分组并显示分组行。
+
+```vue
+<script setup lang="ts">
+import { useFormTable } from '@sunny-base-web/effects'
+import { addFormSchema, gridColumns, gridEditRules, tableToolbarButtons } from './config'
+
+const [Form, formApi, Grid, gridApi] = useFormTable({
+  formSchema: addFormSchema,
+  tableColumns: gridColumns,
+  tableEditRules: gridEditRules,
+  tableToolbarButtons: tableToolbarButtons,
+  // 按部门字段进行行分组
+  aggregateConfig: {
+    groupFields: ['department']
+  }
 })
 </script>
 

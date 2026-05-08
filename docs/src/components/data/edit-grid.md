@@ -23,6 +23,33 @@ outline: [2, 4]
 
 EditGrid 内置了区域选取和丰富的键盘快捷键功能，默认启用。
 
+### 行分组
+
+EditGrid 支持通过 `aggregateConfig` 配置行分组功能，表格会按指定字段自动进行行分组并显示分组行。
+
+```typescript
+const gridOptions = reactive({
+  columns: [
+    { type: 'seq', width: 60, title: '序号' },
+    { field: 'department', title: '部门', minWidth: 120 },
+    { field: 'name', title: '姓名', minWidth: 100 },
+    { field: 'salary', title: '薪资', minWidth: 100 },
+  ],
+  // 按部门字段进行行分组
+  aggregateConfig: {
+    groupFields: ['department']
+  }
+})
+
+const [Grid, gridApi] = useSunnyEditGrid({ gridOptions })
+```
+
+**aggregateConfig 参数说明**：
+
+| 参数 | 类型 | 说明 |
+|------|------|------|
+| `groupFields` | `string[]` | 按指定字段进行行分组 |
+
 ### 区域选取
 
 - **鼠标区域选取**：拖拽鼠标可选取单元格区域

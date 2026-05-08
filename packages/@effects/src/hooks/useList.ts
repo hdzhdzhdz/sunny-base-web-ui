@@ -96,9 +96,13 @@ export function useList<T>(options: {
    * @default false
    */
   showCheckbox?: boolean;
+  /**
+   * 聚合配置（用于行分组等场景）
+   */
+  aggregateConfig?: { groupFields?: string[]; [key: string]: any };
 
 }) {
-  const { searchFormSchema, tableColumns, dataType, resourceConfig, queryFunction, gridEvents, treeConfig, loadMethod, objectToValueFields, fieldMappingTime, arrayToStringFields, lazy, autoLoad = true, showCheckbox = true } = options;
+  const { searchFormSchema, tableColumns, dataType, resourceConfig, queryFunction, gridEvents, treeConfig, loadMethod, objectToValueFields, fieldMappingTime, arrayToStringFields, lazy, autoLoad = true, showCheckbox = true, aggregateConfig } = options;
 
   // ----------------------------------------------------------------------
   // 1. Basic Configuration
@@ -219,6 +223,8 @@ export function useList<T>(options: {
         } : undefined)    // 包装loadMethod以适配vxe-table的回调风格
       }
     }),
+    // 聚合配置（行分组等）
+    ...(aggregateConfig && { aggregateConfig }),
     // 使用服务端排序，排序信息通过 sorts 参数传给 queryFunction
     sortConfig: {
       remote: true

@@ -16,6 +16,8 @@ import { useSticky } from './sticky'
 import './renderer'
 import './renderer/extend-cell-area/vxe-table-extend-cell-area.es6.min'
 import './renderer/extend-cell-area/vxe-table-extend-cell-area.min.css'
+import './renderer/extend-pivot-table/vxe-table-extend-pivot-table.es6.min'
+import './renderer/extend-pivot-table/vxe-table-extend-pivot-table.min.css'
 
 const props = withDefaults(defineProps<{
   size?: 'medium' | 'small' | 'mini'

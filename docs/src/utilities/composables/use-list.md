@@ -67,6 +67,11 @@ export function useList<T>(options: {
    * 是否自动加载数据
    */
   autoLoad?: boolean;
+  /**
+   * 聚合配置（用于行分组等场景）
+   * - groupFields: 按指定字段进行行分组
+   */
+  aggregateConfig?: { groupFields?: string[]; [key: string]: any };
 })
 ```
 
@@ -85,6 +90,7 @@ export function useList<T>(options: {
 | `objectToValueFields` | `string[]`                      | 对象转值字段列表，用于将 BusinessSearch 等返回的对象数组转换为值字符串（可选）          |
 | `lazy`                | `boolean`                       | 是否开启懒加载（可选）                                              |
 | `autoLoad`            | `boolean`                       | 是否自动加载数据（可选，默认 true），为 true 时默认查询方案加载完成后自动触发查询           |
+| `aggregateConfig`     | `{ groupFields?: string[]; [key: string]: any }` | 聚合配置，用于行分组等场景（可选）。`groupFields` 指定按哪些字段进行分组 |
 
 ## 返回值
 
@@ -106,6 +112,32 @@ export function useList<T>(options: {
 | `fetchResourceConfig`     | `() => Promise<void>`                | 获取资源配置        |
 
 ## 使用示例
+
+### 行分组用法
+
+通过 `aggregateConfig` 配置行分组功能，表格会按指定字段自动进行行分组并显示分组行。
+
+```typescript
+// config.ts
+export const tableColumns = [
+  { type: 'seq', width: 60, title: '序号' },
+  { field: 'department', title: '部门', minWidth: 120 },
+  { field: 'name', title: '姓名', minWidth: 100 },
+  { field: 'salary', title: '薪资', minWidth: 100 },
+]
+
+// 页面中使用
+const { ... } = useList({
+  searchFormSchema,
+  tableColumns,
+  resourceConfig,
+  queryFunction,
+  // 按部门字段进行行分组
+  aggregateConfig: {
+    groupFields: ['department']
+  }
+})
+```
 
 ### 基本用法
 
