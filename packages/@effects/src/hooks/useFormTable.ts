@@ -1,5 +1,4 @@
-import { useSunnyForm } from '@sunny-base-web/ui'
-import { useSunnyEditGrid } from '@sunny-base-web/ui'
+import { useSunnyForm, useSunnyEditGrid, createEditableClipConfig } from '@sunny-base-web/ui'
 import { useSchemaOptionsLoader } from '../utils/use-schema-options-loader'
 import { useSchemaPermissionLoader } from '../utils/use-schema-permission-loader'
 import { applyAutoSelectDefaults } from '../utils/apply-auto-select-defaults'
@@ -97,12 +96,8 @@ export function useFormTable({
     data: [] as any[],
     size: 'mini',
     editRules: tableEditRules,
-    editConfig: {
-      enabled: true,
-      trigger: 'click',
-      mode: 'row'
-    },
     height: 'auto',
+    clipConfig: createEditableClipConfig(),
     toolbarConfig: {
       enabled: true,
       zoom: true,

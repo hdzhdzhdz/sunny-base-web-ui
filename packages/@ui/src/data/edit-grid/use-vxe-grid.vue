@@ -12,7 +12,9 @@
 import { ref } from 'vue'
 import { VxeGrid, type VxeGridInstance } from 'vxe-table'
 import 'vxe-table/lib/style.css'
-import './filters-combination'
+import './renderer/filters-combination'
+import './renderer/extend-cell-area/vxe-table-extend-cell-area.es6.min'
+import './renderer/extend-cell-area/vxe-table-extend-cell-area.min.css'
 
 const gridRef = ref<VxeGridInstance>()
 

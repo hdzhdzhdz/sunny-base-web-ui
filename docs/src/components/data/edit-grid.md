@@ -19,6 +19,48 @@ outline: [2, 4]
 ### 加载资源用法
 <preview path="./demos/edit-grid/ResourceUsage.vue" title="加载资源用法" description="演示编辑表格的加载资源功能，包括数据加载、列定义等" />
 
+## 区域选取与快捷键
+
+EditGrid 内置了区域选取和丰富的键盘快捷键功能，默认启用。
+
+### 区域选取
+
+- **鼠标区域选取**：拖拽鼠标可选取单元格区域
+- **多区域选取**：按住鼠标可同时选取多个区域
+- **列/行选取状态**：自动高亮显示选中的列和行
+- **点击选取当前行**：点击单元格后自动选取当前行的单元格
+
+### 快捷键
+
+| 快捷键 | 功能 |
+|--------|------|
+| `Ctrl+A` | 全选 |
+| `Ctrl+C` | 复制选中区域 |
+| `Ctrl+X` | 剪切选中区域（不可编辑或禁用的列自动跳过） |
+| `Ctrl+V` | 粘贴到目标区域（不可编辑或禁用的列自动跳过） |
+| `Ctrl+Z` | 撤销 |
+| `Ctrl+F` | 查找 |
+| `Ctrl+H` | 替换 |
+| `Tab` | 切换到下一个单元格 |
+| `方向键` | 在单元格之间移动 |
+| `Shift+方向键` | 以活动区域为起始，向指定方向延伸选区 |
+| `Delete` | 删除单元格内容 |
+| `Backspace` | 删除单元格内容 |
+| `Enter` | 确认编辑并移动到下一行 |
+| `F2` | 进入聚焦编辑状态（方向键移动光标而非切换单元格） |
+
+### 剪切/粘贴智能检测
+
+剪切和粘贴操作会自动检测目标列的可编辑性：
+
+- **可编辑列**（有 `editRender` 且有 `edit` 插槽，如 `InputRender`、`SelectRender` 等）：正常执行剪切/粘贴
+- **不可编辑列**（没有 `editRender`，或使用 `SpanRender` 等纯展示类型）：自动跳过
+- **禁用列**（`params.disabled: true`）：自动跳过
+
+### 操作提示
+
+工具栏右侧会自动显示 `!` 提示按钮（支持 `toolbarConfig` 和 `#toolbar` 插槽两种方式），鼠标悬停可查看功能说明。
+
 ## API
 
 ### `useSunnyEditGrid(options)`
@@ -389,11 +431,6 @@ const gridOptions = reactive({
   rowConfig: {
     keyField: 'id',
     drag: true // 开启行拖拽
-  },
-  editConfig: {
-    enabled: true,
-    trigger: 'click',
-    mode: 'row'
   }
 });
 

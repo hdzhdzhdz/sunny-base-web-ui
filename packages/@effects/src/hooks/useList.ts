@@ -205,7 +205,7 @@ export function useList<T>(options: {
     // 显示选择数量，需配合 toolbarConfig 和 checkboxConfig 使用
     showSelectionCount: true,
     // 表格说明，鼠标悬停 ! 按钮时显示
-    gridTip: '1. 支持跨页选择，注意清空选中项\n2. 表格支持本地(换电脑清空)列配置，退出登录不清空\n3. 支持服务端排序',
+    gridTip: '1. 支持跨页选择，注意清空选中项\n2. 表格支持本地(换电脑清空)列配置，退出登录不清空\n3. 支持服务端排序\n4. 支持鼠标区域选取，Ctrl+A 全选\n5. 支持 Ctrl+C 复制选中区域\n6. 支持 Tab/方向键/Shift+方向键导航\n',
     // 树形配置
     ...(treeConfig && {
       treeConfig: {

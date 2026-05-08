@@ -14,6 +14,8 @@ import 'vxe-table/lib/style.css'
 import 'vxe-pc-ui/lib/style.css'
 import { useSticky } from './sticky'
 import './renderer'
+import './renderer/extend-cell-area/vxe-table-extend-cell-area.es6.min'
+import './renderer/extend-cell-area/vxe-table-extend-cell-area.min.css'
 
 const props = withDefaults(defineProps<{
   size?: 'medium' | 'small' | 'mini'

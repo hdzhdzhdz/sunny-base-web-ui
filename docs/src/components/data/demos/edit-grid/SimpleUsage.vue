@@ -10,12 +10,7 @@ const gridOptions = reactive({
     { field: 'age', title: '年龄', ...EditRender.InputNumberRender },
   ],
   border: true,
-  size: 'mini',
-  editConfig: {
-    enabled: true,
-    trigger: 'click',
-    mode: 'row'
-  }
+  size: 'mini'
 });
 
 const [Grid, gridApi] = useSunnyEditGrid({ gridOptions });

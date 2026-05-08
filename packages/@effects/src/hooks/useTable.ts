@@ -1,4 +1,4 @@
-import { useSunnyEditGrid } from '@sunny-base-web/ui'
+import { useSunnyEditGrid, createEditableClipConfig } from '@sunny-base-web/ui'
 import { useSelectOptions } from '../form/use-select-options'
 import { reactive, watch } from 'vue'
 import type { VxeGridProps } from '@sunny-base-web/ui'
@@ -105,11 +105,7 @@ export function useTable({
 
   if (editable) {
     gridOptions.editRules = editRules
-    gridOptions.editConfig = {
-      enabled: true,
-      trigger: editTrigger,
-      mode: editMode,
-    }
+    gridOptions.clipConfig = createEditableClipConfig()
   }
 
   if (toolbarButtons.length > 0) {
