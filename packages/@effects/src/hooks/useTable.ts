@@ -100,6 +100,7 @@ export function useTable({
     customConfig: {
       mode: 'popup',
       storage: true,
+      showSortPutButton: true
     },
   }
 

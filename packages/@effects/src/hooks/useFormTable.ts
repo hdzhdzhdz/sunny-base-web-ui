@@ -118,6 +118,7 @@ export function useFormTable({
     customConfig: {
       storage: true,
       mode: 'popup',
+      showSortPutButton: true,
       visibleMethod: (params: any) => {
         return !(params.column.type === 'checkbox' || params.column.type === 'seq')
       }

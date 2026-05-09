@@ -200,7 +200,8 @@ export function useList<T>(options: {
     },
     customConfig: {
       mode: 'popup',
-      storage: true
+      storage: true,
+      showSortPutButton: true
     },
     // 显示选择数量，需配合 toolbarConfig 和 checkboxConfig 使用
     showSelectionCount: true,
