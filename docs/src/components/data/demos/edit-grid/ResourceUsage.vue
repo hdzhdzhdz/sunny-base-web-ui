@@ -15,11 +15,6 @@ const gridOptions = reactive({
   border: true,
   size: 'mini',
   height: 400,
-  editConfig: {
-    enabled: true,
-    trigger: 'click',
-    mode: 'row'
-  },
   columnConfig: {
     resizable: true,
   },

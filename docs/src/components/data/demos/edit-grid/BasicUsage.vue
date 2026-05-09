@@ -162,11 +162,6 @@ const gridOptions = reactive({
     keyField: 'id',
     drag: true,
   },
-  editConfig: {
-    enabled: true,
-    trigger: 'click',
-    mode: 'row'
-  },
   columnConfig: {
     resizable: true,
   }

@@ -1,5 +1,4 @@
-import { useSunnyForm } from '@sunny-base-web/ui'
-import { useSunnyEditGrid } from '@sunny-base-web/ui'
+import { useSunnyForm, useSunnyEditGrid, createEditableClipConfig } from '@sunny-base-web/ui'
 import { useSchemaOptionsLoader } from '../utils/use-schema-options-loader'
 import { useSchemaPermissionLoader } from '../utils/use-schema-permission-loader'
 import { applyAutoSelectDefaults } from '../utils/apply-auto-select-defaults'
@@ -14,6 +13,8 @@ interface TabConfig {
     columns: VxeGridProps['columns']
     editRules: any
     toolbarButtons?: Array<{ code: string; name: string }>
+    /** 聚合配置（用于行分组等场景） */
+    aggregateConfig?: { groupFields?: string[]; [key: string]: any }
   }
 }
 
@@ -95,12 +96,8 @@ export function useFormTabs({
         columns: tab.gridConfig.columns,
         data: [] as any[],
         editRules: tab.gridConfig.editRules,
-        editConfig: {
-          enabled: true,
-          trigger: 'click',
-          mode: 'row'
-        },
         height: 'auto',
+        clipConfig: createEditableClipConfig(),
         toolbarConfig: {
           enabled: tab.gridConfig.toolbarButtons && tab.gridConfig.toolbarButtons.length > 0,
           zoom: true,
@@ -116,12 +113,13 @@ export function useFormTabs({
           visibleMethod: (params: any) => {
             return !(params.column.type === 'checkbox' || params.column.type === 'seq')
           }
-        }
+        },
+        ...(tab.gridConfig.aggregateConfig && { aggregateConfig: tab.gridConfig.aggregateConfig }),
       })
 
       // 监听optionsMap变化，更新表格列的字典选项
       watch(() => optionsMap.value, (newOptions) => {
-        gridOptions.columns = gridOptions.columns.map(column => {
+        gridOptions.columns = (gridOptions.columns || []).map((column: any) => {
           if (column.selectOptions?.dictCode) {
             const dictCode = String(column.selectOptions.dictCode)
             const options = newOptions[dictCode] || []

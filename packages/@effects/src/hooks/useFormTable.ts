@@ -1,5 +1,4 @@
-import { useSunnyForm } from '@sunny-base-web/ui'
-import { useSunnyEditGrid } from '@sunny-base-web/ui'
+import { useSunnyForm, useSunnyEditGrid, createEditableClipConfig } from '@sunny-base-web/ui'
 import { useSchemaOptionsLoader } from '../utils/use-schema-options-loader'
 import { useSchemaPermissionLoader } from '../utils/use-schema-permission-loader'
 import { applyAutoSelectDefaults } from '../utils/apply-auto-select-defaults'
@@ -13,6 +12,8 @@ interface UseFormTableOptions {
   tableEditRules?: any
   tableToolbarButtons?: Array<{ code: string; name: string }>
   objectToValueFields?: string[]
+  /** 聚合配置（用于行分组等场景） */
+  aggregateConfig?: { groupFields?: string[]; [key: string]: any }
 }
 
 export function useFormTable({
@@ -20,7 +21,8 @@ export function useFormTable({
   tableColumns = [],
   tableEditRules = {},
   tableToolbarButtons = [],
-  objectToValueFields
+  objectToValueFields,
+  aggregateConfig,
 }: UseFormTableOptions = {}) {
   // 使用声明式加载字典选项
   const { enhancedSchema: dictEnhancedSchema } = useSchemaOptionsLoader(formSchema)
@@ -97,12 +99,8 @@ export function useFormTable({
     data: [] as any[],
     size: 'mini',
     editRules: tableEditRules,
-    editConfig: {
-      enabled: true,
-      trigger: 'click',
-      mode: 'row'
-    },
     height: 'auto',
+    clipConfig: createEditableClipConfig(),
     toolbarConfig: {
       enabled: true,
       zoom: true,
@@ -122,7 +120,8 @@ export function useFormTable({
       visibleMethod: (params: any) => {
         return !(params.column.type === 'checkbox' || params.column.type === 'seq')
       }
-    }
+    },
+    ...(aggregateConfig && { aggregateConfig })
   })
 
   // 监听字典选项变化，更新表格列

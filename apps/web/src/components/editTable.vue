@@ -6,10 +6,6 @@ const gridOptions = reactive({
   border: true,
   showOverflow: 'title',
   height: 400,
-  editConfig: {
-    trigger: 'click',
-    mode: 'cell'
-  },
   columns: [
     { type: 'checkbox', width: 60 },
     { type: 'seq', width: 70 },

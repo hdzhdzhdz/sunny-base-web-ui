@@ -26,11 +26,6 @@ const [Grid, gridApi] = useSunnyEditGrid({
     columnConfig: {
       resizable: true,
     },
-    editConfig: {
-      enabled: true,
-      trigger: 'click',
-      mode: 'row'
-    },
     editRules: {
       cMac: [{ required: true, message: t('user.cMacMessage') }],
     },

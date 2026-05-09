@@ -15,6 +15,135 @@
 
 <preview path="./demos/query-grid/BasicUsage.vue" title="基础用法" description="包含数据列表和事件处理" />
 
+## 区域选取与快捷键
+
+QueryGrid 内置了区域选取和常用键盘快捷键功能，默认启用。
+
+### 行分组
+
+QueryGrid 支持通过 `aggregateConfig` 配置行分组功能，表格会按指定字段自动进行行分组并显示分组行。
+
+```typescript
+const gridOptions = reactive({
+  columns: [
+    { type: 'seq', width: 60, title: '序号' },
+    { field: 'department', title: '部门', minWidth: 120 },
+    { field: 'name', title: '姓名', minWidth: 100 },
+    { field: 'salary', title: '薪资', minWidth: 100 },
+  ],
+  // 按部门字段进行行分组
+  aggregateConfig: {
+    groupFields: ['department']
+  }
+})
+
+const [Grid, gridApi] = useSunnyQueryGrid({ gridOptions })
+```
+
+**aggregateConfig 参数说明**：
+
+| 参数 | 类型 | 说明 |
+|------|------|------|
+| `groupFields` | `string[]` | 按指定字段进行行分组 |
+
+### 列筛选
+
+QueryGrid 内置了多种列筛选渲染器，可以在列头点击筛选图标进行数据过滤。
+
+#### FilterSimpleInput - 简单文本筛选
+
+提供输入框和大小写敏感切换，通过子字符串包含匹配进行筛选。
+
+```typescript
+const tableColumns = [
+  {
+    field: 'cUsernumb',
+    title: '用户编号',
+    minWidth: 120,
+    filters: [{ data: { isSensitive: false, sVal: '' } }],
+    filterRender: { name: 'FilterSimpleInput' },
+  },
+]
+```
+
+#### FilterComplexInput - 高级文本筛选
+
+在简单文本筛选基础上增加匹配类型选择（包含、等于、开头是、结尾是、大于、小于）。
+
+```typescript
+const tableColumns = [
+  {
+    field: 'salary',
+    title: '薪资',
+    minWidth: 100,
+    filters: [{ data: { sType: 'include', isSensitive: false, sVal: '' } }],
+    filterRender: { name: 'FilterComplexInput' },
+  },
+]
+```
+
+#### MyFilterComplex - 自定义筛选
+
+基于 Vue 组件的筛选器，自动检测列是否配置 `params.optionlist` 来切换 select 模式和 input 模式。
+
+```typescript
+const tableColumns = [
+  {
+    field: 'status',
+    title: '状态',
+    minWidth: 120,
+    params: { optionlist: statusOptions },
+    filters: [{ data: '' }],
+    filterRender: { name: 'MyFilterComplex' },
+  },
+]
+```
+
+#### 在 useList 中使用
+
+`useList` 默认使用本地筛选（`filterConfig.remote: false`），列筛选直接在客户端过滤当前页数据：
+
+```typescript
+const { QueryForm, formApi, Grid, gridApi } = useList({
+  searchFormSchema,
+  tableColumns: [
+    {
+      field: 'cUsernumb',
+      title: '用户编号',
+      minWidth: 120,
+      filters: [{ data: { isSensitive: false, sVal: '' } }],
+      filterRender: { name: 'FilterSimpleInput' },
+    },
+    // ...其他列
+  ],
+  resourceConfig,
+  queryFunction,
+})
+```
+
+### 区域选取
+
+- **鼠标区域选取**：拖拽鼠标可选取单元格区域
+- **多区域选取**：按住鼠标可同时选取多个区域
+- **列/行选取状态**：自动高亮显示选中的列和行
+- **点击选取当前行**：点击单元格后自动选取当前行的单元格
+
+### 快捷键
+
+| 快捷键 | 功能 |
+|--------|------|
+| `Ctrl+A` | 全选 |
+| `Ctrl+C` | 复制选中区域 |
+| `Tab` | 切换到下一个单元格 |
+| `方向键` | 在单元格之间移动 |
+| `Shift+方向键` | 以活动区域为起始，向指定方向延伸选区 |
+
+> QueryGrid 为只读查询表格，不支持剪切和粘贴操作。
+
+### 操作提示
+
+通过 `useList` 创建的列表页，工具栏右侧会自动显示 `!` 提示按钮，鼠标悬停可查看功能说明。
+
 ## API
 
 ### `useSunnyQueryGrid(options)`

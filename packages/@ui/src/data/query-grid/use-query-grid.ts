@@ -102,6 +102,25 @@ export function useSunnyQueryGrid(options: any) {
 
         return h(VxeGrid, {
           ref: gridRef,
+            mouseConfig: { area: true }, // 开启区域选取
+            areaConfig: {
+              multiple: true, // 多区域选取
+              showColumnStatus: true, // 列选取状态
+              showRowStatus: true, // 行选取状态
+              selectCellToRow: true, // 点击单元格自动选取当前行
+            },            
+            keyboardConfig: {
+              isAll: true, // 快捷键全选
+              isArrow: true, // 方向键
+              isTab: true, // Tab 键
+              isShift: true, // Shift+方向键延伸区域
+              isClip: true, // 复制/剪贴/粘贴
+            },
+            clipConfig: {
+                isCopy: true, // 启用复制功能
+                isCut: false, // 禁用剪切功能
+                isPaste: false // 禁用粘贴功能
+            },
           ...gridOptions,
           ...(toolbarConfig ? { toolbarConfig } : {}),
           ...listeners,

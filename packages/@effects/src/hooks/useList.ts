@@ -96,9 +96,13 @@ export function useList<T>(options: {
    * @default false
    */
   showCheckbox?: boolean;
+  /**
+   * 聚合配置（用于行分组等场景）
+   */
+  aggregateConfig?: { groupFields?: string[]; [key: string]: any };
 
 }) {
-  const { searchFormSchema, tableColumns, dataType, resourceConfig, queryFunction, gridEvents, treeConfig, loadMethod, objectToValueFields, fieldMappingTime, arrayToStringFields, lazy, autoLoad = true, showCheckbox = true } = options;
+  const { searchFormSchema, tableColumns, dataType, resourceConfig, queryFunction, gridEvents, treeConfig, loadMethod, objectToValueFields, fieldMappingTime, arrayToStringFields, lazy, autoLoad = true, showCheckbox = true, aggregateConfig } = options;
 
   // ----------------------------------------------------------------------
   // 1. Basic Configuration
@@ -206,7 +210,7 @@ export function useList<T>(options: {
     // 显示选择数量，需配合 toolbarConfig 和 checkboxConfig 使用
     showSelectionCount: true,
     // 表格说明，鼠标悬停 ! 按钮时显示
-    gridTip: '1. 支持跨页选择，注意清空选中项\n2. 表格支持本地(换电脑清空)列配置，退出登录不清空\n3. 支持服务端排序',
+    gridTip: '1. 支持跨页选择，注意清空选中项\n2. 表格支持本地(换电脑清空)列配置，退出登录不清空\n3. 支持服务端排序\n4. 支持鼠标区域选取，Ctrl+A 全选\n5. 支持 Ctrl+C 复制选中区域\n6. 支持 Tab/方向键/Shift+方向键导航\n',
     // 树形配置
     ...(treeConfig && {
       treeConfig: {
@@ -220,12 +224,14 @@ export function useList<T>(options: {
         } : undefined)    // 包装loadMethod以适配vxe-table的回调风格
       }
     }),
+    // 聚合配置（行分组等）
+    ...(aggregateConfig && { aggregateConfig }),
     // 使用服务端排序，排序信息通过 sorts 参数传给 queryFunction
     sortConfig: {
       remote: true
     },
     filterConfig: {
-      remote: true // 使用服务端筛选,不对数据进行处理
+      remote: false
     },
     columns: showCheckbox
       ? tableColumns

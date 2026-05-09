@@ -1,4 +1,4 @@
-import { useSunnyEditGrid } from '@sunny-base-web/ui'
+import { useSunnyEditGrid, createEditableClipConfig } from '@sunny-base-web/ui'
 import { useSelectOptions } from '../form/use-select-options'
 import { reactive, watch } from 'vue'
 import type { VxeGridProps } from '@sunny-base-web/ui'
@@ -26,6 +26,8 @@ interface UseTableOptions {
   gridEvents?: Record<string, (...args: any[]) => any>
   /** 全局溢出提示，默认 false */
   showOverflow?: boolean | 'tooltip' | 'ellipsis'
+  /** 聚合配置（用于行分组等场景） */
+  aggregateConfig?: { groupFields?: string[]; [key: string]: any }
 }
 
 export function useTable({
@@ -40,6 +42,7 @@ export function useTable({
   gridId = 'table-grid',
   gridEvents,
   showOverflow = 'tooltip',
+  aggregateConfig,
 }: UseTableOptions = {}) {
   // 收集表格列中的字典编码
   const collectDictCodes = () => {
@@ -102,15 +105,12 @@ export function useTable({
       storage: true,
       showSortPutButton: true
     },
+    ...(aggregateConfig && { aggregateConfig }),
   }
 
   if (editable) {
     gridOptions.editRules = editRules
-    gridOptions.editConfig = {
-      enabled: true,
-      trigger: editTrigger,
-      mode: editMode,
-    }
+    gridOptions.clipConfig = createEditableClipConfig()
   }
 
   if (toolbarButtons.length > 0) {

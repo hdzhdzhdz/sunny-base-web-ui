@@ -11,7 +11,7 @@ import SunnySelect from "./entry/select";
 import SunnyBatchSelect from "./entry/select/BatchSelect.vue";
 import SunnySearchInputTag from "./entry/search-input-tag";
 import { useSunnyForm, FormApi, SunnyForm, setupSunnyForm, z, DEFAULT_FORM_COMMON_CONFIG } from './entry/form';
-import { useSunnyEditGrid } from './data/edit-grid'
+import { useSunnyEditGrid, createEditableClipConfig } from './data/edit-grid'
 import * as EditRender from './data/edit-grid/edit-render'
 import * as Validators from './data/edit-grid/validators'
 import { useSunnyQueryGrid } from './data/query-grid'
@@ -47,6 +47,7 @@ export {
   EditRender,
   Validators,
   useSunnyEditGrid,
+  createEditableClipConfig,
   useSunnyQueryGrid,
   SunnyResourceTree,
   SunnySearchModal,

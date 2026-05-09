@@ -39,6 +39,8 @@ interface TabConfig {
     columns: VxeGridProps['columns']
     editRules: any
     toolbarButtons?: Array<{ code: string; name: string }>
+    /** 聚合配置，用于行分组等场景 */
+    aggregateConfig?: { groupFields?: string[]; [key: string]: any }
   }
 }
 ```
@@ -53,6 +55,8 @@ interface TabConfig {
 | gridApis | `GridApi[]` | 表格API数组 |
 
 ## 示例
+
+### 基本用法
 
 ```vue
 <script setup lang="ts">
@@ -69,14 +73,41 @@ const activeTab = ref(0)
 
 <template>
   <Form />
-  
+
   <Tabs v-model="activeTab">
     <TabPane v-for="(tab, index) in tabsConfig" :key="index" :title="tab.title">
-      <component :is="gridComponents[index]" 
-                :id="`grid-${index}`" 
-                border 
+      <component :is="gridComponents[index]"
+                :id="`grid-${index}`"
+                border
                 max-height="300" />
     </TabPane>
   </Tabs>
 </template>
+```
+
+### 行分组用法
+
+在每个标签页的 `gridConfig` 中配置 `aggregateConfig`，实现独立行分组。
+
+```typescript
+// config.ts
+const tabsConfig = [
+  {
+    title: '员工列表',
+    type: 'grid',
+    gridConfig: {
+      columns: [
+        { type: 'seq', width: 60, title: '序号' },
+        { field: 'department', title: '部门', minWidth: 120 },
+        { field: 'name', title: '姓名', minWidth: 100 },
+        { field: 'salary', title: '薪资', minWidth: 100 },
+      ],
+      editRules: {},
+      // 按部门字段进行行分组
+      aggregateConfig: {
+        groupFields: ['department']
+      }
+    }
+  }
+]
 ```
