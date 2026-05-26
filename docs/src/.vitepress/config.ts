@@ -163,7 +163,7 @@ export default defineConfig({
     ],
     server: {
       host: '0.0.0.0',
-      port: 5002,
+      port: 3000,
       proxy: {
         '/core': {
           target: 'https://sunnyqms-test.sunnyoptical.cn/base/test',
